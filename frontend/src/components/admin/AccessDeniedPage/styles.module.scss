@@ -1,0 +1,53 @@
+.wrapper {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0 32px;
+  background: #262f3d;
+
+  @include --max-sm {
+    padding: 0 16px;
+  }
+}
+
+.body {
+  width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+  background: #f6f6fb;
+  padding: 28px;
+  border-radius: 12px;
+  max-width: 100%;
+
+  @include --max-sm {
+    padding: 20px;
+  }
+}
+
+.title {
+  line-height: 1;
+  margin-bottom: 20px;
+  color: #241F31;
+  font-size: 24px;
+}
+
+.submit {
+  margin-top: 20px;
+}
+
+.footer {
+  width: 640px;
+  margin: 30px auto;
+  font-size: 12px;
+  color: rgba(246, 246, 251, 0.6);
+  line-height: 1.25;
+  text-align: center;
+  max-width: 100%;
+}
+
+.footer a {
+  color: rgba(246, 246, 251, 0.8);
+  text-decoration: underline;
+}

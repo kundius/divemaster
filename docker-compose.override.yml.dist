@@ -1,0 +1,21 @@
+version: '3.9'
+services:
+
+  mariadb:
+    restart: no
+    ports:
+      - ${MARIADB_PORT:-3333}:3306
+
+  nginx:
+    restart: no
+
+  php-fpm:
+    restart: no
+    environment:
+      - PHP_IDE_CONFIG=serverName=VespDocker
+    command: sh -c 'composer install && composer db:migrate && php-fpm'
+
+  node:
+    restart: no
+    # command: sh -c 'rm -rf /tmp/* && yarn && yarn analyze'
+    command: sh -c 'rm -rf /tmp/* && npm i && npm run dev'

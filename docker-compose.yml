@@ -1,0 +1,70 @@
+version: '3.9'
+services:
+
+  mariadb:
+    image: mariadb:${MARIADB_VERSION:-11}
+    environment:
+      - MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=yes
+      - MARIADB_DATABASE=${MARIADB_DATABASE:-vesp}
+      - MARIADB_USER=${MARIADB_USERNAME:-vesp}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD:-vesp}
+      - TZ=${TZ:-Europe/Moscow}
+    volumes:
+      - ./docker/mariadb:/var/lib/mysql
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:${NGINX_VERSION:-1.25}
+    environment:
+      - NGINX_PORT=${NGINX_PORT:-8080}
+      - NODE_PORT=${NODE_PORT:-3000}
+      - TZ=${TZ:-Europe/Moscow}
+    volumes:
+      - ./docker/nginx:/etc/nginx/templates
+      - ./frontend:/vesp/frontend
+      - ./www:/vesp/www
+    ports:
+      - ${NGINX_HOST:-127.0.0.1}:${NGINX_PORT:-8080}:80
+    restart: unless-stopped
+    depends_on:
+      - php-fpm
+      - mariadb
+
+  php-fpm:
+    build:
+      context: ./docker/php-fpm
+      args:
+        - PHP_VERSION=${PHP_VERSION:-8.3}
+        - PHP_XDEBUG=${PHP_XDEBUG:-0}
+        - TZ=${TZ:-Europe/Moscow}
+    volumes:
+      - ./.env:/vesp/.env
+      - ./core:/vesp/core
+      - ./www:/vesp/www
+      - ./upload:/vesp/upload
+      - ./tmp:/vesp/tmp
+      - ./frontend:/vesp/frontend
+    cap_add:
+      - SYS_PTRACE
+    depends_on:
+      - mariadb
+    environment:
+      - COMPOSER_ALLOW_SUPERUSER=1
+      - TZ=${TZ:-Europe/Moscow}
+    restart: unless-stopped
+    working_dir: /vesp/core
+    command: sh -c 'composer install --no-dev && composer db:migrate && cron && php-fpm'
+
+  node:
+    image: node:${NODE_VERSION:-21}
+    volumes:
+      - ./.env:/vesp/.env
+      - ./frontend:/vesp/frontend
+    depends_on:
+      - nginx
+    environment:
+      - TZ=${TZ:-Europe/Moscow}
+    network_mode: 'service:nginx'
+    restart: unless-stopped
+    working_dir: /vesp/frontend
+    command: sh -c 'rm -rf /tmp/* && npm i && npm run build && npm run start'

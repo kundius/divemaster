@@ -8,11 +8,17 @@ const tokenType = 'Bearer'
 interface AuthContextType {
   user: VespUser | null
   hasScope: (scopes: string | string[]) => boolean
+  setToken: (value?: string) => void
+  token?: string
+  // getToken: () => string
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
-  hasScope: () => false
+  hasScope: () => false,
+  setToken: () => {},
+  token: undefined
+  // getToken: () => ''
   // token, loggedIn, loadUser, login, logout, setToken
 })
 
@@ -52,6 +58,8 @@ export function AuthProvider({
   children,
   initialAuthToken
 }: React.PropsWithChildren<{ initialAuthToken?: string }>) {
+  const [token, _setToken] = useState(initialAuthToken)
+
   const user = null as VespUser | null
 
   const hasScope: AuthContextType['hasScope'] = (scopes) => {
@@ -79,11 +87,17 @@ export function AuthProvider({
     return check(scopes)
   }
 
+  const setToken = (value?: string) => {
+    return _setToken(value)
+  }
+
   return (
     <AuthContext.Provider
       value={{
         user,
-        hasScope
+        hasScope,
+        setToken,
+        token
       }}
     >
       {children}

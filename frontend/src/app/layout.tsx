@@ -1,3 +1,4 @@
+import { Toaster } from '@/components/ui/sonner'
 import { AuthProvider } from '@/lib/auth'
 import { cn } from '@/lib/utils'
 import '@/styles/globals.css'
@@ -40,6 +41,7 @@ export default function RootLayout({
         )}
       >
         <AuthProvider initialAuthToken={authToken}>{children}</AuthProvider>
+        <Toaster richColors />
       </body>
     </html>
   )

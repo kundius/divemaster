@@ -25,7 +25,7 @@ export function useApiForm<TFieldValues extends FieldValues = FieldValues, TResu
     })
 
     if (auth.token) {
-      headers.set('Authorization', auth.token)
+      headers.set('Authorization', `Bearer ${auth.token}`)
     }
 
     const response = await fetch(`${getApiUrl()}${route}`, {

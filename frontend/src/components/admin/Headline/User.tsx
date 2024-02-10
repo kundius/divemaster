@@ -5,36 +5,36 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { useAuth } from '@/lib/auth'
-import { getApiUrl } from '@/lib/utils'
+import Link from 'next/link'
 
 export function User() {
-  const { user } = useAuth()
-
-  // console.log(getApiUrl())
+  const { user, logout } = useAuth()
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Avatar>
           <AvatarImage src="https://github.com/shadcn.png" />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarFallback>{user?.fullname?.slice(0, 1)}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <div className="px-2 py-1.5 text-sm font-normal min-w-40">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">shadcn</p>
-            <p className="text-xs leading-none text-muted-foreground">m@example.com</p>
+            <p className="text-sm font-medium leading-none">{user?.fullname}</p>
+            <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
           </div>
         </div>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Профиль</DropdownMenuItem>
+        <Link href="/admin/profile">
+          <DropdownMenuItem>Профиль</DropdownMenuItem>
+        </Link>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Выход</DropdownMenuItem>
+        <DropdownMenuItem onClick={logout}>Выход</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )

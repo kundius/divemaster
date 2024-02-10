@@ -33,6 +33,8 @@
   background: #fff;
   z-index: 1;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .content {

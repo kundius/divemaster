@@ -1,3 +1,10 @@
+// import { useTranslations } from 'next-intl'
+
 export function DashboardPage() {
-  return <div>DashboardPage</div>
+  // const t = useTranslations('Index')
+  return (
+    <div>
+      {/* {t('title')} */}
+    </div>
+  )
 }

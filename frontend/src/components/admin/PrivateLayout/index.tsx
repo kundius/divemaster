@@ -4,8 +4,9 @@ import styles from './styles.module.scss'
 import { Navigation } from '../Navigation'
 import Link from 'next/link'
 import { Headline } from '../Headline'
+import { Footer } from '../Footer'
 
-export function PrivateLayout({ children }: PropsWithChildren) {
+export async function PrivateLayout({ children }: PropsWithChildren) {
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
@@ -24,7 +25,9 @@ export function PrivateLayout({ children }: PropsWithChildren) {
           <div className={styles.body}>
             <Headline />
 
-            <div className="p-3 lg:p-8">{children}</div>
+            <div className="p-3 lg:p-8 flex-grow">{children}</div>
+
+            <Footer />
           </div>
         </div>
       </div>

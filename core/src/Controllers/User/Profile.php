@@ -10,7 +10,11 @@ class Profile extends \Vesp\Controllers\User\Profile
 
     public function patch(): ResponseInterface
     {
-        foreach (['username', 'fullname', 'password', 'email'] as $key) {
+        if ($password = trim($this->getProperty('password', ''))) {
+            $this->user->password = $password;
+        }
+
+        foreach (['username', 'fullname', 'email'] as $key) {
             if ($value = trim($this->getProperty($key, ''))) {
                 $this->user->setAttribute($key, $value);
             }

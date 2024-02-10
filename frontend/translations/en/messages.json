@@ -1,0 +1,13 @@
+{
+  "success": {
+    "login": "Welcome!",
+    "logout": "Goodbye...",
+    "profile": "The profile has been saved successfully"
+  },
+  "errors": {
+    "security": {
+      "inactive": "Your account is not active",
+      "wrong": "Wrong username or password"
+    }
+  }
+}

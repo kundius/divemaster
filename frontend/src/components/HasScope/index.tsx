@@ -1,6 +1,6 @@
 'use client'
 
-import { useAuth } from '@/lib/auth'
+import { useAuth } from '@/lib/auth/use-auth'
 import type { PropsWithChildren, ReactElement } from 'react'
 
 export interface HasScopeProps {

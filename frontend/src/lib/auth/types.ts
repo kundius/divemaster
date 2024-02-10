@@ -16,3 +16,11 @@ export interface VespUser {
   role?: VespUserRole
   [key: string]: any
 }
+
+export interface AuthContextType {
+  user?: VespUser
+  token?: string
+  hasScope: (scopes: string | string[]) => boolean
+  logout: () => Promise<void>
+  login: (token: string) => Promise<void>
+}

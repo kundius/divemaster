@@ -1,23 +1,14 @@
 'use client'
 
-import { setCookie } from 'cookies-next'
-import { createContext, useContext, useState } from 'react'
+import { deleteCookie, getCookie, setCookie } from 'cookies-next'
+import { useEffect, useState } from 'react'
 import { getApiUrl } from '../utils'
-import { tokenName } from './constants'
 import { getUser } from './actions'
-import { VespUser } from './types'
+import { MAX_AGE, TOKEN_NAME } from './constants'
+import { AuthContext } from './context'
+import { AuthContextType, VespUser } from './types'
 
-interface AuthContextType {
-  user?: VespUser
-  token?: string
-  hasScope: (scopes: string | string[]) => boolean
-  logout: () => Promise<void>
-  login: (token: string) => Promise<void>
-}
-
-const AuthContext = createContext<AuthContextType>(null!)
-
-export function AuthProvider({
+export function AuthClientProvider({
   children,
   initialToken,
   initialUser
@@ -25,18 +16,21 @@ export function AuthProvider({
   const [token, setToken] = useState(initialToken)
   const [user, setUser] = useState(initialUser)
 
-  // useEffect(() => {
-  //   async function load() {
-  //     if (!token) {
-  //       const cookieToken = getCookie(tokenName)
-  //       if (cookieToken) {
-  //         setToken(cookieToken)
-  //         setUser(await getUser(cookieToken))
-  //       }
-  //     }
-  //   }
-  //   load()
-  // }, [])
+  useEffect(() => {
+    async function load() {
+      const _token = getCookie(TOKEN_NAME)
+      if (_token) {
+        const _user = await getUser(_token)
+        if (_user) {
+          setToken(_token)
+          setUser(_user)
+        }
+      }
+    }
+    if (!initialToken) {
+      load()
+    }
+  }, [])
 
   const hasScope: AuthContextType['hasScope'] = (scopes) => {
     if (!user || !user.role || !user.role.scope) {
@@ -63,22 +57,32 @@ export function AuthProvider({
     return check(scopes)
   }
 
-  async function login(token: string) {
-    setToken(token)
-    const maxAge = Number(process.env.NEXT_PUBLIC_JWT_EXPIRE)
-    setCookie(tokenName, token, { path: '/', maxAge })
-    setUser(await getUser(token))
+  async function deactivateToken(_token: string) {
+    await fetch(`${getApiUrl()}security/logout`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${_token}`
+      }
+    })
+  }
+
+  async function login(_token: string) {
+    const _user = await getUser(_token)
+
+    if (_user) {
+      setCookie(TOKEN_NAME, _token, { path: '/', maxAge: MAX_AGE })
+      setToken(_token)
+      setUser(_user)
+    } else {
+      await deactivateToken(_token)
+    }
   }
 
   async function logout() {
     if (token) {
-      await fetch(`${getApiUrl()}security/logout`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
+      await deactivateToken(token)
     }
+    deleteCookie(TOKEN_NAME)
     setToken(undefined)
     setUser(undefined)
   }
@@ -96,8 +100,4 @@ export function AuthProvider({
       {children}
     </AuthContext.Provider>
   )
-}
-
-export function useAuth() {
-  return useContext(AuthContext)
 }

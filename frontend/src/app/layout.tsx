@@ -1,21 +1,18 @@
 import { Toaster } from '@/components/ui/sonner'
-import { AuthProvider } from '@/lib/auth'
-import { getUser } from '@/lib/auth/actions'
-import { tokenName } from '@/lib/auth/constants'
+import { AuthServerProvider } from '@/lib/auth/server-provider'
 import { cn } from '@/lib/utils'
 import '@/styles/globals.css'
 import type { Metadata } from 'next'
 import { Roboto as FontSans, Roboto_Condensed as FontSansAlt } from 'next/font/google'
-import { cookies } from 'next/headers'
 
-export const fontSans = FontSans({
+const fontSans = FontSans({
   weight: ['400', '500', '700'],
   subsets: ['latin', 'cyrillic'],
   style: ['normal', 'italic'],
   variable: '--font-sans'
 })
 
-export const fontSansAlt = FontSansAlt({
+const fontSansAlt = FontSansAlt({
   weight: ['400', '500', '700'],
   subsets: ['latin', 'cyrillic'],
   style: ['normal', 'italic'],
@@ -32,12 +29,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const authToken = cookies().get(tokenName)?.value
-  const authUser = authToken ? await getUser(authToken) : undefined
-  const locale = 'ru'
-
   return (
-    <html lang={locale}>
+    <html lang="ru">
       <body
         className={cn(
           'min-h-screen bg-background font-sans antialiased',
@@ -45,9 +38,7 @@ export default async function RootLayout({
           fontSansAlt.variable
         )}
       >
-        <AuthProvider initialToken={authToken} initialUser={authUser}>
-          {children}
-        </AuthProvider>
+        <AuthServerProvider>{children}</AuthServerProvider>
         <Toaster richColors />
       </body>
     </html>

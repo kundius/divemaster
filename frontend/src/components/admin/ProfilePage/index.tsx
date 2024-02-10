@@ -10,14 +10,13 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useAuth } from '@/lib/auth'
+import { useAuth } from '@/lib/auth/use-auth'
 import { VespUser } from '@/lib/auth/types'
-import { useApiForm } from '@/lib/useApiForm'
+import { useApiForm } from '@/lib/use-api-form'
 import { ArrowPathIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import useTranslation from 'next-translate/useTranslation'
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -39,11 +38,10 @@ type FormResult = {
 }
 
 export function ProfilePage() {
-  const { t } = useTranslation()
   const { user } = useAuth()
 
   const onSuccess = (data: FormResult) => {
-    toast.success(t('messages:success.profile'))
+    toast.success(('messages:success.profile'))
   }
 
   const onError = (e: Error) => {
@@ -80,7 +78,7 @@ export function ProfilePage() {
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('models:user.username')}</FormLabel>
+              <FormLabel>{('models:user.username')}</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -94,7 +92,7 @@ export function ProfilePage() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('models:user.password')}</FormLabel>
+              <FormLabel>{('models:user.password')}</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
               </FormControl>
@@ -108,7 +106,7 @@ export function ProfilePage() {
           name="fullname"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('models:user.fullname')}</FormLabel>
+              <FormLabel>{('models:user.fullname')}</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -122,7 +120,7 @@ export function ProfilePage() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('models:user.email')}</FormLabel>
+              <FormLabel>{('models:user.email')}</FormLabel>
               <FormControl>
                 <Input type="email" {...field} />
               </FormControl>

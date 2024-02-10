@@ -1,6 +1,6 @@
 import { FieldValues, UseFormProps, UseFormReturn, useForm } from 'react-hook-form'
-import { getApiUrl } from './utils'
-import { useAuth } from './auth'
+import { getApiUrl } from '@/lib/utils'
+import { useAuth } from '@/lib/auth/use-auth'
 
 export interface UseApiFormParams<TResult> {
   method?: string
@@ -16,13 +16,15 @@ export function useApiForm<TFieldValues extends FieldValues = FieldValues, TResu
   const { method = 'POST', onSuccess, onError, headers: headersInit, ...formProps } = props
 
   const form = useForm<TFieldValues>(formProps)
-  
+
   const auth = useAuth()
 
   const onSubmit = async (values: TFieldValues) => {
-    const headers = new Headers(headersInit || {
-      'Content-Type': 'application/json'
-    })
+    const headers = new Headers(
+      headersInit || {
+        'Content-Type': 'application/json'
+      }
+    )
 
     if (auth.token) {
       headers.set('Authorization', `Bearer ${auth.token}`)

@@ -1,5 +1,7 @@
 import { Toaster } from '@/components/ui/sonner'
+import { AuthClientProvider } from '@/lib/auth/client-provider'
 import { AuthServerProvider } from '@/lib/auth/server-provider'
+// import { AuthServerProvider } from '@/lib/auth/server-provider'
 import { cn } from '@/lib/utils'
 import '@/styles/globals.css'
 import type { Metadata } from 'next'
@@ -25,7 +27,7 @@ export const metadata: Metadata = {
 }
 
 export default async function RootLayout({
-  children
+  children,
 }: Readonly<{
   children: React.ReactNode
 }>) {

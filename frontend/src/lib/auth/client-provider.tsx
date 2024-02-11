@@ -17,20 +17,21 @@ export function AuthClientProvider({
   const [user, setUser] = useState(initialUser)
 
   useEffect(() => {
-    async function load() {
-      const _token = getCookie(TOKEN_NAME)
-      if (_token) {
-        const _user = await getUser(_token)
-        if (_user) {
-          setToken(_token)
-          setUser(_user)
-        }
-      }
-    }
-    if (!initialToken) {
-      load()
+    if (!(initialToken && initialUser)) {
+      initialLoad()
     }
   }, [])
+
+  async function initialLoad() {
+    const _token = getCookie(TOKEN_NAME)
+    if (_token) {
+      const _user = await getUser(_token)
+      if (_user) {
+        setToken(_token)
+        setUser(_user)
+      }
+    }
+  }
 
   const hasScope: AuthContextType['hasScope'] = (scopes) => {
     if (!user || !user.role || !user.role.scope) {

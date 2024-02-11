@@ -1,7 +1,6 @@
 'use client'
 
-import { useAuth } from "@/lib/auth/use-auth";
-import Image from "next/image";
+import { useAuth } from '@/lib/auth/use-auth'
 
 export default function Page() {
   const auth = useAuth()
@@ -13,7 +12,5 @@ export default function Page() {
         </p>
       </div>
     </main>
-  );
+  )
 }
-
-Page.gggggggggggggggg = 1

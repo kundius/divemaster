@@ -4,8 +4,14 @@ import { AuthClientProvider } from './client-provider'
 import { TOKEN_NAME } from './constants'
 
 export async function AuthServerProvider({ children }: React.PropsWithChildren) {
-  const authToken = cookies().get(TOKEN_NAME)?.value
-  const authUser = authToken ? await getUser(authToken) : undefined
+  let authToken = undefined
+  let authUser = undefined
+
+  // Не загружать пользователя во время сборки, чтобы сохранить статическую генерацию.
+  if (process.env.NEXT_PHASE !== 'phase-production-build') {
+    authToken = cookies().get(TOKEN_NAME)?.value
+    authUser = authToken ? await getUser(authToken) : undefined
+  }
 
   return (
     <AuthClientProvider initialToken={authToken} initialUser={authUser}>

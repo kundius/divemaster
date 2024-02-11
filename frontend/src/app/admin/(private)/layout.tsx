@@ -2,6 +2,8 @@ import { AccessDeniedPage } from '@/components/admin/AccessDeniedPage'
 import { HasScope } from '@/components/HasScope'
 import { PrivateLayout } from '@/components/admin/PrivateLayout'
 
+export const dynamic = 'auto'
+
 export default function Layout({
   children
 }: Readonly<{

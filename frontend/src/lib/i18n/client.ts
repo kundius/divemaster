@@ -1,9 +1,9 @@
 'use client'
 
-import { I18nextProvider, initReactI18next } from 'react-i18next'
 import { Resource, createInstance } from 'i18next'
-import { translationConfig } from './config'
 import { PropsWithChildren, createElement } from 'react'
+import { I18nextProvider, initReactI18next } from 'react-i18next'
+import { translationConfig } from './config'
 
 export function TranslationClientProvider({
   children,
@@ -29,3 +29,5 @@ export function TranslationClientProvider({
 
   return createElement(I18nextProvider, { i18n }, children)
 }
+
+export { initReactI18next }

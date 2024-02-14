@@ -1,9 +1,20 @@
 import { createInstance, i18n } from 'i18next'
 import resourcesToBackend from 'i18next-resources-to-backend'
 import { PropsWithChildren, cache, createElement } from 'react'
-import { initReactI18next } from 'react-i18next'
-import { TranslationClientProvider } from './client'
+import { TranslationClientProvider, initReactI18next } from './client'
 import { translationConfig } from './config'
+
+type TranslationCacheType = () => {
+  locale: string
+  clientNamespaces: string[]
+  i18n: i18n | undefined
+}
+
+const translationCache = cache<TranslationCacheType>(() => ({
+  locale: translationConfig.defaultLocale,
+  clientNamespaces: [],
+  i18n: undefined
+}))
 
 export interface TranslationPageOptions {
   locale?: string
@@ -11,44 +22,15 @@ export interface TranslationPageOptions {
 }
 
 export const translationPage = (options: TranslationPageOptions) => {
+  const state = translationCache()
+
   if (options.locale) {
-    setLocale(options.locale)
+    state.locale = options.locale
   }
+
   if (options.clientNamespaces) {
-    setClientNamespaces(options.clientNamespaces)
+    state.clientNamespaces = options.clientNamespaces
   }
-}
-
-const i18nInstance = cache<() => { current?: i18n }>(() => ({ current: undefined }))
-
-export const getI18nInstance = () => {
-  return i18nInstance().current
-}
-
-export const setI18nInstance = (value: i18n) => {
-  i18nInstance().current = value
-}
-
-const clientNamespaces = cache<() => { current: string[] }>(() => ({ current: [] }))
-
-export const getClientNamespaces = () => {
-  return clientNamespaces().current
-}
-
-export const setClientNamespaces = (value: string[]) => {
-  clientNamespaces().current = value
-}
-
-const i18nLocale = cache<() => { current: string }>(() => ({
-  current: translationConfig.defaultLocale
-}))
-
-const getLocale = () => {
-  return i18nLocale().current
-}
-
-const setLocale = (value: string) => {
-  i18nLocale().current = value
 }
 
 async function init(lng: string, ns?: string[] | string | undefined) {
@@ -73,39 +55,35 @@ async function init(lng: string, ns?: string[] | string | undefined) {
 }
 
 export async function getTranslation(ns?: string[] | string | undefined) {
-  const locale = getLocale()
+  const state = translationCache()
 
-  let i18n: i18n | undefined = getI18nInstance()
-
-  if (!i18n) {
-    i18n = await init(locale, ns)
-    setI18nInstance(i18n)
+  if (!state.i18n) {
+    state.i18n = await init(state.locale, ns)
   }
 
   // Пространства загружаются динамически по мере необходимости
   if (ns) {
-    await i18n.loadNamespaces(ns)
-    await i18n.setDefaultNamespace(Array.isArray(ns) ? ns[0] : ns)
+    await state.i18n.loadNamespaces(ns)
+    await state.i18n.setDefaultNamespace(Array.isArray(ns) ? ns[0] : ns)
   }
 
   return {
-    t: i18n.t
+    t: state.i18n.t
   }
 }
 
 export async function TranslationServerProvider({ children }: PropsWithChildren) {
-  const locale = getLocale()
-  const namespaces = getClientNamespaces()
+  const state = translationCache()
 
-  const i18n = await init(locale, namespaces)
+  const i18n = await init(state.locale, state.clientNamespaces)
 
   return createElement(
     TranslationClientProvider,
     {
-      locale,
-      namespaces,
+      locale: state.locale,
+      namespaces: state.clientNamespaces,
       resources: {
-        [locale]: i18n.services.resourceStore.data[locale]
+        [state.locale]: i18n.services.resourceStore.data[state.locale]
       }
     },
     children

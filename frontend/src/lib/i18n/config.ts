@@ -1,4 +1,4 @@
 export const translationConfig = {
-  locales: ['en', 'ru'],
+  locales: ['ru'],
   defaultLocale: 'ru'
 }

@@ -9,6 +9,8 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
+import Link from 'next/link'
+import { PageHeader } from '../PageHeader'
 // import { getI18n, getScopedI18n } from '@/locales/server'
 
 const invoices = [
@@ -57,26 +59,16 @@ const invoices = [
 ]
 
 export async function ProductsPage() {
-  // const t = await getI18n()
-  // const scopedT = await getScopedI18n('hello')
   return (
     <div>
-    {/* <div>
-      <p>{t('hello')}</p>
- 
-      <p>{t('hello.world')}</p>
-      <p>{scopedT('world')}</p>
- 
-      <p>{t('welcome', { name: 'John' })}</p>
-      <p>{t('welcome', { name: <strong>John</strong> })}</p>
-    </div> */}
-    
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="scroll-m-20 text-4xl font-bold tracking-tight">Товары</h1>
-        <div className="flex items-center gap-3">
-          <Button>Добавить товар</Button>
-        </div>
-      </div>
+      <PageHeader
+        title="Товары"
+        actions={[
+          <Link href="/admin/products/create" key="create">
+            <Button>Добавить товар</Button>
+          </Link>
+        ]}
+      />
 
       <div className="rounded-md border">
         <Table>

@@ -7,7 +7,7 @@ import { Settings } from './Settings'
 import { Notifications } from './Notifications'
 import { NavDrawer } from './NavDrawer'
 
-export function Headline() {
+export function Header() {
   return (
     <div className="flex items-center justify-between px-3 sticky h-16 gap-4 bg-neutral-50/95 backdrop-blur z-50 top-0 lg:px-8 lg:relative">
       <div className="md:w-36 lg:hidden">

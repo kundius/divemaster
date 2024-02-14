@@ -10,8 +10,8 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useAuth } from '@/lib/auth/use-auth'
 import { VespUser } from '@/lib/auth/types'
+import { useAuth } from '@/lib/auth/use-auth'
 import { useApiForm } from '@/lib/use-api-form'
 import { ArrowPathIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -34,7 +34,7 @@ export function ProfilePage() {
   const { user } = useAuth()
 
   const onSuccess = (data: FormResult) => {
-    toast.success('Профиль обновлен')
+    toast.success('Профиль изменен')
   }
 
   const onError = (e: Error) => {

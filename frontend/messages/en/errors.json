@@ -1,9 +1,0 @@
-{
-  "error": "Error",
-  "access_denied": "Access Denied",
-  "http401": "Error 401: Authorization Required",
-  "http403": "Error 403: Access Denied",
-  "http404": "Error 404: Not Found",
-  "http500": "Error 500: Server Error",
-  "http0": "Unknown Error"
-}

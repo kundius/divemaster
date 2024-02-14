@@ -1,10 +1,7 @@
 import { Toaster } from '@/components/ui/sonner'
 import { AuthServerProvider } from '@/lib/auth/server-provider'
-import { translationConfig } from '@/lib/i18n/config'
-import { TranslationServerProvider } from '@/lib/i18n/server'
 import { cn } from '@/lib/utils'
 import '@/styles/globals.css'
-import { dir } from 'i18next'
 import type { Metadata } from 'next'
 import { Roboto as FontSans, Roboto_Condensed as FontSansAlt } from 'next/font/google'
 
@@ -33,7 +30,7 @@ export default async function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang={translationConfig.defaultLocale} dir={dir(translationConfig.defaultLocale)}>
+    <html lang="ru">
       <body
         className={cn(
           'min-h-screen bg-background font-sans antialiased',
@@ -41,9 +38,7 @@ export default async function RootLayout({
           fontSansAlt.variable
         )}
       >
-        <TranslationServerProvider>
-          <AuthServerProvider>{children}</AuthServerProvider>
-        </TranslationServerProvider>
+        <AuthServerProvider>{children}</AuthServerProvider>
         <Toaster richColors />
       </body>
     </html>

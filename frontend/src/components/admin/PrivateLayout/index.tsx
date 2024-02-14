@@ -3,7 +3,7 @@ import { PropsWithChildren } from 'react'
 import styles from './styles.module.scss'
 import { Navigation } from '../Navigation'
 import Link from 'next/link'
-import { Headline } from '../Headline'
+import { Header } from '../Header'
 import { Footer } from '../Footer'
 
 export async function PrivateLayout({ children }: PropsWithChildren) {
@@ -23,7 +23,7 @@ export async function PrivateLayout({ children }: PropsWithChildren) {
             </div>
           </div>
           <div className={styles.body}>
-            <Headline />
+            <Header />
 
             <div className="p-3 lg:p-8 flex-grow">{children}</div>
 

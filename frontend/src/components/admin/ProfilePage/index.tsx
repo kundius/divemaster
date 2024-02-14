@@ -19,15 +19,8 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 const formSchema = z.object({
-  username: z.string().min(2, {
-    message: 'Username must be at least 2 characters.'
-  }),
-  password: z
-    .string()
-    .min(5, {
-      message: 'Password must be at least 6 characters.'
-    })
-    .optional(),
+  username: z.string(),
+  password: z.string().optional(),
   fullname: z.string(),
   email: z.string().email()
 })
@@ -41,7 +34,7 @@ export function ProfilePage() {
   const { user } = useAuth()
 
   const onSuccess = (data: FormResult) => {
-    toast.success(('messages:success.profile'))
+    toast.success('Профиль обновлен')
   }
 
   const onError = (e: Error) => {
@@ -54,7 +47,7 @@ export function ProfilePage() {
     onError,
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: user?.fullname,
+      username: user?.username,
       email: user?.email,
       fullname: user?.fullname
     }
@@ -78,7 +71,7 @@ export function ProfilePage() {
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{('models:user.username')}</FormLabel>
+              <FormLabel>Логин</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -92,7 +85,7 @@ export function ProfilePage() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{('models:user.password')}</FormLabel>
+              <FormLabel>Пароль</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
               </FormControl>
@@ -106,7 +99,7 @@ export function ProfilePage() {
           name="fullname"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{('models:user.fullname')}</FormLabel>
+              <FormLabel>Полное имя</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -120,7 +113,7 @@ export function ProfilePage() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{('models:user.email')}</FormLabel>
+              <FormLabel>E-mail</FormLabel>
               <FormControl>
                 <Input type="email" {...field} />
               </FormControl>

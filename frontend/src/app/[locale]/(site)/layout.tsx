@@ -1,6 +1,4 @@
-// import { server } from
-
-export const dynamic = 'auto'
+// import { AuthClientProvider } from '@/lib/auth/client-provider'
 
 export default function Layout({
   children

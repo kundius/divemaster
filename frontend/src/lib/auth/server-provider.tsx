@@ -2,16 +2,34 @@ import { cookies } from 'next/headers'
 import { getUser } from './actions'
 import { AuthClientProvider } from './client-provider'
 import { TOKEN_NAME } from './constants'
+import { authPreloadEnabled } from './auth-preload'
 
 export async function AuthServerProvider({ children }: React.PropsWithChildren) {
   let authToken = undefined
   let authUser = undefined
 
-  // Не загружать пользователя во время сборки, чтобы сохранить статическую генерацию.
-  if (process.env.NEXT_PHASE !== 'phase-production-build') {
+  // загружать пользователя только если на странице был вызван `enableAuthPreload`
+  if (authPreloadEnabled()) {
     authToken = cookies().get(TOKEN_NAME)?.value
     authUser = authToken ? await getUser(authToken) : undefined
   }
+
+  // let authToken = undefined
+  // let authUser = undefined
+
+  // Из кэша получаем список кэшируемых роутов и текущую страницу
+  // const { __incrementalCache } = globalThis as typeof globalThis & {
+  //   __incrementalCache: IncrementalCache
+  // }
+  // const invokeOutput = __incrementalCache.requestHeaders['x-invoke-output']
+  // const { routes, dynamicRoutes } = __incrementalCache.prerenderManifest
+  // // console.log(__incrementalCache)
+
+  // // Загружаем пользователя только если текущая страница не кэшируется
+  // if (typeof invokeOutput === 'string' && !routes[invokeOutput] && !dynamicRoutes[invokeOutput]) {
+  //   authToken = cookies().get(TOKEN_NAME)?.value
+  //   authUser = authToken ? await getUser(authToken) : undefined
+  // }
 
   return (
     <AuthClientProvider initialToken={authToken} initialUser={authUser}>

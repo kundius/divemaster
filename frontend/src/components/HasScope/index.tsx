@@ -1,10 +1,10 @@
 'use client'
 
 import { useAuth } from '@/lib/auth/use-auth'
-import type { PropsWithChildren, ReactElement } from 'react'
+import type { PropsWithChildren, ReactElement, ReactNode } from 'react'
 
 export interface HasScopeProps {
-  fallback?: ReactElement
+  fallback?: ReactNode
   scopes: string | string[]
 }
 

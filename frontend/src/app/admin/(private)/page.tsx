@@ -2,7 +2,7 @@ import { DashboardPage } from '@/components/admin/DashboardPage'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Dashboard - Divemaster'
+  title: 'Панель управления'
 }
 
 export default function Page() {

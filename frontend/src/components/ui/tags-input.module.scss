@@ -1,0 +1,103 @@
+.react-tagsinput {
+  --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000),
+    var(--tw-shadow);
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+  border-color: hsl(var(--input));
+  border-width: 1px;
+  border-radius: calc(var(--radius) - 2px);
+}
+
+.react-tagsinput > :global(span) {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.react-tagsinput--focused {
+  --tw-ring-color: hsl(var(--ring));
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width)
+    var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width))
+    var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.react-tagsinput-tag {
+  display: inline-block;
+  background-color: hsl(var(--secondary));
+  color: hsl(var(--secondary-foreground));
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1;
+  padding: 6px 32px 6px 12px;
+  border-radius: 16px;
+  position: relative;
+}
+
+.react-tagsinput-remove {
+  cursor: pointer;
+  font-weight: bold;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  background: red;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  right: 1px;
+  top: 1px;
+  background-color: hsl(var(--secondary));
+  color: hsl(var(--secondary-foreground));
+}
+
+.react-tagsinput-remove:hover {
+  background-color: var(--gray200);
+}
+
+.react-tagsinput-tag a::before {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 2px;
+  left: 50%;
+  top: 50%;
+  transform: rotate(-45deg) translate(-50%, -50%);
+  transform-origin: 0 0;
+  background: currentColor;
+}
+
+.react-tagsinput-tag a::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 2px;
+  left: 50%;
+  top: 50%;
+  transform: rotate(45deg) translate(-50%, -50%);
+  transform-origin: 0 0;
+  background: currentColor;
+}
+
+.react-tagsinput-input {
+  background: transparent;
+  border: 0;
+  color: var(--primary-foreground);
+  font-family: sans-serif;
+  font-weight: 400;
+  outline: none;
+  padding: 0 4px;
+  height: 26px;
+  width: 40px;
+  flex-grow: 1;
+  font-size: 0.875rem;
+}

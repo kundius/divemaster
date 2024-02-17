@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
+import { PageHeader, PageHeaderProps } from '../PageHeader'
 
 const invoices = [
   {
@@ -55,15 +56,17 @@ const invoices = [
   }
 ]
 
-export function ClientsPage() {
+const actions: PageHeaderProps['actions'] = [
+  {
+    title: 'Добавить роль',
+    route: '/admin/user-roles/create'
+  }
+]
+
+export function UserRolesPage() {
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="scroll-m-20 text-4xl font-bold tracking-tight">Клиенты</h1>
-        <div className="flex items-center gap-3">
-          <Button>Добавить клинта</Button>
-        </div>
-      </div>
+      <PageHeader title="Доступы" actions={actions} />
 
       <div className="rounded-md border">
         <Table>

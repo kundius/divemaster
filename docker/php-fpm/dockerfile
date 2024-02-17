@@ -34,3 +34,12 @@ RUN if [ "$PHP_XDEBUG" = "1" ]; then \
           && echo "xdebug.idekey=PHPSTORM" >> /usr/local/etc/php/conf.d/xdebug.ini \
           && echo "xdebug.log_level=0" >> /usr/local/etc/php/conf.d/xdebug.ini; \
     fi
+
+ARG UID
+ARG GID
+ENV UID=${UID}
+ENV GID=${GID}
+RUN addgroup --system --gid ${GID} vesp
+RUN adduser --system --gid ${GID} --disabled-password --no-create-home --shell /bin/sh --uid ${UID} vesp
+RUN sed -i "s/user = www-data/user = vesp/g" /usr/local/etc/php-fpm.d/www.conf
+RUN sed -i "s/group = www-data/group = vesp/g" /usr/local/etc/php-fpm.d/www.conf

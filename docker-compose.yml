@@ -37,6 +37,8 @@ services:
         - PHP_VERSION=${PHP_VERSION:-8.3}
         - PHP_XDEBUG=${PHP_XDEBUG:-0}
         - TZ=${TZ:-Europe/Moscow}
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
     volumes:
       - ./.env:/vesp/.env
       - ./core:/vesp/core
@@ -53,6 +55,7 @@ services:
       - TZ=${TZ:-Europe/Moscow}
     restart: unless-stopped
     working_dir: /vesp/core
+    user: vesp
     command: sh -c 'composer install --no-dev && composer db:migrate && cron && php-fpm'
 
   node:

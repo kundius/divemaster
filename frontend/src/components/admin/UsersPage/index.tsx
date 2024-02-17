@@ -9,9 +9,7 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import Link from 'next/link'
-import { PageHeader, PageHeaderProps } from '@/components/admin/PageHeader'
-// import { getI18n, getScopedI18n } from '@/locales/server'
+import { PageHeader, PageHeaderProps } from '../PageHeader'
 
 const invoices = [
   {
@@ -60,15 +58,15 @@ const invoices = [
 
 const actions: PageHeaderProps['actions'] = [
   {
-    title: 'Добавить товар',
-    route: '/admin/products/create'
+    title: 'Добавить пользователя',
+    route: '/admin/users/create'
   }
 ]
 
-export async function ProductsPage() {
+export function UsersPage() {
   return (
     <div>
-      <PageHeader title="Товары" actions={actions} />
+      <PageHeader title="Пользователи" actions={actions} />
 
       <div className="rounded-md border">
         <Table>

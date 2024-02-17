@@ -638,6 +638,21 @@
     "@babel/runtime" "^7.13.10"
     "@radix-ui/react-compose-refs" "1.0.1"
 
+"@radix-ui/react-tabs@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.npmjs.org/@radix-ui/react-tabs/-/react-tabs-1.0.4.tgz"
+  integrity sha512-egZfYY/+wRNCflXNHx+dePvnz9FbmssDTJBtgRfDY7e8SE5oIo3Py2eCB1ckAbh1Q7cQ/6yJZThJ++sgbxibog==
+  dependencies:
+    "@babel/runtime" "^7.13.10"
+    "@radix-ui/primitive" "1.0.1"
+    "@radix-ui/react-context" "1.0.1"
+    "@radix-ui/react-direction" "1.0.1"
+    "@radix-ui/react-id" "1.0.1"
+    "@radix-ui/react-presence" "1.0.1"
+    "@radix-ui/react-primitive" "1.0.3"
+    "@radix-ui/react-roving-focus" "1.0.4"
+    "@radix-ui/react-use-controllable-state" "1.0.1"
+
 "@radix-ui/react-use-callback-ref@1.0.1":
   version "1.0.1"
   resolved "https://registry.npmjs.org/@radix-ui/react-use-callback-ref/-/react-use-callback-ref-1.0.1.tgz"
@@ -767,6 +782,13 @@
   version "18.2.18"
   resolved "https://registry.npmjs.org/@types/react-dom/-/react-dom-18.2.18.tgz"
   integrity sha512-TJxDm6OfAX2KJWJdMEVTwWke5Sc/E/RlnPGvGfS0W7+6ocy2xhDVQVh/KvC2Uf7kACs+gDytdusDSdWfWkaNzw==
+  dependencies:
+    "@types/react" "*"
+
+"@types/react-tagsinput@^3.20.5":
+  version "3.20.5"
+  resolved "https://registry.npmjs.org/@types/react-tagsinput/-/react-tagsinput-3.20.5.tgz"
+  integrity sha512-vVitXaQilBSE8eZgCSWOEio7g2YLfksL263uUGUMCT8fx9yfYj0MUkyuCE96dc5vNwP2X/fqTWBah059+8IyIw==
   dependencies:
     "@types/react" "*"
 
@@ -2929,7 +2951,12 @@ react-style-singleton@^2.2.1:
     invariant "^2.2.4"
     tslib "^2.0.0"
 
-react@*, "react@^16.6.0 || 17 || 18", "react@^16.8 || ^17.0 || ^18.0", "react@^16.8.0 || ^17 || ^18", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.x || ^17.x || ^18.x", react@^18, react@^18.0.0, react@^18.2.0, "react@>= 16", "react@>= 16.8.0", "react@>= 16.8.0 || 17.x.x || ^18.0.0-0", "react@>= 18.0.0", "react@>= 18.2.0", react@>=16.8.0:
+react-tagsinput@^3.20.3:
+  version "3.20.3"
+  resolved "https://registry.npmjs.org/react-tagsinput/-/react-tagsinput-3.20.3.tgz"
+  integrity sha512-a+7nZ9gg0SwuoPPmh2AAB98OXYduwi6WgYWgWlPts3mq1ookXGphq9Fe/XLhQcdunkiqJO4WXjWXtHE9UlFyiw==
+
+react@*, "react@^16.11.0 || ^17.0.0 || ^18.0.0", "react@^16.6.0 || 17 || 18", "react@^16.8 || ^17.0 || ^18.0", "react@^16.8.0 || ^17 || ^18", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.x || ^17.x || ^18.x", react@^18, react@^18.0.0, "react@^18.0.0 || ^17.0.0 || ^16.0.0 || ^15.0.0", react@^18.2.0, "react@>= 16", "react@>= 16.8.0", "react@>= 16.8.0 || 17.x.x || ^18.0.0-0", "react@>= 18.0.0", "react@>= 18.2.0", react@>=16.8.0:
   version "18.2.0"
   resolved "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
   integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==
@@ -3310,6 +3337,14 @@ supports-preserve-symlinks-flag@^1.0.0:
   resolved "https://registry.npmjs.org/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
+swr@^2.2.5:
+  version "2.2.5"
+  resolved "https://registry.npmjs.org/swr/-/swr-2.2.5.tgz"
+  integrity sha512-QtxqyclFeAsxEUeZIYmsaQ0UjimSq1RZ9Un7I68/0ClKK/U3LoyQunwkQfJZr2fc22DfIXLNDc2wFyTEikCUpg==
+  dependencies:
+    client-only "^0.0.1"
+    use-sync-external-store "^1.2.0"
+
 tailwind-merge@^2.2.1:
   version "2.2.1"
   resolved "https://registry.npmjs.org/tailwind-merge/-/tailwind-merge-2.2.1.tgz"
@@ -3532,6 +3567,11 @@ use-sidecar@^1.1.2:
   dependencies:
     detect-node-es "^1.1.0"
     tslib "^2.0.0"
+
+use-sync-external-store@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.npmjs.org/use-sync-external-store/-/use-sync-external-store-1.2.0.tgz"
+  integrity sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==
 
 util-deprecate@^1.0.2:
   version "1.0.2"

@@ -60,15 +60,17 @@ const invoices = [
 
 const actions: PageHeaderProps['actions'] = [
   {
-    title: 'Добавить товар',
-    route: '/admin/products/create'
+    title: 'Добавить категорию',
+    route: '/admin/categories/create'
   }
 ]
 
-export async function ProductsPage() {
+export async function CategoriesPage() {
+  const url = 'admin/categories'
+
   return (
     <div>
-      <PageHeader title="Товары" actions={actions} />
+      <PageHeader title="Категории" actions={actions} />
 
       <div className="rounded-md border">
         <Table>

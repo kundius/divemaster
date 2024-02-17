@@ -1,30 +1,51 @@
 import { FieldValues, UseFormProps, UseFormReturn, useForm } from 'react-hook-form'
 import { getApiUrl } from '@/lib/utils'
 import { useAuth } from '@/lib/auth/use-auth'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
+import { toast } from 'sonner'
 
-export interface UseApiFormParams<TResult> {
+export type UseApiFormReturn<TFieldValues extends FieldValues = FieldValues, TResult = unknown> = [
+  UseFormReturn<TFieldValues>,
+  (values: TFieldValues) => void
+]
+
+export interface UseApiFormProps<TFieldValues extends FieldValues = FieldValues, TResult = unknown>
+  extends UseFormProps<TFieldValues> {
   method?: string
   onSuccess?: (result: TResult) => void
   onError?: (e: Error) => void
   headers?: HeadersInit | undefined
+  schema?: z.Schema
 }
 
-export function useApiForm<TFieldValues extends FieldValues = FieldValues, TResult = any>(
+export function useApiForm<TFieldValues extends FieldValues = FieldValues, TResult = unknown>(
   route: string,
-  props: UseFormProps<TFieldValues> & Partial<UseApiFormParams<TResult>> = {}
-): [UseFormReturn<TFieldValues>, (v: TFieldValues) => void] {
-  const { method = 'POST', onSuccess, onError, headers: headersInit, ...formProps } = props
+  props: UseApiFormProps<TFieldValues, TResult> = {}
+): UseApiFormReturn<TFieldValues, TResult> {
+  const {
+    method = 'POST',
+    onSuccess,
+    onError,
+    headers: headersInit,
+    schema: zodSchema,
+    ...formProps
+  } = props
+
+  if (zodSchema) {
+    formProps.resolver = zodResolver(zodSchema)
+  }
 
   const form = useForm<TFieldValues>(formProps)
-
   const auth = useAuth()
 
   const onSubmit = async (values: TFieldValues) => {
-    const headers = new Headers(
-      headersInit || {
-        'Content-Type': 'application/json'
-      }
-    )
+    const headers = new Headers(headersInit)
+
+    if (!headers.has('Content-Type')) {
+      headers.set('Content-Type', 'application/json')
+    }
 
     if (auth.token) {
       headers.set('Authorization', `Bearer ${auth.token}`)
@@ -37,7 +58,7 @@ export function useApiForm<TFieldValues extends FieldValues = FieldValues, TResu
     })
     const result = await response.json()
 
-    if (response.status === 200) {
+    if (response.ok) {
       onSuccess?.(result as TResult)
     } else {
       let errorMessage = `${response.status} ${response.statusText}`

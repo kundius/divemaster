@@ -1,6 +1,5 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -10,13 +9,15 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { VespUser } from '@/lib/auth/types'
 import { useAuth } from '@/lib/auth/use-auth'
-import { useApiForm } from '@/lib/use-api-form'
-import { ArrowPathIcon } from '@heroicons/react/24/outline'
+import { apiPatch } from '@/lib/utils/server'
+import { withToken } from '@/lib/utils/with-token'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
+import { PageHeader, PageHeaderProps } from '../PageHeader'
 
 const formSchema = z.object({
   username: z.string(),
@@ -26,45 +27,52 @@ const formSchema = z.object({
 })
 
 type FormFields = z.infer<typeof formSchema>
-type FormResult = {
-  user: VespUser
-}
 
 export function ProfilePage() {
-  const { user } = useAuth()
+  const { user, token } = useAuth()
+  const [isLoading, setIsLoading] = useState(false)
 
-  const onSuccess = (data: FormResult) => {
-    toast.success('Профиль изменен')
+  const onSubmit = async (values: FormFields) => {
+    setIsLoading(true)
+
+    try {
+      await apiPatch(
+        'user/profile',
+        withToken(token)({
+          body: JSON.stringify(values)
+        })
+      )
+
+      toast.success(`Сохранено`)
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Unknown error')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  const onError = (e: Error) => {
-    toast.error(e.message)
-  }
-
-  const [form, onSubmit] = useApiForm<FormFields, FormResult>('user/profile', {
-    method: 'PATCH',
-    onSuccess,
-    onError,
+  const form = useForm<FormFields>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: user?.username,
       email: user?.email,
-      fullname: user?.fullname
+      fullname: user?.fullname,
+      password: ''
     }
   })
+
+  const actions: PageHeaderProps['actions'] = [
+    {
+      title: 'Сохранить',
+      loading: isLoading,
+      type: 'submit'
+    }
+  ]
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="scroll-m-20 text-4xl font-bold tracking-tight">Профиль</h1>
-          <div className="flex items-center gap-3">
-            <Button type="submit" disabled={form.formState.isLoading}>
-              {form.formState.isLoading && <ArrowPathIcon className="mr-2 h-4 w-4 animate-spin" />}
-              Сохранить
-            </Button>
-          </div>
-        </div>
+        <PageHeader title="Профиль" actions={actions} />
 
         <FormField
           control={form.control}

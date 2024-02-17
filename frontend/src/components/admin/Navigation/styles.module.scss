@@ -1,4 +1,4 @@
-.wrapper {
+.navigation {
 }
 
 .light {
@@ -13,7 +13,7 @@
   margin-top: 40px;
 }
 
-.title {
+.groupTitle {
   color: var(--neutral200);
   font-size: 18px;
   margin-bottom: 16px;
@@ -50,17 +50,17 @@
   }
 }
 
-.list {
+.firstMenu {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.item + .item {
-  margin-top: 8px;
+.firstItem + .firstItem {
+  margin-top: 12px;
 }
 
-.link {
+.firstLink {
   text-decoration: none;
   font-size: 18px;
   color: var(--neutral200);
@@ -80,20 +80,68 @@
   }
 }
 
-.linkActive {
+.firstLinkActive {
   background: linear-gradient(53deg, rgb(73, 87, 254) 0%, rgb(123, 66, 255) 100%);
   box-shadow: 0px 0px 6.86px 0.14px rgba(0, 29, 47, 0.3);
   color: var(--white);
 }
 
-.link:hover {
+.firstLink:hover {
   background: var(--neutral200);
   color: var(--neutral700);
 }
 
-.linkIcon {
+.firstIcon {
   width: 24px;
   height: 24px;
   align-self: flex-start;
   flex-shrink: 0;
+}
+
+.secondMenu {
+  padding: 16px 0 20px 48px;
+  margin: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  display: none;
+}
+
+.secondMenuOpened {
+  display: flex;
+}
+
+.secondItem {
+  position: relative;
+}
+
+.secondLink {
+  color: var(--neutral200);
+  font-size: 16px;
+  font-weight: 400;
+  font-family: var(--font-sans-alt);
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.secondLink:hover {
+  color: var(--white);
+}
+
+.secondLinkActive {
+  color: var(--white);
+}
+
+.secondLinkActive::before {
+  content: '';
+  position: absolute;
+  left: -20px;
+  top: 5px;
+  border-radius: 2px;
+  width: 5px;
+  height: 5px;
+  background: currentColor;
 }

@@ -12,9 +12,13 @@ import {
 import { Input } from '@/components/ui/input'
 import { useAuth } from '@/lib/auth/use-auth'
 import { useApiForm } from '@/lib/use-api-form'
+import { apiPost } from '@/lib/utils/server'
+import { withToken } from '@/lib/utils/with-token'
 import { ArrowPathIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
@@ -35,21 +39,47 @@ type FormResult = {
 export function LoginPage() {
   const router = useRouter()
   const auth = useAuth()
+  const [isLoading, setIsLoading] = useState(false)
 
-  const onSuccess = (data: FormResult) => {
-    toast.success('success.login')
-    auth.login(data.token)
-    router.push('/admin')
+  // const onSuccess = (data: FormResult) => {
+  //   toast.success('success.login')
+  //   auth.login(data.token)
+  //   router.push('/admin')
+  // }
+
+  // const onError = (e: Error) => {
+  //   toast.error(e.message)
+  // }
+
+  // const [_, __] = useApiForm<FormFields, FormResult>('security/login', {
+  //   method: 'POST',
+  //   onSuccess,
+  //   onError,
+  //   resolver: zodResolver(formSchema),
+  //   defaultValues: {
+  //     username: '',
+  //     password: ''
+  //   }
+  // })
+
+  const onSubmit = async (values: FormFields) => {
+    setIsLoading(true)
+
+    try {
+      const data = await apiPost<FormResult>('security/login', {
+        body: JSON.stringify(values)
+      })
+      toast.success('Добро пожаловать!')
+      auth.login(data.token)
+      router.push('/admin')
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Unknown error')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  const onError = (e: Error) => {
-    toast.error(e.message)
-  }
-
-  const [form, onSubmit] = useApiForm<FormFields, FormResult>('security/login', {
-    method: 'POST',
-    onSuccess,
-    onError,
+  const form = useForm<FormFields>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: '',
@@ -92,8 +122,7 @@ export function LoginPage() {
           />
 
           <div className="flex justify-between items-center">
-            <Button type="submit" disabled={form.formState.isLoading}>
-              {form.formState.isLoading && <ArrowPathIcon className="mr-2 h-4 w-4 animate-spin" />}
+            <Button type="submit" loading={isLoading}>
               Войти
             </Button>
             <Button variant="link" type="button">

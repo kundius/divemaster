@@ -11,10 +11,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { useAuth } from '@/lib/auth/use-auth'
-import { useApiForm } from '@/lib/use-api-form'
-import { apiPost } from '@/lib/utils/server'
-import { withToken } from '@/lib/utils/with-token'
-import { ArrowPathIcon } from '@heroicons/react/24/outline'
+import { apiPost } from '@/lib/api'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -41,34 +38,11 @@ export function LoginPage() {
   const auth = useAuth()
   const [isLoading, setIsLoading] = useState(false)
 
-  // const onSuccess = (data: FormResult) => {
-  //   toast.success('success.login')
-  //   auth.login(data.token)
-  //   router.push('/admin')
-  // }
-
-  // const onError = (e: Error) => {
-  //   toast.error(e.message)
-  // }
-
-  // const [_, __] = useApiForm<FormFields, FormResult>('security/login', {
-  //   method: 'POST',
-  //   onSuccess,
-  //   onError,
-  //   resolver: zodResolver(formSchema),
-  //   defaultValues: {
-  //     username: '',
-  //     password: ''
-  //   }
-  // })
-
   const onSubmit = async (values: FormFields) => {
     setIsLoading(true)
 
     try {
-      const data = await apiPost<FormResult>('security/login', {
-        body: JSON.stringify(values)
-      })
+      const data = await apiPost<FormResult>('security/login', values)
       toast.success('Добро пожаловать!')
       auth.login(data.token)
       router.push('/admin')

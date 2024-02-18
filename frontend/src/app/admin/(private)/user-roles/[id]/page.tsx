@@ -4,30 +4,18 @@ import {
   UserRoleFormFields,
   UserRoleFormSchema
 } from '@/components/admin/UserRoleForm'
-import { apiGet, apiPatch } from '@/lib/utils/server'
-import { withAuth } from '@/lib/utils/with-auth'
+import { apiGet } from '@/lib/api'
+import { withAuth } from '@/lib/api/with-auth'
 import type { VespUserRole } from '@/types'
 import type { Metadata } from 'next'
+import { update } from '../actions'
 
 export const metadata: Metadata = {
   title: 'Изменить роль'
 }
 
 export default async function Page({ params }: { params: { id: number } }) {
-  const apiRoute = `admin/user-roles/${params.id}`
-
-  const data = await apiGet<VespUserRole>(apiRoute, withAuth())
-
-  async function update(values: UserRoleFormFields) {
-    'use server'
-
-    return apiPatch<VespUserRole>(
-      apiRoute,
-      withAuth({
-        body: JSON.stringify(values)
-      })
-    )
-  }
+  const data = await apiGet<VespUserRole>(`admin/user-roles/${params.id}`, {}, withAuth())
 
   return (
     <FormPage<UserRoleFormFields>

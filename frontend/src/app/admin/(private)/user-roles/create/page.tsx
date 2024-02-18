@@ -4,27 +4,14 @@ import {
   UserRoleFormFields,
   UserRoleFormSchema
 } from '@/components/admin/UserRoleForm'
-import { apiPut } from '@/lib/utils/server'
-import { withAuth } from '@/lib/utils/with-auth'
-import { VespUserRole } from '@/types'
 import type { Metadata } from 'next'
+import { create } from '../actions'
 
 export const metadata: Metadata = {
   title: 'Добавить роль'
 }
 
 export default function Page() {
-  async function create(values: UserRoleFormFields) {
-    'use server'
-
-    return apiPut<VespUserRole>(
-      `admin/user-roles`,
-      withAuth({
-        body: JSON.stringify(values)
-      })
-    )
-  }
-
   return (
     <FormPage<UserRoleFormFields>
       action={create}

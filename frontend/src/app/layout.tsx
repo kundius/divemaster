@@ -1,4 +1,5 @@
 import { Toaster } from '@/components/ui/sonner'
+import QueryProvider from '@/lib/api/query-provider'
 import { AuthServerProvider } from '@/lib/auth/server-provider'
 import { cn } from '@/lib/utils'
 import '@/styles/globals.css'
@@ -38,7 +39,9 @@ export default async function RootLayout({
           fontSansAlt.variable
         )}
       >
-        <AuthServerProvider>{children}</AuthServerProvider>
+        <QueryProvider>
+          <AuthServerProvider>{children}</AuthServerProvider>
+        </QueryProvider>
         <Toaster richColors />
       </body>
     </html>

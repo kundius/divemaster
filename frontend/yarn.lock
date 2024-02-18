@@ -733,6 +733,35 @@
   dependencies:
     tslib "^2.4.0"
 
+"@tanstack/query-core@5.21.4":
+  version "5.21.4"
+  resolved "https://registry.npmjs.org/@tanstack/query-core/-/query-core-5.21.4.tgz"
+  integrity sha512-k3u4RcDAtcCurs8KVEIf52k4yUayc852v4ZQrtI8pkEii71riM9758A2WVGo5T/v4/X7b1RLON5g0aDvkoZYCA==
+
+"@tanstack/query-devtools@5.21.5":
+  version "5.21.5"
+  resolved "https://registry.npmjs.org/@tanstack/query-devtools/-/query-devtools-5.21.5.tgz"
+  integrity sha512-A7rVpVP1GRcQBnB/GzXZfVhxmoP17J1f+RoYRu+DOV8Jp4QPIJRE/nFueEiiRPSVL7aNcNw4rTm0RmJZRI2fUA==
+
+"@tanstack/react-query-devtools@^5.21.5":
+  version "5.21.5"
+  resolved "https://registry.npmjs.org/@tanstack/react-query-devtools/-/react-query-devtools-5.21.5.tgz"
+  integrity sha512-JAowcZzamveCuNJkoyhc+dJG7G0VnJLx/X0gngFs/ml5lAxMl7qUrSt62Y2xqq7mrdBErweuymB6u263zINgtQ==
+  dependencies:
+    "@tanstack/query-devtools" "5.21.5"
+
+"@tanstack/react-query-next-experimental@^5.21.4":
+  version "5.21.4"
+  resolved "https://registry.npmjs.org/@tanstack/react-query-next-experimental/-/react-query-next-experimental-5.21.4.tgz"
+  integrity sha512-TvAqn9WInE6YYjrE5rq/emx99CVZqgAWdsB5CfFIyPy94Myeqkerq47lP25t2RRBHWCrd/3Lki2lJSlWjeZw5w==
+
+"@tanstack/react-query@^5.21.2", "@tanstack/react-query@^5.21.4":
+  version "5.21.4"
+  resolved "https://registry.npmjs.org/@tanstack/react-query/-/react-query-5.21.4.tgz"
+  integrity sha512-tzl4mGerfPKmJsPDWbfKol0eBEk8bsgtMZJOwnbUvvSRnYZzS9OfX9CD/dbQLr+JjIvSekWKaDBTo3oXeeFhoQ==
+  dependencies:
+    "@tanstack/query-core" "5.21.4"
+
 "@types/cookie@^0.6.0":
   version "0.6.0"
   resolved "https://registry.npmjs.org/@types/cookie/-/cookie-0.6.0.tgz"
@@ -2576,7 +2605,7 @@ next-translation@^1.0.3:
     next-impl-getters "0.3.1"
     object-path "0.11.8"
 
-next@*, "next@^10.0.0 || ^11.0.0 || ^12.0.0 || ^13.0.0 || ^14.0.0", "next@>= 13.2.5", "next@>= 14.0.0", next@14.1.0:
+next@*, "next@^10.0.0 || ^11.0.0 || ^12.0.0 || ^13.0.0 || ^14.0.0", "next@^13 || ^14", "next@>= 13.2.5", "next@>= 14.0.0", next@14.1.0:
   version "14.1.0"
   resolved "https://registry.npmjs.org/next/-/next-14.1.0.tgz"
   integrity sha512-wlzrsbfeSU48YQBjZhDzOwhWhGsy+uQycR8bHAOt1LY1bn3zZEcDyHQOEoN3aWzQ8LHCAJ1nqrWCc9XF2+O45Q==

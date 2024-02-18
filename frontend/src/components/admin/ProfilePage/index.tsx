@@ -10,8 +10,8 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { useAuth } from '@/lib/auth/use-auth'
-import { apiPatch } from '@/lib/utils/server'
-import { withToken } from '@/lib/utils/with-token'
+import { apiPatch } from '@/lib/api'
+import { withToken } from '@/lib/api/with-token'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -36,12 +36,7 @@ export function ProfilePage() {
     setIsLoading(true)
 
     try {
-      await apiPatch(
-        'user/profile',
-        withToken(token)({
-          body: JSON.stringify(values)
-        })
-      )
+      await apiPatch('user/profile', values, withToken(token)())
 
       toast.success(`Сохранено`)
     } catch (e) {

@@ -5,3 +5,11 @@ export interface VespUserRole {
   created_at: string
   id: number
 }
+
+export type PageProps<
+  TParams = {},
+  TSearchParams = { [key: string]: string | string[] | undefined }
+> = {
+  params: TParams
+  searchParams: TSearchParams
+}

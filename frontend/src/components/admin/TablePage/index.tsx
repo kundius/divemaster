@@ -38,6 +38,8 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon
 } from '@heroicons/react/24/outline'
+import { changeSearchParams, patamsFromSearchParams } from './utils'
+import { TablePageData, TablePageProps, TablePageParams } from './types'
 
 const actions: PageHeaderProps['actions'] = [
   {
@@ -46,75 +48,32 @@ const actions: PageHeaderProps['actions'] = [
   }
 ]
 
-export interface TablePageProps<TRow> {
-  action: (values?: TablePageFields) => Promise<TablePageData<TRow>>
-  initialData?: TablePageData<TRow>
-  defaultFields: TablePageFields
-  idKey: keyof TRow
-}
-
-export interface TablePageData<TRow> {
-  rows: TRow[]
-  total: number
-}
-
-export interface TablePageFields {
-  limit: number
-  page: number
-}
-
 export function TablePage<TRow = unknown>({
   action,
   initialData,
-  defaultFields,
-  idKey
+  idKey,
+  title,
+  sectionPath
 }: TablePageProps<TRow>) {
   const pathname = usePathname()
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const fields = useMemo<TablePageFields>(() => {
-    const output: TablePageFields = { ...defaultFields }
+  const params = useMemo<TablePageParams>(
+    () => patamsFromSearchParams(searchParams),
+    [searchParams]
+  )
 
-    if (searchParams.has('page')) {
-      output.page = Number(searchParams.get('page'))
-    }
-
-    if (searchParams.has('limit')) {
-      output.limit = Number(searchParams.get('limit'))
-    }
-
-    return output
-  }, [defaultFields, searchParams])
-
-  // console.log('initialFields', initialFields)
-
-  const changeState = useCallback(
-    (values: Partial<TablePageFields>) => {
-      const params = new URLSearchParams(searchParams.toString())
-
-      for (const fieldName of Object.keys(values)) {
-        let value = values[fieldName as keyof typeof values]
-        let defaultValue = defaultFields[fieldName as keyof typeof defaultFields]
-        console.log('value', value)
-        console.log('defaultValue', defaultValue)
-        if (value === defaultValue) {
-          params.delete(fieldName)
-        } else {
-          params.set(fieldName, String(value))
-        }
-      }
-
-      window.history.pushState(null, '', `?${params.toString()}`)
-    },
-    [defaultFields, searchParams]
+  const changeParams = useCallback(
+    (values: Partial<TablePageParams>) => changeSearchParams(searchParams, values),
+    [searchParams]
   )
 
   const { data, isPending, error } = useQuery<TablePageData<TRow>>({
     initialData,
     // placeholderData: (data) => data,
-    queryKey: [pathname, ...Object.entries(fields).map((e) => e.join(':'))],
-    queryFn: () => action(fields)
+    queryKey: [pathname, ...Object.entries(params).map((e) => e.join(':'))],
+    queryFn: () => action(params)
   })
 
   // if (isPending) return 'Loading...'
@@ -122,43 +81,51 @@ export function TablePage<TRow = unknown>({
   if (error) return 'An error has occurred: ' + error.message
 
   const setPageSize = (limit: number) => {
-    changeState({
+    changeParams({
       page: 1,
       limit
     })
   }
 
   const setPageIndex = (page: number) => {
-    changeState({ page })
+    changeParams({ page })
   }
 
   const getPageCount = () => {
-    return Math.ceil((data?.total || 0) / fields.limit)
+    return Math.ceil((data?.total || 0) / params.limit)
   }
 
   const previousPage = () => {
-    setPageIndex(fields.page - 1)
+    setPageIndex(params.page - 1)
   }
 
   const getCanPreviousPage = () => {
-    return fields.page > 1
+    return params.page > 1
   }
 
   const nextPage = () => {
-    setPageIndex(fields.page + 1)
+    setPageIndex(params.page + 1)
   }
 
   const getCanNextPage = () => {
-    return getPageCount() > fields.page
+    return getPageCount() > params.page
   }
 
   return (
     <div>
-      <PageHeader title="Доступы" actions={actions} />
+      <PageHeader
+        title={title}
+        actions={[
+          {
+            title: 'Добавить',
+            route: `${sectionPath}/create`
+          }
+        ]}
+      />
 
       <div className="space-y-4">
         <div>
-          {data?.total} - {fields.page}
+          {data?.total} - {params.page}
         </div>
 
         <div className="rounded-md border">
@@ -193,11 +160,11 @@ export function TablePage<TRow = unknown>({
             <div className="flex items-center space-x-2">
               <p className="text-sm font-medium">На странице</p>
               <Select
-                value={`${fields.limit}`}
+                value={`${params.limit}`}
                 onValueChange={(value) => setPageSize(Number(value))}
               >
                 <SelectTrigger className="h-8 w-[70px]">
-                  <SelectValue placeholder={fields.limit} />
+                  <SelectValue placeholder={params.limit} />
                 </SelectTrigger>
                 <SelectContent side="top">
                   {[2, 10, 20, 30, 40, 50].map((pageSize) => (
@@ -209,7 +176,7 @@ export function TablePage<TRow = unknown>({
               </Select>
             </div>
             <div className="flex whitespace-nowrap items-center justify-center text-sm font-medium">
-              Страница {fields.page} из {getPageCount()}
+              Страница {params.page} из {getPageCount()}
             </div>
             <div className="flex items-center space-x-2">
               <Button

@@ -1,4 +1,5 @@
-import { TablePage, TablePageFields } from '@/components/admin/TablePage'
+import { TablePage } from '@/components/admin/TablePage'
+import { formatTags, paramsFromObject } from '@/components/admin/TablePage/utils'
 import { PageProps, VespUserRole } from '@/types'
 import type { Metadata } from 'next'
 import { list } from './actions'
@@ -8,24 +9,19 @@ export const metadata: Metadata = {
 }
 
 export default async function Page(props: PageProps) {
-  const defaultFields: TablePageFields = {
-    limit: 2,
-    page: 1
-  }
-  const fields: TablePageFields = { ...defaultFields }
-  if ('limit' in props.searchParams) {
-    fields.limit = Number(props.searchParams.limit)
-  }
-  if ('page' in props.searchParams) {
-    fields.page = Number(props.searchParams.page)
-  }
-  const initialData = await list(fields)
+  const initialData = await list(paramsFromObject(props.searchParams))
   return (
     <TablePage<VespUserRole>
+      title={`${metadata.title}`}
+      sectionPath="/admin/user-roles"
       idKey="id"
       action={list}
       initialData={initialData}
-      defaultFields={defaultFields}
+      columns={[
+        { key: 'id', label: 'ID', sortable: true },
+        { key: 'title', label: 'Название', sortable: true },
+        { key: 'scope', label: 'Разрешения', formatter: formatTags }
+      ]}
     />
   )
 }

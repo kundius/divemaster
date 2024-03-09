@@ -1,27 +1,30 @@
-import { TablePage } from '@/components/admin/TablePage'
-import { formatTags, paramsFromObject } from '@/components/admin/TablePage/utils'
+import { PageHeader, PageHeaderProps } from '@/components/admin/PageHeader'
+import { UserRolesTable } from '@/components/admin/UserRolesTable'
+import { VespTable } from '@/components/admin/VespTable'
+import { parseParams } from '@/components/admin/VespTable/utils'
+import { Button } from '@/components/ui/button'
 import { PageProps, VespUserRole } from '@/types'
 import type { Metadata } from 'next'
-import { list } from './actions'
+import Link from 'next/link'
+import { many } from './actions'
 
 export const metadata: Metadata = {
-  title: 'Доступы'
+  title: 'Роли пользователей'
 }
 
 export default async function Page(props: PageProps) {
-  const initialData = await list(paramsFromObject(props.searchParams))
+  const initialData = await many(parseParams(props.searchParams))
+
+  const actions: PageHeaderProps['actions'] = [
+    <Link href="/admin/user-roles/create" key="create">
+      <Button>Добавить роль</Button>
+    </Link>
+  ]
+
   return (
-    <TablePage<VespUserRole>
-      title={`${metadata.title}`}
-      sectionPath="/admin/user-roles"
-      idKey="id"
-      action={list}
-      initialData={initialData}
-      columns={[
-        { key: 'id', label: 'ID', sortable: true },
-        { key: 'title', label: 'Название', sortable: true },
-        { key: 'scope', label: 'Разрешения', formatter: formatTags }
-      ]}
-    />
+    <VespTable<VespUserRole> action={many} initialData={initialData}>
+      <PageHeader title={`${metadata.title}`} actions={actions} />
+      <UserRolesTable />
+    </VespTable>
   )
 }

@@ -1,32 +1,37 @@
 import { Button, ButtonProps } from '@/components/ui/button'
 import Link from 'next/link'
+import { ReactNode } from 'react'
 
-type ActionType = Omit<ButtonProps, 'title'> & {
+type ActionTypeObj = Omit<ButtonProps, 'title'> & {
   title: string
   route?: string
 }
+
+type ActionType = ActionTypeObj | ReactNode
 
 export interface PageHeaderProps {
   title: string
   actions?: ActionType[]
 }
 
-const renderAction = ({ title, route, ...props }: ActionType, i: number) => {
-  const button = (
-    <Button {...props} key={i}>
-      {title}
-    </Button>
-  )
-
-  if (route) {
-    return (
-      <Link href={route} key={i}>
-        {button}
-      </Link>
+const renderAction = (action: ActionType, i: number) => {
+  if (typeof action === 'object' && !!action && 'title' in action) {
+    const { title, route, ...props } = action
+    const button = (
+      <Button {...props} key={i}>
+        {title}
+      </Button>
     )
+    if (route) {
+      return (
+        <Link href={route} key={i}>
+          {button}
+        </Link>
+      )
+    }
+    return button
   }
-
-  return button
+  return action
 }
 
 export function PageHeader({ title, actions }: PageHeaderProps) {

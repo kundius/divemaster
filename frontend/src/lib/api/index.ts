@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { getApiUrl } from '../utils'
 
-async function api<TResult = unknown>(route: string, init?: RequestInit): Promise<TResult> {
+export async function api<TResult = unknown>(route: string, init?: RequestInit): Promise<TResult> {
   const headers = new Headers(init?.headers)
 
   if (!headers.has('Content-Type')) {
@@ -33,6 +33,12 @@ export const apiGet = <TResult = unknown>(route: string, params = {}, init?: Req
   api<TResult>(`${route}?${new URLSearchParams(params)}`, {
     ...init,
     method: 'GET'
+  })
+
+export const apiDelete = <TResult = unknown>(route: string, params = {}, init?: RequestInit) =>
+  api<TResult>(`${route}?${new URLSearchParams(params)}`, {
+    ...init,
+    method: 'DELETE'
   })
 
 export const apiPost = <TResult = unknown>(route: string, params = {}, init?: RequestInit) =>

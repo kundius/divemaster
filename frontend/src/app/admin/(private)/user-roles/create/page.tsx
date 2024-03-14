@@ -5,10 +5,9 @@ import {
   UserRoleFormSchema
 } from '@/components/admin/UserRoleForm'
 import { VespForm } from '@/components/admin/VespForm'
-import type { Metadata } from 'next'
-import { create } from '../actions'
 import { VespFormSubmit } from '@/components/admin/VespFormSubmit'
 import { Button } from '@/components/ui/button'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
@@ -27,9 +26,14 @@ export default function Page() {
     </Link>,
     <VespFormSubmit key="submit">Сохранить</VespFormSubmit>
   ]
-  
+
   return (
-    <VespForm<UserRoleFormFields> action={create} schema={UserRoleFormSchema} defaultValues={data}>
+    <VespForm<UserRoleFormFields>
+      url="admin/user-roles"
+      method="PUT"
+      schema={UserRoleFormSchema}
+      defaultValues={data}
+    >
       <PageHeader title={`${metadata.title}`} actions={actions} />
       <UserRoleForm />
     </VespForm>

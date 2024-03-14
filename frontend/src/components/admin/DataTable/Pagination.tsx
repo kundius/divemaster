@@ -14,13 +14,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon
 } from '@heroicons/react/24/outline'
-
-export interface PaginationProps {
-  limit: number
-  page: number
-  total: number
-  onChange?: (page: number, limit: number) => void
-}
+import type { PaginationProps } from './types'
 
 export function Pagination(props: PaginationProps) {
   const { limit, page, total, onChange } = props
@@ -70,8 +64,11 @@ export function Pagination(props: PaginationProps) {
           </SelectContent>
         </Select>
       </div>
-      <div className="whitespace-nowrap items-center justify-center text-sm font-medium hidden md:block">
-        Страница {page} из {getPageCount()}
+      <div className="flex items-center justify-center text-sm font-medium">
+        <span className="hidden sm:block mr-1">Страница</span>
+        <span className="whitespace-nowrap">
+          {page} из {getPageCount()}
+        </span>
       </div>
       <div className="flex items-center gap-2">
         <Button

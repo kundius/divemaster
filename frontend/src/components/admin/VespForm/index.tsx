@@ -1,25 +1,31 @@
 'use client'
 
 import { Form } from '@/components/ui/form'
+import { api } from '@/lib/api'
+import { withToken } from '@/lib/api/with-token'
+import { useAuth } from '@/lib/auth/use-auth'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { usePathname, useRouter } from 'next/navigation'
 import { PropsWithChildren } from 'react'
-import { FieldValues, UseFormProps, useForm } from 'react-hook-form'
+import { DefaultValues, FieldValues, UseFormProps, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
-interface VespFormProps<TFieldValues extends FieldValues = FieldValues, TResult = unknown>
-  extends UseFormProps<TFieldValues> {
-  action: (values: TFieldValues) => Promise<TResult>
+interface VespFormProps<TFieldValues extends FieldValues = FieldValues> {
+  url: string
+  method: string
   schema: z.Schema
+  defaultValues?: DefaultValues<TFieldValues>
 }
 
 export function VespForm<TFieldValues extends FieldValues = FieldValues, TResult = unknown>({
   defaultValues,
   children,
   schema,
-  action
-}: PropsWithChildren<VespFormProps<TFieldValues, TResult>>) {
+  url,
+  method
+}: PropsWithChildren<VespFormProps<TFieldValues>>) {
+  const auth = useAuth()
   const router = useRouter()
   const pathname = usePathname()
 
@@ -30,7 +36,11 @@ export function VespForm<TFieldValues extends FieldValues = FieldValues, TResult
 
   const onSubmit = async (values: TFieldValues) => {
     try {
-      const data = await action(values)
+      const data = await api<TResult>(url, {
+        ...withToken(auth.token)(),
+        method,
+        body: JSON.stringify(values)
+      })
 
       toast.success(`Сохранено`)
 

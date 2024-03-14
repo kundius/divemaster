@@ -17,6 +17,12 @@ class UserRoles extends ModelController
             $c->where('title', 'LIKE', "%$query%");
         }
 
+        if ($scopes = $this->getProperty('scope')) {
+            foreach (explode(',', $scopes) as $scope) {
+                $c->where('scope', 'LIKE', '%"' . $scope . '"%');
+            }
+        }
+
         return $c;
     }
 

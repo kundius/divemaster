@@ -3,60 +3,150 @@
 import { useQuery } from '@tanstack/react-query'
 import { useSearchParams } from 'next/navigation'
 import { PropsWithChildren, createContext, useCallback, useContext, useMemo } from 'react'
-import { parseParams, pushParams } from './utils'
-
-export interface VespTableData<TRow> {
-  rows: TRow[]
-  total: number
-}
-
-export interface VespTableParams {
-  limit: number
-  page: number
-  filter?: {
-    [key: string]: string
-  }
-  sort?: string
-  dir?: string
-}
-
-interface VespTableProps<TRow> {
-  action: (values?: VespTableParams) => Promise<VespTableData<TRow>>
-  initialData?: VespTableData<TRow>
-}
-
-interface VespTableContext<TRow> {
-  data: VespTableData<TRow>
-  params: VespTableParams
-  changeParams: (values: Partial<VespTableParams>) => void
-}
+import { DEFAULT_LIMIT } from './constants'
+import type { VespTableContext, VespTableData, VespTableProps } from './types'
+import { withToken } from '@/lib/api/with-token'
+import { useAuth } from '@/lib/auth/use-auth'
+import { apiGet } from '@/lib/api'
 
 const VespTableContext = createContext<VespTableContext<unknown>>(null!)
 
 export function VespTable<TRow = unknown>({
   children,
-  action,
+  url,
   initialData
 }: PropsWithChildren<VespTableProps<TRow>>) {
+  const auth = useAuth()
   const searchParams = useSearchParams()
 
-  const params = useMemo<VespTableParams>(() => parseParams(searchParams), [searchParams])
+  const { filter, limit, page, dir, sort } = useMemo(() => {
+    const output: Pick<VespTableContext<TRow>, 'page' | 'limit' | 'sort' | 'dir' | 'filter'> = {
+      limit: DEFAULT_LIMIT,
+      page: 1
+    }
 
-  const changeParams = useCallback(
-    (values: Partial<VespTableParams>) => pushParams(searchParams, values),
+    if (searchParams.has('page')) {
+      output.page = Number(searchParams.get('page'))
+    }
+
+    if (searchParams.has('limit')) {
+      output.limit = Number(searchParams.get('limit'))
+    }
+
+    if (searchParams.has('sort')) {
+      output.sort = String(searchParams.get('sort'))
+    }
+
+    if (searchParams.has('dir')) {
+      output.dir = String(searchParams.get('dir'))
+    }
+
+    const entries = Array.from(searchParams.entries())
+    entries.forEach(([key, value]) => {
+      if (['limit', 'page', 'sort', 'dir'].includes(key)) return
+
+      if (!output.filter) output.filter = {}
+
+      const exist = output.filter[key]
+      if (typeof exist === 'undefined') {
+        output.filter[key] = value
+      } else if (typeof exist === 'string') {
+        output.filter[key] = [exist, value]
+      } else {
+        output.filter[key] = [...exist, value]
+      }
+    })
+
+    return output
+  }, [searchParams])
+
+  const onChangePagination = useCallback<VespTableContext<TRow>['onChangePagination']>(
+    (page, limit) => {
+      const params = new URLSearchParams(searchParams.toString())
+
+      if (page === 1) {
+        params.delete('page')
+      } else {
+        params.set('page', String(page))
+      }
+
+      if (limit === DEFAULT_LIMIT) {
+        params.delete('limit')
+      } else {
+        params.set('limit', String(limit))
+      }
+
+      window.history.pushState(null, '', `?${params.toString()}`)
+    },
     [searchParams]
   )
 
-  const { data, isPending, error } = useQuery<VespTableData<TRow>>({
+  const onChangeSorting = useCallback<VespTableContext<TRow>['onChangeSorting']>(
+    (sort, dir) => {
+      const params = new URLSearchParams(searchParams.toString())
+
+      if (typeof sort === 'undefined') {
+        params.delete('sort')
+      } else {
+        params.set('sort', String(sort))
+      }
+
+      if (typeof dir === 'undefined') {
+        params.delete('dir')
+      } else {
+        params.set('dir', String(dir))
+      }
+
+      window.history.pushState(null, '', `?${params.toString()}`)
+    },
+    [searchParams]
+  )
+
+  const onChangeFilter = useCallback<VespTableContext<TRow>['onChangeFilter']>(
+    (values) => {
+      const params = new URLSearchParams(searchParams.toString())
+
+      if (filter) {
+        for (const fieldName of Object.keys(filter)) {
+          params.delete(fieldName)
+        }
+      }
+
+      if (page !== 1) {
+        params.delete('page')
+      }
+
+      if (values) {
+        for (const fieldName of Object.keys(values)) {
+          let value = values[fieldName as keyof typeof values]
+          if (typeof value === 'undefined') {
+            params.delete(fieldName)
+          } else if (Array.isArray(value)) {
+            params.delete(fieldName)
+            for (const v of value) {
+              params.append(fieldName, v)
+            }
+          } else {
+            params.set(fieldName, value)
+          }
+        }
+      }
+
+      window.history.pushState(null, '', `?${params.toString()}`)
+    },
+    [filter, page, searchParams]
+  )
+
+  const { data, isPending, error, refetch } = useQuery<VespTableData<TRow>>({
     initialData,
-    // placeholderData: (data) => data,
-    queryKey: Object.entries(params).map((e) => e.join(':')),
-    queryFn: () => action(params)
+    queryKey: [searchParams.toString()],
+    queryFn: () =>
+      apiGet<VespTableData<TRow>>(
+        url,
+        { limit, page, dir, sort, ...filter },
+        withToken(auth.token)()
+      )
   })
-
-  // if (isPending) return 'Loading...'
-
-  if (error) return 'An error has occurred: ' + error.message
 
   return (
     <VespTableContext.Provider
@@ -65,8 +155,17 @@ export function VespTable<TRow = unknown>({
           rows: [],
           total: 0
         },
-        params,
-        changeParams
+        refetch,
+        isPending,
+        error,
+        filter,
+        limit,
+        page,
+        dir,
+        sort,
+        onChangeFilter,
+        onChangePagination,
+        onChangeSorting
       }}
     >
       {children}

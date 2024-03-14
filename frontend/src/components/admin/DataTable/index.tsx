@@ -1,5 +1,6 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
 import {
   Table,
   TableBody,
@@ -8,68 +9,37 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import { ReactNode } from 'react'
-import { Pagination } from './Pagination'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import { Button } from '@/components/ui/button'
 import { ArrowDownIcon, ArrowUpIcon, ArrowsUpDownIcon } from '@heroicons/react/24/outline'
-
-export type DataTableColumn<T> = {
-  [K in keyof T]: {
-    label?: string
-    headProps?: React.ThHTMLAttributes<HTMLTableCellElement>
-    cellProps?: React.TdHTMLAttributes<HTMLTableCellElement>
-    key: K
-    sortable?: boolean
-    formatter?: (value: T[K]) => ReactNode
-  }
-}[keyof T]
-
-export interface DataTableProps<TRow> {
-  columns?: DataTableColumn<TRow>[]
-  data?: TRow[]
-  keyId?: keyof TRow
-  pagination?: {
-    limit: number
-    page: number
-    total: number
-  }
-  onChangePagination?: (page: number, limit: number) => void
-  sort?: {
-    by?: string
-    dir?: string
-  }
-  onChangeSort?: (by?: string, dir?: string) => void
-}
+import { ReactNode } from 'react'
+import { Filter } from './Filter'
+import { Pagination } from './Pagination'
+import type { DataTableColumn, DataTableProps } from './types'
 
 export function DataTable<TRow extends object = object>(props: DataTableProps<TRow>) {
   const {
-    columns = [],
     keyId,
     data = [],
+    columns = [],
+    filters = [],
     pagination,
-    sort,
     onChangePagination,
-    onChangeSort
+    sorting,
+    onChangeSorting,
+    filter = {},
+    onChangeFilter
   } = props
 
   const changeSortHandler = (column: DataTableColumn<TRow>) => {
-    if (!onChangeSort) return
+    if (!onChangeSorting) return
 
     const field = String(column.key)
 
-    if (sort?.by === field && sort?.dir === 'ASC') {
-      onChangeSort(field, 'DESC')
-    } else if (sort?.by === field && sort?.dir === 'DESC') {
-      onChangeSort(undefined, undefined)
+    if (sorting?.sort === field && sorting?.dir === 'ASC') {
+      onChangeSorting(field, 'DESC')
+    } else if (sorting?.sort === field && sorting?.dir === 'DESC') {
+      onChangeSorting(undefined, undefined)
     } else {
-      onChangeSort(field, 'ASC')
+      onChangeSorting(field, 'ASC')
     }
   }
 
@@ -87,11 +57,11 @@ export function DataTable<TRow extends object = object>(props: DataTableProps<TR
     }
 
     let arrow = <ArrowsUpDownIcon className="ml-2 h-4 w-4" />
-    if (sort?.by === column.key) {
-      if (sort.dir === 'ASC') {
+    if (sorting?.sort === column.key) {
+      if (sorting.dir === 'ASC') {
         arrow = <ArrowDownIcon className="ml-2 h-4 w-4" />
       }
-      if (sort.dir === 'DESC') {
+      if (sorting.dir === 'DESC') {
         arrow = <ArrowUpIcon className="ml-2 h-4 w-4" />
       }
     }
@@ -111,6 +81,11 @@ export function DataTable<TRow extends object = object>(props: DataTableProps<TR
 
   return (
     <>
+      {filters.length > 0 && (
+        <div className="mb-4">
+          <Filter filters={filters} value={filter} onChange={onChangeFilter} />
+        </div>
+      )}
       <div className="rounded-md border">
         <Table>
           <TableHeader>

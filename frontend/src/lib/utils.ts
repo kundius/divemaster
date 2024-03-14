@@ -17,3 +17,5 @@ export function getApiUrl(): string {
       ].join('/')
   return url.endsWith('/') ? url : url + '/'
 }
+
+export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))

@@ -3,7 +3,7 @@ import { PropsWithChildren } from 'react'
 
 export default function Layout({ children }: PropsWithChildren) {
   return (
-    <HasScope fallback={'Access Denied'} scopes="roles">
+    <HasScope fallback={'Access Denied'} scopes="users">
       {children}
     </HasScope>
   )

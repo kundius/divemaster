@@ -89,7 +89,6 @@ import { useFormContext } from 'react-hook-form'
 import { z } from 'zod'
 
 export const UserRoleFormSchema = z.object({
-  id: z.number().optional(),
   title: z.string().trim().min(1),
   scope: z.string().array()
 })

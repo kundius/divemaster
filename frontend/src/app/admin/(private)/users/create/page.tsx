@@ -1,22 +1,20 @@
 import { PageHeader, PageHeaderProps } from '@/components/admin/PageHeader'
-import {
-  UserRoleForm,
-  UserRoleFormFields,
-  UserRoleFormSchema
-} from '@/components/admin/UserRoleForm'
+import { UserForm, UserFormFields, UserFormSchema } from '@/components/admin/UserForm'
 import { VespForm } from '@/components/admin/VespForm'
 import { VespFormCancel } from '@/components/admin/VespFormCancel'
 import { VespFormSubmit } from '@/components/admin/VespFormSubmit'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Добавить роль'
+  title: 'Добавить пользователя'
 }
 
 export default function Page() {
   const data = {
-    title: '',
-    scope: []
+    username: '',
+    email: '',
+    fullname: '',
+    password: ''
   }
 
   const actions: PageHeaderProps['actions'] = [
@@ -25,14 +23,14 @@ export default function Page() {
   ]
 
   return (
-    <VespForm<UserRoleFormFields>
-      url="admin/user-roles"
+    <VespForm<UserFormFields>
+      url="admin/users"
       method="PUT"
-      schema={UserRoleFormSchema}
+      schema={UserFormSchema}
       defaultValues={data}
     >
       <PageHeader title={`${metadata.title}`} actions={actions} />
-      <UserRoleForm />
+      <UserForm />
     </VespForm>
   )
 }

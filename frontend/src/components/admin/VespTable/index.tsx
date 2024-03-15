@@ -19,7 +19,7 @@ export function VespTable<TRow = unknown>({
   const auth = useAuth()
   const searchParams = useSearchParams()
 
-  const { filter, limit, page, dir, sort } = useMemo(() => {
+  const { filter, ...memoizedParams } = useMemo(() => {
     const output: Pick<VespTableContext<TRow>, 'page' | 'limit' | 'sort' | 'dir' | 'filter'> = {
       limit: DEFAULT_LIMIT,
       page: 1
@@ -112,7 +112,7 @@ export function VespTable<TRow = unknown>({
         }
       }
 
-      if (page !== 1) {
+      if (memoizedParams.page !== 1) {
         params.delete('page')
       }
 
@@ -134,23 +134,20 @@ export function VespTable<TRow = unknown>({
 
       window.history.pushState(null, '', `?${params.toString()}`)
     },
-    [filter, page, searchParams]
+    [filter, memoizedParams.page, searchParams]
   )
 
   const { data, isPending, error, refetch } = useQuery<VespTableData<TRow>>({
     initialData,
     queryKey: [searchParams.toString()],
     queryFn: () =>
-      apiGet<VespTableData<TRow>>(
-        url,
-        { limit, page, dir, sort, ...filter },
-        withToken(auth.token)()
-      )
+      apiGet<VespTableData<TRow>>(url, { ...memoizedParams, ...filter }, withToken(auth.token)())
   })
 
   return (
     <VespTableContext.Provider
       value={{
+        ...memoizedParams,
         data: data || {
           rows: [],
           total: 0
@@ -159,10 +156,6 @@ export function VespTable<TRow = unknown>({
         isPending,
         error,
         filter,
-        limit,
-        page,
-        dir,
-        sort,
         onChangeFilter,
         onChangePagination,
         onChangeSorting

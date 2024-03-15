@@ -14,10 +14,18 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon
 } from '@heroicons/react/24/outline'
-import type { PaginationProps } from './types'
+
+export interface PaginationProps {
+  limit: number
+  page: number
+  total: number
+  showLimit?: boolean
+  showTotal?: boolean
+  onChange?: (page: number, limit: number) => void
+}
 
 export function Pagination(props: PaginationProps) {
-  const { limit, page, total, onChange } = props
+  const { limit, page, total, onChange, showLimit = true, showTotal = true } = props
 
   const setPageSize = (value: number) => {
     onChange?.(page, value)
@@ -49,27 +57,31 @@ export function Pagination(props: PaginationProps) {
 
   return (
     <div className="flex items-center flex-wrap gap-4 lg:gap-8">
-      <div className="flex items-center gap-2">
-        <p className="text-sm font-medium hidden md:block">На странице</p>
-        <Select value={`${limit}`} onValueChange={(value) => setPageSize(Number(value))}>
-          <SelectTrigger className="h-8 w-[70px]">
-            <SelectValue placeholder={limit} />
-          </SelectTrigger>
-          <SelectContent side="top">
-            {[2, 10, 20, 30, 40, 50].map((pageSize) => (
-              <SelectItem key={pageSize} value={`${pageSize}`}>
-                {pageSize}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-      <div className="flex items-center justify-center text-sm font-medium">
-        <span className="hidden sm:block mr-1">Страница</span>
-        <span className="whitespace-nowrap">
-          {page} из {getPageCount()}
-        </span>
-      </div>
+      {showTotal && (
+        <div className="flex items-center gap-2">
+          <p className="text-sm font-medium hidden md:block">На странице</p>
+          <Select value={`${limit}`} onValueChange={(value) => setPageSize(Number(value))}>
+            <SelectTrigger className="h-8 w-[70px]">
+              <SelectValue placeholder={limit} />
+            </SelectTrigger>
+            <SelectContent side="top">
+              {[10, 20, 30, 40, 50].map((pageSize) => (
+                <SelectItem key={pageSize} value={`${pageSize}`}>
+                  {pageSize}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+      {showLimit && (
+        <div className="flex items-center justify-center text-sm font-medium">
+          <span className="hidden sm:block mr-1">Страница</span>
+          <span className="whitespace-nowrap">
+            {page} из {getPageCount()}
+          </span>
+        </div>
+      )}
       <div className="flex items-center gap-2">
         <Button
           variant="outline"

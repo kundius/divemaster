@@ -11,22 +11,45 @@ import {
 } from '@/components/ui/table'
 import { ArrowDownIcon, ArrowUpIcon, ArrowsUpDownIcon } from '@heroicons/react/24/outline'
 import { ReactNode } from 'react'
-import { Filter } from './Filter'
 import { Pagination } from './Pagination'
-import type { DataTableColumn, DataTableProps } from './types'
+
+export type DataTableColumn<T> = {
+  [K in keyof T]: {
+    label?: string
+    headProps?: React.ThHTMLAttributes<HTMLTableCellElement>
+    cellProps?: React.TdHTMLAttributes<HTMLTableCellElement>
+    key: K
+    sortable?: boolean
+    formatter?: (value: T[K]) => ReactNode
+  }
+}[keyof T]
+
+export interface DataTableProps<TRow> {
+  columns?: DataTableColumn<TRow>[]
+  data?: TRow[]
+  keyId?: keyof TRow
+  pagination?: {
+    limit: number
+    page: number
+    total: number
+  }
+  onChangePagination?: (page: number, limit: number) => void
+  sorting?: {
+    sort?: string
+    dir?: string
+  }
+  onChangeSorting?: (sort?: string, dir?: string) => void
+}
 
 export function DataTable<TRow extends object = object>(props: DataTableProps<TRow>) {
   const {
     keyId,
     data = [],
     columns = [],
-    filters = [],
     pagination,
     onChangePagination,
     sorting,
-    onChangeSorting,
-    filter = {},
-    onChangeFilter
+    onChangeSorting
   } = props
 
   const changeSortHandler = (column: DataTableColumn<TRow>) => {
@@ -81,11 +104,6 @@ export function DataTable<TRow extends object = object>(props: DataTableProps<TR
 
   return (
     <>
-      {filters.length > 0 && (
-        <div className="mb-4">
-          <Filter filters={filters} value={filter} onChange={onChangeFilter} />
-        </div>
-      )}
       <div className="rounded-md border">
         <Table>
           <TableHeader>

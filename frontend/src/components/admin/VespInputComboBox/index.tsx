@@ -9,13 +9,12 @@ import {
 } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { apiGet } from '@/lib/api'
+import { withToken } from '@/lib/api/with-token'
+import { useAuth } from '@/lib/auth/use-auth'
 import { cn } from '@/lib/utils'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline'
 import { useQuery } from '@tanstack/react-query'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { VespTableData } from '../VespTable/types'
-import { withToken } from '@/lib/api/with-token'
-import { useAuth } from '@/lib/auth/use-auth'
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { Pagination } from '../DataTable/Pagination'
 
 interface LoadParams {
@@ -32,27 +31,23 @@ interface LoadData<TRow> {
   total: number
 }
 
-interface VespInputComboBoxProps extends LoadParams {
+interface VespInputComboBoxProps<TRow> extends LoadParams {
   url: string
-  valueField?: string
-  textField?: string
+  renderText?: (row: TRow) => ReactNode
+  getValue?: (row: TRow) => number
   emptyText?: string
   placeholder?: string
   value?: number
   onChange?: (value?: number) => void
 }
 
-type TRow = {
-  [key: string]: unknown
-}
-
-export function VespInputComboBox(props: VespInputComboBoxProps) {
+export function VespInputComboBox<TRow extends unknown = unknown>(
+  props: VespInputComboBoxProps<TRow>
+) {
   const {
     url,
     filter,
     placeholder = 'Выбрать...',
-    valueField = 'id',
-    textField = 'title',
     limit = 10,
     sort,
     dir,
@@ -71,6 +66,26 @@ export function VespInputComboBox(props: VespInputComboBoxProps) {
 
   const value = controlledValue || uncontrolledValue
   const setValue = controlledOnChange || setUncontrolledValue
+
+  //
+
+  const renderText: VespInputComboBoxProps<TRow>['renderText'] =
+    props.renderText ||
+    ((row: TRow) => {
+      if (row && typeof row === 'object' && 'title' in row) {
+        return String(row['title'])
+      }
+      throw new Error('Запись не является подходящим объектом')
+    })
+
+  const getValue: VespInputComboBoxProps<TRow>['getValue'] =
+    props.getValue ||
+    ((row: TRow) => {
+      if (row && typeof row === 'object' && 'id' in row) {
+        return Number(row['id'])
+      }
+      throw new Error('Запись не является подходящим объектом')
+    })
 
   // Загрузка моделей
 
@@ -91,18 +106,16 @@ export function VespInputComboBox(props: VespInputComboBoxProps) {
 
   // Загрузить модель для значения по умолчанию
 
-  const loadingInitialSelected = !!value && !selected
-
-  const loadInitialSelected = useCallback(async () => {
-    const data = await apiGet<TRow>(`${url}/${value}`)
-    setSelected(data)
-  }, [url, value])
+  const isValueWithoutSelected = !!value && !selected
 
   useEffect(() => {
-    if (loadingInitialSelected) {
-      loadInitialSelected()
+    const load = async () => {
+      setSelected(await apiGet<TRow>(`${url}/${value}`))
     }
-  }, [value, selected, loadInitialSelected, loadingInitialSelected])
+    if (isValueWithoutSelected) {
+      load()
+    }
+  }, [value, isValueWithoutSelected, url])
 
   // Рассчитать ширину поповера относительно кнопки
 
@@ -128,17 +141,17 @@ export function VespInputComboBox(props: VespInputComboBoxProps) {
           role="combobox"
           aria-expanded={open}
           className="w-full justify-between"
-          loading={loadingInitialSelected}
+          loading={isValueWithoutSelected}
           ref={buttonRef}
         >
-          {loadingInitialSelected ? '' : selected ? String(selected[textField]) : placeholder}
+          {isValueWithoutSelected ? '' : selected ? renderText(selected) : placeholder}
           <ChevronUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="p-0" style={{ width }}>
         <Command filter={() => 1}>
           <CommandInput
-            placeholder={"Поиск..."}
+            placeholder={'Поиск...'}
             className="h-9"
             value={query}
             onValueChange={setQuery}
@@ -148,8 +161,8 @@ export function VespInputComboBox(props: VespInputComboBoxProps) {
             <CommandGroup>
               {data?.rows.map((row) => (
                 <CommandItem
-                  key={String(row[valueField])}
-                  value={String(row[valueField])}
+                  key={String(getValue(row))}
+                  value={String(getValue(row))}
                   onSelect={(currentValue) => {
                     if (Number(currentValue) === value) {
                       setValue(undefined)
@@ -161,11 +174,11 @@ export function VespInputComboBox(props: VespInputComboBoxProps) {
                     setOpen(false)
                   }}
                 >
-                  {String(row[textField])}
+                  {renderText(row)}
                   <CheckIcon
                     className={cn(
                       'ml-auto h-4 w-4',
-                      value === row[valueField] ? 'opacity-100' : 'opacity-0'
+                      value === getValue(row) ? 'opacity-100' : 'opacity-0'
                     )}
                   />
                 </CommandItem>

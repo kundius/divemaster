@@ -6,11 +6,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Toaster } from 'vue-sonner'
-
-const appConfig = useAppConfig()
-
-console.log(appConfig.theme)
+import { Toaster } from '@/components/ui/sonner'
 </script>
 
 <style lang="scss">

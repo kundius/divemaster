@@ -11,7 +11,7 @@
             class="firstLink"
             :class="{ firstLinkActive: route.path.startsWith(item1.route) }"
           >
-            <UIcon v-if="item1.icon" :name="item1.icon" class="firstIcon" />
+            <Icon v-if="item1.icon" :name="item1.icon" class="firstIcon" />
             {{ item1.title }}
           </NuxtLink>
           <ul v-if="item1.menu" class="secondMenu" :class="{ secondMenuOpened: route.path.startsWith(item1.route) }">
@@ -59,7 +59,7 @@ const items = ref<Nav>([
       {
         title: 'Товары',
         route: '/admin/products',
-        icon: 'i-heroicons-tag',
+        icon: 'heroicons:tag',
         menu: [
           {
             title: 'Все товары',
@@ -86,12 +86,12 @@ const items = ref<Nav>([
       {
         title: 'Заказы',
         route: '/admin/orders',
-        icon: 'i-heroicons-shopping-bag'
+        icon: 'heroicons:shopping-bag'
       },
       {
         title: 'Клиенты',
         route: '/admin/users',
-        icon: 'i-heroicons-user',
+        icon: 'heroicons:user',
         menu: [
           {
             title: 'Все пользователи',
@@ -111,7 +111,7 @@ const items = ref<Nav>([
       {
         title: 'Статьи',
         route: '/admin/articles',
-        icon: 'i-heroicons-pencil-square',
+        icon: 'heroicons:pencil-square',
         menu: [
           {
             title: 'Все статьи',
@@ -126,7 +126,7 @@ const items = ref<Nav>([
       {
         title: 'Страницы',
         route: '/admin/pages',
-        icon: 'i-heroicons-document-text'
+        icon: 'heroicons:document-text'
       }
     ]
   }

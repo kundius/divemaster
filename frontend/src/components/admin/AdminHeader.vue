@@ -3,21 +3,37 @@
     <div class="md:w-36 lg:hidden">
       <AdminNavDrawer />
     </div>
-    <AdminSearch />
-    <div class="flex items-center gap-2 md:gap-4 md:w-32">
-      <UPopover>
-        <UButton icon="i-heroicons-bell" color="gray" variant="soft" :trailing="false" />
 
-        <template #panel>
-          <div class="p-4">
-            <div class="h-20 w-48" />
-          </div>
-        </template>
-      </UPopover>
-      <UButton icon="i-heroicons-cog-6-tooth" color="gray" variant="soft" :trailing="false" />
-      <UDropdown :items="userMenu" :popper="{ placement: 'bottom-end' }">
-        <UAvatar alt="Benjamin Canac" size="sm" />
-      </UDropdown>
+    <AdminSearch />
+
+    <div class="flex items-center gap-2 md:gap-4 md:w-36">
+      <ui-popover>
+        <ui-popover-trigger>
+          <ui-button variant="ghost" size="icon">
+            <Icon name="heroicons:bell" class="w-6 h-6" />
+          </ui-button>
+        </ui-popover-trigger>
+        <ui-popover-content />
+      </ui-popover>
+
+      <ui-button variant="ghost" size="icon">
+        <Icon name="heroicons:cog-6-tooth" class="w-6 h-6" />
+      </ui-button>
+
+      <ui-dropdown-menu>
+        <ui-dropdown-menu-trigger>
+          <ui-avatar>
+            <ui-avatar-image src="https://github.com/radix-vue.png" alt="@radix-vue" />
+            <ui-avatar-fallback>CN</ui-avatar-fallback>
+          </ui-avatar>
+        </ui-dropdown-menu-trigger>
+        <ui-dropdown-menu-content>
+          <ui-dropdown-menu-label>Мой профиль</ui-dropdown-menu-label>
+          <ui-dropdown-menu-separator />
+          <ui-dropdown-menu-item>Редактировать</ui-dropdown-menu-item>
+          <ui-dropdown-menu-item @click="onLogout">Выход</ui-dropdown-menu-item>
+        </ui-dropdown-menu-content>
+      </ui-dropdown-menu>
     </div>
   </div>
 </template>
@@ -45,19 +61,19 @@ const onLogout = async () => {
   }
 }
 
-const userMenu = [
-  [
-    {
-      label: 'Редактировать',
-      icon: 'i-heroicons-pencil-square-20-solid'
-    }
-  ],
-  [
-    {
-      label: 'Выход',
-      icon: 'i-heroicons-arrow-right-on-rectangle-20-solid',
-      click: onLogout
-    }
-  ]
-]
+// const userMenu = [
+//   [
+//     {
+//       label: 'Редактировать',
+//       icon: 'i-heroicons-pencil-square-20-solid'
+//     }
+//   ],
+//   [
+//     {
+//       label: 'Выход',
+//       icon: 'i-heroicons-arrow-right-on-rectangle-20-solid',
+//       click: onLogout
+//     }
+//   ]
+// ]
 </script>

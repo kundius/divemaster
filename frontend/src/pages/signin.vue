@@ -1,47 +1,62 @@
 <template>
-  <div>
-    <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-      <UFormGroup label="Email" name="email">
-        <UInput v-model="state.email" />
-      </UFormGroup>
-
-      <UFormGroup label="Password" name="password">
-        <UInput v-model="state.password" type="password" />
-      </UFormGroup>
-
-      <UButton type="submit" :loading="loading"> Submit </UButton>
-    </UForm>
+  <div class="flex justify-center items-center p-12">
+    <div class="w-96">
+      <form class="w-2/3 space-y-6" @submit="onSubmit">
+        <Field v-slot="{ componentField }" name="email" :validate-on-blur="!isFieldDirty">
+          <ui-form-item>
+            <ui-form-label>E-mail</ui-form-label>
+            <ui-form-control>
+              <ui-input type="text" v-bind="componentField" />
+            </ui-form-control>
+            <ui-form-message />
+          </ui-form-item>
+        </Field>
+        <Field v-slot="{ componentField }" name="password" :validate-on-blur="!isFieldDirty">
+          <ui-form-item>
+            <ui-form-label>Password</ui-form-label>
+            <ui-form-control>
+              <ui-input type="password" v-bind="componentField" />
+            </ui-form-control>
+            <ui-form-message />
+          </ui-form-item>
+        </Field>
+        <ui-button type="submit">
+          <Icon v-if="loading" name="heroicons:arrow-path" class="animate-spin w-4 h-4 mr-2" />
+          Submit
+        </ui-button>
+      </form>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { object, string, type InferType } from 'yup'
-import type { FormSubmitEvent } from '#ui/types'
+import { useForm, Field, Form } from 'vee-validate'
+import { toTypedSchema } from '@vee-validate/zod'
+import * as z from 'zod'
 import { toast } from 'vue-sonner'
 
 const { t } = useI18n()
 const auth = useAuth()
 
-const schema = object({
-  email: string().email('Invalid email').required('Required'),
-  password: string().min(5, 'Must be at least 5 characters').required('Required')
-})
-
-type Schema = InferType<typeof schema>
-
 const loading = ref(false)
-const state = reactive<Schema>({
-  email: '',
-  password: ''
+
+const formSchema = toTypedSchema(
+  z.object({
+    email: z.string().min(1),
+    password: z.string().min(1)
+  })
+)
+
+const { isFieldDirty, handleSubmit, resetForm } = useForm({
+  validationSchema: formSchema
 })
 
-async function onSubmit(event: FormSubmitEvent<Schema>) {
+const onSubmit = handleSubmit(async (values) => {
   loading.value = true
 
   try {
-    await auth.login(event.data.email, event.data.password)
-    state.email = ''
-    state.password = ''
+    await auth.login(values.email, values.password)
+    resetForm()
     clearNuxtData()
     await clearError()
     await refreshNuxtData()
@@ -52,5 +67,5 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   } finally {
     loading.value = false
   }
-}
+})
 </script>

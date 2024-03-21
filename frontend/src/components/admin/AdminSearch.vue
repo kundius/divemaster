@@ -4,13 +4,11 @@
   >
     <span class="hidden lg:inline-flex">Найти что-нибудь...</span>
     <span class="inline-flex lg:hidden">Поиск...</span>
-    <div class="gap-1 pointer-events-none absolute p-[1px] right-[0.5rem] top-[0.5rem] hidden sm:flex">
-      <UKbd>{{ metaSymbol }}</UKbd>
-      <UKbd>K</UKbd>
+    <div class="gap-1 pointer-events-none absolute right-[0.5rem] top-[0.5rem] hidden sm:flex">
+      <ui-badge variant="secondary">Ctrl+K</ui-badge>
     </div>
   </button>
 </template>
 
 <script setup lang="ts">
-const { metaSymbol } = useShortcuts()
 </script>

@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   srcDir: 'src/',
   devtools: { enabled: true },
-  modules: ['@pinia/nuxt', '@nuxtjs/i18n', '@nuxtjs/tailwindcss', 'shadcn-nuxt', '@nuxt/fonts'],
+  modules: ['@pinia/nuxt', '@nuxtjs/i18n', '@nuxtjs/tailwindcss', 'shadcn-nuxt', 'nuxt-icon', '@nuxt/fonts'],
   // modules: ['@pinia/nuxt', '@nuxtjs/i18n', '@nuxt/ui', '@nuxt/fonts'],
   routeRules: {
     '/admin/**': { ssr: false },

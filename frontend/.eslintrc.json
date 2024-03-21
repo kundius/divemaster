@@ -1,3 +1,9 @@
 {
-  "extends": "next/core-web-vitals"
+  "root": true,
+  "extends": ["@nuxt/eslint-config"],
+  "rules": {
+    "vue/html-self-closing": 0,
+    "vue/max-attributes-per-line": 0,
+    "vue/singleline-html-element-content-newline": 0
+  }
 }

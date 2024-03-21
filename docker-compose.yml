@@ -70,4 +70,4 @@ services:
     network_mode: 'service:nginx'
     restart: unless-stopped
     working_dir: /vesp/frontend
-    command: sh -c 'rm -rf /tmp/* && npm i && npm run build && npm run start'
+    command: sh -c 'rm -rf /tmp/* && yarn --prod && yarn build && node ./.output/server/index.mjs'

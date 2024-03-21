@@ -1,28 +1,72 @@
-export interface VespUser {
-  id: number
-  username: string
-  fullname: string | null
-  email: string | null
-  active: boolean
-  role_id: number
-  updated_at: string | null
-  created_at: string | null
-
-  // [key: string]: any
+export type VespFile = {
+  id?: number
+  uuid: string
+  updated_at?: string
+  [key: string]: any
 }
 
-export interface VespUserRole {
+export type VespFileOptions = {
+  w?: string | number
+  h?: string | number
+  fit?: string
+  fm?: string
+  t?: string | number
+  [key: string]: any
+}
+
+export type VespUserRole = {
   id: number
   title: string
-  scope: string[] | null
-  updated_at: string | null
-  created_at: string | null
+  scope: string[]
+  [key: string]: any
 }
 
-export type PageProps<
-  TParams = {},
-  TSearchParams = { [key: string]: string | string[] | undefined }
-> = {
-  params: TParams
-  searchParams: TSearchParams
+export type VespUser = {
+  id: number
+  username: string
+  fullname?: string
+  password?: string
+  email?: string
+  active?: boolean
+  role_id?: number
+  role?: VespUserRole
+  [key: string]: any
+}
+
+export type VespAuthStore = {
+  user: Ref<VespUser | undefined>
+  token: Ref<string | undefined>
+  loggedIn: Ref<boolean>
+  loadUser: Function
+  login: Function
+  logout: Function
+  setToken: Function
+}
+
+export type VespTableAction = {
+  size?: String
+  variant?: String
+  class?: String | Array<string> | Object
+  route?: any
+  function?: Function
+  icon?: String
+  title?: String
+  // map?: Record<string, string>
+  // key?: string
+  // isActive?: Function
+}
+
+export type VespTableOnLoad = (data: {total: number; rows: any[]; [key: string]: any}) => {
+  total: number
+  rows: any[]
+  [key: string]: any
+}
+
+export type VespTableColumn = {
+  [key: string]: any;
+  key: string;
+  sortable?: boolean | undefined;
+  sort?: ((a: any, b: any, direction: 'asc' | 'desc') => number) | undefined;
+  direction?: "asc" | "desc" | undefined;
+  class?: string | undefined;
 }

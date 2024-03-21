@@ -18,4 +18,4 @@ services:
   node:
     restart: no
     # command: sh -c 'rm -rf /tmp/* && yarn && yarn analyze'
-    command: sh -c 'rm -rf /tmp/* && npm i && npm run dev'
+    command: sh -c 'rm -rf /tmp/* && yarn && yarn dev'

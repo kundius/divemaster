@@ -13,11 +13,11 @@ class Login extends \Vesp\Controllers\Security\Login
     public function post(): ResponseInterface
     {
 
-        $username = trim($this->getProperty('username', ''));
+        $email = trim($this->getProperty('email', ''));
         $password = trim($this->getProperty('password', ''));
 
         /** @var User $user */
-        $user = (new $this->model())->newQuery()->where('username', $username)->first();
+        $user = (new $this->model())->newQuery()->where('email', $email)->first();
         if ($user && $user->verifyPassword($password)) {
             if (!$user->active) {
                 return $this->failure('errors.security.inactive');

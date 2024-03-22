@@ -56,17 +56,34 @@ export type VespTableAction = {
   // isActive?: Function
 }
 
-export type VespTableOnLoad = (data: {total: number; rows: any[]; [key: string]: any}) => {
+export type VespTableOnLoad = (data: { total: number; rows: any[]; [key: string]: any }) => {
   total: number
   rows: any[]
   [key: string]: any
 }
 
 export type VespTableColumn = {
-  [key: string]: any;
-  key: string;
-  sortable?: boolean | undefined;
-  sort?: ((a: any, b: any, direction: 'asc' | 'desc') => number) | undefined;
-  direction?: "asc" | "desc" | undefined;
-  class?: string | undefined;
+  label: string
+  key: string
+  sortable?: boolean
+  headClass?: string
+  cellClass?: string
 }
+
+export type VespTableFilterQuery = {
+  key: string
+  type: 'query'
+  placeholder?: string
+}
+
+export type VespTableFilterFacet = {
+  key: string
+  type: 'facet'
+  title?: string
+  options?: {
+    value: unknown
+    label: string
+  }[]
+}
+
+export type VespTableFilter = VespTableFilterQuery | VespTableFilterFacet

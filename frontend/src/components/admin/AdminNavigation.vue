@@ -98,7 +98,7 @@ const items = ref<Nav>([
             route: '/admin/users'
           },
           {
-            title: 'Доступы',
+            title: 'Группы',
             route: '/admin/user-roles'
           }
         ]

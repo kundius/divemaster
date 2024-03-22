@@ -16,6 +16,7 @@
     "@nuxt/ui": "^2.14.2",
     "@pinia/nuxt": "^0.5.1",
     "@radix-icons/vue": "^1.0.0",
+    "@vee-validate/yup": "^4.12.6",
     "@vee-validate/zod": "^4.12.6",
     "@vueuse/core": "^10.9.0",
     "class-variance-authority": "^0.7.0",

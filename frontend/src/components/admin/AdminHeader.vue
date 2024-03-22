@@ -60,20 +60,4 @@ const onLogout = async () => {
     console.error(e)
   }
 }
-
-// const userMenu = [
-//   [
-//     {
-//       label: 'Редактировать',
-//       icon: 'i-heroicons-pencil-square-20-solid'
-//     }
-//   ],
-//   [
-//     {
-//       label: 'Выход',
-//       icon: 'i-heroicons-arrow-right-on-rectangle-20-solid',
-//       click: onLogout
-//     }
-//   ]
-// ]
 </script>

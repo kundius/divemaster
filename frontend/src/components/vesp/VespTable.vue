@@ -1,4 +1,6 @@
 <script setup lang="ts">
+// если вызвать refresh после удаления последнего элемента на странице, то тоблица будет пустой
+
 import { Pagination, PaginationList, PaginationListItem } from '@/components/ui/pagination'
 import type { VespTableColumn, VespTableFilter, VespTableOnLoad } from '@/types'
 import { useCustomFetch } from '@/utils/use-api'
@@ -47,7 +49,7 @@ const props = defineProps({
   },
   limit: {
     type: Number,
-    default: 20
+    default: 10
   },
   onLoad: {
     type: Function as PropType<VespTableOnLoad>,

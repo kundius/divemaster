@@ -8,7 +8,7 @@
         <ui-button @click="form.onSubmit()">Сохранить</ui-button>
       </template>
     </admin-page-header>
-    <vesp-form ref="form" method="put" :url="url" :schema="schema" :initial-values="record" @success="onSuccess">
+    <vesp-form ref="form" method="patch" :url="`${url}/${id}`" :schema="schema" :initial-values="record">
       <template #form-fields>
         <forms-user-role />
       </template>
@@ -18,9 +18,7 @@
 
 <script setup lang="ts">
 import { object, string } from 'yup'
-import type { VespUserRole } from '@/types'
 
-const url = `admin/user-roles`
 const form = ref()
 const schema = markRaw(object({ title: string().required() }))
 const record = ref({
@@ -29,7 +27,11 @@ const record = ref({
   scope: []
 })
 
-function onSuccess(data: VespUserRole) {
-  navigateTo(`/${url}/${data.id}/edit`)
+const id = useRoute().params.id
+const url = `admin/user-roles`
+try {
+  record.value = await useGet(`${url}/${id}`)
+} catch (e: any) {
+  showError({ statusCode: e.statusCode, statusMessage: e.message })
 }
 </script>

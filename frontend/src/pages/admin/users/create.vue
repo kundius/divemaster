@@ -1,6 +1,6 @@
 <template>
   <div>
-    <admin-page-header :title="$t('models.user_role.title_one')">
+    <admin-page-header :title="$t('models.user.title_one')">
       <template #actions>
         <nuxt-link :to="`/${url}`">
           <ui-button variant="secondary">Отмена</ui-button>
@@ -10,7 +10,7 @@
     </admin-page-header>
     <vesp-form ref="form" method="put" :url="url" :schema="schema" :initial-values="record" @success="onSuccess">
       <template #form-fields>
-        <forms-user-role />
+        <forms-user />
       </template>
     </vesp-form>
   </div>
@@ -18,9 +18,9 @@
 
 <script setup lang="ts">
 import { object, string } from 'yup'
-import type { VespUserRole } from '@/types'
+import type { VespUser } from '@/types'
 
-const url = `admin/user-roles`
+const url = `admin/users`
 const form = ref()
 const schema = markRaw(object({ title: string().required() }))
 const record = ref({
@@ -29,7 +29,7 @@ const record = ref({
   scope: []
 })
 
-function onSuccess(data: VespUserRole) {
+function onSuccess(data: VespUser) {
   navigateTo(`/${url}/${data.id}/edit`)
 }
 </script>

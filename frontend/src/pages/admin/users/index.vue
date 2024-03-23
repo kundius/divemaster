@@ -1,9 +1,9 @@
 <template>
   <div>
-    <admin-page-header title="Группы">
+    <admin-page-header title="Пользователи">
       <template #actions>
         <nuxt-link :to="`/${url}/create`">
-          <ui-button>Добавить группу</ui-button>
+          <ui-button>Добавить пользователя</ui-button>
         </nuxt-link>
       </template>
     </admin-page-header>
@@ -38,16 +38,14 @@ import type { VespTableColumn, VespTableFilter } from '~/types'
 
 const { t } = useI18n()
 const table = ref()
-const url = 'admin/user-roles'
+const url = 'admin/users'
 const filter = ref({ query: '' })
 const filters = computed<VespTableFilter[]>(() => [
-  { key: 'query', placeholder: t('models.user_role.title'), type: 'query' }
+  { key: 'query', placeholder: 'Поиск', type: 'query' }
 ])
 const columns = computed<VespTableColumn[]>(() => [
-  { key: 'id', label: t('models.user_role.id'), sortable: true },
-  { key: 'title', label: t('models.user_role.title'), sortable: true },
-  { key: 'scope', label: t('models.user_role.scope') },
-  { key: 'users_count', label: t('models.user_role.users'), sortable: true },
+  { key: 'id', label: t('models.user.id'), sortable: true },
+  { key: 'email', label: t('models.user.email'), sortable: true },
   { key: 'actions', label: '', headClass: 'w-0' }
 ])
 </script>

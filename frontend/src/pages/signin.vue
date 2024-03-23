@@ -63,7 +63,7 @@ const onSubmit = handleSubmit(async (values) => {
     await navigateTo('/')
     toast.info(t('success.login'))
   } catch (e) {
-    toast.error(t(typeof e === 'string' ? e : 'errors.common'))
+    toast.error(t(typeof e === 'string' ? e : 'errors.default'))
   } finally {
     loading.value = false
   }

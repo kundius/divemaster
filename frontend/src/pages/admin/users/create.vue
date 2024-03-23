@@ -17,16 +17,27 @@
 </template>
 
 <script setup lang="ts">
-import { object, string } from 'yup'
+import { number, object, string } from 'yup'
 import type { VespUser } from '@/types'
 
 const url = `admin/users`
 const form = ref()
-const schema = markRaw(object({ title: string().required() }))
+const schema = markRaw(
+  object({
+    email: string().required(),
+    username: string().required(),
+    fullname: string().required(),
+    password: string().required(),
+    role_id: number().required()
+  })
+)
 const record = ref({
   id: 0,
-  title: '',
-  scope: []
+  email: '',
+  username: '',
+  fullname: '',
+  password: '',
+  role_id: undefined
 })
 
 function onSuccess(data: VespUser) {

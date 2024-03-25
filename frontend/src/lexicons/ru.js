@@ -5,6 +5,7 @@ export default {
     message: 'Выберите пункт меню для начала работы',
   },
   actions: {
+    cancel: 'Отмена',
     create: 'Добавить',
     save: 'Сохранить',
   },
@@ -39,6 +40,20 @@ export default {
       scope: 'Разрешения',
       add_scope: 'Добавить',
       users: 'Пользователи',
+    },
+    category: {
+      add: 'Добавить категорию',
+      title_one: 'Категория',
+      title_many: 'Категории',
+      id: 'Id',
+      title: 'Название',
+    },
+    product: {
+      add: 'Добавить товар',
+      title_one: 'Товар',
+      title_many: 'Товары',
+      id: 'Id',
+      title: 'Название',
     },
   },
   pages: {

@@ -8,12 +8,10 @@
       </template>
     </admin-page-header>
     <vesp-table ref="table" v-bind="{ url, columns, filters, filter }">
-      <template #scope-data="{ item }">
-        <div class="flex flex-wrap gap-1">
-          <ui-badge v-for="scope in item.scope" :key="scope" variant="secondary">
-            {{ scope }}
-          </ui-badge>
-        </div>
+      <template #role-data="{ item }">
+        <ui-badge variant="secondary">
+          {{ item.role.title }}
+        </ui-badge>
       </template>
       <template #actions-data="{ item }">
         <div class="flex gap-2">
@@ -34,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import type { VespTableColumn, VespTableFilter } from '~/types'
+import type { VespTableColumn, VespTableFilter } from '@/types'
 
 const { t } = useI18n()
 const table = ref()
@@ -45,7 +43,10 @@ const filters = computed<VespTableFilter[]>(() => [
 ])
 const columns = computed<VespTableColumn[]>(() => [
   { key: 'id', label: t('models.user.id'), sortable: true },
+  { key: 'username', label: t('models.user.username'), sortable: true },
   { key: 'email', label: t('models.user.email'), sortable: true },
+  { key: 'fullname', label: t('models.user.fullname'), sortable: true },
+  { key: 'role', label: t('models.user.role') },
   { key: 'actions', label: '', headClass: 'w-0' }
 ])
 </script>

@@ -7,6 +7,6 @@ use Vesp\Controllers\ModelController;
 
 class Products extends ModelController
 {
-  protected $scope = 'products';
-  protected $model = Product::class;
+  protected string|array $scope = 'products';
+  protected string $model = Product::class;
 }

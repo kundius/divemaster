@@ -1,5 +1,6 @@
 <script setup lang="ts">
 // если вызвать refresh после удаления последнего элемента на странице, то тоблица будет пустой
+// items не типизированы 
 
 import { Pagination, PaginationList, PaginationListItem } from '@/components/ui/pagination'
 import type { VespTableColumn, VespTableFilter, VespTableOnLoad } from '@/types'

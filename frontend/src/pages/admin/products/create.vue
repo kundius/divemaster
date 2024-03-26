@@ -5,7 +5,7 @@
         <nuxt-link :to="`/${url}`">
           <ui-button variant="secondary">{{ $t('actions.cancel') }}</ui-button>
         </nuxt-link>
-        <ui-button @click="form.onSubmit()">{{ $t('actions.save') }}</ui-button>
+        <ui-button @click="form.submit()">{{ $t('actions.save') }}</ui-button>
       </template>
     </admin-page-header>
     <vesp-form ref="form" method="put" :url="url" :schema="schema" :initial-values="record" @success="onSuccess">
@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { number, object, string } from 'yup'
+import { boolean, number, object, string } from 'yup'
 import type { VespUser } from '@/types'
 
 const url = `admin/products`
@@ -25,11 +25,20 @@ const form = ref()
 const schema = markRaw(
   object({
     title: string().required(),
+    description: string(),
+    sku: string().required(),
+    price: number().required(),
+    category_id: number().required(),
+    active: boolean().required(),
   })
 )
 const record = ref({
-  id: 0,
   title: '',
+  active: true,
+  description: '',
+  sku: '',
+  price: undefined,
+  category_id: undefined
 })
 
 function onSuccess(data: VespUser) {

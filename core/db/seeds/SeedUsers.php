@@ -16,11 +16,13 @@ class SeedUsers extends AbstractSeed
             'admin' => [
                 'password' => 'admin',
                 'fullname' => 'Admin',
+                'email' => 'kundius.ruslan@gmail.com',
                 'role_id' => 1,
             ],
             'user' => [
                 'password' => 'user',
                 'fullname' => 'User',
+                'email' => 'kundius.ruslan+1@gmail.com',
                 'role_id' => 2,
             ],
         ];

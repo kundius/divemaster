@@ -5,7 +5,7 @@
         <nuxt-link :to="`/${url}`">
           <ui-button variant="secondary">Отмена</ui-button>
         </nuxt-link>
-        <ui-button @click="form.onSubmit()">Сохранить</ui-button>
+        <ui-button @click="form.submit()">Сохранить</ui-button>
       </template>
     </admin-page-header>
     <vesp-form ref="form" method="patch" :url="`${url}/${id}`" :schema="schema" :initial-values="record">
@@ -30,7 +30,6 @@ const schema = markRaw(
   })
 )
 const record = ref({
-  id: 0,
   email: '',
   username: '',
   fullname: '',

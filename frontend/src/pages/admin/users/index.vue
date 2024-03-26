@@ -8,11 +8,6 @@
       </template>
     </admin-page-header>
     <vesp-table ref="table" v-bind="{ url, columns, filters, filter }">
-      <template #role-data="{ item }">
-        <ui-badge variant="secondary">
-          {{ item.role.title }}
-        </ui-badge>
-      </template>
       <template #actions-data="{ item }">
         <div class="flex gap-2">
           <nuxt-link :to="`/${url}/${item.id}/edit`">
@@ -46,7 +41,7 @@ const columns = computed<VespTableColumn[]>(() => [
   { key: 'username', label: t('models.user.username'), sortable: true },
   { key: 'email', label: t('models.user.email'), sortable: true },
   { key: 'fullname', label: t('models.user.fullname'), sortable: true },
-  { key: 'role', label: t('models.user.role') },
+  { key: 'role.title', label: t('models.user.role') },
   { key: 'actions', label: '', headClass: 'w-0' }
 ])
 </script>

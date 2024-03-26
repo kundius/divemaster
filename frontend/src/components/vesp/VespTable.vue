@@ -7,6 +7,7 @@ import type { VespTableColumn, VespTableFilter, VespTableOnLoad } from '@/types'
 import { useCustomFetch } from '@/utils/use-api'
 import { computed, ref, watch, type PropType } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { get } from 'lodash'
 
 const emit = defineEmits(['update:modelValue', 'update:sort', 'update:dir', 'update:limit', 'update:filters'])
 const props = defineProps({
@@ -153,7 +154,7 @@ watch(
           facet
         </div>
         <div v-if="item.type === 'query'">
-          <ui-input v-model="tFilter.query" :placeholder="item.placeholder" />
+          <ui-input v-model="tFilter.query" :placeholder="item.placeholder" class="w-64" />
         </div>
       </div>
     </div>
@@ -188,7 +189,7 @@ watch(
             <ui-table-row v-for="item of items" :key="item.id">
               <ui-table-cell v-for="column of columns" :key="column.key" :class="column.cellClass">
                 <slot :name="`${column.key}-data`" v-bind="{ item }">
-                  {{ item[column.key] }}
+                  {{ get(item, column.key) }}
                 </slot>
               </ui-table-cell>
             </ui-table-row>

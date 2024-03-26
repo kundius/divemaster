@@ -47,6 +47,8 @@ export default {
       title_many: 'Категории',
       id: 'Id',
       title: 'Название',
+      description: 'Описание',
+      active: 'Активна',
     },
     product: {
       add: 'Добавить товар',
@@ -54,6 +56,12 @@ export default {
       title_many: 'Товары',
       id: 'Id',
       title: 'Название',
+      description: 'Описание',
+      sku: 'Артикул',
+      price: 'Цена',
+      active: 'Активен',
+      category_id: 'Категория',
+      category: 'Категория',
     },
   },
   pages: {

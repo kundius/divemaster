@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id
@@ -27,9 +28,13 @@ class Product extends Model
     'price' => 'float',
   ];
 
-  //  Каждый товар принадлежит одной категории
   public function category(): BelongsTo
   {
     return $this->belongsTo(Category::class);
+  }
+
+  public function productFiles(): HasMany
+  {
+    return $this->hasMany(ProductFile::class);
   }
 }

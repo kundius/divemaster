@@ -1,5 +1,5 @@
 <template>
-  <form @submit="onSubmit">
+  <form @submit="submit">
     <slot name="form-fields" />
   </form>
 </template>
@@ -50,7 +50,7 @@ const { handleSubmit } = useForm({
 
 const updateKey = props.updateKey || props.url?.split('/').join('-')
 
-const onSubmit = handleSubmit(async (values) => {
+const submit = handleSubmit(async (values) => {
   try {
     const data = await useApi(props.url, {
       method: props.method.toUpperCase(),
@@ -64,5 +64,5 @@ const onSubmit = handleSubmit(async (values) => {
   }
 })
 
-defineExpose({ onSubmit })
+defineExpose({ submit })
 </script>

@@ -22,6 +22,10 @@
           </vesp-delete-dialog>
         </div>
       </template>
+      <template #active-data="{ item }">
+        <Icon v-if="item.active" name="heroicons:check-circle" class="w-6 h-6 text-green-500" />
+        <Icon v-else name="heroicons:x-circle" class="w-6 h-6 text-amber-500" />
+      </template>
     </vesp-table>
   </div>
 </template>
@@ -35,8 +39,9 @@ const url = 'admin/categories'
 const filter = ref({ query: '' })
 const filters = computed<VespTableFilter[]>(() => [{ key: 'query', placeholder: 'Поиск', type: 'query' }])
 const columns = computed<VespTableColumn[]>(() => [
-  { key: 'id', label: t('models.category.id'), sortable: true },
+  { key: 'id', label: t('models.category.id') },
   { key: 'title', label: t('models.category.title'), sortable: true },
+  { key: 'active', label: t('models.category.active'), sortable: true },
   { key: 'actions', label: '', headClass: 'w-0' }
 ])
 </script>

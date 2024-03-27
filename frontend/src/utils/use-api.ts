@@ -23,8 +23,8 @@ function onResponseError({ response }: FetchContext): void {
   }
 }
 
-export function useApi(endpoint: string, options: FetchOptions<any> = {}) {
-  return ofetch(endpoint, {
+export function useApi<TResult extends unknown = unknown>(endpoint: string, options: FetchOptions<any> = {}) {
+  return ofetch<TResult>(endpoint, {
     baseURL: getApiUrl(),
     onRequest,
     onResponseError,
@@ -42,22 +42,42 @@ export function useCustomFetch(endpoint: string, options: UseFetchOptions<any> =
   })
 }
 
-export function useGet(endpoint: string, params = {}, options: FetchOptions<any> = {}) {
-  return useApi(endpoint, { ...options, query: params, method: 'GET' })
+export function useGet<TResult extends unknown = unknown>(
+  endpoint: string,
+  params = {},
+  options: FetchOptions<any> = {}
+) {
+  return useApi<TResult>(endpoint, { ...options, query: params, method: 'GET' })
 }
 
-export function usePost(endpoint: string, params = {}, options: FetchOptions<any> = {}) {
-  return useApi(endpoint, { ...options, body: params, method: 'POST' })
+export function usePost<TResult extends unknown = unknown>(
+  endpoint: string,
+  params = {},
+  options: FetchOptions<any> = {}
+) {
+  return useApi<TResult>(endpoint, { ...options, body: params, method: 'POST' })
 }
 
-export function usePut(endpoint: string, params = {}, options: FetchOptions<any> = {}) {
-  return useApi(endpoint, { ...options, body: params, method: 'PUT' })
+export function usePut<TResult extends unknown = unknown>(
+  endpoint: string,
+  params = {},
+  options: FetchOptions<any> = {}
+) {
+  return useApi<TResult>(endpoint, { ...options, body: params, method: 'PUT' })
 }
 
-export function usePatch(endpoint: string, params = {}, options: FetchOptions<any> = {}) {
-  return useApi(endpoint, { ...options, body: params, method: 'PATCH' })
+export function usePatch<TResult extends unknown = unknown>(
+  endpoint: string,
+  params = {},
+  options: FetchOptions<any> = {}
+) {
+  return useApi<TResult>(endpoint, { ...options, body: params, method: 'PATCH' })
 }
 
-export function useDelete(endpoint: string, params = {}, options: FetchOptions<any> = {}) {
-  return useApi(endpoint, { ...options, query: params, method: 'DELETE' })
+export function useDelete<TResult extends unknown = unknown>(
+  endpoint: string,
+  params = {},
+  options: FetchOptions<any> = {}
+) {
+  return useApi<TResult>(endpoint, { ...options, query: params, method: 'DELETE' })
 }

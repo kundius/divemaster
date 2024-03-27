@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@nuxt/fonts": "^0.3.0",
+    "@nuxt/image": "^1.4.0",
     "@nuxt/ui": "^2.14.2",
     "@pinia/nuxt": "^0.5.1",
     "@radix-icons/vue": "^1.0.0",
@@ -29,8 +30,10 @@
     "tailwindcss-animate": "^1.0.7",
     "vee-validate": "^4.12.6",
     "vue": "^3.4.21",
+    "vue-draggable-plus": "^0.4.0",
     "vue-router": "^4.3.0",
     "vue-sonner": "^1.1.2",
+    "vuedraggable": "^2.24.3",
     "yup": "^1.4.0",
     "zod": "^3.22.4"
   },
@@ -38,6 +41,7 @@
     "@nuxt/eslint-config": "^0.2.0",
     "@nuxtjs/i18n": "^8.2.0",
     "@nuxtjs/tailwindcss": "^6.11.4",
+    "@types/lodash": "^4.17.0",
     "eslint": "^8.57.0",
     "nuxt-icon": "^0.6.10",
     "prettier": "^3.2.5",

@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProductFile extends Model
 {
-  public bool $timestamps = false;
-  public bool $incrementing = false;
-  protected iterable|object $primaryKey = ['product_id', 'file_id'];
+  public $timestamps = false;
+  public $incrementing = false;
+  protected $primaryKey = ['product_id', 'file_id'];
+  protected $guarded = [];
+  protected $casts = ['active' => 'bool'];
 
   public function getKey(): array
   {
@@ -29,5 +31,15 @@ class ProductFile extends Model
     }
 
     return $query;
+  }
+
+  public function product(): BelongsTo
+  {
+      return $this->belongsTo(Product::class);
+  }
+
+  public function file(): BelongsTo
+  {
+      return $this->belongsTo(File::class);
   }
 }

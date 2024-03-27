@@ -25,7 +25,7 @@ const props = defineProps({
   },
   limit: {
     type: Number,
-    default: 10
+    default: 8
   },
   sort: {
     type: String,
@@ -49,6 +49,7 @@ const props = defineProps({
   }
 })
 
+const triggerResizeObserver = ref()
 const query = ref('')
 const trigger = ref()
 const width = ref(200)
@@ -74,25 +75,11 @@ onMounted(() => {
   if (value.value && !selected.value) {
     initSelected()
   }
-
-  if (trigger.value) {
-    width.value = trigger.value.offsetWidth
-  }
 })
 
-watch(
-  () => page.value,
-  () => {
-    fetch()
-  }
-)
+watch(page, fetch)
 
-watch(
-  () => query.value,
-  () => {
-    fetch()
-  }
-)
+watch(query, fetch)
 
 async function fetch() {
   const params = {
@@ -136,24 +123,39 @@ function onSelect(e: any) {
   }
   open.value = false
 }
+
+function onTriggerResize() {
+  width.value = trigger.value.offsetWidth
+}
+
+function onTriggerMounted() {
+  if (!triggerResizeObserver.value) {
+    triggerResizeObserver.value = new ResizeObserver(onTriggerResize)
+  }
+  triggerResizeObserver.value.observe(trigger.value)
+}
+
+function onTriggerBeforeDestroy() {
+  triggerResizeObserver.value.unobserve(trigger.value)
+}
 </script>
 
 <template>
   <ui-popover v-model:open="open">
     <ui-popover-trigger as-child>
-      <div ref="trigger">
+      <div ref="trigger" @vue:mounted="onTriggerMounted" @vue:beforeDestroy="onTriggerBeforeDestroy">
         <ui-button variant="outline" role="combobox" :aria-expanded="open" class="w-full justify-between" type="button">
           {{ selected ? selected[textField] : 'Выбрать...' }}
           <Icon name="radix-icons:caret-sort" class="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </ui-button>
       </div>
     </ui-popover-trigger>
-    <ui-popover-content class="p-0" :style="{ width: `${width}px` }">
+    <ui-popover-content ref="content" class="p-0" :style="{ width: `${width}px` }">
       <ui-command v-model:searchTerm="query">
         <ui-command-input class="h-9" placeholder="Поиск..." />
         <ui-command-empty>No option found.</ui-command-empty>
         <ui-command-list>
-          <template v-if="!!selected && !options.find((option) => option[valueField] === selected?.[valueField])">
+          <!-- <template v-if="!!selected && !options.find((option) => option[valueField] === selected?.[valueField])">
             <ui-command-group>
               <ui-command-item :value="selected[valueField]" @select="onSelect">
                 {{ selected[textField] }}
@@ -161,7 +163,7 @@ function onSelect(e: any) {
               </ui-command-item>
             </ui-command-group>
             <ui-command-separator />
-          </template>
+          </template> -->
           <ui-command-group>
             <ui-command-item
               v-for="option in options"

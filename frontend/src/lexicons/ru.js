@@ -8,6 +8,7 @@ export default {
     cancel: 'Отмена',
     create: 'Добавить',
     save: 'Сохранить',
+    upload: 'Загрузить',
   },
   security: {
     username: 'Логин',

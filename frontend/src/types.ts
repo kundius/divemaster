@@ -33,6 +33,21 @@ export type VespUser = {
   [key: string]: any
 }
 
+export type VespProduct = {
+  id: number
+  title: string
+  sku: string
+  [key: string]: any
+}
+
+export type VespProductFile = {
+  file_id: number
+  product_id: number
+  rank: number
+  active: boolean
+  [key: string]: any
+}
+
 export type VespAuthStore = {
   user: Ref<VespUser | undefined>
   token: Ref<string | undefined>
@@ -54,6 +69,11 @@ export type VespTableAction = {
   // map?: Record<string, string>
   // key?: string
   // isActive?: Function
+}
+
+export type VespData<T extends unknown = unknown> = {
+  total: number
+  rows: T[]
 }
 
 export type VespTableOnLoad = (data: { total: number; rows: any[]; [key: string]: any }) => {

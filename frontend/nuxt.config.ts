@@ -2,7 +2,15 @@
 export default defineNuxtConfig({
   srcDir: 'src/',
   devtools: { enabled: true },
-  modules: ['@pinia/nuxt', '@nuxtjs/i18n', '@nuxtjs/tailwindcss', 'shadcn-nuxt', 'nuxt-icon', '@nuxt/fonts'],
+  modules: [
+    '@pinia/nuxt',
+    '@nuxtjs/i18n',
+    '@nuxtjs/tailwindcss',
+    'shadcn-nuxt',
+    'nuxt-icon',
+    '@nuxt/image',
+    '@nuxt/fonts'
+  ],
   // modules: ['@pinia/nuxt', '@nuxtjs/i18n', '@nuxt/ui', '@nuxt/fonts'],
   routeRules: {
     '/admin/**': { ssr: false },
@@ -16,7 +24,7 @@ export default defineNuxtConfig({
       JWT_EXPIRE: process.env.JWT_EXPIRE || '2592000'
     }
   },
-  
+
   shadcn: {
     /**
      * Prefix for all the imported component

@@ -20,8 +20,8 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 const formSchema = z.object({
-  username: z.string().min(2, {
-    message: 'Username must be at least 2 characters.'
+  email: z.string().min(2, {
+    message: 'E-mail must be at least 2 characters.'
   }),
   password: z.string().min(5, {
     message: 'Password must be at least 6 characters.'
@@ -56,7 +56,7 @@ export function LoginPage() {
   const form = useForm<FormFields>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: '',
+      email: '',
       password: ''
     }
   })
@@ -69,7 +69,7 @@ export function LoginPage() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
             control={form.control}
-            name="username"
+            name="email"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Логин</FormLabel>

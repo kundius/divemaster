@@ -1,23 +1,23 @@
-import { PageHeader, PageHeaderProps } from '@/components/admin/PageHeader'
 import {
-  UserRoleForm,
-  UserRoleFormFields,
-  UserRoleFormSchema
-} from '@/components/admin/UserRoleForm'
+  CategoryForm,
+  CategoryFormFields,
+  CategoryFormSchema
+} from '@/components/admin/CategoryForm'
+import { PageHeader, PageHeaderProps } from '@/components/admin/PageHeader'
 import { VespForm } from '@/components/vesp/VespForm'
 import { VespFormCancel } from '@/components/vesp/VespFormCancel'
 import { VespFormSubmit } from '@/components/vesp/VespFormSubmit'
 import { apiGet } from '@/lib/api'
 import { withAuth } from '@/lib/api/with-auth'
-import { VespUserRole } from '@/types'
+import { VespCategory } from '@/types'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Редактировать роль'
+  title: 'Редактировать категорию'
 }
 
 export default async function Page({ params }: { params: { id: number } }) {
-  const data = await apiGet<VespUserRole>(`admin/user-roles/${params.id}`, {}, withAuth())
+  const data = await apiGet<VespCategory>(`admin/categories/${params.id}`, {}, withAuth())
 
   const actions: PageHeaderProps['actions'] = [
     <VespFormCancel key="back" />,
@@ -25,17 +25,18 @@ export default async function Page({ params }: { params: { id: number } }) {
   ]
 
   return (
-    <VespForm<UserRoleFormFields>
-      url={`admin/user-roles/${params.id}`}
+    <VespForm<CategoryFormFields>
+      url={`admin/categories/${params.id}`}
       method="PATCH"
-      schema={UserRoleFormSchema}
+      schema={CategoryFormSchema}
       defaultValues={{
-        scope: data.scope || [],
+        active: data.active,
+        description: data.description || '',
         title: data.title
       }}
     >
       <PageHeader title={`${metadata.title}`} actions={actions} />
-      <UserRoleForm />
+      <CategoryForm />
     </VespForm>
   )
 }

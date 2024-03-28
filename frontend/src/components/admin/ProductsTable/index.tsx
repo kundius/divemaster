@@ -6,14 +6,14 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { VespRemoveDialog } from '@/components/vesp/VespRemoveDialog'
 import { useVespTable } from '@/components/vesp/VespTable'
-import { VespUserRole } from '@/types'
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { VespProduct } from '@/types'
+import { CheckCircleIcon, PencilIcon, TrashIcon, XCircleIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 
-export function UserRolesTable() {
-  const vespTable = useVespTable<VespUserRole>()
+export function ProductsTable() {
+  const vespTable = useVespTable<VespProduct>()
 
-  const columns: DataTableColumn<VespUserRole>[] = [
+  const columns: DataTableColumn<VespProduct>[] = [
     {
       key: 'id',
       label: 'ID'
@@ -27,20 +27,38 @@ export function UserRolesTable() {
       }
     },
     {
-      key: 'scope',
-      label: 'Разрешения',
+      key: 'category',
+      label: 'Категория',
       headProps: {
         className: 'w-5/12'
       },
-      formatter: (scope) => (
-        <div className="flex flex-wrap gap-1.5">
-          {scope?.map((value) => (
-            <Badge key={value} variant="outline">
-              {value}
-            </Badge>
-          ))}
-        </div>
-      )
+      formatter: (category) => {
+        return (
+          <Link href={`/admin/categories/${category.id}`}>
+            <Badge variant="outline">{category.title}</Badge>
+          </Link>
+        )
+      }
+    },
+    {
+      key: 'price',
+      label: 'Цена',
+      sortable: true,
+      headProps: {
+        className: 'w-5/12'
+      }
+    },
+    {
+      key: 'active',
+      label: 'Активен',
+      headProps: {
+        className: 'w-5/12'
+      },
+      formatter: (active) => {
+        const Icon = active ? CheckCircleIcon : XCircleIcon
+        const color = active ? 'text-green-500' : 'text-amber-500'
+        return <Icon className={`w-6 h-6 ${color}`} />
+      }
     },
     {
       key: 'id',
@@ -49,12 +67,12 @@ export function UserRolesTable() {
       },
       formatter: (id) => (
         <div className="flex gap-2">
-          <Link href={`/admin/user-roles/${id}`}>
+          <Link href={`/admin/products/${id}`}>
             <Button variant="outline" size="sm-icon">
               <PencilIcon className="w-4 h-4" />
             </Button>
           </Link>
-          <VespRemoveDialog url={`admin/user-roles/${id}`} onSuccess={vespTable.refetch}>
+          <VespRemoveDialog url={`admin/products/${id}`} onSuccess={vespTable.refetch}>
             <Button variant="destructive-outline" size="sm-icon">
               <TrashIcon className="w-4 h-4" />
             </Button>
@@ -69,38 +87,11 @@ export function UserRolesTable() {
       type: 'search',
       name: 'query',
       placeholder: 'Поиск по названию'
-    },
-    {
-      type: 'faceted',
-      name: 'scope',
-      title: 'Разрешения',
-      options: [
-        {
-          label: 'профиль',
-          value: 'profile'
-        },
-        {
-          label: 'Доступ',
-          value: 'roles'
-        },
-        {
-          label: 'Пользователи',
-          value: 'users'
-        },
-        {
-          label: 'Товары',
-          value: 'products'
-        },
-        {
-          label: 'Админ',
-          value: 'admin'
-        }
-      ]
     }
   ]
 
   return (
-    <DataTable<VespUserRole>
+    <DataTable<VespProduct>
       data={vespTable.data.rows}
       columns={columns}
       filter={{

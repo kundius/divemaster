@@ -1,11 +1,11 @@
 'use client'
 
 import { DataTable, DataTableColumn } from '@/components/admin/DataTable'
-import { Filter, FilterField } from '@/components/admin/Filter'
-import { VespRemoveDialog } from '@/components/admin/VespRemoveDialog'
-import { useVespTable } from '@/components/admin/VespTable'
+import type { FilterField } from '@/components/admin/Filter'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { VespRemoveDialog } from '@/components/vesp/VespRemoveDialog'
+import { useVespTable } from '@/components/vesp/VespTable'
 import { VespUser } from '@/types'
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
@@ -66,23 +66,25 @@ export function UsersTable() {
   ]
 
   return (
-    <div className="flex flex-col gap-4">
-      <Filter fields={filterFields} value={vespTable.filter} onChange={vespTable.onChangeFilter} />
-      <DataTable<VespUser>
-        data={vespTable.data.rows}
-        columns={columns}
-        pagination={{
-          page: vespTable.page,
-          limit: vespTable.limit,
-          total: vespTable.data.total
-        }}
-        sorting={{
-          sort: vespTable.sort,
-          dir: vespTable.dir
-        }}
-        onChangePagination={vespTable.onChangePagination}
-        onChangeSorting={vespTable.onChangeSorting}
-      />
-    </div>
+    <DataTable<VespUser>
+      data={vespTable.data.rows}
+      columns={columns}
+      filter={{
+        value: vespTable.filter,
+        fields: filterFields
+      }}
+      onChangeFilter={vespTable.onChangeFilter}
+      pagination={{
+        page: vespTable.page,
+        limit: vespTable.limit,
+        total: vespTable.data.total
+      }}
+      onChangePagination={vespTable.onChangePagination}
+      sorting={{
+        sort: vespTable.sort,
+        dir: vespTable.dir
+      }}
+      onChangeSorting={vespTable.onChangeSorting}
+    />
   )
 }

@@ -4,9 +4,9 @@ import {
   UserRoleFormFields,
   UserRoleFormSchema
 } from '@/components/admin/UserRoleForm'
-import { VespForm } from '@/components/admin/VespForm'
-import { VespFormCancel } from '@/components/admin/VespFormCancel'
-import { VespFormSubmit } from '@/components/admin/VespFormSubmit'
+import { VespForm } from '@/components/vesp/VespForm'
+import { VespFormCancel } from '@/components/vesp/VespFormCancel'
+import { VespFormSubmit } from '@/components/vesp/VespFormSubmit'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {

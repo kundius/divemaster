@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline'
 import { useQuery } from '@tanstack/react-query'
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import { Pagination } from '../DataTable/Pagination'
+import { Pagination } from '@/components/admin/Pagination'
 
 interface LoadParams {
   limit?: number
@@ -37,8 +37,8 @@ interface VespInputComboBoxProps<TRow> extends LoadParams {
   getValue?: (row: TRow) => number
   emptyText?: string
   placeholder?: string
-  value?: number
-  onChange?: (value?: number) => void
+  value?: number | null
+  onChange?: (value: number | null) => void
 }
 
 export function VespInputComboBox<TRow extends unknown = unknown>(
@@ -61,8 +61,8 @@ export function VespInputComboBox<TRow extends unknown = unknown>(
   const [width, setWidth] = useState(200)
   const [page, setPage] = useState(1)
   const [open, setOpen] = useState(false)
-  const [uncontrolledValue, setUncontrolledValue] = useState<number | undefined>(undefined)
-  const [selected, setSelected] = useState<TRow>()
+  const [uncontrolledValue, setUncontrolledValue] = useState<number | null>(null)
+  const [selected, setSelected] = useState<TRow | null>(null)
 
   const value = controlledValue || uncontrolledValue
   const setValue = controlledOnChange || setUncontrolledValue
@@ -165,8 +165,8 @@ export function VespInputComboBox<TRow extends unknown = unknown>(
                   value={String(getValue(row))}
                   onSelect={(currentValue) => {
                     if (Number(currentValue) === value) {
-                      setValue(undefined)
-                      setSelected(undefined)
+                      setValue(null)
+                      setSelected(null)
                     } else {
                       setValue(Number(currentValue))
                       setSelected(row)

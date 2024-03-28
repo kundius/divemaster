@@ -18,7 +18,7 @@ export function VespTable<TRow = unknown>({
 }: PropsWithChildren<VespTableProps<TRow>>) {
   const auth = useAuth()
   const searchParams = useSearchParams()
-
+  
   const { filter, ...memoizedParams } = useMemo(() => {
     const output: Pick<VespTableContext<TRow>, 'page' | 'limit' | 'sort' | 'dir' | 'filter'> = {
       limit: DEFAULT_LIMIT,
@@ -139,7 +139,7 @@ export function VespTable<TRow = unknown>({
 
   const { data, isPending, error, refetch } = useQuery<VespTableData<TRow>>({
     initialData,
-    queryKey: [searchParams.toString()],
+    queryKey: [url, searchParams.toString()],
     queryFn: () =>
       apiGet<VespTableData<TRow>>(url, { ...memoizedParams, ...filter }, withToken(auth.token)())
   })

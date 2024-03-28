@@ -2,6 +2,7 @@ version: '3.9'
 services:
 
   mariadb:
+    container_name: divemaster-mariadb
     image: mariadb:${MARIADB_VERSION:-11}
     environment:
       - MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=yes
@@ -14,6 +15,7 @@ services:
     restart: unless-stopped
 
   nginx:
+    container_name: divemaster-nginx
     image: nginx:${NGINX_VERSION:-1.25}
     environment:
       - NGINX_PORT=${NGINX_PORT:-8080}
@@ -31,6 +33,7 @@ services:
       - mariadb
 
   php-fpm:
+    container_name: divemaster-php-fpm
     build:
       context: ./docker/php-fpm
       args:
@@ -55,10 +58,11 @@ services:
       - TZ=${TZ:-Europe/Moscow}
     restart: unless-stopped
     working_dir: /vesp/core
-    user: vesp
+    # user: vesp
     command: sh -c 'composer install --no-dev && composer db:migrate && cron && php-fpm'
 
   node:
+    container_name: divemaster-node
     image: node:${NODE_VERSION:-21}
     volumes:
       - ./.env:/vesp/.env

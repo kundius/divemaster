@@ -1,2 +1,2 @@
 #!/bin/bash
-docker exec -it $(docker ps --filter name="vesp-node" -q) node $@
+docker exec -it $(docker ps --filter name="divemaster-node" -q) node $@

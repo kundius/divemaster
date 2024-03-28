@@ -1,2 +1,2 @@
 #!/bin/bash
-docker exec -it $(docker ps --filter name="vesp-php-fpm" -q) php $@
+docker exec -it $(docker ps --filter name="divemaster-php-fpm" -q) php $@

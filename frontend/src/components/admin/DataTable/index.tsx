@@ -1,5 +1,7 @@
 'use client'
 
+import { Filter, FilterProps } from '@/components/admin/Filter'
+import { Pagination, PaginationProps } from '@/components/admin/Pagination'
 import { Button } from '@/components/ui/button'
 import {
   Table,
@@ -9,9 +11,8 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import { ArrowDownIcon, ArrowUpIcon, ArrowsUpDownIcon } from '@heroicons/react/24/outline'
+import { ArrowsUpDownIcon, BarsArrowDownIcon, BarsArrowUpIcon } from '@heroicons/react/24/outline'
 import { ReactNode } from 'react'
-import { Pagination } from './Pagination'
 
 export type DataTableColumn<T> = {
   [K in keyof T]: {
@@ -28,12 +29,10 @@ export interface DataTableProps<TRow> {
   columns?: DataTableColumn<TRow>[]
   data?: TRow[]
   keyId?: keyof TRow
-  pagination?: {
-    limit: number
-    page: number
-    total: number
-  }
-  onChangePagination?: (page: number, limit: number) => void
+  filter?: Pick<FilterProps, 'value' | 'fields'>
+  onChangeFilter?: FilterProps['onChange']
+  pagination?: Pick<PaginationProps, 'limit' | 'page' | 'total'>
+  onChangePagination?: PaginationProps['onChange']
   sorting?: {
     sort?: string
     dir?: string
@@ -46,6 +45,8 @@ export function DataTable<TRow extends object = object>(props: DataTableProps<TR
     keyId,
     data = [],
     columns = [],
+    filter,
+    onChangeFilter,
     pagination,
     onChangePagination,
     sorting,
@@ -82,10 +83,10 @@ export function DataTable<TRow extends object = object>(props: DataTableProps<TR
     let arrow = <ArrowsUpDownIcon className="ml-2 h-4 w-4" />
     if (sorting?.sort === column.key) {
       if (sorting.dir === 'ASC') {
-        arrow = <ArrowDownIcon className="ml-2 h-4 w-4" />
+        arrow = <BarsArrowDownIcon className="ml-2 h-4 w-4" />
       }
       if (sorting.dir === 'DESC') {
-        arrow = <ArrowUpIcon className="ml-2 h-4 w-4" />
+        arrow = <BarsArrowUpIcon className="ml-2 h-4 w-4" />
       }
     }
 
@@ -104,6 +105,12 @@ export function DataTable<TRow extends object = object>(props: DataTableProps<TR
 
   return (
     <>
+      {filter && (
+        <div className="mb-4">
+          <Filter fields={filter.fields} value={filter.value} onChange={onChangeFilter} />
+        </div>
+      )}
+
       <div className="rounded-md border">
         <Table>
           <TableHeader>

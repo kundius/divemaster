@@ -1,11 +1,10 @@
 'use client'
 
 import { DataTable, DataTableColumn } from '@/components/admin/DataTable'
-import { Filter, FilterField } from '@/components/admin/Filter'
-import { VespRemoveDialog } from '@/components/admin/VespRemoveDialog'
-import { useVespTable } from '@/components/admin/VespTable'
-import { Badge } from '@/components/ui/badge'
+import type { FilterField } from '@/components/admin/Filter'
 import { Button } from '@/components/ui/button'
+import { VespRemoveDialog } from '@/components/vesp/VespRemoveDialog'
+import { useVespTable } from '@/components/vesp/VespTable'
 import { VespCategory } from '@/types'
 import { CheckCircleIcon, PencilIcon, TrashIcon, XCircleIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
@@ -34,8 +33,8 @@ export function CategoriesTable() {
       },
       formatter: (active) => {
         const Icon = active ? CheckCircleIcon : XCircleIcon
-        const color = active ? 'green-500' : 'amber-500'
-        return <Icon className={`w-6 h-6 text-${color}`} />
+        const color = active ? 'text-green-500' : 'text-amber-500'
+        return <Icon className={`w-6 h-6 ${color}`} />
       }
     },
     {
@@ -69,23 +68,25 @@ export function CategoriesTable() {
   ]
 
   return (
-    <div className="flex flex-col gap-4">
-      <Filter fields={filterFields} value={vespTable.filter} onChange={vespTable.onChangeFilter} />
-      <DataTable<VespCategory>
-        data={vespTable.data.rows}
-        columns={columns}
-        pagination={{
-          page: vespTable.page,
-          limit: vespTable.limit,
-          total: vespTable.data.total
-        }}
-        sorting={{
-          sort: vespTable.sort,
-          dir: vespTable.dir
-        }}
-        onChangePagination={vespTable.onChangePagination}
-        onChangeSorting={vespTable.onChangeSorting}
-      />
-    </div>
+    <DataTable<VespCategory>
+      data={vespTable.data.rows}
+      columns={columns}
+      filter={{
+        value: vespTable.filter,
+        fields: filterFields
+      }}
+      onChangeFilter={vespTable.onChangeFilter}
+      pagination={{
+        page: vespTable.page,
+        limit: vespTable.limit,
+        total: vespTable.data.total
+      }}
+      sorting={{
+        sort: vespTable.sort,
+        dir: vespTable.dir
+      }}
+      onChangePagination={vespTable.onChangePagination}
+      onChangeSorting={vespTable.onChangeSorting}
+    />
   )
 }

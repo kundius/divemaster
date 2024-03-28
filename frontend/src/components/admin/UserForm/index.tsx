@@ -4,7 +4,7 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/comp
 import { Input } from '@/components/ui/input'
 import { useFormContext } from 'react-hook-form'
 import { z } from 'zod'
-import { VespInputComboBox } from '../VespInputComboBox'
+import { VespInputComboBox } from '@/components/vesp/VespInputComboBox'
 import { VespUserRole } from '@/types'
 
 export const UserFormSchema = z.object({
@@ -39,7 +39,7 @@ export function UserForm() {
         name="role_id"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Роль</FormLabel>
+            <FormLabel>Группа</FormLabel>
             <FormControl>
               <VespInputComboBox
                 url="admin/user-roles"

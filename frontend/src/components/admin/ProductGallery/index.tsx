@@ -47,7 +47,6 @@ interface SortableItemProps {
 }
 
 export function SortableItem(props: SortableItemProps) {
-  // const [activating, setActivating] = useState(false)
   const [disabling, setDisabling] = useState(false)
   const [enabling, setEnabling] = useState(false)
   const [deleting, setDeleting] = useState(false)

@@ -59,7 +59,7 @@ services:
     restart: unless-stopped
     working_dir: /vesp/core
     # user: vesp
-    command: sh -c 'composer install --no-dev && composer db:migrate && cron && php-fpm'
+    command: sh -c 'composer install --no-dev && composer db:migrate && cron && php-fpm --allow-to-run-as-root'
 
   node:
     container_name: divemaster-node

@@ -3,48 +3,152 @@
 import { Button } from '@/components/ui/button'
 import { Overlay } from '@/components/ui/overlay'
 import { VespTableData } from '@/components/vesp/VespTable/types'
-import { apiGet, apiPost, apiPut } from '@/lib/api'
+import { apiDelete, apiGet, apiPatch, apiPost, apiPut } from '@/lib/api'
 import { withToken } from '@/lib/api/with-token'
 import { useAuth } from '@/lib/auth/use-auth'
 import { getImageLink } from '@/lib/utils'
 import { VespProductFile } from '@/types'
-import { PlusCircleIcon } from '@heroicons/react/24/outline'
-import Image from 'next/image'
-import { ChangeEvent, DragEvent, useEffect, useState } from 'react'
-import { ReactSortable } from 'react-sortablejs'
-import type { SortableEvent } from 'sortablejs'
 import {
   DndContext,
-  closestCenter,
+  DragEndEvent,
   KeyboardSensor,
   PointerSensor,
+  closestCenter,
   useSensor,
-  useSensors,
-  DragEndEvent
+  useSensors
 } from '@dnd-kit/core'
 import {
-  arrayMove,
   SortableContext,
+  arrayMove,
+  rectSortingStrategy,
   sortableKeyboardCoordinates,
-  verticalListSortingStrategy
+  useSortable
 } from '@dnd-kit/sortable'
-import { useSortable } from '@dnd-kit/sortable'
+import {
+  ArrowPathIcon,
+  CheckIcon,
+  PlusCircleIcon,
+  PowerIcon,
+  TrashIcon
+} from '@heroicons/react/24/outline'
+import Image from 'next/image'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
 import { CSS } from '@dnd-kit/utilities'
 
-export function SortableItem(props: ItemType) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+interface SortableItemProps {
+  id: number
+  url: string
+  src: string
+  active: boolean
+  width: number
+  height: number
+  setItems: Dispatch<SetStateAction<ItemType[]>>
+}
+
+export function SortableItem(props: SortableItemProps) {
+  // const [activating, setActivating] = useState(false)
+  const [disabling, setDisabling] = useState(false)
+  const [enabling, setEnabling] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: props.id
   })
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition
+    transition,
+    zIndex: isDragging ? 20 : 10,
+    filter: `grayscale(${props.active ? 0 : 100}%)`
+  }
+
+  async function onDelete() {
+    setDeleting(true)
+    await apiDelete(props.url + '/' + props.id)
+    props.setItems((prev) => prev.filter((item) => item.id !== props.id))
+    setDeleting(false)
+  }
+
+  async function onDisable() {
+    setDisabling(true)
+    props.setItems((prev) =>
+      prev.map((item) => ({
+        ...item,
+        active: item.id === props.id ? false : item.active
+      }))
+    )
+    await apiPatch(props.url + '/' + props.id, { active: false })
+    setDisabling(false)
+  }
+
+  async function onEnable() {
+    setEnabling(true)
+    props.setItems((prev) =>
+      prev.map((item) => ({
+        ...item,
+        active: item.id === props.id ? true : item.active
+      }))
+    )
+    await apiPatch(props.url + '/' + props.id, { active: true })
+    setEnabling(false)
   }
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      {props.productFile.file_id}
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="relative border rounded-lg p-2 hover:border-neutral-300 hover:bg-neutral-50 hover:shadow-sm"
+    >
+      <Image src={props.src} width={props.width} height={props.height} alt="" />
+      <div className="flex gap-2 justify-end mt-2">
+        {props.active ? (
+          <Button
+            size="icon"
+            variant="outline"
+            onClick={onDisable}
+            className="relative z-20"
+            disabled={disabling}
+          >
+            {disabling ? (
+              <ArrowPathIcon className="h-4 w-4 animate-spin" />
+            ) : (
+              <PowerIcon className="w-4 h-4" />
+            )}
+          </Button>
+        ) : (
+          <Button
+            size="icon"
+            variant="outline"
+            onClick={onEnable}
+            className="relative z-20"
+            disabled={enabling}
+          >
+            {enabling ? (
+              <ArrowPathIcon className="h-4 w-4 animate-spin" />
+            ) : (
+              <CheckIcon className="w-4 h-4" />
+            )}
+          </Button>
+        )}
+        <Button
+          size="icon"
+          variant="outline"
+          onClick={onDelete}
+          className="relative z-20"
+          disabled={deleting}
+        >
+          {deleting ? (
+            <ArrowPathIcon className="h-4 w-4 animate-spin" />
+          ) : (
+            <TrashIcon className="w-4 h-4" />
+          )}
+        </Button>
+      </div>
+      <button
+        {...listeners}
+        {...attributes}
+        className="block absolute left-0 top-0 w-full h-full z-10"
+      />
     </div>
   )
 }
@@ -55,9 +159,8 @@ export interface ProductGalleryProps {
   thumbHeight?: number
 }
 
-interface ItemType {
+interface ItemType extends VespProductFile {
   id: number
-  productFile: VespProductFile
 }
 
 export function ProductGallery(props: ProductGalleryProps) {
@@ -66,6 +169,7 @@ export function ProductGallery(props: ProductGalleryProps) {
   const auth = useAuth()
 
   const [loading, setLoading] = useState(false)
+  const [sorted, setSorted] = useState(false)
   const [total, setTotal] = useState(0)
   const [items, setItems] = useState<ItemType[]>([])
   const sensors = useSensors(
@@ -79,6 +183,18 @@ export function ProductGallery(props: ProductGalleryProps) {
     fetch()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    if (sorted) {
+      setSorted(false)
+      const _files: { [key: number]: number } = {}
+      items.forEach((i, idx) => {
+        _files[i.file_id] = idx
+      })
+      apiPost(url, { files: _files })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items, sorted])
 
   const url = `admin/product/${productId}/files`
 
@@ -123,8 +239,8 @@ export function ProductGallery(props: ProductGalleryProps) {
           setItems((prev) => [
             ...prev,
             {
-              id: item.file_id,
-              productFile: item
+              ...item,
+              id: item.file_id
             }
           ])
         }
@@ -140,8 +256,8 @@ export function ProductGallery(props: ProductGalleryProps) {
       const data = await apiGet<VespTableData<VespProductFile>>(url, {}, withToken(auth.token)())
       setItems(
         data.rows.map((item) => ({
-          id: item.file_id,
-          productFile: item
+          ...item,
+          id: item.file_id
         }))
       )
       setTotal(data.total)
@@ -150,46 +266,17 @@ export function ProductGallery(props: ProductGalleryProps) {
     }
   }
 
-  // function setList(newList: ItemType[]) {
-  //   setItems(newList)
-  //   const _files: { [key: number]: number } = {}
-  //   newList.forEach((i, idx) => {
-  //     _files[i.file_id] = idx
-  //   })
-  //   apiPost(url, { files: _files })
-  // }
-
-  // function onSort() {
-  //   setTimeout(async () => {
-  //     // setItems(newList)
-  //     const _files: { [key: number]: number } = {}
-  //     items.forEach((i, idx) => {
-  //       _files[i.file_id] = idx
-  //     })
-  //     await apiPost(url, { files: _files })
-  //   }, 0)
-  // }
-
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event
 
-    let newArray: ItemType[] = []
-
     if (active.id !== over?.id) {
       setItems((items) => {
-        const oldIndex = items.findIndex((item) => item.id === active.id)
-        const newIndex = items.findIndex((item) => item.id === over?.id)
+        const oldIndex = items.findIndex((item) => item.id === Number(active.id))
+        const newIndex = items.findIndex((item) => item.id === Number(over?.id))
 
-        newArray = arrayMove(items, oldIndex, newIndex)
-
-        return newArray
+        return arrayMove(items, oldIndex, newIndex)
       })
-
-      const ordered: { [key: number]: number } = {}
-      newArray.forEach((item, idx) => {
-        ordered[item.id] = idx
-      })
-      apiPost(url, { files: ordered })
+      setSorted(true)
     }
   }
 
@@ -211,34 +298,26 @@ export function ProductGallery(props: ProductGalleryProps) {
           onDragOver={(e) => {
             e.preventDefault()
           }}
+          className="grid grid-cols-4 gap-4"
         >
-          {/* className="grid grid-cols-4 gap-4" */}
-
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
           >
-            <SortableContext items={items} strategy={verticalListSortingStrategy}>
+            <SortableContext items={items} strategy={rectSortingStrategy}>
               {items.map((item) => (
-                <SortableItem key={item.id} {...item} />
-              ))}
-              {/* {items.map((item) => (
-                <div
+                <SortableItem
                   key={item.id}
-                  className="border rounded-lg p-2 hover:border-neutral-300 hover:bg-neutral-50 hover:shadow-sm card"
-                >
-                  <Image
-                    src={getImageLink(item.file, { fit: 'crop', w: thumbWidth, h: thumbHeight })}
-                    width={thumbWidth}
-                    height={thumbHeight}
-                    alt="Picture of the author"
-                  />
-                  <div className="flex gap-2 justify-end mt-2">
-                    <Button></Button>
-                  </div>
-                </div>
-              ))} */}
+                  id={item.id}
+                  width={thumbWidth}
+                  height={thumbHeight}
+                  src={getImageLink(item.file, { fit: 'crop', w: thumbWidth, h: thumbHeight })}
+                  active={item.active}
+                  setItems={setItems}
+                  url={url}
+                />
+              ))}
             </SortableContext>
           </DndContext>
         </div>

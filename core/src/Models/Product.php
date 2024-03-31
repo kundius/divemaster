@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property int $id
@@ -36,5 +38,25 @@ class Product extends Model
   public function productFiles(): HasMany
   {
     return $this->hasMany(ProductFile::class);
+  }
+
+  public function firstProductFile(): HasOne
+  {
+    return $this
+      ->hasOne(ProductFile::class)
+      ->ofMany(['rank' => 'min'], function (Builder $c) {
+        $c->where('active', true);
+      })
+      ->with('file:id,updated_at');
+  }
+
+  public function toArray(): array
+  {
+    $array = parent::toArray();
+    if (array_key_exists('first_product_file', $array)) {
+      $array['file'] = !empty($array['first_product_file']) ? $array['first_product_file']['file'] : null;
+      unset($array['first_product_file']);
+    }
+    return $array;
   }
 }

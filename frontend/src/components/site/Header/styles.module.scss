@@ -1,0 +1,47 @@
+.wrapper {
+  // @include --2xl {
+  //   background: yellow;
+  // }
+  // @include --max-2xl {
+  //   background: red;
+  // }
+  filter: drop-shadow(0px 6px 3.5px rgba(0,8,35,0.19));
+}
+
+.firstGroupWrapper {
+  background: #000b1b;
+  opacity: 0.5;
+}
+
+.secondGroupWrapper {
+  background: #000b1b;
+}
+
+.secondGroup {
+  border-bottom: 1px solid rgba(231, 231, 235, 0.34);
+}
+
+.thirdGroupWrapper {
+  background: #000b1b;
+}
+
+.thirdGroup {
+  border-bottom: 1px solid rgba(231, 231, 235, 0.34);
+}
+
+.helpMenu {
+  display: flex;
+}
+
+.helpMenuMore {
+
+}
+
+.helpMenuMoreToggle {
+
+}
+
+.helpMenuMoreList {
+
+}
+

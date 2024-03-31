@@ -37,6 +37,7 @@ export interface VespProduct {
   description: string | null
   sku: string
   category: VespCategory
+  file: VespFile | null
   active: boolean
   updated_at: string | null
   created_at: string | null

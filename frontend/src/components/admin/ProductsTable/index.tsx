@@ -6,24 +6,41 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { VespRemoveDialog } from '@/components/vesp/VespRemoveDialog'
 import { useVespTable } from '@/components/vesp/VespTable'
+import { getImageLink } from '@/lib/utils'
 import { VespProduct } from '@/types'
 import { CheckCircleIcon, PencilIcon, TrashIcon, XCircleIcon } from '@heroicons/react/24/outline'
+import Image from 'next/image'
 import Link from 'next/link'
 
 export function ProductsTable() {
+  const thumbWidth = 40
+  const thumbHeight = 40
+
   const vespTable = useVespTable<VespProduct>()
 
   const columns: DataTableColumn<VespProduct>[] = [
     {
       key: 'id',
-      label: 'ID'
-    },
-    {
-      key: 'title',
-      label: 'Название',
+      label: 'Товар',
       sortable: true,
       headProps: {
         className: 'w-5/12'
+      },
+      formatter: (_, row) => {
+        return (
+          <div className="flex items-center gap-2">
+            {row.file && (
+              <Image
+                className="rounded"
+                src={getImageLink(row.file, { fit: 'crop', w: thumbWidth, h: thumbHeight })}
+                width={thumbWidth}
+                height={thumbHeight}
+                alt=""
+              />
+            )}
+            <div className="">{row.title}</div>
+          </div>
+        )
       }
     },
     {

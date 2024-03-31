@@ -23,6 +23,11 @@ class ProductFile extends Model
 
     return $key;
   }
+  
+  public function getKeyName(): string
+  {
+    return 'file_id';
+  }
 
   protected function setKeysForSaveQuery($query): Builder
   {
@@ -35,11 +40,11 @@ class ProductFile extends Model
 
   public function product(): BelongsTo
   {
-      return $this->belongsTo(Product::class);
+    return $this->belongsTo(Product::class);
   }
 
   public function file(): BelongsTo
   {
-      return $this->belongsTo(File::class);
+    return $this->belongsTo(File::class);
   }
 }

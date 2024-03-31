@@ -21,7 +21,7 @@ export type DataTableColumn<T> = {
     cellProps?: React.TdHTMLAttributes<HTMLTableCellElement>
     key: K
     sortable?: boolean
-    formatter?: (value: T[K]) => ReactNode
+    formatter?: (value: T[K], row: T) => ReactNode
   }
 }[keyof T]
 
@@ -69,7 +69,7 @@ export function DataTable<TRow extends object = object>(props: DataTableProps<TR
 
   const renderValue = (row: TRow, column: DataTableColumn<TRow>): ReactNode => {
     if (column.formatter) {
-      return column.formatter(row[column.key])
+      return column.formatter(row[column.key], row)
     }
 
     return <>{row[column.key]}</>

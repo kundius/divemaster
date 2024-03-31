@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controllers\Admin;
+
 use Illuminate\Database\Eloquent\Builder;
 
 use App\Models\Product;
@@ -26,8 +27,9 @@ class Products extends ModelController
 
   protected function afterCount(Builder $c): Builder
   {
-      $c->with('category:id,title');
+    $c->with('category:id,title');
+    $c->with('firstProductFile');
 
-      return $c;
+    return $c;
   }
 }

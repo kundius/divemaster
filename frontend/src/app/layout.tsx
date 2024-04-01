@@ -10,14 +10,16 @@ const fontSans = FontSans({
   weight: ['400', '500', '700'],
   subsets: ['latin', 'cyrillic'],
   style: ['normal', 'italic'],
-  variable: '--font-sans'
+  variable: '--font-sans',
+  display: 'swap'
 })
 
 const fontSansAlt = FontSansAlt({
   weight: ['400', '500', '700'],
   subsets: ['latin', 'cyrillic'],
   style: ['normal', 'italic'],
-  variable: '--font-sans-alt'
+  variable: '--font-sans-alt',
+  display: 'swap'
 })
 
 export const metadata: Metadata = {

@@ -19,9 +19,9 @@ export interface TopMenuProps {
 
 export function TopMenu({ className, primary, secondary = [] }: TopMenuProps) {
   return (
-    <ul className={cn(styles.menu, className)}>
+    <ul className={cn(styles.list, className)}>
       {primary.map((item, i) => (
-        <li key={i} className={item.className}>
+        <li key={i} className={cn(styles.item, item.className)}>
           <Link
             href={item.href}
             className={cn(styles.link, styles[`icon-${item.icon}`], {

@@ -18,22 +18,31 @@
   &::placeholder {
     color: rgb(155, 155, 155);
   }
+
+  @include --max-lg {
+    padding-left: 16px;
+    padding-right: 60px;
+    min-width: 160px;
+  }
 }
 
 .submit {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
+  width: 48px;
   height: 44px;
-  border-radius: 22px;
+  border-radius: 0 22px 22px 0;
   position: absolute;
   right: 0;
   top: 0;
   background: linear-gradient( 53deg, rgb(73,87,254) 0%, rgb(123,66,255) 100%);
-
   width: 48px;
-  border-radius: 0 22px 22px 0;
+
+  @include --max-lg {
+    width: 44px;
+    border-radius: 22px;
+  }
 }
 
 .submit::before {

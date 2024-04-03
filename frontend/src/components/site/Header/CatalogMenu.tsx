@@ -10,22 +10,22 @@ export function CatalogMenu() {
           Всё для подводной охоты
         </Link>
       </li>
-      <li className={styles.item}>
+      <li className={cn(styles.item, styles.parent)}>
         <Link href="#" className={styles.link}>
           Всё для дайвинга
         </Link>
       </li>
-      <li className={styles.item}>
+      <li className={cn(styles.item, styles.parent)}>
         <Link href="#" className={styles.link}>
           Всё для плавания
         </Link>
       </li>
-      <li className={styles.item}>
+      <li className={cn(styles.item, styles.parent, 'max-lg:hidden')}>
         <Link href="#" className={styles.link}>
           Бренды
         </Link>
       </li>
-      <li className={styles.item}>
+      <li className={cn(styles.item, 'max-lg:hidden')}>
         <Link href="#" className={styles.sale}></Link>
       </li>
     </ul>

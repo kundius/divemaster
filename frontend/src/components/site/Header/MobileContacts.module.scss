@@ -1,0 +1,37 @@
+.contacts {
+  position: relative;
+  padding-left: 22px;
+  display: block;
+}
+
+.phone {
+  font-size: 16px;
+  color: rgb(255, 255, 255);
+  font-weight: bold;
+  text-transform: uppercase;
+  display: block;
+  line-height: 20px;
+  letter-spacing: -0.025em;
+}
+
+.time {
+  font-size: 10px;
+  color: rgba(254, 254, 254, 0.322);
+  line-height: 10px;
+  display: block;
+  letter-spacing: 0.025em;
+}
+
+.icon {
+  border-radius: 12px;
+  background-image: url('/icons/top-mobile-contacts.svg');
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: 17px 18px;
+  position: absolute;
+  width: 17px;
+  height: 18px;
+  border-radius: 10px;
+  left: 0;
+  top: 8px;
+}

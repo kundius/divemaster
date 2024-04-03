@@ -2,6 +2,10 @@
   background: rgba(0, 11, 27, 0.5);
   position: relative;
   z-index: 30;
+
+  @include --max-md {
+    background-color: rgb(12, 3, 2);
+  }
 }
 
 .logo {
@@ -9,16 +13,34 @@
   margin-bottom: -15px;
   flex-shrink: 0;
   margin-right: 22px;
+
+  @include --max-lg {
+    margin-right: 16px;
+  }
+  @include --max-md {
+    margin: 0;
+    background: #a90083;
+    width: 58px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 .search {
   flex-grow: 22;
 }
 
-.topContainer {
+.top-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  @include --max-md {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
 }
 
 .primary-container {
@@ -28,32 +50,100 @@
   justify-content: space-between;
   padding-bottom: 18px;
   padding-top: 28px;
+  transition: 0.3s ease;
+
+  @include --max-md {
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-left: -16px;
+    margin-right: -16px;
+    padding-right: 8px;
+  }
 }
 
 .space1 {
   flex-grow: 52;
   min-width: 22px;
+
+  @include --max-lg {
+    min-width: 16px;
+  }
+  @include --max-md {
+    min-width: 8px;
+    flex-grow: 10;
+  }
 }
 
 .space2 {
   flex-grow: 10;
   min-width: 22px;
+
+  @include --max-lg {
+    min-width: 16px;
+  }
+  @include --max-md {
+    min-width: 8px;
+    flex-grow: 10;
+  }
+}
+
+.catalog-button {
+  @include --max-md {
+    display: none;
+  }
+}
+
+.menu-button {
+
+  @include --md {
+    display: none;
+  }
 }
 
 .toolbar {
   margin-right: -5px;
+
+  @include --max-md {
+    margin-right: 0;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #f7f7f9;
+    border-top: 1px solid #cccccc;
+    padding: 7px 3px;
+  }
 }
 
 .top-menu-primary {
   margin-left: -10px;
+
+  @include --max-md {
+    display: none;
+  }
 }
 
 .top-menu-secondary {
+  @include --max-2xl {
+    display: none;
+  }
+}
 
+.mobile-contacts {
+  @include --md {
+    display: none;
+  }
 }
 
 .city-select {
   margin-right: -10px;
+
+  @include --max-md {
+    margin-right: -4px;
+  }
+  @include --max-sm {
+    max-width: 140px;
+  }
 }
 
 .secondary-container {
@@ -62,6 +152,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  @include --max-md {
+    display: none;
+  }
 }
 
 .catalog-menu {
@@ -69,5 +163,4 @@
 }
 
 .desktop-contacts {
-
 }

@@ -8,6 +8,13 @@
   color: rgba(255, 255, 255, 0.8);
   font-size: 11px;
   line-height: 16px;
+  max-width: 100%;
+
+  @include --max-md {
+    padding-left: 4px;
+    padding-right: 4px;
+    min-height: 42px;
+  }
 }
 
 .button:hover {
@@ -33,6 +40,7 @@
   width: 22px;
   height: 22px;
   opacity: 0.7;
+  flex-shrink: 0;
 }
 
 .affix {
@@ -40,6 +48,8 @@
   align-items: center;
   border-bottom: 1px dashed #787575;
   border-bottom-color: rgba(255, 255, 255, 0.4);
+  flex-grow: 1;
+  overflow: hidden;
 }
 
 .affix::after {
@@ -50,4 +60,15 @@
   border-color: currentColor transparent transparent;
   border-width: 5px 5px 0;
   opacity: 0.8;
+  flex-shrink: 0;
+
+  @include --max-md {
+    margin-left: 4px;
+  }
+}
+
+.label {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

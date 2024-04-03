@@ -13,7 +13,12 @@
   padding-left: 50px;
   position: relative;
   line-height: 1;
-  transition: .3s ease;
+  transition: 0.3s ease;
+
+  @include --max-lg {
+    padding-left: 20px;
+    padding-right: 36px;
+  }
 }
 
 .button::before {
@@ -29,6 +34,10 @@
   box-shadow: 0 -8px 0 currentColor, 0 8px 0 currentColor, -8px 0 0 currentColor,
     8px 0 0 currentColor, -8px -8px 0 currentColor, 8px 8px 0 currentColor, -8px 8px 0 currentColor,
     8px -8px 0 currentColor;
+
+  @include --max-lg {
+    display: none;
+  }
 }
 
 .arrow {
@@ -41,7 +50,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: .3s ease;
+  transition: 0.3s ease;
+
+  @include --max-lg {
+    right: 12px;
+  }
 }
 
 .arrow::after {
@@ -56,7 +69,7 @@
 }
 
 .button:hover {
-  background: linear-gradient( 53deg, rgb(159,0,169) 0%, rgb(141,45,250) 100%);
+  background: linear-gradient(53deg, rgb(159, 0, 169) 0%, rgb(141, 45, 250) 100%);
   box-shadow: 0px 0px 7px 0px rgba(0, 29, 47, 0.39);
 }
 

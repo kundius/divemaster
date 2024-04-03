@@ -10,13 +10,20 @@ import { CatalogButton } from './CatalogButton'
 import { Toolbar } from './Toolbar'
 import { CatalogMenu } from './CatalogMenu'
 import { DesktopContacts } from './DesktopContacts'
+import { MobileContacts } from './MobileContacts'
+import { cn } from '@/lib/utils'
+import { MenuButton } from './MenuButton'
 
 export function Header() {
   console.log('render header')
   return (
     <>
       <div className={styles.top}>
-        <Container className={styles.topContainer}>
+        <Container className={styles['top-container']}>
+          <div className={styles['mobile-contacts']}>
+            <MobileContacts />
+          </div>
+
           <div className={styles['top-menu-primary']}>
             <TopMenu
               primary={[
@@ -55,6 +62,16 @@ export function Header() {
                 {
                   title: 'Скидочные карты',
                   href: '/contacts'
+                },
+                {
+                  title: 'Подарочные сертификаты',
+                  href: '#',
+                  className: '2xl:hidden'
+                },
+                {
+                  title: 'Школа подводной охоты и дайвинга',
+                  href: '#',
+                  className: '2xl:hidden'
                 }
               ]}
             />
@@ -87,11 +104,14 @@ export function Header() {
           <div className={styles['primary-container']}>
             <div className={styles.logo}>
               <Link href="/">
-                <Image src="/logo.png" width={148} height={71} alt="" />
+                <Image src="/logo.png" width={148} height={71} alt="" className='max-md:hidden' />
+                <Image src="/small-logo.png" width={43} height={48} alt="" className='md:hidden' />
               </Link>
             </div>
 
-            <CatalogButton />
+            <div className={styles['catalog-button']}>
+              <CatalogButton />
+            </div>
 
             <div className={styles.space1} />
 
@@ -103,6 +123,10 @@ export function Header() {
 
             <div className={styles.toolbar}>
               <Toolbar />
+            </div>
+
+            <div className={styles['menu-button']}>
+              <MenuButton />
             </div>
           </div>
 

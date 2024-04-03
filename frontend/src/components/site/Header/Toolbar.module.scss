@@ -1,15 +1,15 @@
 .wrapper {
   display: flex;
+  justify-content: space-between;
 }
 
 .button {
-  display: flex;
-  flex-direction: column;
   position: relative;
   padding: 0 5px;
   border-right: 1px solid rgba(255, 255, 255, 0.102);
   position: relative;
   z-index: 1;
+  flex-grow: 1;
 }
 
 .button:last-child {
@@ -43,6 +43,7 @@
 }
 
 .icon {
+  display: block;
   width: 32px;
   height: 32px;
   background-position: 50% 50%;
@@ -76,6 +77,11 @@
   line-height: 12px;
   text-align: center;
   transition: .3s ease;
+  display: block;
+  
+  @include --max-md {
+    color: rgb(133, 138, 142);
+  }
 }
 
 .badge {

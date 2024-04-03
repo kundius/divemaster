@@ -6,14 +6,13 @@ import { PropsWithChildren, useEffect, useRef } from 'react'
 
 export function Sticky({ children }: PropsWithChildren) {
   const observerRef = useRef<IntersectionObserver | null>(null)
-  const wrapperRef = useRef<HTMLDivElement>(null)
-  const topAnchorRef = useRef<HTMLDivElement>(null)
+  const blockRef = useRef<HTMLDivElement>(null)
+  const anchorRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     observerRef.current = new IntersectionObserver(
       ([e]) => {
-        // console.log(e)
-        wrapperRef.current?.toggleAttribute('data-stuck', e.intersectionRatio < 1)
+        blockRef.current?.toggleAttribute('data-stuck', e.intersectionRatio < 1)
       },
       { threshold: [1] }
     )
@@ -21,20 +20,20 @@ export function Sticky({ children }: PropsWithChildren) {
 
   useEffect(() => {
     const observer = observerRef.current
-    const topAnchor = topAnchorRef.current
+    const anchor = anchorRef.current
 
-    if (!observer || !topAnchor) return
+    if (!observer || !anchor) return
 
-    observer.observe(topAnchor)
+    observer.observe(anchor)
 
     return () => {
       observer.disconnect()
     }
-  }, [topAnchorRef])
+  }, [anchorRef])
 
   return (
-    <div className={cn(styles.block, 'sticky-header')} ref={wrapperRef}>
-      <div className={styles['top-anchor']} ref={topAnchorRef} />
+    <div className={cn(styles.block, 'sticky-header')} ref={blockRef}>
+      <div className={styles.anchor} ref={anchorRef} />
       {children}
     </div>
   )

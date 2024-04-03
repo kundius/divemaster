@@ -1,9 +1,10 @@
-.menu {
+.list {
   display: flex;
   align-items: center;
   gap: 20px;
-  > li {
-    display: flex;
+
+  @include --max-lg {
+    gap: 12px;
   }
 }
 
@@ -15,7 +16,7 @@
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.8);
   padding: 0 10px;
-  display: inline-flex;
+  display: flex;
   min-height: 32px;
   align-items: center;
   white-space: nowrap;

@@ -3,6 +3,10 @@
   position: relative;
   padding-right: 42px;
   display: block;
+
+  @include --max-xl {
+    padding-right: 36px;
+  }
 }
 
 .phone {
@@ -11,15 +15,25 @@
   font-weight: bold;
   text-transform: uppercase;
   display: block;
-  line-height: 1.25;
+  line-height: 30px;
+
+  @include --max-xl {
+    font-size: 20px;
+  }
+  @include --max-lg {
+    font-size: 18px;
+  }
 }
 
 .time {
   font-size: 11px;
   color: rgba(254, 254, 254, 0.702);
-  line-height: 1;
+  line-height: 12px;
   display: block;
-  margin-top: 1px;
+  
+  @include --max-lg {
+    font-size: 10px;
+  }
 }
 
 .icon {

@@ -1,24 +1,28 @@
-import Image from 'next/image'
 import { Container } from '../Container'
 import { TopMenu } from './TopMenu'
 import { CitySelect } from './CitySelect'
-// import { SecondGroup } from './SecondGroup'
-// import { ThirdGroup } from './ThirdGroup'
-import styles from './styles.module.scss'
+import styles from './index.module.scss'
+import { Sticky } from './Sticky'
+import Image from 'next/image'
+import { Search } from './Search'
 import Link from 'next/link'
-import { cn } from '@/lib/utils'
+import { CatalogButton } from './CatalogButton'
+import { Toolbar } from './Toolbar'
+import { CatalogMenu } from './CatalogMenu'
+import { DesktopContacts } from './DesktopContacts'
 
 export function Header() {
+  console.log('render header')
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.firstGroupWrapper}>
-        <Container>
-          <div className={styles.firstGroup}>
+    <>
+      <div className={styles.top}>
+        <Container className={styles.topContainer}>
+          <div className={styles['top-menu-primary']}>
             <TopMenu
               primary={[
                 {
                   title: 'Доставка и оплата',
-                  href: '#',
+                  href: '/',
                   icon: 'delivery'
                 },
                 {
@@ -28,7 +32,7 @@ export function Header() {
                 },
                 {
                   title: 'Контакты',
-                  href: '#',
+                  href: '/contacts',
                   icon: 'contacts'
                 },
                 {
@@ -46,14 +50,17 @@ export function Header() {
                 },
                 {
                   title: 'О магазине',
-                  href: '#'
+                  href: '/'
                 },
                 {
                   title: 'Скидочные карты',
-                  href: '#'
+                  href: '/contacts'
                 }
               ]}
             />
+          </div>
+
+          <div className={styles['top-menu-secondary']}>
             <TopMenu
               primary={[
                 {
@@ -68,20 +75,48 @@ export function Header() {
                 }
               ]}
             />
+          </div>
+
+          <div className={styles['city-select']}>
             <CitySelect />
           </div>
         </Container>
       </div>
-      <div className={styles.secondGroupWrapper}>
+      <Sticky>
         <Container>
-          <div className={styles.secondGroup}>secondGroup</div>
+          <div className={styles['primary-container']}>
+            <div className={styles.logo}>
+              <Link href="/">
+                <Image src="/logo.png" width={148} height={71} alt="" />
+              </Link>
+            </div>
+
+            <CatalogButton />
+
+            <div className={styles.space1} />
+
+            <div className={styles.search}>
+              <Search />
+            </div>
+
+            <div className={styles.space2} />
+
+            <div className={styles.toolbar}>
+              <Toolbar />
+            </div>
+          </div>
+
+          <div className={styles['secondary-container']}>
+            <div className={styles['catalog-menu']}>
+              <CatalogMenu />
+            </div>
+
+            <div className={styles['desktop-contacts']}>
+              <DesktopContacts />
+            </div>
+          </div>
         </Container>
-      </div>
-      <div className={styles.thirdGroupWrapper}>
-        <Container>
-          <div className={styles.thirdGroup}>thirdGroup</div>
-        </Container>
-      </div>
-    </div>
+      </Sticky>
+    </>
   )
 }

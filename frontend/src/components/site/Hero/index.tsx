@@ -1,0 +1,10 @@
+import { cn } from '@/lib/utils'
+import styles from './index.module.scss'
+
+export function Hero() {
+  return (
+    <div className={cn(styles.wrapper, 'hero-after-header')}>
+      hero
+    </div>
+  )
+}

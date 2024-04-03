@@ -1,4 +1,3 @@
-import { Hero } from '@/components/site/Hero'
 import { getStaticParams } from '@/locales/server'
 
 export function generateStaticParams() {
@@ -8,10 +7,7 @@ export function generateStaticParams() {
 export default function Page({ params: { locale } }: { params: { locale: string } }) {
   return (
     <>
-      <Hero />
-      <div>
-        Home Page
-      </div>
+      Contacts
     </>
   )
 }

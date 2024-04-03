@@ -1,0 +1,31 @@
+.block {
+  position: sticky;
+  top: 0;
+  transition: box-shadow .3s ease;
+  background-color: rgba(0, 11, 27, 0.851);
+  box-shadow: 0px 6px 7px 0px rgba(0, 8, 35, 0.19);
+
+  &[data-stuck] {
+    transition: box-shadow .3s ease, background .3s ease;
+  }
+
+  :global(body:has(.hero-after-header)) & {
+    background: transparent;
+    box-shadow: none;
+
+    &[data-stuck] {
+      background: rgba(0, 11, 27, 0.851);
+      box-shadow: 0px 6px 7px 0px rgba(0, 8, 35, 0.19);
+    }
+  }
+}
+
+.top-anchor {
+  height: 1px;
+  position: absolute;
+  left: 0;
+  top: -1px;
+  right: 0;
+  visibility: hidden;
+  pointer-events: none;
+}

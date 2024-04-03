@@ -1,0 +1,10 @@
+.wrapper {
+  height: 500px;
+  background: cadetblue;
+
+  &:global(.hero-after-header) {
+    margin-top: -182px;
+  }
+}
+
+

@@ -1,0 +1,103 @@
+.list {
+  display: flex;
+  align-items: center;
+}
+
+.link {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: bold;
+  line-height: 42px;
+  white-space: nowrap;
+  padding: 0 16px;
+  display: block;
+  font-family: var(--font-sans-alt);
+  position: relative;
+  z-index: 1;
+  transition: color .3s ease;
+}
+
+.link::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  transition: .3s ease;
+  border-radius: 22px;
+  background: linear-gradient( 53deg, rgb(73,87,254) 0%, rgb(123,66,255) 100%);
+  box-shadow: 0px 0px 6.86px 0.14px rgba(0, 29, 47, 0.3);
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.link:hover {
+  color: rgba(255, 255, 255, 1);
+}
+
+.link:hover::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.parent .link {
+  padding-right: 24px;
+}
+
+.parent .link::after {
+  content: '';
+  position: absolute;
+  border-style: solid;
+  border-color: currentColor transparent transparent;
+  border-width: 5px 4px 0;
+  top: 50%;
+  margin-top: -2px;
+  right: 10px;
+}
+
+.item {
+
+}
+
+.sale {
+  background-image: linear-gradient( 45deg, #fc1709 0%, rgb(244,167,132) 100%);
+  width: 42px;
+  height: 24px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 9px 24px;
+  padding: 0 2px 2px 0px;
+}
+
+.sale::before {
+  content: '';
+  display: block;
+  width: 27px;
+  height: 16px;
+  background: url('/text-sale.png') no-repeat 50% 50%;
+  opacity: 0.8;
+}
+
+.sale:hover {
+  background-image: linear-gradient( 45deg, rgb(203,0,0) 0%, #fc1204 53%, rgb(244,167,132) 100%);
+}
+
+.sale:hover::before {
+  opacity: 1;
+}
+
+// .Rounded_Rectangle_1279 {
+//   background-image: -moz-linear-gradient( 45deg, rgba(244,167,132,0) 0%, rgb(244,167,132) 100%);
+//   background-image: -webkit-linear-gradient( 45deg, rgba(244,167,132,0) 0%, rgb(244,167,132) 100%);
+//   background-image: -ms-linear-gradient( 45deg, rgba(244,167,132,0) 0%, rgb(244,167,132) 100%);
+//   position: absolute;
+//   left: 863px;
+//   top: 139px;
+//   width: 42px;
+//   height: 24px;
+//   z-index: 1165;
+// }

@@ -1,9 +1,27 @@
 .button {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   min-height: 32px;
   white-space: nowrap;
+  padding: 0 10px;
   gap: 4px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 11px;
+  line-height: 16px;
+}
+
+.button:hover {
+  color: rgba(255, 255, 255, 1);
+  background: #272f76;
+}
+
+.button:hover::before  {
+  opacity: 1;
+}
+
+.button:hover .affix {
+  color: #fff;
+  border-bottom-color: rgba(255, 255, 255, 0.6);
 }
 
 .button::before {
@@ -18,12 +36,10 @@
 }
 
 .affix {
-  color: #b7b4b4;
   display: inline-flex;
-  font-size: 11px;
-  line-height: 16px;
   align-items: center;
   border-bottom: 1px dashed #787575;
+  border-bottom-color: rgba(255, 255, 255, 0.4);
 }
 
 .affix::after {
@@ -33,13 +49,5 @@
   border-style: solid;
   border-color: currentColor transparent transparent;
   border-width: 5px 5px 0;
-}
-
-.button:hover::before  {
-  opacity: 1;
-}
-
-.button:hover .affix {
-  color: #fff;
-  border-bottom-color: #fff;
+  opacity: 0.8;
 }

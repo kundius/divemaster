@@ -1,0 +1,73 @@
+.top {
+  background: rgba(0, 11, 27, 0.5);
+  position: relative;
+  z-index: 30;
+}
+
+.logo {
+  margin-top: -26px;
+  margin-bottom: -15px;
+  flex-shrink: 0;
+  margin-right: 22px;
+}
+
+.search {
+  flex-grow: 22;
+}
+
+.topContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.primary-container {
+  border-bottom: 1px solid rgba(231, 231, 235, 0.34);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 18px;
+  padding-top: 28px;
+}
+
+.space1 {
+  flex-grow: 52;
+  min-width: 22px;
+}
+
+.space2 {
+  flex-grow: 10;
+  min-width: 22px;
+}
+
+.toolbar {
+  margin-right: -5px;
+}
+
+.top-menu-primary {
+  margin-left: -10px;
+}
+
+.top-menu-secondary {
+
+}
+
+.city-select {
+  margin-right: -10px;
+}
+
+.secondary-container {
+  border-bottom: 1px solid rgba(231, 231, 235, 0.34);
+  padding: 9px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.catalog-menu {
+  margin-left: -16px;
+}
+
+.desktop-contacts {
+
+}

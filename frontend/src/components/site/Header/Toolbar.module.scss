@@ -55,20 +55,61 @@
 .icon-cart {
   background-image: url('/icons/toolbar/cart.svg');
   background-position: calc(50% + -1px) calc(50% + 4px);
+
+  @include --max-md {
+    background-image: url('/icons/toolbar/cart-gray.svg');
+    .button:hover & {
+      background-image: url('/icons/toolbar/cart.svg');
+    }
+  }
 }
 
 .icon-favorites {
   background-image: url('/icons/toolbar/favorites.svg');
   background-position: calc(50% + 2px) calc(50% + 2px);
+
+  @include --max-md {
+    background-image: url('/icons/toolbar/favorites-gray.svg');
+    .button:hover & {
+      background-image: url('/icons/toolbar/favorites.svg');
+    }
+  }
 }
 
 .icon-profile {
   background-image: url('/icons/toolbar/profile.svg');
+
+  @include --max-md {
+    background-image: url('/icons/toolbar/profile-gray.svg');
+    .button:hover & {
+      background-image: url('/icons/toolbar/profile.svg');
+    }
+  }
 }
 
 .icon-compare {
   background-image: url('/icons/toolbar/compare.svg');
   background-position: calc(50% + -4px) calc(50% + 2px);
+
+  @include --max-md {
+    background-image: url('/icons/toolbar/compare-gray.svg');
+    .button:hover & {
+      background-image: url('/icons/toolbar/compare.svg');
+    }
+  }
+}
+
+.icon-catalog {
+  background-image: url('/icons/toolbar/catalog.svg');
+  background-position: calc(50% + 0px) calc(50% + 0px);
+  background-size: 18px auto;
+
+  @include --max-md {
+    background-image: url('/icons/toolbar/catalog-gray.svg');
+    .button:hover & {
+      background-image: url('/icons/toolbar/catalog.svg');
+    }
+  }
 }
 
 .title {

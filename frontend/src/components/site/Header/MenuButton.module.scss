@@ -6,22 +6,6 @@
   flex-shrink: 0;
   position: relative;
   background: #4a1574;
-
-  &[data-variant="close"] {
-    span:nth-child(1) {
-      margin-top: 0;
-      transform: translate(-50%, -50%) rotate(-45deg);
-      transform-origin: 50% 50%;
-    }
-    span:nth-child(2) {
-      transform: translate(-50%, -50%) scale(0, 1);
-    }
-    span:nth-child(3) {
-      margin-top: 0;
-      transform: translate(-50%, -50%) rotate(45deg);
-      transform-origin: 50% 50%;
-    }
-  }
 }
 
 .button span {
@@ -46,4 +30,20 @@
 
 .button span:nth-child(3) {
   margin-top: 6px;
+}
+
+.close {
+  span:nth-child(1) {
+    margin-top: 0;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    transform-origin: 50% 50%;
+  }
+  span:nth-child(2) {
+    transform: translate(-50%, -50%) scale(0, 1);
+  }
+  span:nth-child(3) {
+    margin-top: 0;
+    transform: translate(-50%, -50%) rotate(45deg);
+    transform-origin: 50% 50%;
+  }
 }

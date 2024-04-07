@@ -13,11 +13,12 @@ import { DesktopContacts } from './DesktopContacts'
 import { MobileContacts } from './MobileContacts'
 import { cn } from '@/lib/utils'
 import { MenuButton } from './MenuButton'
+import { MobileNavigation } from './MobileNavigation'
 
 export function Header() {
   console.log('render header')
   return (
-    <>
+    <MobileNavigation>
       <div className={styles.top}>
         <Container>
           <div className={styles['top-container']}>
@@ -123,7 +124,7 @@ export function Header() {
 
             <div className={styles.space2} />
 
-            <div className={styles.toolbar}>
+            <div className={styles.toolbar} data-header-toolbar>
               <Toolbar />
             </div>
 
@@ -143,6 +144,6 @@ export function Header() {
           </div>
         </Container>
       </Sticky>
-    </>
+    </MobileNavigation>
   )
 }

@@ -6,7 +6,7 @@ export function DefaultLayout({ children }: PropsWithChildren) {
   return (
     <div>
       <Header />
-      <div style={{ height: 2000 }}>{children}</div>
+      <div style={{ height: 2000, background: 'cyan' }}>{children}</div>
       <Footer />
     </div>
   )

@@ -1,0 +1,156 @@
+.root {
+
+}
+
+.root > .list {
+
+}
+
+.root > .list > .list-content {
+
+}
+
+.root > .list > .list-content > .item {
+}
+
+.root > .list > .list-content > .item > .trigger {
+  font-size: 14px;
+  line-height: 16px;
+  font-family: var(--font-sans-alt);
+  color: rgb(34, 34, 34);
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 8px 24px;
+  min-height: 48px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  border-radius: 12px 12px 0 0;
+  transition: background .3s ease ;
+}
+
+.root > .list > .list-content > .item.active > .trigger {
+  background: #eae9f8;
+}
+
+.root > .list > .list-content > .item > .trigger > .arrow {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  background: #e1e6f4;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: -8px;
+  transition: transform .5s ease;
+}
+
+.root > .list > .list-content > .item.active > .trigger > .arrow {
+  background: #f7f9ff;
+  color: #757679;
+  transform: rotate(-180deg);
+}
+
+.root > .list > .list-content > .item > .trigger > .arrow::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-left: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  margin-top: -2px;
+}
+
+// @keyframes slidein {
+//   from {
+//     height: 0;
+//   }
+
+//   to {
+//     height: var(--list-content-height);
+//   }
+// }
+
+// @keyframes slideout {
+//   from {
+//     height: var(--list-content-height);
+//   }
+
+//   to {
+//     height: 0;
+//   }
+// }
+
+.root > .list > .list-content > .item > .list {
+  // display: none;
+  border-left: 2px solid transparent;
+  border-right: 2px solid transparent;
+  border-bottom: 2px solid transparent;
+  border-radius: 0 0 12px 12px;
+  overflow: hidden;
+  height: 0;
+  position: relative;
+  transition: border-color .3s ease, height .5s ease;
+
+  // animation-duration: .5s;
+  // animation-name: slideout;
+  // animation-iteration-count: 1;
+  // animation-fill-mode: forwards;
+}
+
+.root > .list > .list-content > .item > .list::before {
+  content: '';
+  width: 100%;
+  height: 16px;
+  background: #eae9f8;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+
+.root > .list > .list-content > .item > .list::after {
+  content: '';
+  width: 100%;
+  height: 16px;
+  border-radius: 12px 12px 0 0;
+  background: #fff;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.root > .list > .list-content > .item.active > .list {
+  // display: flex;
+  border-color: #eae9f8;
+  // animation-name: slidein;
+  height: var(--list-content-height);
+}
+
+.root > .list > .list-content > .item.active > .list::before {
+  opacity: 1;
+}
+
+.root > .list > .list-content > .item > .list > .list-content {
+  padding: 16px 22px;
+  flex-direction: column;
+  gap: 12px;
+  display: flex;
+}
+
+.root > .list > .list-content > .item > .list > .list-content > .item {
+  font-size: 14px;
+  line-height: 16px;
+  font-family: var(--font-sans-alt);
+  color: rgb(34, 34, 34);
+  text-align: left;
+}
+
+.root > .list > .list-content > .item > .list > .list-content > .item > .trigger {
+}

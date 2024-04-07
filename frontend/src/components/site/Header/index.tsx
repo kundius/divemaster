@@ -124,7 +124,7 @@ export function Header() {
 
             <div className={styles.space2} />
 
-            <div className={styles.toolbar} data-header-toolbar>
+            <div className={styles.toolbar} data-header-toolbar=''>
               <Toolbar />
             </div>
 

@@ -15,7 +15,7 @@
     //   transition: box-shadow .3s ease, background .3s ease;
     // }
 
-    :global(body:has(.hero-after-header)) & {
+    :global(body:has([data-hero-after-header])) & {
       transition: box-shadow .3s ease, background .3s ease;
       background: transparent;
       box-shadow: none;

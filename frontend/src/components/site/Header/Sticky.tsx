@@ -32,7 +32,7 @@ export function Sticky({ children }: PropsWithChildren) {
   }, [anchorRef])
 
   return (
-    <div className={styles.block} ref={blockRef} data-header-sticky>
+    <div className={styles.block} ref={blockRef} data-header-sticky=''>
       <div className={styles.anchor} ref={anchorRef} />
       {children}
     </div>

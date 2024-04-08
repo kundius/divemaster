@@ -1,4 +1,4 @@
-import { byDirection } from '@/categories'
+import { catalogByDirection } from './menu'
 import {
   VerticalMenu,
   VerticalMenuArrow,
@@ -8,13 +8,14 @@ import {
 } from '@/components/ui/vertical-menu'
 import { useRef } from 'react'
 import styles from './MobileNavigationCatalog.module.scss'
+import Link from 'next/link'
 
 export default function MobileNavigationCatalog() {
   return (
     <div className={styles.root}>
       <VerticalMenu>
         <VerticalMenuList>
-          {byDirection.map((item, i) => (
+          {catalogByDirection.map((item, i) => (
             <VerticalMenuItem key={i}>
               <VerticalMenuTrigger href={item.href}>
                 {item.title}
@@ -31,8 +32,14 @@ export default function MobileNavigationCatalog() {
               )}
             </VerticalMenuItem>
           ))}
+          <VerticalMenuItem>
+            <Link href={`#sale`} className={styles.sale}>
+              <span className='sale' />
+            </Link>
+          </VerticalMenuItem>
         </VerticalMenuList>
       </VerticalMenu>
+      <Link href="#" className={styles.gift}>Подарочный сертификат</Link>
     </div>
   )
 }

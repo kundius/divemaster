@@ -74,3 +74,31 @@
     @apply bg-background text-foreground;
   }
 }
+
+.sale {
+  background-image: linear-gradient(45deg, #fc1709 0%, rgb(244,167,132) 100%);
+  width: 42px;
+  height: 24px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 2px 2px 0px;
+}
+
+.sale::before {
+  content: '';
+  display: block;
+  width: 27px;
+  height: 16px;
+  background: url('/text-sale.png') no-repeat 50% 50%;
+  opacity: 0.8;
+}
+
+.sale:hover {
+  background-image: linear-gradient(45deg, rgb(203,0,0) 0%, #fc1204 53%, rgb(244,167,132) 100%);
+}
+
+.sale:hover::before {
+  opacity: 1;
+}

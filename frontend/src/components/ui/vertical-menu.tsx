@@ -99,11 +99,13 @@ export function VerticalMenuItem({ children, name }: PropsWithChildren<VerticalM
 
 interface VerticalMenuTriggerProps {
   href?: string
+  className?: string
 }
 
 export function VerticalMenuTrigger({
   children,
-  href
+  href,
+  className
 }: PropsWithChildren<VerticalMenuTriggerProps>) {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const rootContext = useContext(RootContext)
@@ -135,7 +137,7 @@ export function VerticalMenuTrigger({
 
   if (href) {
     return (
-      <Link href={href} className={styles.trigger}>
+      <Link href={href} className={cn(styles.trigger, className)}>
         {children}
       </Link>
     )

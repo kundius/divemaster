@@ -26,7 +26,9 @@ export function CatalogMenu() {
         </Link>
       </li>
       <li className={cn(styles.item, 'max-lg:hidden')}>
-        <Link href="#" className={styles.sale}></Link>
+        <Link href="#" className={styles.sale}>
+          <span className='sale' />
+        </Link>
       </li>
     </ul>
   )

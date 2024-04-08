@@ -74,47 +74,11 @@
 }
 
 .sale {
-  background-image: linear-gradient( 45deg, #fc1709 0%, rgb(244,167,132) 100%);
-  width: 42px;
-  height: 24px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   margin: 9px 24px;
-  padding: 0 2px 2px 0px;
+  display: block;
 
   @include --max-xl {
     margin-left: 16px;
     margin-right: 16px;
   }
 }
-
-.sale::before {
-  content: '';
-  display: block;
-  width: 27px;
-  height: 16px;
-  background: url('/text-sale.png') no-repeat 50% 50%;
-  opacity: 0.8;
-}
-
-.sale:hover {
-  background-image: linear-gradient( 45deg, rgb(203,0,0) 0%, #fc1204 53%, rgb(244,167,132) 100%);
-}
-
-.sale:hover::before {
-  opacity: 1;
-}
-
-// .Rounded_Rectangle_1279 {
-//   background-image: -moz-linear-gradient( 45deg, rgba(244,167,132,0) 0%, rgb(244,167,132) 100%);
-//   background-image: -webkit-linear-gradient( 45deg, rgba(244,167,132,0) 0%, rgb(244,167,132) 100%);
-//   background-image: -ms-linear-gradient( 45deg, rgba(244,167,132,0) 0%, rgb(244,167,132) 100%);
-//   position: absolute;
-//   left: 863px;
-//   top: 139px;
-//   width: 42px;
-//   height: 24px;
-//   z-index: 1165;
-// }

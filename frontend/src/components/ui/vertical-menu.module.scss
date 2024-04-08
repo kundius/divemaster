@@ -22,7 +22,7 @@
   text-transform: uppercase;
   text-align: left;
   padding: 8px 24px;
-  min-height: 48px;
+  min-height: 50px;
   display: flex;
   gap: 16px;
   align-items: center;
@@ -66,28 +66,7 @@
   margin-top: -2px;
 }
 
-// @keyframes slidein {
-//   from {
-//     height: 0;
-//   }
-
-//   to {
-//     height: var(--list-content-height);
-//   }
-// }
-
-// @keyframes slideout {
-//   from {
-//     height: var(--list-content-height);
-//   }
-
-//   to {
-//     height: 0;
-//   }
-// }
-
 .root > .list > .list-content > .item > .list {
-  // display: none;
   border-left: 2px solid transparent;
   border-right: 2px solid transparent;
   border-bottom: 2px solid transparent;
@@ -96,17 +75,12 @@
   height: 0;
   position: relative;
   transition: border-color .3s ease, height .5s ease;
-
-  // animation-duration: .5s;
-  // animation-name: slideout;
-  // animation-iteration-count: 1;
-  // animation-fill-mode: forwards;
 }
 
 .root > .list > .list-content > .item > .list::before {
   content: '';
   width: 100%;
-  height: 16px;
+  height: 12px;
   background: #eae9f8;
   position: absolute;
   left: 0;
@@ -118,7 +92,7 @@
 .root > .list > .list-content > .item > .list::after {
   content: '';
   width: 100%;
-  height: 16px;
+  height: 12px;
   border-radius: 12px 12px 0 0;
   background: #fff;
   position: absolute;
@@ -127,9 +101,7 @@
 }
 
 .root > .list > .list-content > .item.active > .list {
-  // display: flex;
   border-color: #eae9f8;
-  // animation-name: slidein;
   height: var(--list-content-height);
 }
 
@@ -138,19 +110,27 @@
 }
 
 .root > .list > .list-content > .item > .list > .list-content {
-  padding: 16px 22px;
-  flex-direction: column;
-  gap: 12px;
-  display: flex;
+  padding: 12px 8px;
 }
 
 .root > .list > .list-content > .item > .list > .list-content > .item {
+}
+
+.root > .list > .list-content > .item > .list > .list-content > .item > .trigger {
   font-size: 14px;
   line-height: 16px;
   font-family: var(--font-sans-alt);
   color: rgb(34, 34, 34);
+  color: #494949;
   text-align: left;
+  padding: 2px 14px;
+  border-radius: 12px;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
 }
 
-.root > .list > .list-content > .item > .list > .list-content > .item > .trigger {
+.root > .list > .list-content > .item > .list > .list-content > .item > .trigger:hover {
+  color: #000000;
+  background: #e4e7ed;
 }

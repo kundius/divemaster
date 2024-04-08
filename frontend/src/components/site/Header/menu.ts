@@ -1,4 +1,4 @@
-export const byDirection = [
+export const catalogByDirection = [
   {
     title: 'Всё для подводной охоты',
     items: [
@@ -124,4 +124,22 @@ export const byDirection = [
       { title: 'ZELINKA', href: '#ZELINKA' }
     ]
   }
+]
+
+export const pages = [
+  {
+    title: 'О магазине',
+    items: [
+      { title: 'О нас', href: '#О нас' },
+      { title: 'Скидочные карты', href: '#Скидочные карты' },
+      { title: 'Программа лояльности', href: '#Программа лояльности' },
+      { title: 'Школа подводной охоты и дайвинга', href: '#Школа подводной охоты и дайвинга' }
+    ]
+  },
+  { title: 'Доставка и оплата', href: '#Доставка и оплата', items: [] },
+  { title: 'Оптовикам', href: '#Оптовикам', items: [] },
+  { title: 'Блог', href: '#Блог', items: [] },
+  { title: 'Подарочные сертификаты', href: '#Подарочные сертификаты', items: [] },
+  { title: 'Контакты', href: '#Контакты', items: [] },
+  { title: 'Юридическая информация', href: '#Юридическая информация', items: [] }
 ]

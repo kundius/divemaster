@@ -16,7 +16,6 @@ import { MenuButton } from './MenuButton'
 import { MobileNavigation } from './MobileNavigation'
 
 export function Header() {
-  console.log('render header')
   return (
     <MobileNavigation>
       <div className={styles.top}>
@@ -104,7 +103,7 @@ export function Header() {
       </div>
       <Sticky>
         <Container>
-          <div className={styles['primary-container']}>
+          <div className={styles['primary-container']} data-header-primary=''>
             <div className={styles.logo}>
               <Link href="/">
                 <Image src="/logo.png" width={148} height={71} alt="" className="max-md:hidden" />
@@ -133,7 +132,7 @@ export function Header() {
             </div>
           </div>
 
-          <div className={styles['secondary-container']}>
+          <div className={styles['secondary-container']} data-header-secondary=''>
             <div className={styles['catalog-menu']}>
               <CatalogMenu />
             </div>

@@ -1,5 +1,43 @@
 .root {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  justify-content: space-between;
+  min-height: 100%;
+}
+
+.sale {
+  padding: 10px 24px;
+  display: block;
+}
+
+.gift {
+  text-transform: uppercase;
+  color: #fff;
+  background: #8c8afe;
+  font-size: 14px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border-radius: 12px;
+  height: 46px;
+  font-weight: bold;
+  flex-shrink: 0;
+  margin-top: 24px;
+}
+
+.gift:hover {
+  background: #7d7bff;
+}
+
+.gift::after {
+  content: '';
+  display: block;
+  margin-left: 12px;
+  background: url("/icons/top/gift.svg");
+  width: 22px;
+  height: 22px;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
 }

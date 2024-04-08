@@ -40,6 +40,20 @@
   }
 }
 
+.button::after {
+  content: '';
+  border-style: solid;
+  border-width: 0 20px 20px;
+  border-color: transparent transparent #fff;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -20px;
+  transition: .5s ease;
+  transform-origin: 50% 100%;
+  transform: scale(1, 0);
+}
+
 .arrow {
   position: absolute;
   width: 12px;
@@ -73,6 +87,30 @@
   box-shadow: 0px 0px 7px 0px rgba(0, 29, 47, 0.39);
 }
 
-.button:hover .arrow {
+.button.button-opened::after {
+  transform: scale(1, 1);
+}
+
+.button.button-opened .arrow {
   transform: rotate(180deg);
+}
+
+.modal {
+  background: #fff;
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: var(--offset-top, 0);
+  right: 0;
+  overflow: auto;
+  // visibility: hidden;
+  max-height: 0;
+  // opacity: 0;
+  transition: max-height .5s ease;
+}
+
+.modal.opened {
+  max-height: calc(100vh - var(--offset-top, 0));
+  // visibility: visible;
+  // opacity: 1;
 }

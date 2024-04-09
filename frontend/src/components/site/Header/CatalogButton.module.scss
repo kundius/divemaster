@@ -49,7 +49,7 @@
   top: 100%;
   left: 50%;
   margin-left: -20px;
-  transition: .5s ease;
+  transition: 0.5s ease;
   transform-origin: 50% 100%;
   transform: scale(1, 0);
 }
@@ -102,15 +102,48 @@
   left: 0;
   top: var(--offset-top, 0);
   right: 0;
-  overflow: auto;
-  // visibility: hidden;
-  max-height: 0;
-  // opacity: 0;
-  transition: max-height .5s ease;
+  overflow: hidden;
+  visibility: hidden;
+  height: 0;
+
+  animation-name: slideout;
+  animation-duration: 0.5s;
+  animation-iteration-count: 1;
+  animation-timing-function: ease;
+  animation-fill-mode: forwards;
 }
 
 .modal.opened {
-  max-height: calc(100vh - var(--offset-top, 0));
-  // visibility: visible;
-  // opacity: 1;
+  animation-name: slidein;
+}
+
+.modal-content {
+  height: 100%;
+  overflow: hidden;
+}
+
+.modal.opened .modal-content {
+  overflow: auto;
+}
+
+@keyframes slidein {
+  0% {
+    height: 0;
+    visibility: hidden;
+  }
+  100% {
+    height: calc(100vh - var(--offset-top, 0));
+    visibility: visible;
+  }
+}
+
+@keyframes slideout {
+  0% {
+    height: calc(100vh - var(--offset-top, 0));
+    visibility: visible;
+  }
+  100% {
+    height: 0;
+    visibility: hidden;
+  }
 }

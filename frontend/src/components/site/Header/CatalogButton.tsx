@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import styles from './CatalogButton.module.scss'
 import { createPortal } from 'react-dom'
-import { cn } from '@/lib/utils'
+import { cn, disableScroll, enableScroll } from '@/lib/utils'
 
 export function CatalogButton() {
   const [offsetTop, setOffsetTop] = useState(0)
@@ -20,7 +20,7 @@ export function CatalogButton() {
   }
 
   const open = () => {
-    document.documentElement.style.overflow = 'hidden'
+    disableScroll()
 
     setIsLoaded(true)
 
@@ -36,12 +36,16 @@ export function CatalogButton() {
 
   const close = () => {
     setIsOpened(false)
-    document.documentElement.style.overflow = ''
+
+    enableScroll()
   }
 
   return (
     <>
-      <button className={cn(styles.button, { [styles['button-opened']]: isOpened })} onClick={handleToggle}>
+      <button
+        className={cn(styles.button, { [styles['button-opened']]: isOpened })}
+        onClick={handleToggle}
+      >
         Каталог<span className={styles.arrow}></span>
       </button>
       {isLoaded &&
@@ -50,126 +54,128 @@ export function CatalogButton() {
             className={cn(styles.modal, { [styles.opened]: isOpened })}
             style={{ '--offset-top': `${offsetTop}px` } as React.CSSProperties}
           >
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
-            Component
-            <br />
+            <div className={styles['modal-content']}>
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+              Component
+              <br />
+            </div>
           </div>,
           document.body
         )}

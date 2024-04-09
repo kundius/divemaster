@@ -1,6 +1,6 @@
 'use client'
 
-import { cn } from '@/lib/utils'
+import { cn, disableScroll, enableScroll } from '@/lib/utils'
 import dynamic from 'next/dynamic'
 import { ComponentType, PropsWithChildren, createContext, useContext, useState } from 'react'
 import { createPortal } from 'react-dom'
@@ -33,7 +33,7 @@ export function MobileNavigation({ children }: PropsWithChildren) {
   const [loaded, setLoaded] = useState<MenuName[]>([])
 
   const open = (name: MenuName) => {
-    document.documentElement.style.overflow = 'hidden'
+    disableScroll()
 
     const headerToolbar = document.querySelector('[data-header-toolbar]')
     const headerSticky = document.querySelector('[data-header-sticky]')
@@ -69,7 +69,7 @@ export function MobileNavigation({ children }: PropsWithChildren) {
   const close = () => {
     setOpened([])
 
-    document.documentElement.style.overflow = ''
+    enableScroll()
   }
 
   const components: { [key in MenuName]: ComponentType } = {

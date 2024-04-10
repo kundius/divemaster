@@ -1,13 +1,18 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import styles from './CatalogButton.module.scss'
 import { createPortal } from 'react-dom'
 import { cn, disableScroll, enableScroll } from '@/lib/utils'
+import dynamic from 'next/dynamic'
+
+const CatalogButtonContentDynamic = dynamic(() => import('./CatalogButtonContent'), {
+  ssr: false,
+  loading: () => <>...</>
+})
 
 export function CatalogButton() {
   const [offsetTop, setOffsetTop] = useState(0)
-  // const [offsetBottom, setOffsetBottom] = useState(0)
   const [isLoaded, setIsLoaded] = useState(false)
   const [isOpened, setIsOpened] = useState(false)
 
@@ -20,7 +25,7 @@ export function CatalogButton() {
   }
 
   const open = () => {
-    disableScroll()
+    // disableScroll()
 
     setIsLoaded(true)
 
@@ -37,8 +42,19 @@ export function CatalogButton() {
   const close = () => {
     setIsOpened(false)
 
-    enableScroll()
+    // enableScroll()
   }
+
+  useEffect(() => {
+    if (isOpened) {
+      window.addEventListener('scroll', close)
+    } else {
+      window.removeEventListener('scroll', close)
+    }
+    return () => {
+      window.removeEventListener('scroll', close)
+    }
+  }, [isOpened])
 
   return (
     <>
@@ -55,126 +71,7 @@ export function CatalogButton() {
             style={{ '--offset-top': `${offsetTop}px` } as React.CSSProperties}
           >
             <div className={styles['modal-content']}>
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
-              Component
-              <br />
+              <CatalogButtonContentDynamic />
             </div>
           </div>,
           document.body

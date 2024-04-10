@@ -52,6 +52,7 @@
   transition: 0.5s ease;
   transform-origin: 50% 100%;
   transform: scale(1, 0);
+  opacity: 0;
 }
 
 .arrow {
@@ -89,6 +90,7 @@
 
 .button.button-opened::after {
   transform: scale(1, 1);
+  opacity: 1;
 }
 
 .button.button-opened .arrow {
@@ -105,6 +107,7 @@
   overflow: hidden;
   visibility: hidden;
   height: 0;
+  box-shadow: 0px 6px 7px 0px rgba(0, 8, 35, 0.19);
 
   animation-name: slideout;
   animation-duration: 0.5s;
@@ -118,11 +121,7 @@
 }
 
 .modal-content {
-  height: 100%;
-  overflow: hidden;
-}
-
-.modal.opened .modal-content {
+  height: calc(100vh - (var(--offset-top, 0) + 0px));
   overflow: auto;
 }
 
@@ -130,20 +129,24 @@
   0% {
     height: 0;
     visibility: hidden;
+    opacity: 0;
   }
   100% {
-    height: calc(100vh - var(--offset-top, 0));
+    height: calc(100vh - (var(--offset-top, 0) + 0px));
     visibility: visible;
+    opacity: 1;
   }
 }
 
 @keyframes slideout {
   0% {
-    height: calc(100vh - var(--offset-top, 0));
+    height: calc(100vh - (var(--offset-top, 0) + 0px));
     visibility: visible;
+    opacity: 1;
   }
   100% {
     height: 0;
     visibility: hidden;
+    opacity: 0;
   }
 }

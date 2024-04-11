@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import {
   Dispatch,
+  MouseEvent,
   PropsWithChildren,
   RefObject,
   SetStateAction,
@@ -97,16 +98,7 @@ export function VerticalMenuItem({ children, name }: PropsWithChildren<VerticalM
   )
 }
 
-interface VerticalMenuTriggerProps {
-  href?: string
-  className?: string
-}
-
-export function VerticalMenuTrigger({
-  children,
-  href,
-  className
-}: PropsWithChildren<VerticalMenuTriggerProps>) {
+export function VerticalMenuTrigger({ children }: PropsWithChildren) {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const rootContext = useContext(RootContext)
   const itemContext = useContext(ItemContext)
@@ -135,18 +127,23 @@ export function VerticalMenuTrigger({
     }
   }
 
-  if (href) {
-    return (
-      <Link href={href} className={cn(styles.trigger, className)}>
-        {children}
-      </Link>
-    )
-  }
-
   return (
     <button className={styles.trigger} onClick={handleClick}>
       {children}
+      <VerticalMenuArrow />
     </button>
+  )
+}
+
+interface VerticalMenuLinkProps {
+  href: string
+}
+
+export function VerticalMenuLink({ children, href }: PropsWithChildren<VerticalMenuLinkProps>) {
+  return (
+    <Link href={href} className={styles.trigger}>
+      {children}
+    </Link>
   )
 }
 

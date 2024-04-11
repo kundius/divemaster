@@ -51,7 +51,7 @@
   margin-left: -20px;
   transition: 0.5s ease;
   transform-origin: 50% 100%;
-  transform: scale(1, 0);
+  transform: scale(0.5, 0);
   opacity: 0;
 }
 
@@ -100,7 +100,7 @@
 .modal {
   background: #fff;
   position: fixed;
-  z-index: 100;
+  z-index: 300;
   left: 0;
   top: var(--offset-top, 0);
   right: 0;

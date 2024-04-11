@@ -40,7 +40,9 @@ export function getImageLink(
 }
 
 export function disableScroll() {
-  const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+  if (document.getElementById('removed-body-scroll-bar-style')) return
+
+  const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
 
   const styles = `
   body {

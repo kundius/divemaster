@@ -1,5 +1,6 @@
 .block {
   position: sticky;
+  z-index: 200;
 
   @include --max-md {
     top: 0;

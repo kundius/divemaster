@@ -4,7 +4,7 @@ import { AuthServerProvider } from '@/lib/auth/server-provider'
 import { cn } from '@/lib/utils'
 import '@/styles/globals.css'
 import type { Metadata } from 'next'
-import { Roboto as FontSans, Roboto_Condensed as FontSansAlt } from 'next/font/google'
+import { Roboto as FontSans, Roboto_Condensed as FontSansAlt, Montserrat } from 'next/font/google'
 
 const fontSans = FontSans({
   weight: ['400', '500', '700'],
@@ -19,6 +19,14 @@ const fontSansAlt = FontSansAlt({
   subsets: ['latin', 'cyrillic'],
   style: ['normal', 'italic'],
   variable: '--font-sans-alt',
+  display: 'swap'
+})
+
+const fontMontserrat = Montserrat({
+  weight: ['400', '500', '700'],
+  subsets: ['latin', 'cyrillic'],
+  style: ['normal', 'italic'],
+  variable: '--font-montserrat',
   display: 'swap'
 })
 
@@ -38,7 +46,8 @@ export default async function RootLayout({
         className={cn(
           'min-h-screen bg-background font-sans antialiased',
           fontSans.variable,
-          fontSansAlt.variable
+          fontSansAlt.variable,
+          fontMontserrat.variable
         )}
       >
         <QueryProvider>

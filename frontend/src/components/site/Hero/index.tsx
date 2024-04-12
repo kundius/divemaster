@@ -7,6 +7,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { EmblaCarouselType, EmblaEventType, EmblaOptionsType } from 'embla-carousel'
 import useEmblaCarousel from 'embla-carousel-react'
 import Image from 'next/image'
+import { CarpHunting } from './CarpHunting'
 
 const TWEEN_FACTOR_BASE = 0.2
 
@@ -187,73 +188,28 @@ export function Hero() {
       <div className={styles.viewport} ref={emblaRef}>
         <div className={styles.container}>
           <div className={styles.slide}>
-            <div className={cn(styles['card'])} style={{ backgroundImage: 'url(/hero/slide-1.jpg)' }}>
-              <div className={styles['parallax']} data-parallax={''}>
-                <Image
-                  src="/hero/slide-1.jpg"
-                  width={1920}
-                  height={850}
-                  loading="eager"
-                  alt=""
-                  className={cn(styles['parallax-image'], styles['parallax-image-first'])}
-                />
-              </div>
+            <div className={styles['slide-content']}>
+              <CarpHunting />
             </div>
           </div>
           <div className={styles.slide}>
-            <div className={cn(styles['card'])} style={{ backgroundImage: 'url(/hero/slide-2.jpg)' }}>
-              <div className={styles['parallax']} data-parallax={''}>
-                <Image
-                  src="/hero/slide-2.jpg"
-                  width={1920}
-                  height={850}
-                  loading="eager"
-                  alt=""
-                  className={cn(styles['parallax-image'], styles['parallax-image-second'])}
-                />
-              </div>
+            <div className={styles['slide-content']}>
+              <CarpHunting />
             </div>
           </div>
           <div className={styles.slide}>
-            <div className={cn(styles['card'])} style={{ backgroundImage: 'url(/hero/slide-3.jpg)' }}>
-              <div className={styles['parallax']} data-parallax={''}>
-                <Image
-                  src="/hero/slide-3.jpg"
-                  width={1920}
-                  height={850}
-                  loading="eager"
-                  alt=""
-                  className={cn(styles['parallax-image'], styles['parallax-image-third'])}
-                />
-              </div>
+            <div className={styles['slide-content']}>
+              <CarpHunting />
             </div>
           </div>
           <div className={styles.slide}>
-            <div className={cn(styles['card'])} style={{ backgroundImage: 'url(/hero/slide-4.jpg)' }}>
-              <div className={styles['parallax']} data-parallax={''}>
-                <Image
-                  src="/hero/slide-4.jpg"
-                  width={1920}
-                  height={850}
-                  loading="eager"
-                  alt=""
-                  className={cn(styles['parallax-image'], styles['parallax-image-fourth'])}
-                />
-              </div>
+            <div className={styles['slide-content']}>
+              <CarpHunting />
             </div>
           </div>
           <div className={styles.slide}>
-            <div className={cn(styles['card'])} style={{ backgroundImage: 'url(/hero/slide-5.jpg)' }}>
-              <div className={styles['parallax']} data-parallax={''}>
-                <Image
-                  src="/hero/slide-5.jpg"
-                  width={1920}
-                  height={850}
-                  loading="eager"
-                  alt=""
-                  className={cn(styles['parallax-image'], styles['parallax-image-fifth'])}
-                />
-              </div>
+            <div className={styles['slide-content']}>
+              <CarpHunting />
             </div>
           </div>
         </div>

@@ -1,0 +1,151 @@
+.root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background: #8a854d;
+  padding-top: 184px;
+  padding-bottom: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.root::before {
+  content: '';
+  background: url(/hero/CarpHunting/bg.jpg) no-repeat 50% 50%;
+  background-size: cover;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  filter: blur(10px);
+}
+
+.bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.bg img {
+  max-width: none;
+}
+
+.bg::after {
+  content: '';
+  background: url(/hero/CarpHunting/elements.png) no-repeat 50% 50%;
+  position: absolute;
+  left: 50%;
+  top: 120px;
+  transform: translateX(-50%);
+  width: 1728px;
+  height: 700px;
+  z-index: 1;
+  margin-left: 106px;
+}
+
+.content {
+  background-color: rgba(0, 0, 0, 0.122);
+  width: 1512px;
+  height: 460px;
+  padding: 40px 44px 34px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.label {
+  display: block;
+  text-decoration: none;
+  background-color: rgb(149, 190, 19);
+  font-size: 14px;
+  color: rgb(24, 26, 7);
+  font-weight: bold;
+  text-transform: uppercase;
+  line-height: 28px;
+  text-align: center;
+  padding: 0 10px;
+  border-bottom: 2px solid rgb(29, 32, 32);
+  border-top: 9px solid rgb(29, 32, 32);
+  font-family: var(--font-montserrat);
+  letter-spacing: 0.2em;
+}
+
+.label:hover {
+  color: #fff;
+  background: #84ac06;
+}
+
+.title {
+  font-size: 52px;
+  font-family: var(--font-montserrat);
+  color: rgb(254, 254, 254);
+  font-weight: bold;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.links a {
+  font-size: 18px;
+  font-family: var(--font-montserrat);
+  color: rgb(24, 26, 7);
+  text-decoration: underline;
+  line-height: 1;
+  letter-spacing: 0.1em;
+}
+
+.links a:hover {
+  color: #fff;
+}
+
+.button {
+  position: relative;
+  margin-top: auto;
+  font-size: 14px;
+  font-family: var(--font-montserrat);
+  color: rgba(255, 255, 255, 0.71);
+  font-weight: bold;
+  text-transform: uppercase;
+  line-height: 56px;
+  border-radius: 24px;
+  background-color: rgba(0, 0, 0, 0.102);
+  padding-left: 16px;
+  padding-right: 60px;
+  margin-left: -12px;
+}
+
+.button:hover {
+  background-color: rgba(0, 0, 0, 0.102);
+  color: #fff;
+}
+
+.button::after {
+  content: '';
+  position: absolute;
+  right: 11px;
+  top: 11px;
+  width: 36px;
+  height: 36px;
+  background: url('/icons/play.svg') no-repeat 50% 50%;
+  opacity: 0.71;
+}
+
+.button:hover::after {
+  opacity: 1;
+}

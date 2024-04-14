@@ -52,6 +52,10 @@
   padding-top: 28px;
   transition: 0.3s ease;
 
+  @include --max-2xl {
+    padding-bottom: 12px;
+    padding-top: 22px;
+  }
   @include --max-md {
     padding-top: 0;
     padding-bottom: 0;
@@ -158,6 +162,9 @@
     border-bottom-color: rgba(231, 231, 235, 0.34);
   }
 
+  @include --max-2xl {
+    padding: 5px 0;
+  }
   @include --max-md {
     display: none;
   }

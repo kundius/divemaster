@@ -4,12 +4,17 @@
   height: 100%;
   z-index: 1;
   background: #8a854d;
-  padding-top: 184px;
-  padding-bottom: 70px;
+  padding-top: calc(184px + calc(40px * var(--slide-size)));
+  padding-bottom: calc(16px + calc(40px * var(--slide-size)) + calc(54px * var(--slide-size)));
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  // padding-left: 80px;
+
+  @include --max-2xl {
+    padding-top: calc(164px + calc(40px * var(--slide-size)));
+  }
 }
 
 .root::before {
@@ -34,10 +39,14 @@
   width: 100%;
   display: flex;
   justify-content: center;
+  box-shadow: 1.113px 7.922px 9px 0px rgba(0, 25, 41, 0.15);
 }
 
 .bg img {
   max-width: none;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
 }
 
 .bg::after {
@@ -45,22 +54,43 @@
   background: url(/hero/CarpHunting/elements.png) no-repeat 50% 50%;
   position: absolute;
   left: 50%;
-  top: 120px;
+  // top: calc(120px * var(--slide-size));
   transform: translateX(-50%);
-  width: 1728px;
-  height: 700px;
+  // width: calc(1728px * var(--slide-size));
+  // height: calc(700px * var(--slide-size));
+  width: 100%;
+  height: 100%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background-size: cover;
   z-index: 1;
-  margin-left: 106px;
+  // margin-left: calc(66px * var(--slide-size));
 }
 
 .content {
   background-color: rgba(0, 0, 0, 0.122);
-  width: 1512px;
+  width: 1480px;
   height: 460px;
   padding: 40px 44px 34px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+
+  @include --max-3xl {
+    width: 1320px;
+    // height: 420px;
+  }
+  @include --max-2xl {
+    width: 1120px;
+    // height: 340px;
+    padding: 32px 32px;
+  }
+  @include --max-xl {
+    width: 920px;
+  }
+  @include --max-lg {
+    width: 744px;
+  }
 }
 
 .label {
@@ -78,6 +108,11 @@
   border-top: 9px solid rgb(29, 32, 32);
   font-family: var(--font-montserrat);
   letter-spacing: 0.2em;
+  margin-bottom: 20px;
+
+  @include --max-2xl {
+    margin-bottom: 12px;
+  }
 }
 
 .label:hover {
@@ -92,13 +127,19 @@
   font-weight: bold;
   text-transform: uppercase;
   line-height: 1;
+  margin-bottom: 30px;
+
+  @include --max-2xl {
+    font-size: 48px;
+    margin-bottom: 20px;
+  }
 }
 
 .links {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
+  gap: 12px;
 }
 
 .links a {
@@ -124,6 +165,7 @@
   text-transform: uppercase;
   line-height: 56px;
   border-radius: 24px;
+  letter-spacing: 0.15em;
   background-color: rgba(0, 0, 0, 0.102);
   padding-left: 16px;
   padding-right: 60px;

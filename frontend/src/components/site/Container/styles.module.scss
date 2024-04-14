@@ -1,12 +1,26 @@
 .container {
-  width: 1664px;
+  width: 1792px;
   max-width: 100%;
-  padding: 0 32px;
+  padding: 0 96px;
   margin-left: auto;
   margin-right: auto;
 
+  @include --max-3xl {
+    width: 1536px;
+    padding: 0 64px;
+  }
+  @include --max-2xl {
+    width: 1280px;
+    padding: 0 32px;
+  }
   @include --max-xl {
+    width: 1024px;
     padding-left: 16px;
     padding-right: 16px;
+  }
+  @include --max-lg {
+    width: 768px;
+    padding-left: 12px;
+    padding-right: 12px;
   }
 }

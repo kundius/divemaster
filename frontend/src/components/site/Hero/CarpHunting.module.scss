@@ -4,16 +4,16 @@
   height: 100%;
   z-index: 1;
   background: #8a854d;
-  padding-top: calc(184px + calc(40px * var(--slide-size)));
+  padding-top: calc(var(--slide-header-offset) + calc(40px * var(--slide-size)));
   padding-bottom: calc(16px + calc(40px * var(--slide-size)) + calc(54px * var(--slide-size)));
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  // padding-left: 80px;
 
   @include --max-2xl {
-    padding-top: calc(164px + calc(40px * var(--slide-size)));
+  }
+  @include --max-md {
   }
 }
 

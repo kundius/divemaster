@@ -1,4 +1,5 @@
 .root {
+  --slide-header-offset: 184px;
   --slide-size: 1;
   --slide-height: calc(850px * var(--slide-size));
   --slide-width: calc(2000px * var(--slide-size));
@@ -9,21 +10,23 @@
   overflow: hidden;
 
   &:global([data-hero-after-header]) {
-    margin-top: -184px;
-
-    @include --max-2xl {
-      margin-top: -164px;
-    }
-    @include --max-md {
-      margin-top: -101px;
-    }
+    margin-top: calc(var(--slide-header-offset) * -1);
   }
 
   @include --max-3xl {
     --slide-size: 0.85;
   }
   @include --max-2xl {
+    --slide-header-offset: 164px;
     --slide-size: 0.75;
+  }
+  @include --max-md {
+    --slide-header-offset: 101px;
+    --slide-size: 0.6;
+
+    // --slide-height: calc(425px * var(--slide-size));
+    // --slide-width: calc(1000px * var(--slide-size));
+    // --slide-spacing: calc(100px * var(--slide-size));
   }
 }
 
@@ -32,6 +35,10 @@
 
 .clip-path-mask {
   transform: scale(var(--slide-size), var(--slide-size));
+
+  // @include --max-md {
+  //   transform: scale(calc(0.5 * var(--slide-size)), calc(0.5 * var(--slide-size)));
+  // }
 }
 
 .root::before {
@@ -46,6 +53,10 @@
   z-index: 10;
   clip-path: var(--slide-clip-path);
   // transform: scale(-1, -1);
+
+  // @include --max-md {
+  //   right: calc(50% + calc(400px * var(--slide-size)) - calc(10px * var(--slide-size)));
+  // }
 }
 
 .root::after {
@@ -61,6 +72,10 @@
   z-index: 10;
   clip-path: var(--slide-clip-path);
   // box-shadow: -1.113px 7.922px 12.74px 0.26px rgba(0, 25, 41, 0.24);
+
+  // @include --max-md {
+  //   left: calc(50% + calc(400px * var(--slide-size)) - calc(10px * var(--slide-size)));
+  // }
 }
 
 .viewport {

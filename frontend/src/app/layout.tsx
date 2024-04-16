@@ -23,7 +23,7 @@ const fontSansAlt = FontSansAlt({
 })
 
 const fontMontserrat = Montserrat({
-  weight: ['400', '500', '700'],
+  weight: ['400', '500', '700', '900'],
   subsets: ['latin', 'cyrillic'],
   style: ['normal', 'italic'],
   variable: '--font-montserrat',

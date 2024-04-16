@@ -13,7 +13,31 @@ export function Discount() {
           alt=""
           sizes="100vw"
           quality={90}
+          className="max-sm:hidden"
         />
+        <Image
+          src="/hero/Discount/bg-sm.jpg"
+          width={2000}
+          height={850}
+          loading="eager"
+          alt=""
+          sizes="100vw"
+          quality={90}
+          className="sm:hidden"
+        />
+      </div>
+      <div className={styles.content}>
+        <div className={styles.title}>
+          Покупайте выгодно!
+        </div>
+        <div className={styles.desc}>
+        При первой покупке в нашем магазине Вы&nbsp;получаете
+        <span>накопительную&nbsp;скидочную&nbsp;карту</span>. Совершая покупки
+        по&nbsp;карте «DiveMaster», Вы увеличиваете свою персональную скидку.
+        </div>
+        <a href="#" className={styles.button}>
+          Авторизоваться
+        </a>
       </div>
     </div>
   )

@@ -84,7 +84,7 @@ export function MobileNavigation({ children }: PropsWithChildren) {
         const Component = components[_name]
         const isOpened = opened.includes(_name)
         const isLoaded = loaded.includes(_name)
-        const zIndex = Math.max(opened.indexOf(_name), 0)
+        const zIndex = Math.max(opened.indexOf(_name), 0) + 100
 
         if (!isLoaded) return null
 

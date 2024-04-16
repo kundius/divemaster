@@ -15,12 +15,12 @@
   }
   @include --max-xl {
     width: 1024px;
-    padding-left: 16px;
-    padding-right: 16px;
+    padding-left: 24px;
+    padding-right: 24px;
   }
   @include --max-lg {
     width: 768px;
-    padding-left: 12px;
-    padding-right: 12px;
+    padding-left: 16px;
+    padding-right: 16px;
   }
 }

@@ -1,0 +1,53 @@
+.root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background: #8a854d;
+  padding-top: calc(var(--slide-header-offset) + calc(40px * var(--slide-height-factor)));
+  padding-bottom: calc(
+    16px + calc(40px * var(--slide-height-factor)) +
+      calc(var(--slide-dots-offset) * var(--slide-height-factor))
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  @include --max-2xl {
+  }
+  @include --max-md {
+  }
+}
+
+.root::before {
+  content: '';
+  background: url('/hero/Discount/bg.jpg') no-repeat 50% 50%;
+  background-size: cover;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  filter: blur(10px);
+}
+
+.bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  box-shadow: 1.113px 7.922px 9px 0px rgba(0, 25, 41, 0.15);
+}
+
+.bg img {
+  max-width: none;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}

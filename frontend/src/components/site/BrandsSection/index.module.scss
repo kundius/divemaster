@@ -1,4 +1,86 @@
 .root {
+  background: #fff;
+}
+
+.headline {
+  display: flex;
+  align-items: center;
+  gap: 64px;
+}
+
+.title {
+  font-size: 18px;
+  text-transform: uppercase;
+  color: #000000;
+  font-weight: bold;
+}
+
+.nav {
+  display: flex;
+}
+
+.prev,
+.next {
+  display: block;
+  width: 24px;
+  height: 24px;
+  position: relative;
+  color: #000;
+
+  &[disabled] {
+    color: #9e9e9e;
+  }
+  &:not([disabled]):hover {
+    background: rgba(0,0,0,.05);
+  }
+}
+
+.prev::before,
+.next::before {
+  content: '';
+  height: 2px;
+  width: 8px;
+  background: currentColor;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.prev::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+  border-left: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  margin-left: -1px;
+}
+
+.next::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(-45deg);
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  margin-left: 1px;
+}
+
+.all {
+  font-size: 12px;
+  text-decoration: underline;
+  color: #23538b;
+
+  &:hover {
+    color: rgb(169, 0, 131);
+  }
 }
 
 .slider {

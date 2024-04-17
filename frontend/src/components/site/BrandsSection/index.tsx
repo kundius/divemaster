@@ -13,15 +13,15 @@ export interface BrandsSectionProps {
 
 export function BrandsSection({ items }: BrandsSectionProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: true,
-    duration: 50
+    loop: false,
+    // duration: 20
   })
   const { prevBtnDisabled, nextBtnDisabled, onPrevButtonClick, onNextButtonClick } =
     usePrevNextButtons(emblaApi)
   return (
     <div className={styles.root}>
       <Container>
-        <div className={styles.hedline}>
+        <div className={styles.headline}>
           <div className={styles.title}>Бренды</div>
           <div className={styles.nav}>
             <button

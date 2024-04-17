@@ -3,111 +3,26 @@
 import { cn } from '@/lib/utils'
 import styles from './index.module.scss'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { EmblaCarouselType, EmblaEventType, EmblaOptionsType } from 'embla-carousel'
+import { useDotButton } from '@/components/lib/EmblaCarousel/useDotButton'
+import { usePrevNextButtons } from '@/components/lib/EmblaCarousel/usePrevNextButtons'
+import { EmblaCarouselType, EmblaEventType } from 'embla-carousel'
 import useEmblaCarousel from 'embla-carousel-react'
-import Image from 'next/image'
-import { CarpHunting } from './CarpHunting'
-import { Spearfishing } from './Spearfishing'
-import { Expert } from './Expert'
-import { NewYear } from './NewYear'
-import { Discount } from './Discount'
+import { ReactNode, useCallback, useEffect, useRef } from 'react'
 
 const TWEEN_FACTOR_BASE = 0.2
 
-type UsePrevNextButtonsType = {
-  prevBtnDisabled: boolean
-  nextBtnDisabled: boolean
-  onPrevButtonClick: () => void
-  onNextButtonClick: () => void
+export interface HeroSliderProps {
+  slides: {
+    name: string
+    content: ReactNode
+  }[]
 }
 
-export const usePrevNextButtons = (
-  emblaApi: EmblaCarouselType | undefined
-): UsePrevNextButtonsType => {
-  const [prevBtnDisabled, setPrevBtnDisabled] = useState(true)
-  const [nextBtnDisabled, setNextBtnDisabled] = useState(true)
-
-  const onPrevButtonClick = useCallback(() => {
-    if (!emblaApi) return
-    emblaApi.scrollPrev()
-  }, [emblaApi])
-
-  const onNextButtonClick = useCallback(() => {
-    if (!emblaApi) return
-    emblaApi.scrollNext()
-  }, [emblaApi])
-
-  const onSelect = useCallback((emblaApi: EmblaCarouselType) => {
-    setPrevBtnDisabled(!emblaApi.canScrollPrev())
-    setNextBtnDisabled(!emblaApi.canScrollNext())
-  }, [])
-
-  useEffect(() => {
-    if (!emblaApi) return
-
-    onSelect(emblaApi)
-    emblaApi.on('reInit', onSelect)
-    emblaApi.on('select', onSelect)
-  }, [emblaApi, onSelect])
-
-  return {
-    prevBtnDisabled,
-    nextBtnDisabled,
-    onPrevButtonClick,
-    onNextButtonClick
-  }
-}
-
-type UseDotButtonType = {
-  selectedIndex: number
-  scrollSnaps: number[]
-  onDotButtonClick: (index: number) => void
-}
-
-export const useDotButton = (emblaApi: EmblaCarouselType | undefined): UseDotButtonType => {
-  const [selectedIndex, setSelectedIndex] = useState(0)
-  const [scrollSnaps, setScrollSnaps] = useState<number[]>([])
-
-  const onDotButtonClick = useCallback(
-    (index: number) => {
-      if (!emblaApi) return
-      emblaApi.scrollTo(index)
-    },
-    [emblaApi]
-  )
-
-  const onInit = useCallback((emblaApi: EmblaCarouselType) => {
-    setScrollSnaps(emblaApi.scrollSnapList())
-  }, [])
-
-  const onSelect = useCallback((emblaApi: EmblaCarouselType) => {
-    setSelectedIndex(emblaApi.selectedScrollSnap())
-  }, [])
-
-  useEffect(() => {
-    if (!emblaApi) return
-
-    onInit(emblaApi)
-    onSelect(emblaApi)
-    emblaApi.on('reInit', onInit)
-    emblaApi.on('reInit', onSelect)
-    emblaApi.on('select', onSelect)
-  }, [emblaApi, onInit, onSelect])
-
-  return {
-    selectedIndex,
-    scrollSnaps,
-    onDotButtonClick
-  }
-}
-
-export function Hero() {
+export function HeroSlider({ slides }: HeroSliderProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
     duration: 50
   })
-  // const selectedSlideIndex = useRef(0)
   const tweenFactor = useRef(0)
   const tweenNodes = useRef<HTMLElement[]>([])
 
@@ -156,10 +71,6 @@ export function Hero() {
           })
         }
 
-        // if (selectedSlideIndex.current === slideIndex) {
-        //   diffToTarget = 0
-        // }
-
         const translate = diffToTarget * (-1 * tweenFactor.current) * 100
         const tweenNode = tweenNodes.current[slideIndex]
         tweenNode.style.transform = `translateX(${translate}%)`
@@ -179,11 +90,6 @@ export function Hero() {
       .on('reInit', setTweenFactor)
       .on('reInit', tweenParallax)
       .on('scroll', tweenParallax)
-    // emblaApi
-    //   .on('select', (a, b) => {
-    //     selectedSlideIndex.current = a.selectedScrollSnap()
-    //     // console.log('select', a.selectedScrollSnap(), b)
-    //   })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [emblaApi, tweenParallax])
 
@@ -200,31 +106,11 @@ export function Hero() {
       <div className={styles['right-shadow']} />
       <div className={styles.viewport} ref={emblaRef}>
         <div className={styles.container}>
-          <div className={styles.slide}>
-            <div className={styles['slide-content']}>
-              <Expert />
+          {slides.map((item) => (
+            <div className={styles.slide} key={item.name}>
+              <div className={styles['slide-content']}>{item.content}</div>
             </div>
-          </div>
-          <div className={styles.slide}>
-            <div className={styles['slide-content']}>
-              <NewYear />
-            </div>
-          </div>
-          <div className={styles.slide}>
-            <div className={styles['slide-content']}>
-              <Discount />
-            </div>
-          </div>
-          <div className={styles.slide}>
-            <div className={styles['slide-content']}>
-              <Spearfishing />
-            </div>
-          </div>
-          <div className={styles.slide}>
-            <div className={styles['slide-content']}>
-              <CarpHunting />
-            </div>
-          </div>
+          ))}
         </div>
       </div>
 

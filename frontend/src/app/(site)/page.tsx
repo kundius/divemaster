@@ -1,3 +1,4 @@
+import { BestsellersSection } from '@/components/site/BestsellersSection'
 import { BrandsSection } from '@/components/site/BrandsSection'
 import { HeroSlider } from '@/components/site/HeroSlider'
 import { CarpHunting } from '@/components/site/HeroSlider/CarpHunting'
@@ -78,6 +79,18 @@ export default function Page({ params: { locale } }: { params: { locale: string 
           }
         ]}
       />
+      <BestsellersSection items={[
+        {
+          title: 'Гидрокостюм AQUADISCOVERY Воевода V2',
+          brand: 'AQUADISCOVERY',
+          price: 14000,
+          images: ['/products/1.png', '/products/2.png', '/products/3.png', '/products/4.png'],
+          hit: true,
+          discount: 50,
+          new: true,
+          colors: ['red', 'blue']
+        }
+      ]} />
       <div>Home Page</div>
     </>
   )

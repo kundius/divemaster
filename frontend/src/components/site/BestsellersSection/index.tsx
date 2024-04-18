@@ -4,19 +4,25 @@ import { usePrevNextButtons } from '@/components/lib/EmblaCarousel/usePrevNextBu
 import useEmblaCarousel from 'embla-carousel-react'
 import { Container } from '../Container'
 import styles from './index.module.scss'
+import { Item } from './Item'
 
-export interface BrandsSectionProps {
+export interface BestsellersSectionProps {
   items: {
-    image: string
+    images: string[]
+    hit: boolean
+    new: boolean
+    discount: number
+    price: number
+    title: string
+    brand: string
+    colors: string[]
   }[]
 }
 
-export function BrandsSection({ items }: BrandsSectionProps) {
+export function BestsellersSection({ items }: BestsellersSectionProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: false,
     // align: 'end',
-    // slidesToScroll: 'auto'
-    // duration: 20
   })
   const { prevBtnDisabled, nextBtnDisabled, onPrevButtonClick, onNextButtonClick } =
     usePrevNextButtons(emblaApi)
@@ -24,7 +30,7 @@ export function BrandsSection({ items }: BrandsSectionProps) {
     <div className={styles.root}>
       <Container>
         <div className={styles.headline}>
-          <div className={styles.title}>Бренды</div>
+          <div className={styles.title}>БЕСТСЕЛЛЕРЫ</div>
           <div className={styles.nav}>
             <button
               className={styles.prev}
@@ -37,18 +43,13 @@ export function BrandsSection({ items }: BrandsSectionProps) {
               disabled={nextBtnDisabled}
             />
           </div>
-          <a href="#" className={styles.all}>
-            смотреть все
-          </a>
         </div>
         <div className={styles.slider}>
           <div className={styles.viewport} ref={emblaRef}>
             <div className={styles.container}>
               {items.map((item, i) => (
                 <div className={styles.slide} key={i}>
-                  <div className={styles.brand}>
-                    <img src={item.image} alt="" />
-                  </div>
+                  <Item {...item} />
                 </div>
               ))}
             </div>

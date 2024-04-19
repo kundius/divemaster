@@ -1,5 +1,5 @@
 .root {
-  background-image: linear-gradient(0deg, #aebcc3 0%, #a0afb7 100%);
+  background-image: linear-gradient(90deg, #a7b4bd 0%, #d3dbdf 100%);
   padding: 22px 0 80px;
   overflow: hidden;
 }
@@ -36,6 +36,11 @@
   color: #616161;
   background-color: rgba(255, 255, 255, 0.502);
   box-shadow: 0px 0px 9px 0px rgba(0, 25, 41, 0.08);
+
+  &[disabled] {
+    color: #bbb;
+    cursor: default;
+  }
 
   &:not([disabled]):hover {
     color: #000;
@@ -98,6 +103,19 @@
 .slider {
   --slide-spacing: 20px;
   --slide-size: 20%;
+
+  @include --max-2xl {
+    --slide-size: 25%;
+  }
+  @include --max-xl {
+    --slide-size: 33.33%;
+  }
+  @include --max-lg {
+    --slide-size: 320px;
+  }
+  @include --max-md {
+    --slide-size: 50%;
+  }
 }
 
 .viewport {

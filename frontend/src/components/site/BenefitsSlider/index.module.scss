@@ -1,0 +1,60 @@
+.root {
+  --slide-spacing: 0;
+  --slide-size: 100%;
+  background: url('/benefits/bg.jpg') no-repeat 50% 50%;
+  background-size: cover;
+  overflow: hidden;
+}
+
+.viewport {
+  // overflow: hidden;
+  position: relative;
+  padding-top: 150px;
+  padding-bottom: 100px;
+  width: var(--container-width);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.container {
+  backface-visibility: hidden;
+  display: flex;
+  touch-action: pan-y;
+  margin-left: calc(var(--slide-spacing) * -1);
+}
+
+.slide {
+  flex: 0 0 var(--slide-size);
+  min-width: 0;
+  padding-left: var(--slide-spacing);
+}
+
+.dots {
+  display: flex;
+  position: absolute;
+  left: var(--container-padding);
+  top: 82px;
+}
+
+.dot {
+  width: 24px;
+  height: 24px;
+  position: relative;
+  cursor: pointer;
+}
+
+.dot::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #bcbcbc;
+}
+
+.dotSelected::before {
+  background: linear-gradient(37deg, #a90083 0%, #9f2df9 100%);
+}

@@ -67,27 +67,14 @@
 }
 
 .content {
-  width: 1600px;
+  width: var(--container-width);
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
 
-  @include --max-3xl {
-    width: 1408px;
-  }
-  @include --max-2xl {
-    width: 1216px;
-  }
-  @include --max-xl {
-    width: 976px;
-  }
-  @include --max-lg {
-    width: 736px;
-  }
   @include --max-md {
-    width: calc(100vw - 32px);
     align-items: center;
   }
 }

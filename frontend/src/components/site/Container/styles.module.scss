@@ -1,26 +1,8 @@
 .container {
-  width: 1792px;
+  width: var(--container-width);
   max-width: 100%;
-  padding: 0 96px;
+  padding: 0 var(--container-padding);
   margin-left: auto;
   margin-right: auto;
-
-  @include --max-3xl {
-    width: 1536px;
-    padding: 0 64px;
-  }
-  @include --max-2xl {
-    width: 1280px;
-    padding: 0 32px;
-  }
-  @include --max-xl {
-    width: 1024px;
-    padding-left: 24px;
-    padding-right: 24px;
-  }
-  @include --max-lg {
-    width: 768px;
-    padding-left: 16px;
-    padding-right: 16px;
-  }
+  box-sizing: content-box;
 }

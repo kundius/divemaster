@@ -1,11 +1,14 @@
+import { BenefitsSlider, BenefitsSliderDiscount } from '@/components/site/BenefitsSlider'
 import { BestsellersSection } from '@/components/site/BestsellersSection'
 import { BrandsSection } from '@/components/site/BrandsSection'
-import { HeroSlider } from '@/components/site/HeroSlider'
-import { CarpHunting } from '@/components/site/HeroSlider/CarpHunting'
-import { Discount } from '@/components/site/HeroSlider/Discount'
-import { Expert } from '@/components/site/HeroSlider/Expert'
-import { NewYear } from '@/components/site/HeroSlider/NewYear'
-import { Spearfishing } from '@/components/site/HeroSlider/Spearfishing'
+import {
+  HeroSlider,
+  HeroSliderCarpHunting,
+  HeroSliderDiscount,
+  HeroSliderExpert,
+  HeroSliderNewYear,
+  HeroSliderSpearfishing
+} from '@/components/site/HeroSlider'
 import { getStaticParams } from '@/locales/server'
 
 export function generateStaticParams() {
@@ -30,24 +33,24 @@ export default function Page({ params: { locale } }: { params: { locale: string 
       <HeroSlider
         slides={[
           {
-            content: <Expert />,
-            name: 'Expert'
+            content: <HeroSliderExpert />,
+            name: 'HeroSliderExpert'
           },
           {
-            content: <NewYear />,
-            name: 'NewYear'
+            content: <HeroSliderNewYear />,
+            name: 'HeroSliderNewYear'
           },
           {
-            content: <Discount />,
-            name: 'Discount'
+            content: <HeroSliderDiscount />,
+            name: 'HeroSliderDiscount'
           },
           {
-            content: <Spearfishing />,
-            name: 'Spearfishing'
+            content: <HeroSliderSpearfishing />,
+            name: 'HeroSliderSpearfishing'
           },
           {
-            content: <CarpHunting />,
-            name: 'CarpHunting'
+            content: <HeroSliderCarpHunting />,
+            name: 'HeroSliderCarpHunting'
           }
         ]}
       />
@@ -91,8 +94,36 @@ export default function Page({ params: { locale } }: { params: { locale: string 
           }
         ]}
       />
-      <BestsellersSection items={[demoProduct, demoProduct, demoProduct, demoProduct, demoProduct, demoProduct, demoProduct, demoProduct, demoProduct]} />
-      <div>Home Page</div>
+      <BestsellersSection
+        items={[
+          demoProduct,
+          demoProduct,
+          demoProduct,
+          demoProduct,
+          demoProduct,
+          demoProduct,
+          demoProduct,
+          demoProduct,
+          demoProduct
+        ]}
+      />
+      <BenefitsSlider
+        items={[
+          {
+            content: <BenefitsSliderDiscount />,
+            name: 'BenefitsSliderDiscount1'
+          },
+          {
+            content: <BenefitsSliderDiscount />,
+            name: 'BenefitsSliderDiscount2'
+          },
+          {
+            content: <BenefitsSliderDiscount />,
+            name: 'BenefitsSliderDiscount3'
+          }
+        ]}
+      />
+      <div style={{ height: 2000 }}>Home Page</div>
     </>
   )
 }

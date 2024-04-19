@@ -2,7 +2,7 @@ import { Toaster } from '@/components/ui/sonner'
 import QueryProvider from '@/lib/api/query-provider'
 import { AuthServerProvider } from '@/lib/auth/server-provider'
 import { cn } from '@/lib/utils'
-import '@/styles/globals.css'
+import '@/styles/globals.scss'
 import type { Metadata } from 'next'
 import { Roboto as FontSans, Roboto_Condensed as FontSansAlt, Montserrat } from 'next/font/google'
 

@@ -4,10 +4,10 @@ import { PropsWithChildren } from 'react'
 
 export function DefaultLayout({ children }: PropsWithChildren) {
   return (
-    <div>
+    <>
       <Header />
-      <div style={{ height: 2000, background: 'cyan' }}>{children}</div>
+      {children}
       <Footer />
-    </div>
+    </>
   )
 }

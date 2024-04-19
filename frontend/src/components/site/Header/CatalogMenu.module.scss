@@ -71,26 +71,6 @@
   }
 }
 
-// .first-item:has(ul)::after {
-//   content: '';
-//   border-style: solid;
-//   border-width: 0 20px 20px;
-//   border-color: transparent transparent rgba(255, 255, 255, 0.9);
-//   position: absolute;
-//   top: 100%;
-//   left: 50%;
-//   margin-left: -20px;
-//   transition: 0.3s ease;
-//   transform-origin: 50% 100%;
-//   transform: scale(0.5, 0);
-//   opacity: 0;
-// }
-
-// .first-item:has(ul):hover::after {
-//   transform: scale(1, 1);
-//   opacity: 1;
-// }
-
 .sale {
   margin: 9px 24px;
   display: block;
@@ -107,9 +87,9 @@
 
 .second {
   visibility: hidden;
-  opacity: 0;
   transform: translateY(-20px) scale(0.9, 0.9);
   transition: 0.3s ease;
+  border-radius: 20px;
   padding: 36px 16px 16px;
   position: absolute;
   left: 0;
@@ -125,18 +105,32 @@
   top: 20px;
   bottom: 0;
   z-index: -1;
+  opacity: 0;
+  transition: 0.3s ease;
   background: #fff;
+  border-radius: 20px;
   position: absolute;
   background: rgba(255, 255, 255, 0.9);
-  border-radius: 20px;
-  box-shadow: 0px 0px 15.36px 0.64px rgba(0, 0, 0, 0.08);
   backdrop-filter: blur(10px);
+  box-shadow: 0px 0px 15.36px 0.64px rgba(0, 0, 0, 0.08);
 }
 
-.first-item:hover .second {
-  visibility: visible;
-  opacity: 1;
-  transform: translateY(0) scaleY(1);
+.second-item {
+  opacity: 0;
+  transition: 0.3s ease;
+}
+
+.first-item:hover {
+  .second {
+    visibility: visible;
+    transform: translateY(0) scaleY(1);
+  }
+  .second::before {
+    opacity: 1;
+  }
+  .second-item {
+    opacity: 1;
+  }
 }
 
 .second-brands {
@@ -165,6 +159,6 @@
 }
 
 .second-link:hover {
-  background: #e4e7ed;
+  background: rgba(0, 0, 0, 0.08);
   color: #000;
 }

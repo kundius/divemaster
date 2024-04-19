@@ -1,0 +1,19 @@
+.thumb {
+  position: relative;
+  width: 100%;
+  order: 2;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.thumb::before {
+  content: '';
+  display: block;
+  width: 100%;
+  padding-bottom: 125%;
+}
+
+.image {
+  object-fit: contain;
+  z-index: 10;
+}

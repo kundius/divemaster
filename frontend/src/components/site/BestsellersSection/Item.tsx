@@ -5,6 +5,7 @@ import styles from './Item.module.scss'
 import Image from 'next/image'
 import { Gallery } from './Gallery'
 import { useRef, useState } from 'react'
+import { Thumb } from './Thumb'
 
 export interface ItemProps {
   images: string[]
@@ -20,18 +21,31 @@ export interface ItemProps {
 
 export function Item(props: ItemProps) {
   const [showGallery, setShowGallery] = useState(false)
+  const [galleryShowNav, setGalleryShowNav] = useState(false)
   const [thumbIndex, setThumbIndex] = useState(0)
   const [startIndex, setStartIndex] = useState(0)
-  const prevRef = useRef<HTMLButtonElement>(null)
-  const nextRef = useRef<HTMLButtonElement>(null)
+  const showGalleryTimer = useRef<ReturnType<typeof setTimeout>>()
 
   const handleMouseEnter = () => {
+    if (showGalleryTimer.current) {
+      clearTimeout(showGalleryTimer.current)
+    }
+
     setShowGallery(true)
+    setGalleryShowNav(true)
   }
 
   const handleMouseLeave = () => {
-    setShowGallery(false)
-    setStartIndex(thumbIndex)
+    setGalleryShowNav(false)
+
+    if (showGalleryTimer.current) {
+      clearTimeout(showGalleryTimer.current)
+    }
+
+    showGalleryTimer.current = setTimeout(() => {
+      setShowGallery(false)
+      setStartIndex(thumbIndex)
+    }, 1200)
   }
 
   return (
@@ -52,31 +66,16 @@ export function Item(props: ItemProps) {
       </div>
       <div className={styles.media}>
         <div className={styles.mediaContainer}>
-          <div className={styles.mediaThumb}>
-            <Image
-              src={props.images[thumbIndex]}
-              alt={props.title}
-              fill
-              className={styles.thumbImage}
+          {showGallery ? (
+            <Gallery
+              items={props.images}
+              startIndex={startIndex}
+              onChangeIndex={setThumbIndex}
+              showNav={galleryShowNav}
             />
-            {showGallery && (
-              <div className={styles.mediaGallery}>
-                <Gallery
-                  items={props.images}
-                  startIndex={startIndex}
-                  onChangeIndex={setThumbIndex}
-                  prevRef={prevRef}
-                  nextRef={nextRef}
-                />
-              </div>
-            )}
-          </div>
-          <div className={styles.mediaPrev}>
-            <button className={styles.mediaPrevButton} ref={prevRef} />
-          </div>
-          <div className={styles.mediaNext}>
-            <button className={styles.mediaNextButton} ref={nextRef} />
-          </div>
+          ) : (
+            <Thumb url={props.images[thumbIndex]} alt={props.title} />
+          )}
         </div>
       </div>
       <a href="#" className={styles.title}>

@@ -12,6 +12,18 @@ export function generateStaticParams() {
   return getStaticParams()
 }
 
+const demoProduct = {
+  title: 'Гидрокостюм AQUADISCOVERY Воевода V2',
+  brand: 'AQUADISCOVERY',
+  price: 14000,
+  oldPrice: 4000,
+  images: ['/products/1.png', '/products/2.png', '/products/3.png', '/products/4.png'],
+  hit: true,
+  discount: 50,
+  new: true,
+  colors: ['red', 'blue']
+}
+
 export default function Page({ params: { locale } }: { params: { locale: string } }) {
   return (
     <>
@@ -79,18 +91,7 @@ export default function Page({ params: { locale } }: { params: { locale: string 
           }
         ]}
       />
-      <BestsellersSection items={[
-        {
-          title: 'Гидрокостюм AQUADISCOVERY Воевода V2',
-          brand: 'AQUADISCOVERY',
-          price: 14000,
-          images: ['/products/1.png', '/products/2.png', '/products/3.png', '/products/4.png'],
-          hit: true,
-          discount: 50,
-          new: true,
-          colors: ['red', 'blue']
-        }
-      ]} />
+      <BestsellersSection items={[demoProduct, demoProduct, demoProduct, demoProduct, demoProduct, demoProduct, demoProduct, demoProduct, demoProduct]} />
       <div>Home Page</div>
     </>
   )

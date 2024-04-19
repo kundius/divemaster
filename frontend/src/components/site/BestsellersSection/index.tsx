@@ -13,6 +13,7 @@ export interface BestsellersSectionProps {
     new: boolean
     discount: number
     price: number
+    oldPrice?: number
     title: string
     brand: string
     colors: string[]

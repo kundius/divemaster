@@ -1,0 +1,46 @@
+.slider {
+  --slide-spacing: 0;
+  --slide-size: 100%;
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+}
+
+.slider::before {
+  content: '';
+  display: block;
+  width: 100%;
+  padding-bottom: 125%;
+}
+
+.viewport {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.container {
+  backface-visibility: hidden;
+  display: flex;
+  touch-action: pan-y;
+  margin-left: calc(var(--slide-spacing) * -1);
+  height: 100%;
+}
+
+.slide {
+  min-width: 0;
+  flex: 0 0 var(--slide-size);
+  padding-left: var(--slide-spacing);
+  display: flex;
+  height: 100%;
+  position: relative;
+}
+
+.image {
+  object-fit: contain;
+  z-index: 10;
+}

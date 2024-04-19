@@ -22,32 +22,29 @@
 
   @include --md {
     top: -10px;
+    box-shadow: 0px 6px 7px 0px rgba(0, 8, 35, 0.19);
 
     &::before {
       background-color: rgba(0, 11, 27, 0.851);
       backdrop-filter: blur(10px);
-      box-shadow: 0px 6px 7px 0px rgba(0, 8, 35, 0.19);
     }
 
-    // &[data-stuck] {
-    //   &::before {
-    //     backdrop-filter: blur(10px);
-    //   }
-    // }
-
     :global(body:has([data-hero-after-header])) & {
+      box-shadow: none;
+      transition: box-shadow 0.3s ease;
+
       &::before {
-        transition: backdrop-filter 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+        transition: backdrop-filter 0.3s ease, background 0.3s ease;
         background: transparent;
         backdrop-filter: blur(0);
-        box-shadow: none;
       }
 
       &[data-stuck] {
+        box-shadow: 0px 6px 7px 0px rgba(0, 8, 35, 0.19);
+
         &::before {
           background: rgba(0, 11, 27, 0.851);
           backdrop-filter: blur(10px);
-          box-shadow: 0px 6px 7px 0px rgba(0, 8, 35, 0.19);
         }
       }
     }

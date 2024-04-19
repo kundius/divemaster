@@ -68,3 +68,11 @@ export function enableScroll() {
   const styleSheet = document.getElementById('removed-body-scroll-bar-style')
   styleSheet?.parentNode?.removeChild(styleSheet)
 }
+
+export function displayPrice(value: number) {
+  return new Intl.NumberFormat('ru-RU', {
+    style: 'currency',
+    currency: 'RUB',
+    minimumFractionDigits: 0
+  }).format(value)
+}

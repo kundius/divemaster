@@ -12,13 +12,7 @@
 }
 
 .viewport {
-  // overflow: hidden;
   position: relative;
-  // padding-top: 150px;
-  // padding-bottom: 100px;
-  // width: var(--container-width);
-  // margin-left: auto;
-  // margin-right: auto;
 }
 
 .container {
@@ -38,8 +32,16 @@
 .dots {
   display: flex;
   position: absolute;
-  left: var(--container-padding);
+  left: calc(50% - calc(var(--container-width) / 2) + var(--container-padding));
   top: 82px;
+  margin-left: -8px;
+
+  @include --max-2xl {
+    top: 52px;
+  }
+  @include --max-xl {
+    top: 32px;
+  }
 }
 
 .dot {

@@ -9,7 +9,7 @@ import { ReactNode, useCallback, useEffect, useRef } from 'react'
 import styles from './index.module.scss'
 import { Discount } from './Discount'
 
-const TWEEN_FACTOR_BASE = 0.84
+const TWEEN_FACTOR_BASE = 1
 
 const numberWithinRange = (number: number, min: number, max: number): number =>
   Math.min(Math.max(number, min), max)

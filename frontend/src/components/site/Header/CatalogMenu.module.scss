@@ -96,6 +96,8 @@
   width: 640px;
   top: 100%;
   z-index: 1;
+
+  pointer-events: none;
 }
 
 .second::before {
@@ -124,6 +126,7 @@
   .second {
     visibility: visible;
     transform: translateY(0) scaleY(1);
+    pointer-events: initial;
   }
   .second::before {
     opacity: 1;

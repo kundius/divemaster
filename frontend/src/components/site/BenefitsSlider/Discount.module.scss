@@ -1,8 +1,12 @@
 .root {
-
+  display: flex;
+  padding-top: 150px;
+  padding-bottom: 100px;
+  position: relative;
 }
 
 .content {
+  flex-shrink: 0;
   width: 50%;
   padding-left: var(--container-padding);
   padding-right: var(--container-padding);
@@ -97,4 +101,11 @@
   .buttonArrow::after {
     left: 6px;
   }
+}
+
+.image {
+  position: absolute;
+  top: -80px;
+  right: -100px;
+  max-width: none;
 }

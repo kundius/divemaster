@@ -20,6 +20,7 @@
   flex-grow: 1;
   display: flex;
   align-items: center;
+  margin: 1px; // fix lags
 }
 
 .mediaContainer {

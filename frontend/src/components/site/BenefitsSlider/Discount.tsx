@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import styles from './Discount.module.scss'
 
 export function Discount() {
@@ -17,6 +18,13 @@ export function Discount() {
           </a>
         </div>
       </div>
+      <Image
+        className={styles.image}
+        src="/benefits/discount.png"
+        width={1230}
+        height={617}
+        alt="Увеличивайте скидку"
+      />
     </div>
   )
 }

@@ -22,7 +22,7 @@ export interface BestsellersSectionProps {
 
 export function BestsellersSection({ items }: BestsellersSectionProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: false,
+    loop: false
     // align: 'end',
   })
   const { prevBtnDisabled, nextBtnDisabled, onPrevButtonClick, onNextButtonClick } =

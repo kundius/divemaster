@@ -85,24 +85,26 @@ export function BenefitsSlider(props: BenefitsSliderProps) {
 
   return (
     <div className={styles.root}>
-      <div className={styles.viewport} ref={emblaRef}>
-        <div className={styles.container}>
-          {props.items.map((item, i) => (
-            <div className={styles.slide} key={item.name}>
-              {item.content}
-            </div>
-          ))}
-        </div>
-        <div className={styles.dots}>
-          {scrollSnaps.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => onDotButtonClick(index)}
-              className={cn(styles.dot, {
-                [styles.dotSelected]: index === selectedIndex
-              })}
-            />
-          ))}
+      <div className={styles.overflow}>
+        <div className={styles.viewport} ref={emblaRef}>
+          <div className={styles.container}>
+            {props.items.map((item, i) => (
+              <div className={styles.slide} key={item.name}>
+                {item.content}
+              </div>
+            ))}
+          </div>
+          <div className={styles.dots}>
+            {scrollSnaps.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => onDotButtonClick(index)}
+                className={cn(styles.dot, {
+                  [styles.dotSelected]: index === selectedIndex
+                })}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>

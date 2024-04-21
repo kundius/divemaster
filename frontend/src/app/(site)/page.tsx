@@ -121,7 +121,7 @@ export default function Page({ params: { locale } }: { params: { locale: string 
           }
         ]}
       />
-      <div className="pt-32">
+      <div className="pt-32 overflow-hidden">
         <Container>
           <BestDdeal items={[demoProduct, demoProduct, demoProduct, demoProduct]} />
         </Container>

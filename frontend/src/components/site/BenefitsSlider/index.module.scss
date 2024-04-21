@@ -1,29 +1,33 @@
 .root {
   --slide-spacing: var(--container-padding);
   --slide-size: var(--container-width);
-  background: url('/benefits/bg.jpg') no-repeat 50% 50%;
-  background-position: 50% 80px;
-  background-size: 100% calc(100% - 200px);
-  padding-top: 80px;
-  margin-top: -80px;
-  padding-bottom: 120px;
-  margin-bottom: -120px;
-  overflow: hidden;
   position: relative;
+  display: flow-root;
+  background: url('/benefits/bg.jpg') no-repeat 50% 50%;
+  background-size: cover;
 }
 
-.root::before {
+.root::after {
   content: '';
   background: url('/benefits/logo.png') no-repeat 50% 50%;
   position: absolute;
-  bottom: 0;
+  bottom: -215px;
   right: 0;
   width: 153px;
   height: 323px;
+  pointer-events: none;
 
   @include --max-2xl {
     display: none;
   }
+}
+
+.overflow {
+  overflow: hidden;
+  padding-top: 80px;
+  margin-top: -80px;
+  padding-bottom: 120px;
+  margin-bottom: -120px;
 }
 
 .viewport {

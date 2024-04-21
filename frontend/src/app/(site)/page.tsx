@@ -1,6 +1,8 @@
 import { BenefitsSlider, BenefitsSliderDiscount } from '@/components/site/BenefitsSlider'
+import { BestDdeal } from '@/components/site/BestDdeal'
 import { BestsellersSection } from '@/components/site/BestsellersSection'
 import { BrandsSection } from '@/components/site/BrandsSection'
+import { Container } from '@/components/site/Container'
 import {
   HeroSlider,
   HeroSliderCarpHunting,
@@ -9,11 +11,6 @@ import {
   HeroSliderNewYear,
   HeroSliderSpearfishing
 } from '@/components/site/HeroSlider'
-import { getStaticParams } from '@/locales/server'
-
-export function generateStaticParams() {
-  return getStaticParams()
-}
 
 const demoProduct = {
   title: 'Гидрокостюм AQUADISCOVERY Воевода V2',
@@ -24,7 +21,8 @@ const demoProduct = {
   hit: true,
   discount: 50,
   new: true,
-  colors: ['red', 'blue']
+  colors: ['red', 'blue'],
+  sizes: ['S', 'M', 'L', 'XL', 'XXL']
 }
 
 export default function Page({ params: { locale } }: { params: { locale: string } }) {
@@ -123,6 +121,11 @@ export default function Page({ params: { locale } }: { params: { locale: string 
           }
         ]}
       />
+      <div className="pt-32">
+        <Container>
+          <BestDdeal items={[demoProduct, demoProduct, demoProduct, demoProduct]} />
+        </Container>
+      </div>
       <div style={{ height: 2000 }}>Home Page</div>
     </>
   )

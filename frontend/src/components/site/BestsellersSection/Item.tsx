@@ -86,8 +86,8 @@ export function Item(props: ItemProps) {
         {props.oldPrice && <div className={styles.oldPrice}>{displayPrice(props.oldPrice)}</div>}
         <div className={styles.realPrice}>{displayPrice(props.price)}</div>
       </div>
-      <div className={styles.cart}>
-        <button className={styles.cartAdd}>В корзину</button>
+      <div className={styles.purchaseActions}>
+        <button className={cn(styles.purchaseAction, styles.purchaseActionCart)}>В корзину</button>
       </div>
     </div>
   )

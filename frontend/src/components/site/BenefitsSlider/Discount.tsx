@@ -21,8 +21,8 @@ export function Discount() {
       <Image
         className={styles.image}
         src="/benefits/discount.png"
-        width={1230}
-        height={617}
+        width={1920}
+        height={664}
         alt="Увеличивайте скидку"
       />
     </div>

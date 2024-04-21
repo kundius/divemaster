@@ -9,6 +9,21 @@
   padding-bottom: 120px;
   margin-bottom: -120px;
   overflow: hidden;
+  position: relative;
+}
+
+.root::before {
+  content: '';
+  background: url('/benefits/logo.png') no-repeat 50% 50%;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 153px;
+  height: 323px;
+
+  @include --max-2xl {
+    display: none;
+  }
 }
 
 .viewport {

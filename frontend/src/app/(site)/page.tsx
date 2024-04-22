@@ -2,6 +2,7 @@ import { BenefitsSlider, BenefitsSliderDiscount } from '@/components/site/Benefi
 import { BestDdeal } from '@/components/site/BestDdeal'
 import { BestsellersSection } from '@/components/site/BestsellersSection'
 import { BrandsSection } from '@/components/site/BrandsSection'
+import { AllCategories } from '@/components/site/AllCategories'
 import { Container } from '@/components/site/Container'
 import {
   HeroSlider,
@@ -52,59 +53,67 @@ export default function Page({ params: { locale } }: { params: { locale: string 
           }
         ]}
       />
-      <BrandsSection
-        items={[
-          {
-            image: '/brands/1.png'
-          },
-          {
-            image: '/brands/2.png'
-          },
-          {
-            image: '/brands/3.png'
-          },
-          {
-            image: '/brands/4.png'
-          },
-          {
-            image: '/brands/5.png'
-          },
-          {
-            image: '/brands/6.png'
-          },
-          {
-            image: '/brands/1.png'
-          },
-          {
-            image: '/brands/2.png'
-          },
-          {
-            image: '/brands/3.png'
-          },
-          {
-            image: '/brands/4.png'
-          },
-          {
-            image: '/brands/5.png'
-          },
-          {
-            image: '/brands/6.png'
-          }
-        ]}
-      />
-      <BestsellersSection
-        items={[
-          demoProduct,
-          demoProduct,
-          demoProduct,
-          demoProduct,
-          demoProduct,
-          demoProduct,
-          demoProduct,
-          demoProduct,
-          demoProduct
-        ]}
-      />
+      <div className="bg-white py-6">
+        <Container>
+          <BrandsSection
+            items={[
+              {
+                image: '/brands/1.png'
+              },
+              {
+                image: '/brands/2.png'
+              },
+              {
+                image: '/brands/3.png'
+              },
+              {
+                image: '/brands/4.png'
+              },
+              {
+                image: '/brands/5.png'
+              },
+              {
+                image: '/brands/6.png'
+              },
+              {
+                image: '/brands/1.png'
+              },
+              {
+                image: '/brands/2.png'
+              },
+              {
+                image: '/brands/3.png'
+              },
+              {
+                image: '/brands/4.png'
+              },
+              {
+                image: '/brands/5.png'
+              },
+              {
+                image: '/brands/6.png'
+              }
+            ]}
+          />
+        </Container>
+      </div>
+      <div className="bg-gray-to-light pt-6 pb-20 overflow-hidden">
+        <Container>
+          <BestsellersSection
+            items={[
+              demoProduct,
+              demoProduct,
+              demoProduct,
+              demoProduct,
+              demoProduct,
+              demoProduct,
+              demoProduct,
+              demoProduct,
+              demoProduct
+            ]}
+          />
+        </Container>
+      </div>
       <BenefitsSlider
         items={[
           {
@@ -122,8 +131,14 @@ export default function Page({ params: { locale } }: { params: { locale: string 
         ]}
       />
       <div className="pt-32 overflow-hidden">
-        <Container>
+        <Container className="space-y-20">
           <BestDdeal items={[demoProduct, demoProduct, demoProduct, demoProduct]} />
+          <div className="space-y-6">
+            <div className="text-lg font-bold font-sans-narrow uppercase">
+              Снаряжение для подводной охоты, дайвинга и плавания
+            </div>
+            <AllCategories />
+          </div>
         </Container>
       </div>
       <div style={{ height: 2000 }}>Home Page</div>

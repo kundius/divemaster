@@ -31,16 +31,13 @@ const config = {
 	],
   prefix: "",
   theme: {
-    // container: {
-    //   center: true,
-    //   padding: "2rem",
-    //   screens: {
-    //     "2xl": "1400px",
-    //   },
-    // },
     extend: {
+      backgroundImage: {
+        'gray-to-light': "linear-gradient(90deg, #a7b4bd 0%, #d3dbdf 100%)",
+      },
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
+        'sans-narrow': ["var(--font-sans-narrow)", ...fontFamily.sans],
       },
       colors: {
         border: "hsl(var(--border))",

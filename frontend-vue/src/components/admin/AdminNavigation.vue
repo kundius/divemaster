@@ -152,7 +152,7 @@ const items = ref<Nav>([
   font-size: 18px;
   margin-bottom: 16px;
   font-weight: 500;
-  font-family: var(--font-sans-alt);
+  font-family: var(--font-sans-narrow);
   line-height: 1;
   text-transform: uppercase;
   display: flex;
@@ -199,7 +199,7 @@ const items = ref<Nav>([
   font-size: 18px;
   color: var(--neutral200);
   font-weight: 500;
-  font-family: var(--font-sans-alt);
+  font-family: var(--font-sans-narrow);
   line-height: 20px;
   padding: 8px 16px;
   min-height: 40px;
@@ -259,7 +259,7 @@ const items = ref<Nav>([
   color: var(--neutral200);
   font-size: 16px;
   font-weight: 400;
-  font-family: var(--font-sans-alt);
+  font-family: var(--font-sans-narrow);
   line-height: 1;
   display: flex;
   align-items: center;

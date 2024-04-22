@@ -20,6 +20,7 @@ export interface BestsellersSectionProps {
   }[]
 }
 
+// TODO: избавиться от 'Section' в названии
 export function BestsellersSection({ items }: BestsellersSectionProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: false
@@ -29,34 +30,24 @@ export function BestsellersSection({ items }: BestsellersSectionProps) {
     usePrevNextButtons(emblaApi)
   return (
     <div className={styles.root}>
-      <Container>
-        <div className={styles.headline}>
-          <div className={styles.title}>БЕСТСЕЛЛЕРЫ</div>
-          <div className={styles.nav}>
-            <button
-              className={styles.prev}
-              onClick={onPrevButtonClick}
-              disabled={prevBtnDisabled}
-            />
-            <button
-              className={styles.next}
-              onClick={onNextButtonClick}
-              disabled={nextBtnDisabled}
-            />
+      <div className={styles.headline}>
+        <div className={styles.title}>БЕСТСЕЛЛЕРЫ</div>
+        <div className={styles.nav}>
+          <button className={styles.prev} onClick={onPrevButtonClick} disabled={prevBtnDisabled} />
+          <button className={styles.next} onClick={onNextButtonClick} disabled={nextBtnDisabled} />
+        </div>
+      </div>
+      <div className={styles.slider}>
+        <div className={styles.viewport} ref={emblaRef}>
+          <div className={styles.container}>
+            {items.map((item, i) => (
+              <div className={styles.slide} key={i}>
+                <Item {...item} />
+              </div>
+            ))}
           </div>
         </div>
-        <div className={styles.slider}>
-          <div className={styles.viewport} ref={emblaRef}>
-            <div className={styles.container}>
-              {items.map((item, i) => (
-                <div className={styles.slide} key={i}>
-                  <Item {...item} />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </Container>
+      </div>
     </div>
   )
 }

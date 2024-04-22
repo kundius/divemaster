@@ -86,7 +86,7 @@
 
 .title {
   font-size: 52px;
-  font-family: var(--font-montserrat);
+  font-family: var(--font-sans-wide);
   color: rgb(254, 254, 254);
   font-weight: bold;
   text-transform: uppercase;
@@ -106,7 +106,7 @@
 
 .desc {
   font-size: 18px;
-  font-family: var(--font-montserrat);
+  font-family: var(--font-sans-wide);
   color: rgb(255, 255, 255);
   line-height: 1.778;
   width: 580px;
@@ -140,7 +140,7 @@
   padding: 0 36px;
   display: inline-block;
   letter-spacing: 0.01em;
-  font-family: var(--font-sans-alt);
+  font-family: var(--font-sans-narrow);
   border-radius: 24px;
   background: #fff;
   box-shadow: 0px 0px 9.8px 0.2px rgba(0, 29, 47, 0.22);

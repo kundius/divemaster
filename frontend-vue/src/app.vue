@@ -12,7 +12,7 @@ import { Toaster } from '@/components/ui/sonner'
 <style lang="scss">
 :root {
   --font-sans: 'Roboto';
-  --font-sans-alt: 'Roboto Condensed';
+  --font-sans-narrow: 'Roboto Condensed';
 
   font-family: 'Roboto Condensed', sans-serif;
   font-family: 'Roboto', sans-serif;

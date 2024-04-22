@@ -157,7 +157,7 @@
   font-weight: bold;
   display: block;
   margin-top: 8px;
-  font-family: var(--font-sans-alt);
+  font-family: var(--font-sans-narrow);
   text-wrap: pretty;
 }
 
@@ -179,7 +179,7 @@
   color: #b2b2b2;
   font-weight: bold;
   margin-top: 8px;
-  font-family: var(--font-sans-alt);
+  font-family: var(--font-sans-narrow);
 }
 
 .prices {
@@ -196,14 +196,14 @@
   font-size: 18px;
   color: #b6359d;
   font-weight: 700;
-  font-family: var(--font-montserrat);
+  font-family: var(--font-sans-wide);
 }
 
 .oldPrice {
   font-size: 18px;
   text-decoration: line-through;
   color: #c0c0c0;
-  font-family: var(--font-montserrat);
+  font-family: var(--font-sans-wide);
 }
 
 .thumb {
@@ -251,7 +251,7 @@
   border-radius: 12px;
   font-size: 14px;
   font-weight: 500;
-  font-family: var(--font-montserrat);
+  font-family: var(--font-sans-wide);
   color: rgb(0, 0, 0);
   line-height: 24px;
   cursor: pointer;
@@ -294,7 +294,7 @@
   white-space: nowrap;
   gap: 8px;
   color: #ffffff;
-  font-family: var(--font-montserrat);
+  font-family: var(--font-sans-wide);
   background: #a90083;
   position: relative;
   transition: .3s ease;

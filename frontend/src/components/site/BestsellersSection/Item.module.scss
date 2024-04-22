@@ -208,7 +208,7 @@
   font-size: 18px;
   color: #b6359d;
   font-weight: 700;
-  font-family: var(--font-montserrat);
+  font-family: var(--font-sans-wide);
   position: relative;
   z-index: 30;
 }
@@ -220,7 +220,7 @@
   font-weight: 400;
   position: relative;
   z-index: 10;
-  font-family: var(--font-montserrat);
+  font-family: var(--font-sans-wide);
 }
 
 .purchaseActions {
@@ -250,7 +250,7 @@
   justify-content: center;
   gap: 8px;
   color: #ffffff;
-  font-family: var(--font-montserrat);
+  font-family: var(--font-sans-wide);
   background: #a90083;
   position: relative;
   transition: .3s ease;

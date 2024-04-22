@@ -1,6 +1,5 @@
 .root {
-  background: #fff;
-  padding: 22px 0;
+  display: flow-root;
 }
 
 .headline {
@@ -15,7 +14,7 @@
   text-transform: uppercase;
   color: #000000;
   font-weight: bold;
-  font-family: var(--font-sans-alt);
+  font-family: var(--font-sans-narrow);
   padding-top: 4px;
 }
 
@@ -35,7 +34,7 @@
     color: #9e9e9e;
   }
   &:not([disabled]):hover {
-    background: rgba(0,0,0,.05);
+    background: rgba(0, 0, 0, 0.05);
   }
 }
 

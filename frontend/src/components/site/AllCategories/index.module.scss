@@ -39,107 +39,122 @@
 
 .groupWeapon {
   grid-column: 1 / 2;
-  grid-row: 1 / 35;
+  grid-row-end: span 35;
 }
 
 .groupMailingPlants {
   grid-column: 2 / 3;
-  grid-row: 1 / 20;
+  grid-row-end: span 20;
 }
 
 .groupTubes {
   grid-column: 3 / 4;
-  grid-row: 1 / 14;
+  grid-row-end: span 14;
 }
 
 .groupFlippers {
-  grid-column: 1 / 1;
-  grid-row: 1 / 1;
+  grid-column: 2 / 3;
+  grid-row-end: span 11;
 }
 
 .groupCylins {
   grid-column: 1 / 1;
   grid-row: 1 / 1;
+  display: none;
 }
 
 .groupMasks {
-  grid-column: 1 / 1;
-  grid-row: 1 / 1;
+  grid-column: 3 / 4;
+  grid-row-end: span 9;
 }
 
 .groupGloves {
-  grid-column: 1 / 1;
-  grid-row: 1 / 1;
+  grid-column: 3 / 4;
+  grid-row-end: span 9;
 }
 
 .groupSocks {
   grid-column: 1 / 1;
   grid-row: 1 / 1;
+  display: none;
 }
 
 .groupLights {
   grid-column: 1 / 1;
   grid-row: 1 / 1;
+  display: none;
 }
 
 .groupRegulatorsAndOctopuses {
   grid-column: 1 / 1;
   grid-row: 1 / 1;
+  display: none;
 }
 
 .groupPhotoAndVideo {
   grid-column: 1 / 1;
   grid-row: 1 / 1;
+  display: none;
 }
 
 .groupChemistry {
   grid-column: 1 / 1;
   grid-row: 1 / 1;
+  display: none;
 }
 
 .groupDevicesAndComputers {
   grid-column: 1 / 1;
   grid-row: 1 / 1;
+  display: none;
 }
 
 .groupUnloadingVests {
   grid-column: 1 / 1;
   grid-row: 1 / 1;
+  display: none;
 }
 
 .groupBots {
   grid-column: 1 / 1;
   grid-row: 1 / 1;
+  display: none;
 }
 
 .groupCompensators {
   grid-column: 1 / 1;
   grid-row: 1 / 1;
+  display: none;
 }
 
 .groupNeopreneAccessories {
   grid-column: 1 / 1;
   grid-row: 1 / 1;
+  display: none;
 }
 
 .groupCargoAndCargoSystems {
   grid-column: 1 / 1;
   grid-row: 1 / 1;
+  display: none;
 }
 
 .groupBagsCoversBoxes {
   grid-column: 1 / 1;
   grid-row: 1 / 1;
+  display: none;
 }
 
 .groupBeltsAndBuckles {
   grid-column: 1 / 1;
   grid-row: 1 / 1;
+  display: none;
 }
 
 .groupBuoysTugboatsRafts {
   grid-column: 1 / 1;
   grid-row: 1 / 1;
+  display: none;
 }
 
 

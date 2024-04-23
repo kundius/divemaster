@@ -116,32 +116,6 @@ export function AllCategories(props: AllCategoriesProps) {
           alt="Трубки"
         />
       </div>
-      <div className={cn(styles.group, styles.groupFlippers)}>
-        <a href="#" className={styles.title}>
-          Ласты
-        </a>
-        <ul className={styles.list}>
-          <li>
-            <a href="#">Ласты для подводной охоты</a>
-          </li>
-          <li>
-            <a href="#">Запчасти для ласт</a>
-          </li>
-          <li>
-            <a href="#">Ласты для дайвинга</a>
-          </li>
-          <li>
-            <a href="#">Аксессуары для ласт для дайвинга</a>
-          </li>
-        </ul>
-        <Image
-          className={styles.image}
-          src="/catalog/flippers.png"
-          width={240}
-          height={233}
-          alt="Ласты"
-        />
-      </div>
       <div className={cn(styles.group, styles.groupCylins)}>
         <a href="#" className={styles.title}>
           Баллоны
@@ -172,6 +146,32 @@ export function AllCategories(props: AllCategoriesProps) {
           width={232}
           height={163}
           alt="Маски"
+        />
+      </div>
+      <div className={cn(styles.group, styles.groupFlippers)}>
+        <a href="#" className={styles.title}>
+          Ласты
+        </a>
+        <ul className={styles.list}>
+          <li>
+            <a href="#">Ласты для подводной охоты</a>
+          </li>
+          <li>
+            <a href="#">Запчасти для ласт</a>
+          </li>
+          <li>
+            <a href="#">Ласты для дайвинга</a>
+          </li>
+          <li>
+            <a href="#">Аксессуары для ласт для дайвинга</a>
+          </li>
+        </ul>
+        <Image
+          className={styles.image}
+          src="/catalog/flippers.png"
+          width={240}
+          height={233}
+          alt="Ласты"
         />
       </div>
       <div className={cn(styles.group, styles.groupGloves)}>

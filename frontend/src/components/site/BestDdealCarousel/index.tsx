@@ -2,11 +2,10 @@
 
 import { usePrevNextButtons } from '@/components/lib/EmblaCarousel/usePrevNextButtons'
 import useEmblaCarousel from 'embla-carousel-react'
-import { Container } from '../Container'
+import { Card } from './Card'
 import styles from './index.module.scss'
-import { Item } from './Item'
 
-export interface BestsellersSectionProps {
+export interface BestDdealCarouselProps {
   items: {
     images: string[]
     hit: boolean
@@ -17,21 +16,20 @@ export interface BestsellersSectionProps {
     title: string
     brand: string
     colors: string[]
+    sizes: string[]
   }[]
 }
 
-// TODO: избавиться от 'Section' в названии
-export function BestsellersSection({ items }: BestsellersSectionProps) {
+export function BestDdealCarousel({ items }: BestDdealCarouselProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: false
-    // align: 'end',
   })
   const { prevBtnDisabled, nextBtnDisabled, onPrevButtonClick, onNextButtonClick } =
     usePrevNextButtons(emblaApi)
   return (
     <div className={styles.root}>
       <div className={styles.headline}>
-        <div className={styles.title}>БЕСТСЕЛЛЕРЫ</div>
+        <div className={styles.title}>Лучшее предложение</div>
         <div className={styles.nav}>
           <button className={styles.prev} onClick={onPrevButtonClick} disabled={prevBtnDisabled} />
           <button className={styles.next} onClick={onNextButtonClick} disabled={nextBtnDisabled} />
@@ -42,7 +40,7 @@ export function BestsellersSection({ items }: BestsellersSectionProps) {
           <div className={styles.container}>
             {items.map((item, i) => (
               <div className={styles.slide} key={i}>
-                <Item {...item} />
+                <Card {...item} />
               </div>
             ))}
           </div>

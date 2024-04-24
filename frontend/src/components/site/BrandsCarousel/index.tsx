@@ -4,14 +4,13 @@ import { usePrevNextButtons } from '@/components/lib/EmblaCarousel/usePrevNextBu
 import useEmblaCarousel from 'embla-carousel-react'
 import styles from './index.module.scss'
 
-export interface BrandsSectionProps {
+export interface BrandsCarouselProps {
   items: {
     image: string
   }[]
 }
 
-// TODO: избавиться от 'Section' в названии
-export function BrandsSection({ items }: BrandsSectionProps) {
+export function BrandsCarousel({ items }: BrandsCarouselProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: false
   })

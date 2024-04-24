@@ -1,6 +1,7 @@
 .button {
-  background: linear-gradient(53deg, rgb(169, 0, 131) 0%, rgb(160, 45, 250) 25%, rgb(160, 45, 250) 40%,  rgb(159, 0, 169) 60%, rgb(159, 0, 169) 75%, rgb(141, 45, 250) 100%);
-  background-size: 400% 100%;
+  background: linear-gradient(53deg, rgb(159,0,169) 0%, rgb(141,45,250) 33.33%, rgb(169,0,131) 66.66%, rgb(160,45,250) 100%);
+  background-size: 300% 100%;
+  background-position: 100% 0;
   min-height: 44px;
   font-family: var(--font-sans-narrow);
   display: flex;
@@ -86,8 +87,7 @@
 
 .button-opened,
 .button:hover {
-  // background: linear-gradient(53deg, rgb(159, 0, 169) 0%, rgb(141, 45, 250) 100%);
-  background-position: 100% 0;
+  background-position: 0 0;
   box-shadow: 0px 0px 7px 0px rgba(0, 29, 47, 0.39);
 }
 

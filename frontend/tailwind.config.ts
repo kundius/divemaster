@@ -34,6 +34,7 @@ const config = {
     extend: {
       backgroundImage: {
         'gray-to-light': "linear-gradient(90deg, #a7b4bd 0%, #d3dbdf 100%)",
+        'light-gray': "linear-gradient(90deg, #f5f5f5 0%, #fbfbfb 100%)",
       },
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],

@@ -1,9 +1,10 @@
 import { BenefitsSlider, BenefitsSliderDiscount } from '@/components/site/BenefitsSlider'
-import { BestDdeal } from '@/components/site/BestDdeal'
-import { BestsellersSection } from '@/components/site/BestsellersSection'
-import { BrandsSection } from '@/components/site/BrandsSection'
+import { BestDdealCarousel } from '@/components/site/BestDdealCarousel'
+import { BestsellersCarousel } from '@/components/site/BestsellersCarousel'
+import { BrandsCarousel } from '@/components/site/BrandsCarousel'
 import { AllCategories } from '@/components/site/AllCategories'
 import { Container } from '@/components/site/Container'
+import { HomeAbout } from '@/components/site/HomeAbout'
 import {
   HeroSlider,
   HeroSliderCarpHunting,
@@ -55,7 +56,7 @@ export default function Page({ params: { locale } }: { params: { locale: string 
       />
       <div className="bg-white py-6">
         <Container>
-          <BrandsSection
+          <BrandsCarousel
             items={[
               {
                 image: '/brands/1.png'
@@ -99,7 +100,7 @@ export default function Page({ params: { locale } }: { params: { locale: string 
       </div>
       <div className="bg-gray-to-light pt-6 pb-20 overflow-hidden">
         <Container>
-          <BestsellersSection
+          <BestsellersCarousel
             items={[
               demoProduct,
               demoProduct,
@@ -130,9 +131,9 @@ export default function Page({ params: { locale } }: { params: { locale: string 
           }
         ]}
       />
-      <div className="pt-32 overflow-hidden">
+      <div className="pt-32 pb-16 overflow-hidden">
         <Container className="space-y-20">
-          <BestDdeal items={[demoProduct, demoProduct, demoProduct, demoProduct]} />
+          <BestDdealCarousel items={[demoProduct, demoProduct, demoProduct, demoProduct]} />
           <div className="space-y-6">
             <div className="text-lg font-bold font-sans-narrow uppercase">
               Снаряжение для подводной охоты, дайвинга и плавания
@@ -141,6 +142,7 @@ export default function Page({ params: { locale } }: { params: { locale: string 
           </div>
         </Container>
       </div>
+      <HomeAbout />
       <div style={{ height: 2000 }}>Home Page</div>
     </>
   )

@@ -4,9 +4,10 @@
   grid-template-rows: repeat(64, 0);
   gap: 24px;
 
-  // @include --max-2xl {
-  //   gap: 20px;
-  // }
+  @include --max-xl {
+    grid-template-columns: calc(25% - 18px) calc(25% - 18px) calc(25% - 18px) calc(25% - 18px);
+    grid-template-rows: repeat(91, 0);
+  }
 }
 
 .group {
@@ -18,6 +19,9 @@
 
   @include --max-3xl {
     padding: 24px;
+  }
+  @include --max-xl {
+    padding: 20px 24px;
   }
 }
 
@@ -53,12 +57,16 @@
 
 .group:hover .image {
   transform: scale(1.025) translate(-50%, -50%);
-  // transform: scale(1.025);
 }
 
 .groupWeapon {
   grid-column: 1 / 2;
   grid-row: 1 / 35;
+
+  @include --max-xl {
+    grid-column: 1 / 3;
+    grid-row: 1 / 30;
+  }
 
   .image {
     left: 65%;
@@ -68,12 +76,21 @@
       width: calc(357px * 0.8);
       height: calc(620px * 0.8);
     }
+    @include --max-xl {
+      left: 68%;
+      top: 62%;
+    }
   }
 }
 
 .groupMailingPlants {
   grid-column: 2 / 4;
   grid-row: 1 / 19;
+
+  @include --max-xl {
+    grid-column: 3 / 5;
+    grid-row: 1 / 20;
+  }
 
   .image {
     left: 57%;
@@ -83,12 +100,20 @@
       width: calc(208px * 0.8);
       height: calc(628px * 0.8);
     }
+    @include --max-xl {
+      left: 64%;
+    }
   }
 }
 
 .groupTubes {
   grid-column: 4 / 5;
   grid-row: 1 / 13;
+
+  @include --max-xl {
+    grid-column: 3 / 4;
+    grid-row: 20 / 30;
+  }
 
   .image {
     top: 64%;
@@ -98,6 +123,14 @@
       width: calc(362px * 0.8);
       height: calc(176px * 0.8);
     }
+    @include --max-xl {
+      top: 64%;
+      left: 70%;
+    }
+    @include --max-lg {
+      width: calc(362px * 0.6);
+      height: calc(176px * 0.6);
+    }
   }
 }
 
@@ -105,6 +138,14 @@
   grid-column: 2 / 4;
   grid-row: 19 / 31;
   padding-left: calc(40% + 44px);
+
+  @include --max-3xl {
+    padding-left: calc(40% + 24px);
+  }
+  @include --max-xl {
+    grid-column: 2 / 5;
+    grid-row: 30 / 40;
+  }
 
   .image {
     left: 26%;
@@ -114,6 +155,9 @@
       width: calc(240px * 0.8);
       height: calc(233px * 0.8);
     }
+    @include --max-xl {
+      left: 22%;
+    }
   }
 }
 
@@ -121,6 +165,14 @@
   grid-column: 2 / 4;
   grid-row: 31 / 41;
   padding-left: calc(40% + 44px);
+
+  @include --max-3xl {
+    padding-left: calc(40% + 24px);
+  }
+  @include --max-xl {
+    grid-column: 1 / 4;
+    grid-row: 40 / 50;
+  }
 
   .image {
     left: 23%;
@@ -130,12 +182,21 @@
       width: calc(191px * 0.8);
       height: calc(230px * 0.8);
     }
+    @include --max-xl {
+      left: 22%;
+      top: 52%;
+    }
   }
 }
 
 .groupMasks {
   grid-column: 4 / 5;
   grid-row: 13 / 22;
+
+  @include --max-xl {
+    grid-column: 4 / 5;
+    grid-row: 20 / 30;
+  }
 
   .image {
     left: 70%;
@@ -145,12 +206,21 @@
       width: calc(232px * 0.8);
       height: calc(163px * 0.8);
     }
+    @include --max-xl {
+      left: 62%;
+      top: 64%;
+    }
   }
 }
 
 .groupGloves {
   grid-column: 4 / 5;
   grid-row: 22 / 30;
+
+  @include --max-xl {
+    grid-column: 1 / 2;
+    grid-row: 30 / 40;
+  }
 
   .image {
     left: 71%;
@@ -160,12 +230,21 @@
       width: calc(144px * 0.8);
       height: calc(134px * 0.8);
     }
+    @include --max-xl {
+      left: 62%;
+      top: 64%;
+    }
   }
 }
 
 .groupSocks {
   grid-column: 4 / 5;
   grid-row: 30 / 36;
+
+  @include --max-xl {
+    grid-column: 4 / 5;
+    grid-row: 40 / 50;
+  }
 
   .image {
     left: 65%;
@@ -175,12 +254,21 @@
       width: calc(201px * 0.8);
       height: calc(138px * 0.8);
     }
+    @include --max-xl {
+      left: 60%;
+      top: 64%;
+    }
   }
 }
 
 .groupLights {
   grid-column: 4 / 5;
   grid-row: 36 / 44;
+
+  @include --max-xl {
+    grid-column: 3/5;
+    grid-row: 83/92;
+  }
 
   .image {
     left: 80%;
@@ -190,12 +278,26 @@
       width: calc(168px * 0.8);
       height: calc(116px * 0.8);
     }
+    @include --max-xl {
+      width: calc(168px * 1);
+      height: calc(116px * 1);
+      left: 78%;
+      top: 54%;
+    }
+    @include --max-lg {
+      top: 78%;
+    }
   }
 }
 
 .groupRegulatorsAndOctopuses {
   grid-column: 4 / 5;
   grid-row: 44 / 53;
+
+  @include --max-xl {
+    grid-column: 1 / 3;
+    grid-row: 68 / 74;
+  }
 
   .image {
     left: 72%;
@@ -205,6 +307,9 @@
       width: calc(183px * 0.8);
       height: calc(153px * 0.8);
     }
+    @include --max-xl {
+      left: 76%;
+    }
   }
 }
 
@@ -212,11 +317,26 @@
   grid-column: 4 / 5;
   grid-row: 53 / 59;
 
+  @include --max-xl {
+    grid-column: 1/3;
+    grid-row: 86/92;
+  }
+
   .image {
     left: 80%;
     top: 49%;
 
     @include --max-2xl {
+      width: calc(152px * 0.8);
+      height: calc(78px * 0.8);
+    }
+    @include --max-xl {
+      width: calc(152px * 1);
+      height: calc(78px * 1);
+      left: 76%;
+      top: 50%;
+    }
+    @include --max-lg {
       width: calc(152px * 0.8);
       height: calc(78px * 0.8);
     }
@@ -227,6 +347,11 @@
   grid-column: 4 / 5;
   grid-row: 59 / 65;
 
+  @include --max-xl {
+    grid-column: 3 / 4;
+    grid-row: 50 / 60;
+  }
+
   .image {
     left: 61%;
     top: 46%;
@@ -235,12 +360,21 @@
       width: calc(219px * 0.8);
       height: calc(113px * 0.8);
     }
+    @include --max-xl {
+      left: 54%;
+      top: 70%;
+    }
   }
 }
 
 .groupDevicesAndComputers {
   grid-column: 3 / 4;
   grid-row: 53 / 65;
+
+  @include --max-xl {
+    grid-column: 3/5;
+    grid-row: 68/77;
+  }
 
   .image {
     left: 79%;
@@ -250,12 +384,23 @@
       width: calc(96px * 0.8);
       height: calc(120px * 0.8);
     }
+    @include --max-xl {
+      width: calc(96px * 1);
+      height: calc(120px * 1);
+      left: 80%;
+      top: 64%;
+    }
   }
 }
 
 .groupUnloadingVests {
   grid-column: 3 / 4;
   grid-row: 41 / 53;
+
+  @include --max-xl {
+    grid-column: 3/5;
+    grid-row: 60/68;
+  }
 
   .image {
     left: 52%;
@@ -265,12 +410,24 @@
       width: calc(187px * 0.8);
       height: calc(180px * 0.8);
     }
+    @include --max-xl {
+      left: 80%;
+      top: 68%;
+    }
+    @include --max-lg {
+      top: 80%;
+    }
   }
 }
 
 .groupBots {
   grid-column: 2 / 3;
   grid-row: 41 / 47;
+
+  @include --max-xl {
+    grid-column: 4 / 5;
+    grid-row: 50 / 60;
+  }
 
   .image {
     left: 72%;
@@ -280,12 +437,21 @@
       width: calc(145px * 0.8);
       height: calc(110px * 0.8);
     }
+    @include --max-xl {
+      left: 64%;
+      top: 68%;
+    }
   }
 }
 
 .groupCompensators {
   grid-column: 2 / 3;
   grid-row: 47 / 65;
+
+  @include --max-xl {
+    grid-column: 3/5;
+    grid-row: 77/83;
+  }
 
   .image {
     left: 53%;
@@ -295,12 +461,23 @@
       width: calc(238px * 0.8);
       height: calc(294px * 0.8);
     }
+    @include --max-xl {
+      width: calc(238px * 0.6);
+      height: calc(294px * 0.6);
+      left: 76%;
+      top: 76%;
+    }
   }
 }
 
 .groupNeopreneAccessories {
   grid-column: 1 / 2;
   grid-row: 35 / 41;
+
+  @include --max-xl {
+    grid-column: 1 / 3;
+    grid-row: 50 / 56;
+  }
 
   .image {
     left: 82%;
@@ -317,6 +494,11 @@
   grid-column: 1 / 2;
   grid-row: 41 / 47;
 
+  @include --max-xl {
+    grid-column: 1/3;
+    grid-row: 56 / 62;
+  }
+
   .image {
     left: 84%;
     top: 54%;
@@ -325,12 +507,20 @@
       width: calc(135px * 0.8);
       height: calc(79px * 0.8);
     }
+    // @include --max-lg {
+    //   top: 72%;
+    // }
   }
 }
 
 .groupBagsCoversBoxes {
   grid-column: 1 / 2;
   grid-row: 47 / 53;
+
+  @include --max-xl {
+    grid-column: 1/3;
+    grid-row: 62 / 68;
+  }
 
   .image {
     left: 76%;
@@ -340,12 +530,20 @@
       width: calc(251px * 0.8);
       height: calc(99px * 0.8);
     }
+    @include --max-lg {
+      top: 72%;
+    }
   }
 }
 
 .groupBeltsAndBuckles {
   grid-column: 1 / 2;
   grid-row: 53 / 59;
+
+  @include --max-xl {
+    grid-column: 1/3;
+    grid-row: 74/80;
+  }
 
   .image {
     left: 74%;
@@ -355,12 +553,23 @@
       width: calc(178px * 0.8);
       height: calc(89px * 0.8);
     }
+    @include --max-xl {
+      left: 76%;
+    }
+    @include --max-lg {
+      top: 64%;
+    }
   }
 }
 
 .groupBuoysTugboatsRafts {
   grid-column: 1 / 2;
   grid-row: 59 / 65;
+
+  @include --max-xl {
+    grid-column: 1/3;
+    grid-row: 80/86;
+  }
 
   .image {
     left: 78%;
@@ -369,6 +578,18 @@
     @include --max-2xl {
       width: calc(119px * 0.8);
       height: calc(102px * 0.8);
+    }
+    @include --max-xl {
+      width: calc(119px * 1);
+      height: calc(102px * 1);
+      left: 78%;
+      top: 50%;
+    }
+    @include --max-lg {
+      width: calc(119px * 0.8);
+      height: calc(102px * 0.8);
+      left: 82%;
+    top: 58%;
     }
   }
 }
@@ -381,9 +602,9 @@
   text-decoration: none;
   display: block;
 
-  // @include --max-2xl {
-  //   font-size: 20px;
-  // }
+  @include --max-xl {
+    margin-bottom: 16px;
+  }
 }
 
 .title::before {
@@ -405,6 +626,7 @@
   // left: 0;
   // top: 0;
   // width: 100%;
+  user-select: none;
   max-width: none;
   height: auto;
   will-change: transform;

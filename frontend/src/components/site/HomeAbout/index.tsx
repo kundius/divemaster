@@ -1,4 +1,5 @@
 import { Container } from '../Container'
+import { PrimaryButton, PrimaryButtonArrow } from '../PrimaryButton'
 import styles from './index.module.scss'
 import Image from 'next/image'
 
@@ -35,7 +36,7 @@ export function HomeAbout() {
             <div className={styles.content}>
               <ul className={styles.listCheck}>
                 <li>Низкие цены в Воронеже и России.</li>
-                <li>Бесплатная доставка по России при заказе от 5 000 ₽ ₽.</li>
+                <li>Бесплатная доставка по России при заказе от 5 000 ₽.</li>
                 <li>
                   Поставки по всему миру по конкурентной цене от производителя снаряжения
                   DiveMaster.
@@ -47,6 +48,14 @@ export function HomeAbout() {
                 <br /> А менеджеры проконсультируют и помогут подобрать наиболее подходящий товар
                 именно Вам.
               </p>
+              <div className="flex mt-6 -ml-2">
+                <PrimaryButton asChild>
+                  <a href="#">
+                    Перейти в каталог
+                    <PrimaryButtonArrow />
+                  </a>
+                </PrimaryButton>
+              </div>
             </div>
           </div>
           <div className={styles.assortment}>

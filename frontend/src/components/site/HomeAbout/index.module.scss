@@ -24,19 +24,21 @@
   color: #000000;
   font-weight: bold;
   text-align: center;
-  line-height: 1.333;
-  margin-bottom: 64px;
+  line-height: 1.25;
+  margin-bottom: 70px;
 }
 
 .image1 {
   position: absolute;
-  top: 180px;
+  top: 184px;
   left: 50%;
   transform: translateX(-50%);
   z-index: -2;
   pointer-events: none;
   user-select: none;
-  border-radius: 40px;
+  border-radius: 24px;
+  max-width: 709px;
+  width: 40%;
 }
 
 .ivemaster {
@@ -78,7 +80,7 @@
   width: calc(50% - 24px);
   border-radius: 24px;
   background-image: linear-gradient(90deg, #bdd4ff 0%, #dfebff 100%);
-  padding: 36px 48px;
+  padding: 44px 48px 36px;
   margin-top: 140px;
 }
 
@@ -86,7 +88,7 @@
   width: calc(50% - 24px);
   border-radius: 24px;
   background-color: #e1f8ff;
-  padding: 36px 48px;
+  padding: 44px 48px 36px;
 }
 
 .discount {
@@ -111,7 +113,7 @@
   line-height: 1;
   color: inherit;
   font-weight: bold;
-  margin-bottom: 36px;
+  margin-bottom: 32px;
 }
 
 .content {
@@ -120,7 +122,7 @@
   color: inherit;
   p {
     margin: 0;
-    * + p {
+    * + & {
       margin-top: 24px;
     }
   }
@@ -132,45 +134,34 @@
 }
 
 .listCheck {
-  margin: 0;
+  margin: 42px 0 0;
   padding: 0;
   list-style: none;
-  * + & {
-    margin-top: 12px;
-  }
   li {
     padding-left: 60px;
     position: relative;
-    li + & {
-      margin-top: 20px;
-    }
+    margin-top: 22px;
     &::before {
       content: '';
-      border-left: 5px solid #4957fe;
-      border-bottom: 5px solid #4957fe;
-      width: 40px;
-      height: 12px;
-      transform: rotate(-45deg);
+      background: url('/home-about/check.svg') no-repeat 50% 50%;
+      background-size: 100% 100%;
+      width: 38px;
+      height: 29px;
       position: absolute;
-      top: 12px;
-      left: 16px;
+      top: -3px;
+      left: 0px;
     }
   }
 }
 
 .listDot {
-  margin: 0;
+  margin: 12px 0 36px;
   padding: 0;
   list-style: none;
-  * + & {
-    margin-top: 12px;
-  }
   li {
     padding-left: 60px;
     position: relative;
-    li + & {
-      margin-top: 8px;
-    }
+    margin-top: 2px;
     &::before {
       content: '';
       width: 10px;
@@ -178,26 +169,21 @@
       border-radius: 50%;
       background: #00cdff;
       position: absolute;
-      top: 12px;
-      left: 36px;
+      top: 2px;
+      left: 34px;
     }
   }
 }
 
 .listDotAlt {
   font-size: 18px;
-  margin: 0;
+  margin: 16px 0;
   padding: 0;
   list-style: none;
-  * + & {
-    margin-top: 12px;
-  }
   li {
     padding-left: 36px;
     position: relative;
-    li + & {
-      margin-top: 16px;
-    }
+    margin-top: 16px;
     &::before {
       content: '';
       width: 5px;

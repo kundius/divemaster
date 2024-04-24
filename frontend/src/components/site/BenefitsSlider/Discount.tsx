@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import styles from './Discount.module.scss'
+import { PrimaryButton, PrimaryButtonArrow } from '../PrimaryButton'
 
 export function Discount() {
   return (
@@ -12,10 +13,12 @@ export function Discount() {
           персональную скидку.
         </div>
         <div className={styles.action}>
-          <a href="#" className={styles.button}>
-            Узнать больше
-            <span className={styles.buttonArrow} />
-          </a>
+          <PrimaryButton asChild>
+            <a href="#">
+              Узнать больше
+              <PrimaryButtonArrow />
+            </a>
+          </PrimaryButton>
         </div>
       </div>
       <Image

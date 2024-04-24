@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   version="1.2"
+   viewBox="0 0 38 29"
+   width="38"
+   height="29"
+   id="svg1"
+   sodipodi:docname="check.svg"
+   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="64"
+     inkscape:cx="10.296875"
+     inkscape:cy="25.210937"
+     inkscape:window-width="2560"
+     inkscape:window-height="1011"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1" />
+  <title
+     id="title1">птичка</title>
+  <style
+     id="style1">
+		.s0 { fill: #4957fe } 
+	</style>
+  <path
+     id="птичка"
+     class="s0"
+     d="M 35.099609 -0.01171875 C 34.37461 0.0007812375 33.649609 0.30039123 33.099609 0.90039062 L 12.357422 22.011719 L 12.384766 22.039062 L 12.367188 22.025391 L 12.369141 22.033203 C 12.365676 22.030598 12.362848 22.027997 12.359375 22.025391 C 12.356669 22.022615 12.354271 22.020304 12.351562 22.017578 L 12.357422 22.011719 L 4.9003906 14.400391 C 3.8003917 13.300392 2.0003895 13.200782 0.90039062 14.300781 C -0.29960817 15.40078 -0.29921765 17.200392 0.80078125 18.400391 L 10.400391 28.099609 C 11.49414 29.29279 13.279246 29.298114 14.380859 28.216797 L 14.384766 28.226562 L 14.574219 28.023438 C 14.586001 28.010649 14.601785 27.997312 14.613281 27.984375 C 14.640579 27.959459 14.670155 27.925848 14.707031 27.880859 L 16.589844 25.865234 L 37.199219 4.8007812 C 38.299218 3.7007823 38.299608 1.9007801 37.099609 0.80078125 C 36.54961 0.2507818 35.824609 -0.024218737 35.099609 -0.01171875 z " />
+</svg>

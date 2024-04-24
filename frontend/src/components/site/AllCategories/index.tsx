@@ -294,7 +294,8 @@ export function AllCategories(props: AllCategoriesProps) {
       </div>
       <div className={cn(styles.group, styles.groupRegulatorsAndOctopuses)}>
         <a href="#" className={styles.title}>
-          Регуляторы и октопусы
+          Регуляторы<br />
+          и октопусы
         </a>
         <div className={styles.imageWrap}>
           <Image
@@ -372,7 +373,8 @@ export function AllCategories(props: AllCategoriesProps) {
       </div>
       <div className={cn(styles.group, styles.groupPhotoAndVideo)}>
         <a href="#" className={styles.title}>
-          Фото-и видеосъёмка
+          Фото-<br />
+          и видеосъёмка
         </a>
         <div className={styles.imageWrap}>
           <Image
@@ -386,7 +388,8 @@ export function AllCategories(props: AllCategoriesProps) {
       </div>
       <div className={cn(styles.group, styles.groupBuoysTugboatsRafts)}>
         <a href="#" className={styles.title}>
-          Буи, буксировщики, плоты
+          Буи, буксировщики,<br />
+          плоты
         </a>
         <div className={styles.imageWrap}>
           <Image

@@ -2,7 +2,7 @@
   position: relative;
   overflow: hidden;
   z-index: 1;
-  padding: 64px 0;
+  padding: 64px 0 44px;
   background: #ffffff;
 }
 
@@ -13,10 +13,14 @@
   left: 0;
   top: 0;
   right: 0;
-  height: 50%;
+  height: 940px;
   background: linear-gradient(90deg, #f5f5f5 0%, #fafafa 100%);
   pointer-events: none;
   user-select: none;
+
+  @include --max-lg {
+    height: 840px;
+  }
 }
 
 .heading {
@@ -26,6 +30,10 @@
   text-align: center;
   line-height: 1.25;
   margin-bottom: 70px;
+
+  @include --max-lg {
+    font-size: 32px;
+  }
 }
 
 .image1 {
@@ -37,34 +45,48 @@
   pointer-events: none;
   user-select: none;
   border-radius: 24px;
-  max-width: 709px;
-  width: 40%;
+
+  @include --max-lg {
+    width: 592px;
+  }
 }
 
 .ivemaster {
   position: absolute;
-  top: 180px;
+  top: 940px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   z-index: -1;
   pointer-events: none;
   user-select: none;
+  margin-top: 55px;
+  margin-left: 198px;
+
+  @include --max-lg {
+    top: 840px;
+  }
 }
 
 .d {
   position: absolute;
-  top: 180px;
+  top: 940px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   z-index: 1;
   pointer-events: none;
   user-select: none;
+  margin-top: 82px;
+  margin-left: -206px;
+
+  @include --max-lg {
+    top: 840px;
+  }
 }
 
 .s {
   position: absolute;
-  bottom: -20px;
-  right: 28px;
+  bottom: -30px;
+  right: 64px;
   z-index: 1;
   pointer-events: none;
   user-select: none;
@@ -73,39 +95,119 @@
 .grid {
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-start;
   gap: 48px;
+
+  @include --max-xl {
+    gap: 36px;
+  }
+  @include --max-lg {
+    gap: 24px;
+  }
 }
 
 .equipment {
   width: calc(50% - 24px);
   border-radius: 24px;
   background-image: linear-gradient(90deg, #bdd4ff 0%, #dfebff 100%);
-  padding: 44px 48px 36px;
+  padding: 44px 48px 50px;
   margin-top: 140px;
+
+  @include --max-xl {
+    width: calc(50% - 18px);
+    padding: 32px 36px 32px;
+  }
+  @include --max-lg {
+    width: calc(50% - 12px);
+    padding: 24px;
+    margin-top: 70px;
+  }
 }
 
 .assortment {
   width: calc(50% - 24px);
   border-radius: 24px;
   background-color: #e1f8ff;
-  padding: 44px 48px 36px;
+  padding: 44px 48px 40px;
+
+  @include --max-xl {
+    width: calc(50% - 18px);
+    padding: 32px 36px 32px;
+  }
+  @include --max-lg {
+    width: calc(50% - 12px);
+    padding: 24px;
+  }
 }
 
 .discount {
   width: calc(50% - 24px);
   border-radius: 24px;
   background-image: linear-gradient(90deg, #021e31 0%, #125f78 100%);
-  padding: 36px 48px;
+  padding: 44px 48px 48px;
   color: #fff;
-  margin-top: 160px;
+  margin-top: 26px;
+  position: relative;
+
+  @include --max-xl {
+    width: calc(50% - 18px);
+    padding: 32px 36px 32px;
+  }
+  @include --max-lg {
+    width: calc(50% - 12px);
+    padding: 24px;
+  }
 }
 
 .guest {
   width: calc(50% - 24px);
   background-color: #e1f8ff;
   border-radius: 24px;
-  padding: 36px 48px;
-  margin-top: 260px;
+  padding: 44px 48px 40px;
+  margin-top: 136px;
+  position: relative;
+  padding-right: 264px;
+
+  @include --max-2xl {
+    padding-right: 244px;
+  }
+  @include --max-xl {
+    width: calc(50% - 18px);
+    padding: 32px 36px 32px;
+  }
+  @include --max-lg {
+    width: calc(50% - 12px);
+    padding: 24px;
+    margin-top: 60px;
+  }
+}
+
+.guestImageV {
+  border-radius: 24px;
+  object-fit: cover;
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  height: calc(100% - 48px);
+  width: 186px;
+  max-width: none;
+
+  @include --max-xl {
+    display: none;
+  }
+}
+
+.guestImageH {
+  display: none;
+  border-radius: 24px;
+  object-fit: cover;
+  max-width: none;
+  width: 100%;
+  height: 120px;
+
+  @include --max-xl {
+    display: block;
+  }
 }
 
 .title {
@@ -114,6 +216,14 @@
   color: inherit;
   font-weight: bold;
   margin-bottom: 32px;
+
+  @include --max-xl {
+    margin-bottom: 24px;
+  }
+  @include --max-lg {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
 }
 
 .content {
@@ -124,13 +234,17 @@
     margin: 0;
     * + & {
       margin-top: 24px;
+
+      @include --max-lg {
+        margin-top: 16px;
+      }
     }
   }
-}
 
-.image2 {
-  display: block;
-  border-radius: 40px;
+  @include --max-xl {
+    font-size: 16px;
+    line-height: 18px;
+  }
 }
 
 .listCheck {
@@ -173,17 +287,34 @@
       left: 34px;
     }
   }
+  @include --max-xl {
+    li {
+      &::before {
+        top: 4px;
+      }
+    }
+  }
+  @include --max-lg {
+    margin-bottom: 16px;
+    li {
+      padding-left: 20px;
+      &::before {
+        left: 2px;
+      }
+    }
+  }
 }
 
 .listDotAlt {
   font-size: 18px;
-  margin: 16px 0;
+  margin: 22px 0;
   padding: 0;
   list-style: none;
+  opacity: 0.8;
   li {
     padding-left: 36px;
     position: relative;
-    margin-top: 16px;
+    margin-top: 22px;
     &::before {
       content: '';
       width: 5px;
@@ -191,8 +322,52 @@
       border-radius: 50%;
       background: #00cdff;
       position: absolute;
-      top: 12px;
-      left: 16px;
+      top: 8px;
+      left: 20px;
+    }
+  }
+  @include --max-xl {
+    font-size: 16px;
+    li {
+      &::before {
+        top: 6px;
+      }
+    }
+  }
+  @include --max-lg {
+    margin: 16px 0;
+    li {
+      margin-top: 16px;
+    }
+  }
+}
+
+.questions {
+  margin-top: 57px;
+}
+
+.questionsTitle {
+  text-align: center;
+  font-size: 30px;
+  line-height: 1;
+  color: #000000;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.questionsContent {
+  text-align: center;
+  font-size: 18px;
+  line-height: 1.25;
+  a {
+    background: #4957fe;
+    color: #fff;
+    font-weight: bold;
+    display: inline-block;
+    padding: 0 2px;
+    &:hover {
+      background: #a300a9;
     }
   }
 }

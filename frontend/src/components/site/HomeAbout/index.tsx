@@ -9,7 +9,7 @@ export function HomeAbout() {
       <Container>
         <div className={styles.heading}>
           Интернет-магазин снаряжения для дайвинга, подводной охоты
-          <br />и плавания DiveMaster
+          <br className="max-xl:hidden" />и плавания DiveMaster
         </div>
         <Image
           src="/home-about/image1.jpg"
@@ -86,49 +86,50 @@ export function HomeAbout() {
             </div>
           </div>
           <div className={styles.guest}>
-            <div className="flex justify-between gap-12">
-              <div>
-                <div className={styles.title}>Приходите в гости!</div>
-                <div className={styles.content}>
-                  <p>
-                    Посетите наши магазины и получите экспертную консультацию по выбору снаряжения
-                    для дайвинга и подводной охоты.
-                    <br />
-                    Изучайте ассортимент, подбирайте товары. Мы не побеспокоим вас, пока вам не
-                    потребуется наша помощь.
-                  </p>
-                  <p>
-                    Адреса магазинов:
-                    <br />
-                    в Москве: Москва, Кузьминки, ул. Есенина, 123, ТЦ «МЕГА», 4 этаж.
-                    <br />в Воронеже: Воронеж, ул. 20 лет Октября, 123, ТЦ «Европа», 4 этаж.
-                  </p>
-                  <p>Работаем ежедневно с 10:00-18:00.</p>
-                </div>
-              </div>
-              <div>
-                <Image
-                  src="/home-about/image2.jpg"
-                  alt=""
-                  width={186}
-                  height={412}
-                  className={styles.image2}
-                />
-              </div>
+            <div className={styles.title}>Приходите в гости!</div>
+            <Image
+              src="/home-about/guest-h.jpg"
+              alt=""
+              width={289}
+              height={200}
+              className={styles.guestImageH}
+            />
+            <div className={styles.content}>
+              <p>
+                Посетите наши магазины и получите экспертную консультацию по выбору снаряжения для
+                дайвинга и подводной охоты.
+                <br />
+                Изучайте ассортимент, подбирайте товары. Мы не побеспокоим вас, пока вам не
+                потребуется наша помощь.
+              </p>
+              <p>
+                Адреса магазинов:
+                <br />
+                в Москве: Москва, Кузьминки, ул. Есенина, 123, ТЦ «МЕГА», 4 этаж.
+                <br />в Воронеже: Воронеж, ул. 20 лет Октября, 123, ТЦ «Европа», 4 этаж.
+              </p>
+              <p>Работаем ежедневно с 10:00-18:00.</p>
             </div>
+            <Image
+              src="/home-about/guest-v.jpg"
+              alt=""
+              width={186}
+              height={412}
+              className={styles.guestImageV}
+            />
           </div>
           <div className={styles.discount}>
             <div className={styles.title}>Покупайте выгодно: скидки, бонусы и подарки</div>
             <div className={styles.content}>
-              <div className="flex items-center justify-around w-[540px] max-w-full">
+              <div className="flex items-center justify-around w-[550px] max-w-full mt-16 mb-8 -ml-4 max-xl:mt-12 max-lg:mt-8">
                 <div>
-                  <Image src="/home-about/gift.svg" alt="" width={58} height={58} />
+                  <Image src="/home-about/gift.svg" alt="" width={58} height={58} className='max-lg:w-[40px] max-lg:h-[40px] object-cover' />
                 </div>
                 <div>
-                  <Image src="/home-about/card.svg" alt="" width={92} height={67} />
+                  <Image src="/home-about/card.svg" alt="" width={92} height={67} className='max-lg:w-[60px] max-lg:h-[44px] object-cover' />
                 </div>
                 <div>
-                  <Image src="/home-about/discount.svg" alt="" width={70} height={70} />
+                  <Image src="/home-about/discount.svg" alt="" width={70} height={70} className='max-lg:w-[48px] max-lg:h-[48px] object-cover' />
                 </div>
               </div>
               <ul className={styles.listDotAlt}>
@@ -145,6 +146,14 @@ export function HomeAbout() {
               </ul>
             </div>
             <Image src="/home-about/s.png" alt="" width={98} height={385} className={styles.s} />
+          </div>
+        </div>
+        <div className={styles.questions}>
+          <div className={styles.questionsTitle}>Остались вопросы?</div>
+          <div className={styles.questionsContent}>
+            Позвоните нам по телефону +7 (906) 586-55-55 или напишите
+            <br />
+            на <a href="mailto:info@divemaster.pro">info@divemaster.pro</a>
           </div>
         </div>
       </Container>

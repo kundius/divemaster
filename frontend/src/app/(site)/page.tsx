@@ -13,6 +13,7 @@ import {
   HeroSliderNewYear,
   HeroSliderSpearfishing
 } from '@/components/site/HeroSlider'
+import { FooterBenefits } from '@/components/site/FooterBenefits'
 
 const demoProduct = {
   title: 'Гидрокостюм AQUADISCOVERY Воевода V2',
@@ -143,6 +144,7 @@ export default function Page({ params: { locale } }: { params: { locale: string 
         </Container>
       </div>
       <HomeAbout />
+      <FooterBenefits />
       <div style={{ height: 2000 }}>Home Page</div>
     </>
   )

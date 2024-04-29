@@ -1,0 +1,28 @@
+.root {
+  background: #d0dbe2;
+}
+
+.list {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.icon {
+  display: flex;
+  align-self: flex-start;
+  flex-shrink: 0;
+}
+
+.title {
+  font-size: 16px;
+  color: #4a4e50;
+}

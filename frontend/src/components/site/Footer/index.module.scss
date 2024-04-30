@@ -1,5 +1,58 @@
 .root {
   background: #4a4e50;
-  padding-top: 48px;
+  padding-top: 46px;
   padding-bottom: 40px;
+}
+
+.grid {
+  display: grid;
+  // grid-template-columns: max-content 8fr 9fr 5fr 23fr 7fr 17fr;
+  
+  // grid-template-columns: max-content var(--container-padding) 12fr var(--container-padding) 30fr var(--container-padding) 22fr;
+  // grid-template-rows: auto 40px auto 40px auto;
+
+  grid-template-columns: max-content 12fr 30fr 22fr;
+  grid-template-rows: auto auto auto;
+
+  grid-row-gap: 40px;
+  grid-column-gap: var(--container-padding);
+}
+
+.cellAbout {
+  grid-column: 1 / 2;
+  grid-row:  1 / 2;
+  padding-top: 5px;
+}
+
+.cellSubscribe {
+  grid-column: 1 / 2;
+  grid-row: 2 / 4;
+}
+
+.cellMenuInfo {
+  grid-column: 2 / 3;
+  grid-row: 1 / 4;
+}
+
+.cellMenuOpt {
+  grid-column: 3 / 4;
+  grid-row: 1 / 2;
+}
+
+.cellPayment {
+  grid-column: 3 / 4;
+  grid-row: 2 / 4;
+}
+
+.cellSocial {
+  grid-column: 4 / 5;
+  grid-row: 2 / 3;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+.cellStat {
+  grid-column: 4 / 5;
+  grid-row: 3 / 4;
 }

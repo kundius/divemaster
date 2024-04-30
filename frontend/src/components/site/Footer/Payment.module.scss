@@ -1,0 +1,32 @@
+.root {
+}
+
+.title {
+  font-size: 16px;
+  font-family: var(--font-sans-narrow);
+  color: rgb(255, 255, 255);
+  font-weight: bold;
+  text-transform: uppercase;
+  line-height: 1;
+  padding: 10px 0;
+}
+
+.icons {
+  display: flex;
+  margin: 7px 0 12px 0;
+}
+
+.description {
+  font-size: 16px;
+  line-height: 22px;
+  color: #9b9b9b;
+  max-width: 380px;
+
+  a {
+    color: inherit;
+    text-decoration: underline;
+    &:hover {
+      color: #fff;
+    }
+  }
+}

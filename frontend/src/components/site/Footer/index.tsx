@@ -1,5 +1,8 @@
 import { Container } from '../Container'
 import { About } from './About'
+import { Menu } from './Menu'
+import { Payment } from './Payment'
+import { Social } from './Social'
 import { Subscribe } from './Subscribe'
 import styles from './index.module.scss'
 
@@ -15,7 +18,7 @@ export function Footer() {
             <Subscribe />
           </div>
           <div className={styles.cellMenuInfo}>
-            {/* <Menu
+            <Menu
               title="Информация"
               items={[
                 {
@@ -47,10 +50,10 @@ export function Footer() {
                   href: '#'
                 }
               ]}
-            /> */}
+            />
           </div>
           <div className={styles.cellMenuOpt}>
-            {/* <Menu
+            <Menu
               title="Оптовикам"
               items={[
                 {
@@ -62,13 +65,22 @@ export function Footer() {
                   href: '#'
                 }
               ]}
-            /> */}
+            />
           </div>
           <div className={styles.cellPayment}>
-            {/* <Payment /> */}
+            <Payment />
           </div>
           <div className={styles.cellSocial}>
-            {/* <Social /> */}
+            <Social />
+          </div>
+          <div className={styles.cellStat}>
+            <div className="flex items-center justify-between">
+              <div />
+              <a href="#" className="text-[#9b9b9b] underline">
+                Карта сайта
+              </a>
+              <div>Counters</div>
+            </div>
           </div>
         </div>
       </Container>

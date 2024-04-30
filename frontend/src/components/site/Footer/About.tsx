@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 export function About() {
   return (
     <div className={styles.root}>
-      <div className="flex justify-between">
+      <div className="flex items-center justify-between">
         <Link href="/">
           <Image src="/logo.png" alt="" width={148} height={71} className={styles.logo} />
         </Link>

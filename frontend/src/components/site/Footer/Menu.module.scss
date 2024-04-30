@@ -1,0 +1,29 @@
+.root {
+}
+
+.title {
+  font-size: 16px;
+  font-family: var(--font-sans-narrow);
+  color: rgb(255, 255, 255);
+  font-weight: bold;
+  text-transform: uppercase;
+  line-height: 1;
+  padding: 10px 0;
+}
+
+.list {
+}
+
+.item + .item {
+  margin-top: 10px;
+}
+
+.link {
+  font-size: 16px;
+  text-decoration: underline;
+  color: #9b9b9b;
+
+  &:hover {
+    color: #fff;
+  }
+}

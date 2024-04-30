@@ -1,0 +1,29 @@
+.root {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.title {
+  font-size: 16px;
+  font-family: var(--font-sans-narrow);
+  color: rgb(255, 255, 255);
+  font-weight: bold;
+  text-transform: uppercase;
+  line-height: 1;
+  padding: 10px 0;
+}
+
+.list {
+  display: flex;
+  gap: 12px;
+}
+
+.item {
+  filter: grayscale(100%) contrast(0%);
+  transition: .3s ease;
+
+  &:hover {
+    filter: grayscale(0);
+  }
+}

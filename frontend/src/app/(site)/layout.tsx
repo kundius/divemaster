@@ -7,7 +7,9 @@ export default function Layout({ children }: PropsWithChildren) {
     <>
       <Header />
       {children}
-      <Footer />
+      <div className="hidden">
+        <Footer />
+      </div>
     </>
   )
 }

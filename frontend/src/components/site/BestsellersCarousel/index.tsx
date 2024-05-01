@@ -1,10 +1,9 @@
 'use client'
 
 import { usePrevNextButtons } from '@/components/lib/EmblaCarousel/usePrevNextButtons'
+import { ProductCard } from '@/components/site/ProductCard'
 import useEmblaCarousel from 'embla-carousel-react'
-import { Container } from '../Container'
 import styles from './index.module.scss'
-import { Item } from './Item'
 
 export interface BestsellersCarouselProps {
   items: {
@@ -17,14 +16,13 @@ export interface BestsellersCarouselProps {
     title: string
     brand: string
     colors: string[]
+    sizes: string[]
   }[]
 }
 
-// TODO: избавиться от 'Section' в названии
 export function BestsellersCarousel({ items }: BestsellersCarouselProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: false
-    // align: 'end',
   })
   const { prevBtnDisabled, nextBtnDisabled, onPrevButtonClick, onNextButtonClick } =
     usePrevNextButtons(emblaApi)
@@ -42,7 +40,7 @@ export function BestsellersCarousel({ items }: BestsellersCarouselProps) {
           <div className={styles.container}>
             {items.map((item, i) => (
               <div className={styles.slide} key={i}>
-                <Item {...item} />
+                <ProductCard {...item} />
               </div>
             ))}
           </div>

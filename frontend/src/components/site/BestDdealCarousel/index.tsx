@@ -1,8 +1,8 @@
 'use client'
 
 import { usePrevNextButtons } from '@/components/lib/EmblaCarousel/usePrevNextButtons'
+import { ProductCard } from '@/components/site/ProductCard'
 import useEmblaCarousel from 'embla-carousel-react'
-import { Card } from './Card'
 import styles from './index.module.scss'
 
 export interface BestDdealCarouselProps {
@@ -40,7 +40,7 @@ export function BestDdealCarousel({ items }: BestDdealCarouselProps) {
           <div className={styles.container}>
             {items.map((item, i) => (
               <div className={styles.slide} key={i}>
-                <Card {...item} />
+                <ProductCard {...item} />
               </div>
             ))}
           </div>

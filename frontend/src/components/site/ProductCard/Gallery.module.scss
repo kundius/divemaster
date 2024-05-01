@@ -1,0 +1,166 @@
+.root {
+  display: flex;
+  width: 100%;
+}
+
+.slider {
+  --slide-spacing: 0;
+  --slide-size: 100%;
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  background: #fff;
+  flex-shrink: 0;
+  order: 2;
+}
+
+.slider::before {
+  content: '';
+  display: block;
+  width: 100%;
+  padding-bottom: 125%;
+}
+
+.viewport {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.container {
+  backface-visibility: hidden;
+  display: flex;
+  touch-action: pan-y;
+  margin-left: calc(var(--slide-spacing) * -1);
+  height: 100%;
+}
+
+.slide {
+  min-width: 0;
+  flex: 0 0 var(--slide-size);
+  padding-left: var(--slide-spacing);
+  display: flex;
+  height: 100%;
+  position: relative;
+}
+
+.image {
+  object-fit: contain;
+  z-index: 10;
+}
+
+@keyframes slide-prev-out {
+  from {
+    left: 46px;
+  }
+  to {
+    left: 0;
+  }
+}
+
+@keyframes slide-prev-in {
+  from {
+    left: 0;
+  }
+  to {
+    left: 46px;
+  }
+}
+
+@keyframes slide-next-out {
+  from {
+    right: 46px;
+  }
+  to {
+    right: 0;
+  }
+}
+
+@keyframes slide-next-in {
+  from {
+    right: 0;
+  }
+  to {
+    right: 46px;
+  }
+}
+
+.prev {
+  width: 36px;
+  flex-shrink: 0;
+  order: 1;
+  margin-left: -36px;
+  position: relative;
+  z-index: 30;
+}
+
+.next {
+  width: 36px;
+  flex-shrink: 0;
+  order: 3;
+  margin-right: -36px;
+  position: relative;
+  z-index: 30;
+}
+
+.prevButton,
+.nextButton {
+  width: 36px;
+  height: 36px;
+  position: absolute;
+  top: 50%;
+  margin-top: -18px;
+  border-radius: 50%;
+  background: #ededed;
+  color: #747473;
+  transition: 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    color: #000;
+  }
+
+  &::before {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-left: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+  }
+}
+
+.prevButton {
+  animation-name: slide-prev-out;
+  animation-duration: 300ms;
+  animation-timing-function: ease;
+  animation-fill-mode: forwards;
+
+  &::before {
+    transform: rotate(45deg);
+  }
+}
+
+.showNav .prevButton {
+  animation-name: slide-prev-in;
+}
+
+.nextButton {
+  animation-name: slide-next-out;
+  animation-duration: 300ms;
+  animation-timing-function: ease;
+  animation-fill-mode: forwards;
+
+  &::before {
+    transform: rotate(-135deg);
+  }
+}
+
+.showNav .nextButton {
+  animation-name: slide-next-in;
+}

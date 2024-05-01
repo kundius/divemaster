@@ -7,6 +7,10 @@
   align-items: center;
   gap: 60px;
   margin-bottom: 16px;
+
+  @include --max-md {
+    display: none;
+  }
 }
 
 .title {
@@ -93,6 +97,9 @@
   @include --max-2xl {
     --slide-spacing: 40px;
   }
+  @include --max-md {
+    --slide-spacing: 16px;
+  }
 }
 
 .viewport {
@@ -117,4 +124,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+  img {
+    @include --max-md {
+      width: 120px;
+      height: 36px;
+      object-fit: contain;
+    }
+  }
 }

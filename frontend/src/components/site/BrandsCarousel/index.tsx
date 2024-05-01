@@ -1,7 +1,9 @@
 'use client'
 
 import { usePrevNextButtons } from '@/components/lib/EmblaCarousel/usePrevNextButtons'
+import Autoplay from 'embla-carousel-autoplay'
 import useEmblaCarousel from 'embla-carousel-react'
+import { useMediaQuery } from 'react-responsive'
 import styles from './index.module.scss'
 
 export interface BrandsCarouselProps {
@@ -11,9 +13,15 @@ export interface BrandsCarouselProps {
 }
 
 export function BrandsCarousel({ items }: BrandsCarouselProps) {
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: false
+  const isMobile = useMediaQuery({
+    query: '(max-width: 768px)'
   })
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    {
+      loop: true
+    },
+    [Autoplay({ playOnInit: isMobile, delay: 2000 })]
+  )
   const { prevBtnDisabled, nextBtnDisabled, onPrevButtonClick, onNextButtonClick } =
     usePrevNextButtons(emblaApi)
   return (

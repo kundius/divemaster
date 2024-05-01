@@ -29,4 +29,10 @@
       color: #fff;
     }
   }
+
+  @include --max-2xl {
+    font-size: 14px;
+    line-height: 16px;
+    max-width: 340px;
+  }
 }

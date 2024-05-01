@@ -1,10 +1,13 @@
-// import { AuthClientProvider } from '@/lib/auth/client-provider'
-import { DefaultLayout } from '@/components/site/DefaultLayout'
+import { Footer } from '@/components/site/Footer'
+import { Header } from '@/components/site/Header'
+import { PropsWithChildren } from 'react'
 
-export default function Layout({
-  children
-}: Readonly<{
-  children: React.ReactNode
-}>) {
-  return <DefaultLayout>{children}</DefaultLayout>
+export default function Layout({ children }: PropsWithChildren) {
+  return (
+    <>
+      <Header />
+      {children}
+      <Footer />
+    </>
+  )
 }

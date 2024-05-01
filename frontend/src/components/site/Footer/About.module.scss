@@ -21,11 +21,20 @@
   color: rgb(255, 255, 255);
   font-weight: bold;
   text-transform: uppercase;
+
+  @include --max-2xl {
+    font-size: 20px;
+  }
 }
 
 .phoneTime {
   font-size: 14px;
   color: rgba(155, 155, 155, 0.702);
+
+  @include --max-2xl {
+    font-size: 12px;;
+    margin-top: 4px;
+  }
 }
 
 .addresses {

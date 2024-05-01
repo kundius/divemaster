@@ -34,6 +34,10 @@
     border-color: #e3e3e3;
     outline: none;
   }
+
+  @include --max-2xl {
+    padding: 0 20px;
+  }
 }
 
 .submit {

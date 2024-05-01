@@ -145,7 +145,6 @@ export default function Page({ params: { locale } }: { params: { locale: string 
       </div>
       <HomeAbout />
       <FooterBenefits />
-      <div style={{ height: 2000 }}>Home Page</div>
     </>
   )
 }

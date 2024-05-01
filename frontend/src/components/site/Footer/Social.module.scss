@@ -2,6 +2,14 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  
+  // @include --max-xl {
+  //   flex-direction: column;
+  //   gap: 0;
+  // }
+  // @include --max-lg {
+  //   align-items: flex-start;
+  // }
 }
 
 .title {

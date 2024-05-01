@@ -1,5 +1,6 @@
 import { Container } from '../Container'
 import { About } from './About'
+import { Bottom } from './Bottom'
 import { Menu } from './Menu'
 import { Payment } from './Payment'
 import { Social } from './Social'
@@ -8,6 +9,7 @@ import styles from './index.module.scss'
 
 export function Footer() {
   return (
+    <>
     <div className={styles.root}>
       <Container>
         <div className={styles.grid}>
@@ -76,7 +78,7 @@ export function Footer() {
           <div className={styles.cellStat}>
             <div className="flex items-center justify-between">
               <div />
-              <a href="#" className="text-[#9b9b9b] underline">
+              <a href="#" className="text-[#9b9b9b] hover:text-white underline">
                 Карта сайта
               </a>
               <div>Counters</div>
@@ -85,5 +87,7 @@ export function Footer() {
         </div>
       </Container>
     </div>
+    <Bottom />
+    </>
   )
 }

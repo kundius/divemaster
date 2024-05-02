@@ -15,7 +15,10 @@
   color: #fff;
   font-weight: bold;
   font-family: var(--font-sans-narrow);
-  padding-top: 4px;
+
+  @include --max-md {
+    font-size: 16px;
+  }
 }
 
 .nav {
@@ -54,6 +57,11 @@
     &.next::after {
       margin-left: 6px;
     }
+  }
+
+  @include --max-md {
+    width: 24px;
+    height: 24px;
   }
 }
 
@@ -112,7 +120,12 @@
     --slide-size: 320px;
   }
   @include --max-md {
+    --slide-size: 33.33%;
+    --slide-spacing: 16px;
+  }
+  @include --max-sm {
     --slide-size: 50%;
+    --slide-spacing: 8px;
   }
 }
 

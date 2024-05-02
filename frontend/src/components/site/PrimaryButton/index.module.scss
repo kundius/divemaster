@@ -22,6 +22,13 @@
   );
   background-size: 300% 100%;
   transition: 0.5s ease;
+
+  @include --max-md {
+    height: 32px;
+    min-width: 132px;
+    border-radius: 16px;
+    font-weight: 500;
+  }
 }
 
 .arrow {

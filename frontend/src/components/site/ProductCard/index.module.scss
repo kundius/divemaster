@@ -1,6 +1,7 @@
 .root {
   border-radius: 24px;
   background: rgb(255, 255, 255);
+  border: 1px solid transparent;
   transition: 0.3s ease;
   width: 100%;
   position: relative;
@@ -8,6 +9,15 @@
   display: flex;
   flex-direction: column;
   padding: 20px 20px 68px;
+
+  @include --max-md {
+    padding-top: 6px;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-bottom: 36px;
+    border-radius: 12px;
+    border-color: rgb(235, 235, 235);
+  }
 }
 
 .root:hover {
@@ -22,12 +32,22 @@
   right: 10px;
   top: 10px;
   z-index: 30;
+
+  @include --max-md {
+    top: 4px;
+    right: 4px;
+  }
 }
 
 .action {
   width: 32px;
   height: 32px;
   position: relative;
+
+  @include --max-md {
+    width: 24px;
+    height: 24px;
+  }
 }
 
 .action::before {
@@ -45,6 +65,13 @@
   transition: 0.3s ease;
   width: 36px;
   height: 36px;
+
+  @include --max-md {
+    width: 28px;
+    height: 28px;
+    margin-left: -14px;
+    margin-top: -14px;
+  }
 }
 
 .action:hover::before {
@@ -54,16 +81,24 @@
 
 .action::after {
   content: '';
-  width: 32px;
-  height: 32px;
-  margin-left: -16px;
-  margin-top: -16px;
+  width: 24px;
+  height: 24px;
+  margin-left: -12px;
+  margin-top: -12px;
   position: absolute;
   left: 50%;
   top: 50%;
   background-repeat: no-repeat;
   background-position: 50% 50%;
+  background-size: contain;
   opacity: 0.6;
+
+  @include --max-md {
+    width: 16px;
+    height: 16px;
+    margin-left: -8px;
+    margin-top: -8px;
+  }
 }
 
 .action:hover::after {
@@ -88,6 +123,13 @@
   align-items: center;
   gap: 8px;
   width: 40px;
+
+  @include --max-md {
+    left: 6px;
+    top: 10px;
+    gap: 4px;
+    width: 30px;
+  }
 }
 
 .hit {
@@ -102,6 +144,13 @@
   height: 16px;
   width: 40px;
   transform: skewY(-15deg);
+
+  @include --max-md {
+    height: 12px;
+    line-height: 12px;
+    font-size: 10px;
+    width: 30px;
+  }
 }
 
 .new {
@@ -116,6 +165,13 @@
   height: 16px;
   width: 40px;
   transform: skewY(-15deg);
+
+  @include --max-md {
+    height: 12px;
+    line-height: 12px;
+    font-size: 10px;
+    width: 30px;
+  }
 }
 
 .discount {
@@ -131,10 +187,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  position: absolute;
-  z-index: 20;
-  left: 14px;
-  bottom: 0;
+
+  @include --max-md {
+    font-size: 10px;
+    width: 30px;
+    height: 30px;
+  }
 }
 
 .colors {
@@ -143,12 +201,24 @@
   bottom: 18px;
   display: flex;
   gap: 10px;
+
+  @include --max-md {
+    gap: 4px;
+    left: auto;
+    right: 8px;
+    bottom: 38px;
+  }
 }
 
 .color {
   width: 10px;
   height: 10px;
   border-radius: 50%;
+
+  @include --max-md {
+    width: 5px;
+    height: 5px;
+  }
 }
 
 .title {
@@ -157,9 +227,13 @@
   color: #000000;
   font-weight: bold;
   display: block;
-  margin-top: 8px;
+  margin-top: 2px;
   font-family: var(--font-sans-narrow);
   text-wrap: pretty;
+
+  @include --max-md {
+    font-size: 12px;
+  }
 }
 
 .title::before {
@@ -181,6 +255,11 @@
   font-weight: bold;
   margin-top: 8px;
   font-family: var(--font-sans-narrow);
+
+  @include --max-md {
+    font-size: 8px;
+    margin-top: 6px;
+  }
 }
 
 .prices {
@@ -189,19 +268,25 @@
   align-items: center;
   white-space: nowrap;
   justify-content: flex-start;
+  font-size: 18px;
   line-height: 20px;
   margin-top: 12px;
+
+  @include --max-md {
+    font-size: 12px;
+    line-height: 1.2;
+    gap: 8px;
+    margin-top: 4px;
+  }
 }
 
 .realPrice {
-  font-size: 18px;
   color: #b6359d;
   font-weight: 700;
   font-family: var(--font-sans-wide);
 }
 
 .oldPrice {
-  font-size: 18px;
   text-decoration: line-through;
   color: #c0c0c0;
   font-family: var(--font-sans-wide);
@@ -211,7 +296,13 @@
   flex-grow: 1;
   display: flex;
   align-items: center;
-  margin: -19px -19px 0; // fix lags
+  margin: -20px -20px 0; // fix lags
+
+  @include --max-md {
+    margin-top: -6px;
+    margin-left: -6px;
+    margin-right: -6px;
+  }
 }
 
 .mediaContainer {
@@ -249,6 +340,10 @@
   display: flex;
   gap: 12px;
   margin: 8px -8px 0;
+
+  @include --max-md {
+    display: none;
+  }
 }
 
 .size {
@@ -294,14 +389,18 @@
   background: #f6e5f2;
   position: absolute;
   gap: 1px;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  bottom: -1px;
+  left: -1px;
+  right: -1px;
   transform: translateY(100%);
   transition: 0.3s ease;
   z-index: 20;
 
   .root:hover & {
+    transform: translateY(0);
+  }
+
+  @include --max-md {
     transform: translateY(0);
   }
 }
@@ -327,11 +426,12 @@
   &:hover {
     background: #9f2df9;
   }
-}
 
-.purchaseActionInner {
-  position: relative;
-  display: block;
+  @include --max-md {
+    font-size: 9px;
+    height: 28px;
+    gap: 2px;
+  }
 }
 
 .purchaseAction.purchaseActionCart {
@@ -344,6 +444,10 @@
     transition: 0.3s ease;
     background-position: 100% 0;
   }
+
+  @include --max-md {
+    width: 60%;
+  }
 }
 
 .purchaseAction.purchaseActionCart::before {
@@ -353,6 +457,12 @@
   height: 24px;
   display: block;
   flex-shrink: 0;
+  background-size: contain;
+
+  @include --max-md {
+    width: 16px;
+    height: 16px;
+  }
 }
 
 .purchaseAction.purchaseActionOneClick {
@@ -370,6 +480,12 @@
   height: 24px;
   display: block;
   flex-shrink: 0;
+  background-size: contain;
+
+  @include --max-md {
+    width: 16px;
+    height: 16px;
+  }
 }
 
 .purchaseAction.purchaseActionOneClick .purchaseActionInner {

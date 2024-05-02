@@ -6,6 +6,10 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 32px;
+
+  @include --max-md {
+    margin-bottom: 20px;
+  }
 }
 
 .title {
@@ -14,7 +18,10 @@
   color: rgb(0, 0, 0);
   font-weight: bold;
   font-family: var(--font-sans-narrow);
-  padding-top: 4px;
+
+  @include --max-md {
+    font-size: 16px;
+  }
 }
 
 .nav {
@@ -53,6 +60,11 @@
     &.next::after {
       margin-left: 6px;
     }
+  }
+
+  @include --max-md {
+    width: 24px;
+    height: 24px;
   }
 }
 
@@ -114,7 +126,12 @@
     --slide-size: 50%;
   }
   @include --max-md {
+    --slide-size: 33.33%;
+    --slide-spacing: 16px;
+  }
+  @include --max-sm {
     --slide-size: 50%;
+    --slide-spacing: 8px;
   }
 }
 

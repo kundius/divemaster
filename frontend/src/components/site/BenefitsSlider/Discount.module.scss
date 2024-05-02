@@ -12,6 +12,10 @@
     padding-top: 100px;
     padding-bottom: 60px;
   }
+  @include --max-md {
+    padding-top: 264px;
+    padding-bottom: 24px;
+  }
 }
 
 .content {
@@ -28,6 +32,11 @@
   @include --max-lg {
     width: 70%;
   }
+  @include --max-md {
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
 
 .title {
@@ -38,6 +47,11 @@
   font-weight: 700;
   font-family: var(--font-sans-wide);
   margin-bottom: 34px;
+
+  @include --max-md {
+    font-size: 18px;
+    margin-bottom: 14px;
+  }
 }
 
 .desc {
@@ -45,6 +59,12 @@
   line-height: 30px;
   color: #ffffff;
   margin-bottom: 14px;
+
+  @include --max-md {
+    font-size: 12px;
+    line-height: 18px;
+    margin-bottom: 16px;
+  }
 }
 
 .desc span {
@@ -84,5 +104,14 @@
     height: calc(617px * 0.6);
     right: -232px;
     top: 24px;
+  }
+  @include --max-md {
+    width: calc(1230px * 0.4);
+    height: calc(617px * 0.4);
+    right: auto;
+    left: 50%;
+    margin-left: -40px;
+    top: 32px;
+    transform: translateX(-50%);
   }
 }

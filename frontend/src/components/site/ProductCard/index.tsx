@@ -52,8 +52,8 @@ export function ProductCard(props: ProductCardProps) {
       <div className={styles.meta}>
         <div className={styles.hit}>Хит</div>
         <div className={styles.new}>New!</div>
+        <div className={styles.discount}>-{props.discount}%</div>
       </div>
-      <div className={styles.discount}>-{props.discount}%</div>
       <div className={styles.media}>
         <div className={styles.mediaContainer}>
           <div className={styles.mediaThumb}>

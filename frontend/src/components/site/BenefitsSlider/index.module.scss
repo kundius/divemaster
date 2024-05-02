@@ -61,6 +61,11 @@
   @include --max-xl {
     top: 32px;
   }
+  @include --max-md {
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }
 
 .dot {

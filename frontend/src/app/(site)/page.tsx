@@ -99,7 +99,7 @@ export default function Page({ params: { locale } }: { params: { locale: string 
           />
         </Container>
       </div>
-      <div className="bg-gray-to-light pt-6 pb-20 overflow-hidden">
+      <div className="bg-gray-to-light pt-6 pb-20 overflow-hidden max-md:pb-6 max-md:pt-8">
         <Container>
           <BestsellersCarousel
             items={[
@@ -132,11 +132,11 @@ export default function Page({ params: { locale } }: { params: { locale: string 
           }
         ]}
       />
-      <div className="pt-32 pb-16 overflow-hidden">
-        <Container className="space-y-20">
+      <div className="pt-32 pb-16 overflow-hidden max-md:pt-12 max-md:pb-8">
+        <Container className="space-y-20 max-md:space-y-16">
           <BestDdealCarousel items={[demoProduct, demoProduct, demoProduct, demoProduct]} />
           <div className="space-y-6">
-            <div className="text-lg font-bold font-sans-narrow uppercase">
+            <div className="text-lg font-bold font-sans-narrow uppercase max-md:text-base ">
               Снаряжение для подводной охоты, дайвинга и плавания
             </div>
             <AllCategories />

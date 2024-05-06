@@ -1,6 +1,10 @@
 .root {
   background: #252728;
   padding: 18px 0;
+  
+  @include --max-md {
+    padding: 12px 0 72px;
+  }
 }
 
 .grid {
@@ -12,11 +16,21 @@
   @include --max-2xl {
     column-gap: 32px;
   }
+  @include --max-md {
+    flex-wrap: wrap;
+    column-gap: 16px;
+    row-gap: 32px;
+  }
 }
 
 .copyright {
   font-size: 14px;
   color: #9b9b9b;
+
+  @include --max-md {
+    font-size: 12px;
+    width: calc(100% - 16px - 98px);
+  }
 }
 
 .links {
@@ -41,6 +55,22 @@
 
   @include --max-2xl {
     column-gap: 32px;
+  }
+  @include --max-md {
+    width: 100%;
+    font-size: 12px;
+    font-weight: 500;
+    order: -1;
+    position: relative;
+    &::before {
+      content: '';
+      position: absolute;
+      bottom: -16px;
+      left: calc(var(--container-padding) * -1);
+      right: calc(var(--container-padding) * -1);
+      height: 1px;
+      background: var(--neutral700);
+    }
   }
 }
 

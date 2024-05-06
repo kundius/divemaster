@@ -48,7 +48,7 @@ export function HomeAbout() {
                 <br /> А менеджеры проконсультируют и помогут подобрать наиболее подходящий товар
                 именно Вам.
               </p>
-              <div className="flex mt-6 -ml-2">
+              <div className="flex mt-6 md:-ml-2">
                 <PrimaryButton asChild>
                   <a href="#">
                     Перейти в каталог
@@ -121,15 +121,15 @@ export function HomeAbout() {
           <div className={styles.discount}>
             <div className={styles.title}>Покупайте выгодно: скидки, бонусы и подарки</div>
             <div className={styles.content}>
-              <div className="flex items-center justify-around w-[550px] max-w-full mt-16 mb-8 -ml-4 max-xl:mt-12 max-lg:mt-8">
+              <div className="flex items-center justify-around w-[550px] max-w-full mt-16 mb-8 -ml-4 max-xl:mt-12 max-lg:mt-8 max-md:w-[240px] max-md:mt-6">
                 <div>
-                  <Image src="/home-about/gift.svg" alt="" width={58} height={58} className='max-lg:w-[40px] max-lg:h-[40px] object-cover' />
+                  <Image src="/home-about/gift.svg" alt="" width={58} height={58} className='max-lg:w-[40px] max-lg:h-[40px] max-md:w-[32px] max-md:h-[32px] object-cover' />
                 </div>
                 <div>
-                  <Image src="/home-about/card.svg" alt="" width={92} height={67} className='max-lg:w-[60px] max-lg:h-[44px] object-cover' />
+                  <Image src="/home-about/card.svg" alt="" width={92} height={67} className='max-lg:w-[60px] max-lg:h-[44px] max-md:w-[51px] max-md:h-[38px] object-cover' />
                 </div>
                 <div>
-                  <Image src="/home-about/discount.svg" alt="" width={70} height={70} className='max-lg:w-[48px] max-lg:h-[48px] object-cover' />
+                  <Image src="/home-about/discount.svg" alt="" width={70} height={70} className='max-lg:w-[48px] max-lg:h-[48px] max-md:w-[38px] max-md:h-[38px] object-cover' />
                 </div>
               </div>
               <ul className={styles.listDotAlt}>

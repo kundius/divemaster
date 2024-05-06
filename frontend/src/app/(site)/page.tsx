@@ -144,9 +144,7 @@ export default function Page({ params: { locale } }: { params: { locale: string 
         </Container>
       </div>
       <HomeAbout />
-      <div className="hidden">
       <FooterBenefits />
-      </div>
     </>
   )
 }

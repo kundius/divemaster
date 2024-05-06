@@ -9,6 +9,11 @@
   text-transform: uppercase;
   line-height: 1;
   padding: 10px 0;
+
+  @include --max-md {
+    font-weight: 500;
+    letter-spacing: -0.05em;
+  }
 }
 
 .form {
@@ -26,7 +31,7 @@
   padding: 0 32px;
   font-size: 14px;
   color: rgb(155, 155, 155);
-  line-height: 52px;
+  min-height: 52px;
   border: 2px solid #9b9b9b;
   border-radius: 28px 0 0 28px;
 
@@ -37,6 +42,12 @@
 
   @include --max-2xl {
     padding: 0 20px;
+  }
+  @include --max-md {
+    padding: 0 12px;
+    min-height: 40px;
+    border-radius: 20px 0 0 20px;
+    font-size: 12px;
   }
 }
 
@@ -59,6 +70,13 @@
     background-color: #e3e3e3;
     outline: none;
   }
+  
+  @include --max-md {
+    padding: 0 12px;
+    min-height: 44px;
+    border-radius: 0 20px 20px 0;
+    font-size: 12px;
+  }
 }
 
 .submitArrow {
@@ -67,6 +85,10 @@
   height: 12px;
   position: relative;
   margin-right: -8px;
+  
+  @include --max-md {
+    display: none;
+  }
 }
 
 .submitArrow::before {
@@ -114,12 +136,20 @@
   position: relative;
   padding-left: 30px;
   cursor: pointer;
+
   a {
     color: #fff;
     text-decoration: none;
     &:hover {
       text-decoration: underline;
     }
+  }
+  
+  @include --max-md {
+    font-size: 12px;
+    padding-left: 16px;
+    letter-spacing: -0.025em;
+    margin-top: 6px;
   }
 }
 
@@ -137,6 +167,11 @@
   height: 16px;
   background: #9b9b9b;
   border: 1px solid #9b9b9b;
+  
+  @include --max-md {
+    width: 12px;
+    height: 12px;
+  }
 }
 
 .acceptanceInput:checked + .acceptanceCheckbox::before {

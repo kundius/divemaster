@@ -4,6 +4,7 @@ import Image from 'next/image'
 
 export interface AllCategoriesProps {}
 
+// TODO: картинки не адаптированы на телефоне
 export function AllCategories(props: AllCategoriesProps) {
   return (
     <div className={cn(styles.root, 'gap-8 columns-3')}>

@@ -32,6 +32,7 @@ class Products extends AbstractSeed
     for ($i = 0; $i < $this->categories; $i++) {
       Category::query()->create([
         'title' => $faker->text(40),
+        'alias' => 'category-' . ($i + 1),
         // Случайный lorem ipsum
         'description' => $faker->text,
         // Категория активна с вероятностью 90%
@@ -43,6 +44,7 @@ class Products extends AbstractSeed
     for ($i = 0; $i < $this->products; $i++) {
       Product::query()->create([
         'title' => $faker->text(80),
+        'alias' => 'product-' . ($i + 1),
         'description' => $faker->text,
         // Указываем 1 из 100 категорий случайным образом
         'category_id' => random_int(1, $this->categories),

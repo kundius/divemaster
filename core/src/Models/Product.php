@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int $id
  * @property int $category_id
  * @property string $title
+ * @property string $alias
  * @property ?string $description
  * @property string $sku
  * @property float $price

@@ -11,7 +11,11 @@ final class Aliases extends Migration
 {
     public function up(): void
     {
+        // Отключаем проверку связей с другими таблицами
         (new Eloquent())->getConnection()->getSchemaBuilder()->disableForeignKeyConstraints();
+        // И удаляем все товары с категориями
+        Category::query()->truncate();
+        Product::query()->truncate();
 
         $this->schema->table(
             'categories',

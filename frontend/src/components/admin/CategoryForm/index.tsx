@@ -9,6 +9,7 @@ import { z } from 'zod'
 
 export const CategoryFormSchema = z.object({
   title: z.string().trim().min(1),
+  alias: z.string().trim().min(1),
   description: z.string().trim(),
   active: z.boolean()
 })
@@ -19,19 +20,38 @@ export function CategoryForm() {
   const { control } = useFormContext<CategoryFormFields>()
   return (
     <div className="space-y-6">
-      <FormField
-        control={control}
-        name="title"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Название</FormLabel>
-            <FormControl>
-              <Input {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <div className="flex gap-6">
+        <div className="w-2/3">
+          <FormField
+            control={control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Название</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="w-1/3">
+          <FormField
+            control={control}
+            name="alias"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Псевдоним</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </div>
       <FormField
         control={control}
         name="description"

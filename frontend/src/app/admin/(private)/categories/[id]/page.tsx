@@ -32,7 +32,8 @@ export default async function Page({ params }: { params: { id: number } }) {
       defaultValues={{
         active: data.active,
         description: data.description || '',
-        title: data.title
+        title: data.title,
+        alias: data.alias
       }}
     >
       <PageHeader title={`${metadata.title}`} actions={actions} />

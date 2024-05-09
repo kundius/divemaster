@@ -13,6 +13,15 @@ class Categories extends ModelController
   protected string|array $scope = 'products';
   protected string $model = Category::class;
 
+  protected function getPrimaryKey(): ?array
+  {
+      if ($alias = $this->getProperty('alias')) {
+          return ['alias' => $alias];
+      }
+
+      return null;
+  }
+
   protected function beforeCount(Builder $c): Builder
   {
     if ($query = $this->getProperty('query')) {

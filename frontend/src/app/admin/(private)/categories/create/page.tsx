@@ -8,6 +8,7 @@ import { VespForm } from '@/components/vesp/VespForm'
 import { VespFormCancel } from '@/components/vesp/VespFormCancel'
 import { VespFormSubmit } from '@/components/vesp/VespFormSubmit'
 import type { Metadata } from 'next'
+import { VespCategory } from '@/types'
 
 export const metadata: Metadata = {
   title: 'Добавить категорию'
@@ -20,13 +21,14 @@ export default function Page() {
   ]
 
   return (
-    <VespForm<CategoryFormFields>
+    <VespForm<CategoryFormFields, VespCategory>
       url="admin/categories"
       method="PUT"
       schema={CategoryFormSchema}
       defaultValues={{
         title: '',
         description: '',
+        alias: '',
         active: true
       }}
     >

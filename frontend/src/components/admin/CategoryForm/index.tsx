@@ -9,7 +9,7 @@ import { z } from 'zod'
 
 export const CategoryFormSchema = z.object({
   title: z.string().trim().min(1),
-  alias: z.string().trim().min(1),
+  alias: z.string().trim(),
   description: z.string().trim(),
   active: z.boolean()
 })

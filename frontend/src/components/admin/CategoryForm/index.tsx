@@ -1,10 +1,18 @@
 'use client'
 
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Button } from '@/components/ui/button'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
-import { useFormContext } from 'react-hook-form'
+import { UseFormReturn } from 'react-hook-form'
 import { z } from 'zod'
 
 export const CategoryFormSchema = z.object({
@@ -16,70 +24,81 @@ export const CategoryFormSchema = z.object({
 
 export type CategoryFormFields = z.infer<typeof CategoryFormSchema>
 
-export function CategoryForm() {
-  const { control } = useFormContext<CategoryFormFields>()
+export interface CategoryFormProps {
+  form: UseFormReturn<CategoryFormFields, any, undefined>
+  onSubmit: (values: CategoryFormFields) => Promise<void>
+}
+
+export function CategoryForm({ form, onSubmit }: CategoryFormProps) {
   return (
-    <div className="space-y-6">
-      <div className="flex gap-6">
-        <div className="w-2/3">
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <div className="space-y-6">
+          <div className="flex gap-6">
+            <div className="w-2/3">
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Название</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="w-1/3">
+              <FormField
+                control={form.control}
+                name="alias"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Псевдоним</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
           <FormField
-            control={control}
-            name="title"
+            control={form.control}
+            name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Название</FormLabel>
+                <FormLabel>Описание</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Textarea {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-        </div>
-        <div className="w-1/3">
           <FormField
-            control={control}
-            name="alias"
+            control={form.control}
+            name="active"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Псевдоним</FormLabel>
+                <FormLabel>Активен</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <div className="w-full">
+                    <Switch checked={field.value} onCheckedChange={field.onChange} />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+          <Button loading={form.formState.isSubmitting} type="submit">
+            Сохранить
+          </Button>
         </div>
-      </div>
-      <FormField
-        control={control}
-        name="description"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Описание</FormLabel>
-            <FormControl>
-              <Textarea {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={control}
-        name="active"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Активен</FormLabel>
-            <FormControl>
-              <div className="w-full">
-                <Switch checked={field.value} onCheckedChange={field.onChange} />
-              </div>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    </div>
+      </form>
+    </Form>
   )
 }

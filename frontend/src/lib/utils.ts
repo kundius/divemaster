@@ -1,6 +1,7 @@
 import { VespFile, VespFileOptions } from '@/types'
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+import slugifyFn from 'slugify'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -75,4 +76,8 @@ export function displayPrice(value: number) {
     currency: 'RUB',
     minimumFractionDigits: 0
   }).format(value)
+}
+
+export function slugify(value: string) {
+  return slugifyFn(value.toLocaleLowerCase(), { remove: /[*+~.()'"!:@]/g })
 }

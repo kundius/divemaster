@@ -6,12 +6,21 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { VespRemoveDialog } from '@/components/vesp/VespRemoveDialog'
 import { useVespTable } from '@/components/vesp/VespTable'
+import { VespTableData } from '@/components/vesp/VespTable/types'
 import { VespUserRole } from '@/types'
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
+import { PageHeader, PageHeaderProps } from '../PageHeader'
 
-export function UserRolesTable() {
-  const vespTable = useVespTable<VespUserRole>()
+export interface UserRolesPageProps {
+  initialData?: VespTableData<VespUserRole>
+}
+
+export function UserRolesPage({ initialData }: UserRolesPageProps) {
+  const vespTable = useVespTable<VespUserRole>({
+    url: 'admin/user-roles',
+    initialData
+  })
 
   const columns: DataTableColumn<VespUserRole>[] = [
     {
@@ -99,26 +108,35 @@ export function UserRolesTable() {
     }
   ]
 
+  const actions: PageHeaderProps['actions'] = [
+    <Link href="/admin/user-roles/create" key="create">
+      <Button>Добавить доступ</Button>
+    </Link>
+  ]
+
   return (
-    <DataTable<VespUserRole>
-      data={vespTable.data.rows}
-      columns={columns}
-      filter={{
-        value: vespTable.filter,
-        fields: filterFields
-      }}
-      onChangeFilter={vespTable.onChangeFilter}
-      pagination={{
-        page: vespTable.page,
-        limit: vespTable.limit,
-        total: vespTable.data.total
-      }}
-      sorting={{
-        sort: vespTable.sort,
-        dir: vespTable.dir
-      }}
-      onChangePagination={vespTable.onChangePagination}
-      onChangeSorting={vespTable.onChangeSorting}
-    />
+    <>
+      <PageHeader title="Доступы" actions={actions} />
+      <DataTable<VespUserRole>
+        data={vespTable.data.rows}
+        columns={columns}
+        filter={{
+          value: vespTable.filter,
+          fields: filterFields
+        }}
+        onChangeFilter={vespTable.onChangeFilter}
+        pagination={{
+          page: vespTable.page,
+          limit: vespTable.limit,
+          total: vespTable.data.total
+        }}
+        sorting={{
+          sort: vespTable.sort,
+          dir: vespTable.dir
+        }}
+        onChangePagination={vespTable.onChangePagination}
+        onChangeSorting={vespTable.onChangeSorting}
+      />
+    </>
   )
 }

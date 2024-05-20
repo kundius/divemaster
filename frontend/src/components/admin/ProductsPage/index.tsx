@@ -1,97 +1,150 @@
+'use client'
+
+import { DataTable, DataTableColumn } from '@/components/admin/DataTable'
+import type { FilterField } from '@/components/admin/Filter'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table'
+import { VespRemoveDialog } from '@/components/vesp/VespRemoveDialog'
+import { useVespTable } from '@/components/vesp/VespTable'
+import { VespTableData } from '@/components/vesp/VespTable/types'
+import { getImageLink } from '@/lib/utils'
+import { VespProduct } from '@/types'
+import { CheckCircleIcon, PencilIcon, TrashIcon, XCircleIcon } from '@heroicons/react/24/outline'
+import Image from 'next/image'
 import Link from 'next/link'
-import { PageHeader, PageHeaderProps } from '@/components/admin/PageHeader'
-// import { getI18n, getScopedI18n } from '@/locales/server'
+import { PageHeader, PageHeaderProps } from '../PageHeader'
 
-const invoices = [
-  {
-    invoice: 'INV001',
-    paymentStatus: 'Paid',
-    totalAmount: '$250.00',
-    paymentMethod: 'Credit Card'
-  },
-  {
-    invoice: 'INV002',
-    paymentStatus: 'Pending',
-    totalAmount: '$150.00',
-    paymentMethod: 'PayPal'
-  },
-  {
-    invoice: 'INV003',
-    paymentStatus: 'Unpaid',
-    totalAmount: '$350.00',
-    paymentMethod: 'Bank Transfer'
-  },
-  {
-    invoice: 'INV004',
-    paymentStatus: 'Paid',
-    totalAmount: '$450.00',
-    paymentMethod: 'Credit Card'
-  },
-  {
-    invoice: 'INV005',
-    paymentStatus: 'Paid',
-    totalAmount: '$550.00',
-    paymentMethod: 'PayPal'
-  },
-  {
-    invoice: 'INV006',
-    paymentStatus: 'Pending',
-    totalAmount: '$200.00',
-    paymentMethod: 'Bank Transfer'
-  },
-  {
-    invoice: 'INV007',
-    paymentStatus: 'Unpaid',
-    totalAmount: '$300.00',
-    paymentMethod: 'Credit Card'
-  }
-]
+export interface ProductsPageProps {
+  initialData?: VespTableData<VespProduct>
+}
 
-const actions: PageHeaderProps['actions'] = [
-  {
-    title: 'Добавить товар',
-    route: '/admin/products/create'
-  }
-]
+export function ProductsPage({ initialData }: ProductsPageProps) {
+  const thumbWidth = 40
+  const thumbHeight = 40
 
-export async function ProductsPage() {
+  const vespTable = useVespTable<VespProduct>({
+    url: 'admin/products',
+    initialData
+  })
+
+  const columns: DataTableColumn<VespProduct>[] = [
+    {
+      key: 'id',
+      label: 'Товар',
+      sortable: true,
+      headProps: {
+        className: 'w-5/12'
+      },
+      formatter: (_, row) => {
+        return (
+          <div className="flex items-center gap-2">
+            {row.file && (
+              <Image
+                className="rounded"
+                src={getImageLink(row.file, { fit: 'crop', w: thumbWidth, h: thumbHeight })}
+                width={thumbWidth}
+                height={thumbHeight}
+                alt=""
+              />
+            )}
+            <div className="">{row.title}</div>
+          </div>
+        )
+      }
+    },
+    {
+      key: 'category',
+      label: 'Категория',
+      headProps: {
+        className: 'w-5/12'
+      },
+      formatter: (category) => {
+        return (
+          <Link href={`/admin/categories/${category.id}`}>
+            <Badge variant="outline">{category.title}</Badge>
+          </Link>
+        )
+      }
+    },
+    {
+      key: 'price',
+      label: 'Цена',
+      sortable: true,
+      headProps: {
+        className: 'w-5/12'
+      }
+    },
+    {
+      key: 'active',
+      label: 'Активен',
+      headProps: {
+        className: 'w-5/12'
+      },
+      formatter: (active) => {
+        const Icon = active ? CheckCircleIcon : XCircleIcon
+        const color = active ? 'text-green-500' : 'text-amber-500'
+        return <Icon className={`w-6 h-6 ${color}`} />
+      }
+    },
+    {
+      key: 'id',
+      headProps: {
+        className: 'w-0'
+      },
+      formatter: (id) => (
+        <div className="flex gap-2">
+          <Link href={`/admin/products/${id}`}>
+            <Button variant="outline" size="sm-icon">
+              <PencilIcon className="w-4 h-4" />
+            </Button>
+          </Link>
+          <VespRemoveDialog url={`admin/products/${id}`} onSuccess={vespTable.refetch}>
+            <Button variant="destructive-outline" size="sm-icon">
+              <TrashIcon className="w-4 h-4" />
+            </Button>
+          </VespRemoveDialog>
+        </div>
+      )
+    }
+  ]
+
+  const filterFields: FilterField[] = [
+    {
+      type: 'search',
+      name: 'query',
+      placeholder: 'Поиск по названию'
+    }
+  ]
+
+  const actions: PageHeaderProps['actions'] = [
+    <Link href="/admin/products/create" key="create">
+      <Button>Добавить товар</Button>
+    </Link>
+  ]
+
   return (
-    <div>
+    <>
       <PageHeader title="Товары" actions={actions} />
-
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[100px]">Invoice</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Method</TableHead>
-              <TableHead className="text-right">Amount</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {invoices.map((invoice) => (
-              <TableRow key={invoice.invoice}>
-                <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                <TableCell>{invoice.paymentStatus}</TableCell>
-                <TableCell>{invoice.paymentMethod}</TableCell>
-                <TableCell className="text-right">{invoice.totalAmount}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-    </div>
+      <DataTable<VespProduct>
+        data={vespTable.data.rows}
+        columns={columns}
+        filter={{
+          value: vespTable.filter,
+          fields: filterFields
+        }}
+        onChangeFilter={vespTable.onChangeFilter}
+        pagination={{
+          page: vespTable.page,
+          limit: vespTable.limit,
+          total: vespTable.data.total
+        }}
+        sorting={{
+          sort: vespTable.sort,
+          dir: vespTable.dir
+        }}
+        onChangePagination={vespTable.onChangePagination}
+        onChangeSorting={vespTable.onChangeSorting}
+      />
+    </>
   )
 }

@@ -4,7 +4,7 @@ import { DataTable, DataTableColumn } from '@/components/admin/DataTable'
 import type { FilterField } from '@/components/admin/Filter'
 import { Button } from '@/components/ui/button'
 import { VespRemoveDialog } from '@/components/vesp/VespRemoveDialog'
-import { useVespTable2 } from '@/components/vesp/VespTable'
+import { useVespTable } from '@/components/vesp/VespTable'
 import { VespTableData } from '@/components/vesp/VespTable/types'
 import { VespCategory } from '@/types'
 import { CheckCircleIcon, PencilIcon, TrashIcon, XCircleIcon } from '@heroicons/react/24/outline'
@@ -16,7 +16,7 @@ export interface CategoriesPageProps {
 }
 
 export function CategoriesPage({ initialData }: CategoriesPageProps) {
-  const vespTable = useVespTable2<VespCategory>({
+  const vespTable = useVespTable<VespCategory>({
     url: 'admin/categories',
     initialData
   })

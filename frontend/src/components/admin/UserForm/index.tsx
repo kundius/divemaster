@@ -1,11 +1,18 @@
 'use client'
 
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Button } from '@/components/ui/button'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useFormContext } from 'react-hook-form'
-import { z } from 'zod'
 import { VespInputComboBox } from '@/components/vesp/VespInputComboBox'
-import { VespUserRole } from '@/types'
+import { UseFormReturn } from 'react-hook-form'
+import { z } from 'zod'
 
 export const UserFormSchema = z.object({
   role_id: z.number(),
@@ -17,79 +24,90 @@ export const UserFormSchema = z.object({
 
 export type UserFormFields = z.infer<typeof UserFormSchema>
 
-export function UserForm() {
-  const { control } = useFormContext<UserFormFields>()
+export interface UserFormProps {
+  form: UseFormReturn<UserFormFields, any, undefined>
+  onSubmit: (values: UserFormFields) => Promise<void>
+}
+
+export function UserForm({ form, onSubmit }: UserFormProps) {
   return (
-    <div className="space-y-6">
-      <FormField
-        control={control}
-        name="username"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Логин</FormLabel>
-            <FormControl>
-              <Input {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={control}
-        name="role_id"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Группа</FormLabel>
-            <FormControl>
-              <VespInputComboBox
-                url="admin/user-roles"
-                value={field.value}
-                onChange={field.onChange}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={control}
-        name="email"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>E-mail</FormLabel>
-            <FormControl>
-              <Input {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={control}
-        name="fullname"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Имя</FormLabel>
-            <FormControl>
-              <Input {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={control}
-        name="password"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Пароль</FormLabel>
-            <FormControl>
-              <Input type="password" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    </div>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <div className="space-y-6">
+          <FormField
+            control={form.control}
+            name="username"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Логин</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="role_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Группа</FormLabel>
+                <FormControl>
+                  <VespInputComboBox
+                    url="admin/user-roles"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>E-mail</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="fullname"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Имя</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Пароль</FormLabel>
+                <FormControl>
+                  <Input type="password" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button loading={form.formState.isSubmitting} type="submit">
+            Сохранить
+          </Button>
+        </div>
+      </form>
+    </Form>
   )
 }

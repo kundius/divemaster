@@ -16,7 +16,7 @@ final class Products extends Migration
                 $table->id();
                 $table->foreignId('parent_id')->nullable()->index()->constrained('categories')->nullOnDelete();
                 $table->string('title');
-                $table->string('alias')->after('description')->unique()->index();
+                $table->string('alias')->unique()->index();
                 $table->text('description')->nullable();
                 $table->boolean('active')->default(true)->index();
                 $table->unsignedInteger('rank')->default(0)->index();
@@ -34,7 +34,7 @@ final class Products extends Migration
                 //     // Запрет удаления категории, если в ней есть хотя-бы 1 товар
                 //     ->constrained('categories')->restrictOnDelete();
                 $table->string('title');
-                $table->string('alias')->after('description')->unique()->index();
+                $table->string('alias')->unique()->index();
                 $table->text('description')->nullable();
                 // Артикул товара должен быть уникальным
                 $table->string('sku')->unique();

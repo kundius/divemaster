@@ -14,13 +14,13 @@ class SeedUsers extends AbstractSeed
     {
         $users = [
             'admin' => [
-                'password' => 'admin',
+                'password' => 'qwerty',
                 'fullname' => 'Admin',
                 'email' => 'kundius.ruslan@gmail.com',
                 'role_id' => 1,
             ],
             'user' => [
-                'password' => 'user',
+                'password' => 'qwerty',
                 'fullname' => 'User',
                 'email' => 'kundius.ruslan+1@gmail.com',
                 'role_id' => 2,

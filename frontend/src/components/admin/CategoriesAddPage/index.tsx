@@ -24,7 +24,7 @@ export function CategoriesAddPage() {
       alias: ''
     },
     onSuccess: () => {
-      // router.push('/admin/categories')
+      router.push('/admin/categories')
     }
   })
   return (

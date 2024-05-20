@@ -31,9 +31,9 @@ class Product extends Model
     'price' => 'float',
   ];
 
-  public function category(): BelongsTo
+  public function categories(): HasMany
   {
-    return $this->belongsTo(Category::class);
+    return $this->hasMany(Category::class);
   }
 
   public function productFiles(): HasMany

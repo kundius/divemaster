@@ -14,9 +14,12 @@ final class Products extends Migration
             'categories',
             function (Blueprint $table) {
                 $table->id();
+                $table->foreignId('parent_id')->nullable()->index()->constrained('categories')->nullOnDelete();
                 $table->string('title');
+                $table->string('alias')->after('description')->unique()->index();
                 $table->text('description')->nullable();
                 $table->boolean('active')->default(true)->index();
+                $table->unsignedInteger('rank')->default(0)->index();
                 $table->timestamps();
             }
         );
@@ -27,10 +30,11 @@ final class Products extends Migration
             function (Blueprint $table) {
                 $table->id();
                 // Связь товаров с категорией
-                $table->foreignId('category_id')
-                    // Запрет удаления категории, если в ней есть хотя-бы 1 товар
-                    ->constrained('categories')->restrictOnDelete();
+                // $table->foreignId('category_id')
+                //     // Запрет удаления категории, если в ней есть хотя-бы 1 товар
+                //     ->constrained('categories')->restrictOnDelete();
                 $table->string('title');
+                $table->string('alias')->after('description')->unique()->index();
                 $table->text('description')->nullable();
                 // Артикул товара должен быть уникальным
                 $table->string('sku')->unique();

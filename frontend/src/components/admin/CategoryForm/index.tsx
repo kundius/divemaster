@@ -12,10 +12,12 @@ import {
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
+import { VespInputComboBox } from '@/components/vesp/VespInputComboBox'
 import { UseFormReturn } from 'react-hook-form'
 import { z } from 'zod'
 
 export const CategoryFormSchema = z.object({
+  parent_id: z.number(),
   title: z.string().trim().min(1),
   alias: z.string().trim(),
   description: z.string().trim(),
@@ -74,6 +76,23 @@ export function CategoryForm({ form, onSubmit }: CategoryFormProps) {
                 <FormLabel>Описание</FormLabel>
                 <FormControl>
                   <Textarea {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="parent_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Родительская</FormLabel>
+                <FormControl>
+                  <VespInputComboBox
+                    url="admin/categories"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

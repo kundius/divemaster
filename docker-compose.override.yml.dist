@@ -9,13 +9,10 @@ services:
   nginx:
     restart: no
 
-  php-fpm:
+  api:
     restart: no
-    environment:
-      - PHP_IDE_CONFIG=serverName=VespDocker
-    command: sh -c 'composer install && composer db:migrate && php-fpm'
+    command: sh -c 'rm -rf /tmp/* && npm i && npm run start:dev'
 
-  node:
+  frontend:
     restart: no
-    # command: sh -c 'rm -rf /tmp/* && yarn && yarn analyze'
-    command: sh -c 'rm -rf /tmp/* && yarn && yarn dev'
+    command: sh -c 'rm -rf /tmp/* && npm i && npm run dev'

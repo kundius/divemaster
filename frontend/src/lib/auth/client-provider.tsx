@@ -58,14 +58,14 @@ export function AuthClientProvider({
     return check(scopes)
   }
 
-  async function deactivateToken(_token: string) {
-    await fetch(`${getApiUrl()}security/logout`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${_token}`
-      }
-    })
-  }
+  // async function deactivateToken(_token: string) {
+  //   await fetch(`${getApiUrl()}security/logout`, {
+  //     method: 'POST',
+  //     headers: {
+  //       Authorization: `Bearer ${_token}`
+  //     }
+  //   })
+  // }
 
   async function login(_token: string) {
     const _user = await getUser(_token)
@@ -75,14 +75,14 @@ export function AuthClientProvider({
       setToken(_token)
       setUser(_user)
     } else {
-      await deactivateToken(_token)
+      // await deactivateToken(_token)
     }
   }
 
   async function logout() {
-    if (token) {
-      await deactivateToken(token)
-    }
+    // if (token) {
+    //   await deactivateToken(token)
+    // }
     deleteCookie(TOKEN_NAME)
     setToken(undefined)
     setUser(undefined)

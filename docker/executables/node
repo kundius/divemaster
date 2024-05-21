@@ -1,2 +1,0 @@
-#!/bin/bash
-docker exec -it $(docker ps --filter name="divemaster-node" -q) node $@

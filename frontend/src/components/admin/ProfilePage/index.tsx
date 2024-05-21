@@ -36,7 +36,7 @@ export function ProfilePage() {
     setIsLoading(true)
 
     try {
-      await apiPatch('user/profile', values, withToken(token)())
+      await apiPatch('auth/profile', values, withToken(token)())
 
       toast.success(`Сохранено`)
     } catch (e) {

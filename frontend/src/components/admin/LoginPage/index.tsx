@@ -42,7 +42,7 @@ export function LoginPage() {
     setIsLoading(true)
 
     try {
-      const data = await apiPost<FormResult>('security/login', values)
+      const data = await apiPost<FormResult>('auth/login', values)
       toast.success('Добро пожаловать!')
       auth.login(data.token)
       router.push('/admin')

@@ -8,12 +8,11 @@
 /docker/log
 /docker/mariadb
 /docker-compose.override.yml
+/api/dist
 /frontend/node_modules
-/frontend/.nuxt
+/frontend/.next
 /frontend/.eslintcache
 /frontend/.stylelintcache
 /frontend/.output
-/frontend/dist
-/frontend/src/site/static/sw.js
 /tmp
 /upload

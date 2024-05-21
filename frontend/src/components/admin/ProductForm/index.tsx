@@ -22,7 +22,7 @@ export const ProductFormSchema = z.object({
   description: z.string().trim(),
   price: z.number(),
   active: z.boolean(),
-  category_id: z.number()
+  // category_id: z.number()
 })
 
 export type ProductFormFields = z.infer<typeof ProductFormSchema>
@@ -63,7 +63,7 @@ export function ProductForm({ form, onSubmit }: ProductFormProps) {
               </FormItem>
             )}
           />
-          <FormField
+          {/* <FormField
             control={form.control}
             name="category_id"
             render={({ field }) => (
@@ -79,7 +79,7 @@ export function ProductForm({ form, onSubmit }: ProductFormProps) {
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
           <FormField
             control={form.control}
             name="sku"

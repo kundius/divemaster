@@ -3,12 +3,12 @@
 import { useVespForm } from '@/components/vesp/VespForm'
 import { slugify } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
-import { CategoryForm, CategoryFormSchema } from '../CategoryForm'
+import { CategoryForm, CategoryFormFields, CategoryFormSchema } from '../CategoryForm'
 import { PageHeader } from '../PageHeader'
 
 export function CategoriesAddPage() {
   const router = useRouter()
-  const [form, onSubmit] = useVespForm({
+  const [form, onSubmit] = useVespForm<CategoryFormFields>({
     url: `admin/categories`,
     method: 'PUT',
     schema: CategoryFormSchema,
@@ -21,7 +21,8 @@ export function CategoriesAddPage() {
       active: true,
       description: '',
       title: '',
-      alias: ''
+      alias: '',
+      parent_id: null
     },
     onSuccess: () => {
       router.push('/admin/categories')

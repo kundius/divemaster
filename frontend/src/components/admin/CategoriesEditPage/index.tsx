@@ -3,7 +3,7 @@
 import { useVespForm } from '@/components/vesp/VespForm'
 import { slugify } from '@/lib/utils'
 import { VespCategory } from '@/types'
-import { CategoryForm, CategoryFormSchema } from '../CategoryForm'
+import { CategoryForm, CategoryFormFields, CategoryFormSchema } from '../CategoryForm'
 import { PageHeader } from '../PageHeader'
 import { useRouter } from 'next/navigation'
 
@@ -13,7 +13,7 @@ export interface CategoriesEditPageProps {
 
 export function CategoriesEditPage({ initialData }: CategoriesEditPageProps) {
   const router = useRouter()
-  const [form, onSubmit] = useVespForm({
+  const [form, onSubmit] = useVespForm<CategoryFormFields>({
     url: `admin/categories/${initialData.id}`,
     method: 'PATCH',
     schema: CategoryFormSchema,
@@ -23,6 +23,7 @@ export function CategoriesEditPage({ initialData }: CategoriesEditPageProps) {
       return values
     },
     defaultValues: {
+      parent_id: initialData.parent_id,
       active: initialData.active,
       description: initialData.description || '',
       title: initialData.title,

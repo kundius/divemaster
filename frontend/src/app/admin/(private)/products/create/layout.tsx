@@ -10,8 +10,11 @@ export const metadata: Metadata = {
 export default function Layout({ children }: PropsWithChildren) {
   const nav = [
     {
-      title: 'Основные',
+      title: 'Товар',
       href: `/admin/products/create`
+    },
+    {
+      title: 'Категории'
     },
     {
       title: 'Галерея'

@@ -22,6 +22,7 @@ export interface VespUserRole {
 
 export interface VespCategory {
   id: number
+  parent_id: number
   title: string
   alias: string
   description: string | null

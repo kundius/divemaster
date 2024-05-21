@@ -13,8 +13,12 @@ export default function Layout({
 }: PropsWithChildren<{ params: { id: string } }>) {
   const nav = [
     {
-      title: 'Основные',
+      title: 'Товар',
       href: `/admin/products/${params.id}`
+    },
+    {
+      title: 'Категории',
+      href: `/admin/products/${params.id}/categories`
     },
     {
       title: 'Галерея',

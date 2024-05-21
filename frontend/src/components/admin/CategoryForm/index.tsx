@@ -17,7 +17,7 @@ import { UseFormReturn } from 'react-hook-form'
 import { z } from 'zod'
 
 export const CategoryFormSchema = z.object({
-  parent_id: z.number(),
+  parent_id: z.number().nullable(),
   title: z.string().trim().min(1),
   alias: z.string().trim(),
   description: z.string().trim(),

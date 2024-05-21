@@ -52,20 +52,20 @@ export function ProductsPage({ initialData }: ProductsPageProps) {
         )
       }
     },
-    {
-      key: 'category',
-      label: 'Категория',
-      headProps: {
-        className: 'w-5/12'
-      },
-      formatter: (category) => {
-        return (
-          <Link href={`/admin/categories/${category.id}`}>
-            <Badge variant="outline">{category.title}</Badge>
-          </Link>
-        )
-      }
-    },
+    // {
+    //   key: 'category',
+    //   label: 'Категория',
+    //   headProps: {
+    //     className: 'w-5/12'
+    //   },
+    //   formatter: (category) => {
+    //     return (
+    //       <Link href={`/admin/categories/${category.id}`}>
+    //         <Badge variant="outline">{category.title}</Badge>
+    //       </Link>
+    //     )
+    //   }
+    // },
     {
       key: 'price',
       label: 'Цена',

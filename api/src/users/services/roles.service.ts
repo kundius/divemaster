@@ -18,11 +18,11 @@ export class RolesService {
     return { rows, total }
   }
 
-  findOne(id: number): Promise<Role | null> {
-    return this.rolesRepository.findOneBy({ id })
+  findOne(id: number) {
+    return this.rolesRepository.findOneByOrFail({ id })
   }
 
-  async create(createRoleDto: CreateRoleDto): Promise<Role> {
+  async create(createRoleDto: CreateRoleDto) {
     return await this.rolesRepository.save(
       this.rolesRepository.create({
         title: createRoleDto.title,
@@ -31,15 +31,14 @@ export class RolesService {
     )
   }
 
-  async update(id: number, updateRoleDto: UpdateRoleDto): Promise<void> {
-    const res = await this.rolesRepository.update(id, {
+  async update(id: number, updateRoleDto: UpdateRoleDto) {
+    await this.rolesRepository.update(id, {
       title: updateRoleDto.title,
       scope: updateRoleDto.scope
     })
-    console.log(res)
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: number) {
     await this.rolesRepository.delete(id)
   }
 }

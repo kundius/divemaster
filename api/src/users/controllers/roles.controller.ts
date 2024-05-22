@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common'
 import { CreateRoleDto } from '../dto/create-role.dto'
+import { FindAllRoleQueryDto } from '../dto/find-all-role-query.dto'
 import { UpdateRoleDto } from '../dto/update-role.dto'
 import { RolesService } from '../services/roles.service'
-import { FindAllRoleQueryDto } from '../dto/find-all-role-query.dto'
 
 @Controller('roles')
 export class RolesController {

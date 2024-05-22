@@ -22,7 +22,7 @@ export class AuthGuard implements CanActivate {
       const { sub } = await this.jwtService.verifyAsync(token, {
         secret: this.configService.get('JWT_SECRET_KEY')
       })
-      const user = await this.usersService.findOneById(sub)
+      const user = await this.usersService.findOne(sub)
       request['user'] = user || undefined
     } catch {
       return true

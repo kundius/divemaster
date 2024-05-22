@@ -10,16 +10,17 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Switch } from '@/components/ui/switch'
 import { VespInputComboBox } from '@/components/vesp/VespInputComboBox'
 import { UseFormReturn } from 'react-hook-form'
 import { z } from 'zod'
 
 export const UserFormSchema = z.object({
   role_id: z.number(),
-  username: z.string().trim().min(1),
+  name: z.string().trim().min(1),
   email: z.string().trim().min(1),
-  fullname: z.string().trim(),
-  password: z.string().trim()
+  password: z.string().trim(),
+  active: z.boolean()
 })
 
 export type UserFormFields = z.infer<typeof UserFormSchema>
@@ -36,10 +37,10 @@ export function UserForm({ form, onSubmit }: UserFormProps) {
         <div className="space-y-6">
           <FormField
             control={form.control}
-            name="username"
+            name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Логин</FormLabel>
+                <FormLabel>Имя</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -55,7 +56,7 @@ export function UserForm({ form, onSubmit }: UserFormProps) {
                 <FormLabel>Группа</FormLabel>
                 <FormControl>
                   <VespInputComboBox
-                    url="admin/user-roles"
+                    url="roles"
                     value={field.value}
                     onChange={field.onChange}
                   />
@@ -79,12 +80,12 @@ export function UserForm({ form, onSubmit }: UserFormProps) {
           />
           <FormField
             control={form.control}
-            name="fullname"
+            name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Имя</FormLabel>
+                <FormLabel>Пароль</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input type="password" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -92,12 +93,14 @@ export function UserForm({ form, onSubmit }: UserFormProps) {
           />
           <FormField
             control={form.control}
-            name="password"
+            name="active"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Пароль</FormLabel>
+                <FormLabel>Активен</FormLabel>
                 <FormControl>
-                  <Input type="password" {...field} />
+                  <div className="w-full">
+                    <Switch checked={field.value} onCheckedChange={field.onChange} />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>

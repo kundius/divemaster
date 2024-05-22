@@ -11,17 +11,18 @@ export interface UsersUpdatePageProps {
 }
 
 export function UsersUpdatePage({ initialData }: UsersUpdatePageProps) {
+  console.log(initialData)
   const router = useRouter()
   const [form, onSubmit] = useVespForm<UserFormFields>({
-    url: `admin/users/${initialData.id}`,
+    url: `users/${initialData.id}`,
     method: 'PATCH',
     schema: UserFormSchema,
     defaultValues: {
       email: initialData.email || '',
-      fullname: initialData.fullname || '',
-      role_id: initialData.role_id,
-      username: initialData.username,
-      password: ''
+      role_id: initialData.role.id,
+      name: initialData.name,
+      password: '',
+      active: initialData.active
     },
     onSuccess: () => {
       router.push('/admin/users')

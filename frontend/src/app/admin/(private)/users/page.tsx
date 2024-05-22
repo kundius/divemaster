@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default async function Page(props: PageProps) {
   const initialData = await apiGet<VespTableData<VespUser>>(
-    'admin/users',
+    'users',
     {
       limit: DEFAULT_LIMIT,
       ...props.searchParams

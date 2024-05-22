@@ -13,15 +13,6 @@ export class RolesService {
     private rolesRepository: Repository<Role>
   ) {}
 
-  async findAll(query: FindAllRoleQueryDto) {
-    const [rows, total] = await this.rolesRepository.findAndCount(query.options)
-    return { rows, total }
-  }
-
-  findOne(id: number) {
-    return this.rolesRepository.findOneByOrFail({ id })
-  }
-
   async create(createRoleDto: CreateRoleDto) {
     return await this.rolesRepository.save(
       this.rolesRepository.create({
@@ -29,6 +20,15 @@ export class RolesService {
         scope: createRoleDto.scope
       })
     )
+  }
+
+  async findAll(query: FindAllRoleQueryDto) {
+    const [rows, total] = await this.rolesRepository.findAndCount(query.options)
+    return { rows, total }
+  }
+
+  async findOne(id: number) {
+    return this.rolesRepository.findOneByOrFail({ id })
   }
 
   async update(id: number, updateRoleDto: UpdateRoleDto) {

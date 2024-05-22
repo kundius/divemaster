@@ -18,7 +18,7 @@ export interface UsersPageProps {
 
 export function UsersPage({ initialData }: UsersPageProps) {
   const vespTable = useVespTable<VespUser>({
-    url: 'admin/users',
+    url: 'users',
     initialData
   })
 
@@ -28,16 +28,12 @@ export function UsersPage({ initialData }: UsersPageProps) {
       label: 'ID'
     },
     {
-      key: 'username',
-      label: 'Логин'
+      key: 'name',
+      label: 'Имя'
     },
     {
       key: 'email',
       label: 'E-mail'
-    },
-    {
-      key: 'fullname',
-      label: 'Имя'
     },
     {
       key: 'role',
@@ -56,7 +52,7 @@ export function UsersPage({ initialData }: UsersPageProps) {
               <PencilIcon className="w-4 h-4" />
             </Button>
           </Link>
-          <VespRemoveDialog url={`admin/users/${id}`} onSuccess={vespTable.refetch}>
+          <VespRemoveDialog url={`users/${id}`} onSuccess={vespTable.refetch}>
             <Button variant="destructive-outline" size="sm-icon">
               <TrashIcon className="w-4 h-4" />
             </Button>

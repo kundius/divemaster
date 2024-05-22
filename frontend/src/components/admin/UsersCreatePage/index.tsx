@@ -8,14 +8,14 @@ import { UserForm, UserFormFields, UserFormSchema } from '../UserForm'
 export function UsersCreatePage() {
   const router = useRouter()
   const [form, onSubmit] = useVespForm<UserFormFields>({
-    url: `admin/users`,
-    method: 'PUT',
+    url: `users`,
+    method: 'POST',
     schema: UserFormSchema,
     defaultValues: {
-      username: '',
+      name: '',
       email: '',
-      fullname: '',
-      password: ''
+      password: '',
+      active: true
     },
     onSuccess: () => {
       router.push('/admin/users')

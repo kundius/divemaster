@@ -19,7 +19,6 @@ export function ProductsUpdatePage({ initialData }: ProductsUpdatePageProps) {
       active: initialData.active,
       description: initialData.description || '',
       title: initialData.title,
-      category_id: initialData.category_id,
       price: initialData.price,
       sku: initialData.sku
     },

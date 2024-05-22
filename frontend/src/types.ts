@@ -1,23 +1,16 @@
 export interface VespUser {
   id: number
-  username: string
-  fullname: string | null
-  email: string | null
+  name: string
+  email: string
   active: boolean
   role_id: number
-  updated_at: string | null
-  created_at: string | null
   role: VespUserRole
-
-  // [key: string]: any
 }
 
 export interface VespUserRole {
   id: number
   title: string
   scope: string[] | null
-  updated_at: string | null
-  created_at: string | null
 }
 
 export interface VespCategory {

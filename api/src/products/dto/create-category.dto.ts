@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer'
-import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator'
+import { IsBoolean, IsOptional, IsString } from 'class-validator'
 
-export class CreateProductDto {
+export class CreateCategoryDto {
   @Type(() => String)
   @IsString()
   title: string
@@ -9,15 +9,6 @@ export class CreateProductDto {
   @Type(() => String)
   @IsString()
   alias: string
-
-  @Type(() => String)
-  @IsString()
-  @IsOptional()
-  sku?: string
-
-  @Type(() => Number)
-  @IsNumber()
-  price: number
 
   @Type(() => String)
   @IsString()

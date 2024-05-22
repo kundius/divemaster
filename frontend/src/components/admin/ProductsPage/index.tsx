@@ -23,7 +23,7 @@ export function ProductsPage({ initialData }: ProductsPageProps) {
   const thumbHeight = 40
 
   const vespTable = useVespTable<VespProduct>({
-    url: 'admin/products',
+    url: 'products',
     initialData
   })
 

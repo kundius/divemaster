@@ -3,7 +3,7 @@ import { DataSource } from 'typeorm'
 import { User } from '../../users/entities/user.entity'
 import { Role } from '@/users/entities/role.entity'
 
-export default class UserSeeder implements Seeder {
+export default class UsersSeeder implements Seeder {
   public async run(dataSource: DataSource): Promise<void> {
     await dataSource.query('SET FOREIGN_KEY_CHECKS = 0;')
     await dataSource.query('TRUNCATE TABLE `role`;')

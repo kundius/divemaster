@@ -4,7 +4,6 @@ import { api } from '@/lib/api'
 import { withToken } from '@/lib/api/with-token'
 import { useAuth } from '@/lib/auth/use-auth'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PropsWithChildren } from 'react'
 import { DefaultValues, FieldValues, UseFormReturn, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
@@ -22,19 +21,17 @@ interface VespFormProps<TFieldValues extends FieldValues = FieldValues, TResult 
 
 export function useVespForm<TFieldValues extends FieldValues = FieldValues, TResult = unknown>({
   defaultValues,
-  children,
   schema,
   successMessage = 'Сохранено',
   url,
   method,
   mapValues,
   onSuccess
-}: PropsWithChildren<VespFormProps<TFieldValues, TResult>>): [
+}: VespFormProps<TFieldValues, TResult>): [
   UseFormReturn<TFieldValues, any, undefined>,
   (values: TFieldValues) => Promise<void>
 ] {
   const auth = useAuth()
-  // const router = useRouter()
 
   const form = useForm<TFieldValues>({
     resolver: zodResolver(schema),
@@ -58,17 +55,6 @@ export function useVespForm<TFieldValues extends FieldValues = FieldValues, TRes
       if (onSuccess) {
         await onSuccess(data)
       }
-      // switch (redirect) {
-      //   case 'form':
-      //     router.push(`/${url}/${(data as any).id}`)
-      //     break
-      //   case 'table':
-      //     router.push(`/${url}`)
-      //     break
-      //   case 'back':
-      //     router.back()
-      //     break
-      // }
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Unknown error')
     }

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 }
 
 export default async function Page({ params }: { params: { id: number } }) {
-  const initialData = await apiGet<VespUserRole>(`admin/user-roles/${params.id}`, {}, withAuth())
+  const initialData = await apiGet<VespUserRole>(`roles/${params.id}`, {}, withAuth())
 
   return <UserRolesUpdatePage initialData={initialData} />
 }

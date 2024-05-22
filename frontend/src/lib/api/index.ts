@@ -12,21 +12,20 @@ export async function api<TResult = unknown>(route: string, init?: RequestInit):
     ...init,
     headers
   })
-  const result = await response.json()
+  const contentType = response.headers.get('content-type')
 
   if (!response.ok) {
     if (response.status === 404) {
       notFound()
     }
-
-    let errorMessage = `${response.status} ${response.statusText}`
-    if (typeof result === 'string' && !!result) {
-      errorMessage = result
+    throw new Error(`${response.status} ${response.statusText}`)
+  } else {
+    if (contentType && contentType.startsWith('application/json')) {
+      return (await response.json()) as TResult
+    } else {
+      return undefined as TResult
     }
-    throw new Error(errorMessage)
   }
-
-  return result as TResult
 }
 
 export const apiGet = <TResult = unknown>(route: string, params = {}, init?: RequestInit) =>

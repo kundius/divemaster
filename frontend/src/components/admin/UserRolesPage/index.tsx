@@ -18,7 +18,7 @@ export interface UserRolesPageProps {
 
 export function UserRolesPage({ initialData }: UserRolesPageProps) {
   const vespTable = useVespTable<VespUserRole>({
-    url: 'admin/user-roles',
+    url: 'roles',
     initialData
   })
 
@@ -63,7 +63,7 @@ export function UserRolesPage({ initialData }: UserRolesPageProps) {
               <PencilIcon className="w-4 h-4" />
             </Button>
           </Link>
-          <VespRemoveDialog url={`admin/user-roles/${id}`} onSuccess={vespTable.refetch}>
+          <VespRemoveDialog url={`roles/${id}`} onSuccess={vespTable.refetch}>
             <Button variant="destructive-outline" size="sm-icon">
               <TrashIcon className="w-4 h-4" />
             </Button>

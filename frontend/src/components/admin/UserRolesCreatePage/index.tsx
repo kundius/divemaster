@@ -8,8 +8,8 @@ import { UserRoleForm, UserRoleFormFields, UserRoleFormSchema } from '../UserRol
 export function UserRolesCreatePage() {
   const router = useRouter()
   const [form, onSubmit] = useVespForm<UserRoleFormFields>({
-    url: `admin/user-roles`,
-    method: 'PUT',
+    url: `roles`,
+    method: 'POST',
     schema: UserRoleFormSchema,
     defaultValues: {
       title: '',

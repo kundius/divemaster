@@ -13,7 +13,7 @@ export interface UserRolesUpdatePageProps {
 export function UserRolesUpdatePage({ initialData }: UserRolesUpdatePageProps) {
   const router = useRouter()
   const [form, onSubmit] = useVespForm<UserRoleFormFields>({
-    url: `admin/user-roles/${initialData.id}`,
+    url: `roles/${initialData.id}`,
     method: 'PATCH',
     schema: UserRoleFormSchema,
     defaultValues: {

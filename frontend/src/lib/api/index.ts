@@ -2,15 +2,15 @@ import { notFound } from 'next/navigation'
 import { getApiUrl } from '../utils'
 
 export async function api<TResult = unknown>(route: string, init?: RequestInit): Promise<TResult> {
-  const headers = new Headers(init?.headers)
+  // const headers = new Headers(init?.headers)
 
-  if (!headers.has('Content-Type')) {
-    headers.set('Content-Type', 'application/json')
-  }
+  // if (!headers.has('Content-Type')) {
+  //   headers.set('Content-Type', 'application/json')
+  // }
 
   const response = await fetch(`${getApiUrl()}${route}`, {
     ...init,
-    headers
+    // headers
   })
   const contentType = response.headers.get('content-type')
 

@@ -34,10 +34,13 @@ export interface VespProduct {
 }
 
 export type VespFile = {
-  id?: number
-  uuid: string
-  updated_at?: string
-  [key: string]: any
+  id: number
+  file: string
+  path: string
+  type?: string
+  title?: string
+  size?: number
+  metadata?: string
 }
 
 export type VespFileOptions = {

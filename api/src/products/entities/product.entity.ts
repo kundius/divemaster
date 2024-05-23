@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm'
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { Category } from './category.entity'
+import { ProductImage } from './product-image.entity'
 
 @Entity()
 export class Product {
@@ -27,4 +28,21 @@ export class Product {
   @ManyToMany(() => Category)
   @JoinTable()
   categories: Category[]
+
+  @OneToMany(() => ProductImage, (image) => image.product)
+  images: ProductImage[]
+
+  // @ManyToMany(() => File)
+  // @JoinTable({
+  //   name: 'product_images_file',
+  //   joinColumn: {
+  //     name: 'productId',
+  //     referencedColumnName: 'id'
+  //   },
+  //   inverseJoinColumn: {
+  //     name: 'fileId',
+  //     referencedColumnName: 'id'
+  //   }
+  // })
+  // images: File[]
 }

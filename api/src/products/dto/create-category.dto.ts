@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer'
-import { IsBoolean, IsOptional, IsString } from 'class-validator'
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator'
 
 export class CreateCategoryDto {
   @Type(() => String)
@@ -18,4 +18,8 @@ export class CreateCategoryDto {
   @Type(() => Boolean)
   @IsBoolean()
   active: boolean
+
+  @Type(() => Number)
+  @IsNumber()
+  parentId: number
 }

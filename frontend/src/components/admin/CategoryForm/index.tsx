@@ -17,7 +17,7 @@ import { UseFormReturn } from 'react-hook-form'
 import { z } from 'zod'
 
 export const CategoryFormSchema = z.object({
-  parent_id: z.number().nullable(),
+  parentId: z.number().nullable(),
   title: z.string().trim().min(1),
   alias: z.string().trim(),
   description: z.string().trim(),
@@ -83,13 +83,13 @@ export function CategoryForm({ form, onSubmit }: CategoryFormProps) {
           />
           <FormField
             control={form.control}
-            name="parent_id"
+            name="parentId"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Родительская</FormLabel>
                 <FormControl>
                   <VespInputComboBox
-                    url="admin/categories"
+                    url="categories"
                     value={field.value}
                     onChange={field.onChange}
                   />

@@ -12,17 +12,16 @@ import {
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
-import { VespInputComboBox } from '@/components/vesp/VespInputComboBox'
 import { UseFormReturn } from 'react-hook-form'
 import { z } from 'zod'
 
 export const ProductFormSchema = z.object({
   title: z.string().trim().min(1),
-  sku: z.string().trim().min(1),
+  alias: z.string().trim(),
+  sku: z.string().trim(),
   description: z.string().trim(),
   price: z.number(),
-  active: z.boolean(),
-  // category_id: z.number()
+  active: z.boolean()
 })
 
 export type ProductFormFields = z.infer<typeof ProductFormSchema>
@@ -37,19 +36,38 @@ export function ProductForm({ form, onSubmit }: ProductFormProps) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="space-y-6">
-          <FormField
-            control={form.control}
-            name="title"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Название</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="flex gap-6">
+            <div className="w-2/3">
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Название</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="w-1/3">
+              <FormField
+                control={form.control}
+                name="alias"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Псевдоним</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
           <FormField
             control={form.control}
             name="description"

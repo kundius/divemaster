@@ -17,7 +17,7 @@ export interface CategoriesPageProps {
 
 export function CategoriesPage({ initialData }: CategoriesPageProps) {
   const vespTable = useVespTable<VespCategory>({
-    url: 'admin/categories',
+    url: 'categories',
     initialData
   })
 
@@ -58,7 +58,7 @@ export function CategoriesPage({ initialData }: CategoriesPageProps) {
               <PencilIcon className="w-4 h-4" />
             </Button>
           </Link>
-          <VespRemoveDialog url={`admin/categories/${id}`} onSuccess={vespTable.refetch}>
+          <VespRemoveDialog url={`categories/${id}`} onSuccess={vespTable.refetch}>
             <Button variant="destructive-outline" size="sm-icon">
               <TrashIcon className="w-4 h-4" />
             </Button>

@@ -29,13 +29,13 @@ export function ProductsPage({ initialData }: ProductsPageProps) {
 
   const columns: DataTableColumn<VespProduct>[] = [
     {
-      key: 'id',
+      key: 'title',
       label: 'Товар',
       sortable: true,
       headProps: {
         className: 'w-5/12'
       },
-      formatter: (_, row) => {
+      formatter: (title, row) => {
         return (
           <div className="flex items-center gap-2">
             {row.file && (
@@ -47,7 +47,7 @@ export function ProductsPage({ initialData }: ProductsPageProps) {
                 alt=""
               />
             )}
-            <div className="">{row.title}</div>
+            <div className="">{title}</div>
           </div>
         )
       }

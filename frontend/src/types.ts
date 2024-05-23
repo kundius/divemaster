@@ -3,7 +3,7 @@ export interface VespUser {
   name: string
   email: string
   active: boolean
-  role_id: number
+  roleId: number
   role: VespUserRole
 }
 
@@ -15,27 +15,22 @@ export interface VespUserRole {
 
 export interface VespCategory {
   id: number
-  parent_id: number
+  parentId: number
   title: string
   alias: string
   description: string | null
   active: boolean
-  updated_at: string | null
-  created_at: string | null
 }
 
 export interface VespProduct {
   id: number
   price: number
-  category_id: number
   title: string
+  alias: string
   description: string | null
-  sku: string
-  category: VespCategory
+  sku: string | null
   file: VespFile | null
   active: boolean
-  updated_at: string | null
-  created_at: string | null
 }
 
 export type VespFile = {

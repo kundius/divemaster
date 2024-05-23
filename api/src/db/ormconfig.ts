@@ -12,6 +12,7 @@ export const dataSourceOptions: DataSourceOptions & SeederOptions = {
   entities: ['dist/**/*.entity{.ts,.js}'],
   migrations: ['dist/db/migrations/*{.ts,.js}'],
   seeds: ['dist/db/seeds/**/*.js'],
+  factories: ['dist/db/factories/**/*.js'],
   synchronize: false,
   migrationsTableName: 'migrations'
 }

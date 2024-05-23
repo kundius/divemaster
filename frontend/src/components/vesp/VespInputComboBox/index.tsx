@@ -48,7 +48,7 @@ export function VespInputComboBox<TRow extends unknown = unknown>(
     url,
     filter,
     placeholder = 'Выбрать...',
-    limit = 10,
+    limit = 8,
     sort,
     dir,
     value: controlledValue,

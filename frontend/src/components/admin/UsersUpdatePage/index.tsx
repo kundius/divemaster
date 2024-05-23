@@ -11,7 +11,6 @@ export interface UsersUpdatePageProps {
 }
 
 export function UsersUpdatePage({ initialData }: UsersUpdatePageProps) {
-  console.log(initialData)
   const router = useRouter()
   const [form, onSubmit] = useVespForm<UserFormFields>({
     url: `users/${initialData.id}`,
@@ -19,7 +18,7 @@ export function UsersUpdatePage({ initialData }: UsersUpdatePageProps) {
     schema: UserFormSchema,
     defaultValues: {
       email: initialData.email || '',
-      role_id: initialData.role.id,
+      roleId: initialData.roleId,
       name: initialData.name,
       password: '',
       active: initialData.active

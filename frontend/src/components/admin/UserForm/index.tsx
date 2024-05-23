@@ -16,7 +16,7 @@ import { UseFormReturn } from 'react-hook-form'
 import { z } from 'zod'
 
 export const UserFormSchema = z.object({
-  role_id: z.number(),
+  roleId: z.number(),
   name: z.string().trim().min(1),
   email: z.string().trim().min(1),
   password: z.string().trim(),
@@ -50,7 +50,7 @@ export function UserForm({ form, onSubmit }: UserFormProps) {
           />
           <FormField
             control={form.control}
-            name="role_id"
+            name="roleId"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Группа</FormLabel>

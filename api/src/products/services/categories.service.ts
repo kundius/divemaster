@@ -13,10 +13,12 @@ export class CategoriesService {
     private categoriesRepository: Repository<Category>
   ) {}
 
-  async create({ ...fillable }: CreateCategoryDto) {
+  async create({ parentId, ...fillable }: CreateCategoryDto) {
     const category = new Category()
 
     this.categoriesRepository.merge(category, fillable)
+
+    category.parent = await this.findOne(parentId)
 
     await this.categoriesRepository.save(category)
 
@@ -32,10 +34,14 @@ export class CategoriesService {
     return this.categoriesRepository.findOneByOrFail({ id })
   }
 
-  async update(id: number, { ...fillable }: UpdateCategoryDto) {
+  async update(id: number, { parentId, ...fillable }: UpdateCategoryDto) {
     const category = await this.findOne(id)
 
     this.categoriesRepository.merge(category, fillable)
+
+    if (typeof parentId !== 'undefined') {
+      category.parent = await this.findOne(parentId)
+    }
 
     await this.categoriesRepository.save(category)
   }

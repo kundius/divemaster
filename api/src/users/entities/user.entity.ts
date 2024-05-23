@@ -20,4 +20,7 @@ export class User {
 
   @ManyToOne(() => Role, (role) => role.users, { eager: true })
   role: Role
+
+  @Column()
+  public roleId: number
 }

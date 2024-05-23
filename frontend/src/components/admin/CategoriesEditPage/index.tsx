@@ -14,7 +14,7 @@ export interface CategoriesEditPageProps {
 export function CategoriesEditPage({ initialData }: CategoriesEditPageProps) {
   const router = useRouter()
   const [form, onSubmit] = useVespForm<CategoryFormFields>({
-    url: `admin/categories/${initialData.id}`,
+    url: `categories/${initialData.id}`,
     method: 'PATCH',
     schema: CategoryFormSchema,
     mapValues: (values) => {
@@ -23,7 +23,7 @@ export function CategoriesEditPage({ initialData }: CategoriesEditPageProps) {
       return values
     },
     defaultValues: {
-      parent_id: initialData.parent_id,
+      parentId: initialData.parentId,
       active: initialData.active,
       description: initialData.description || '',
       title: initialData.title,

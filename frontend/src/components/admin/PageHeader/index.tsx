@@ -37,7 +37,7 @@ const renderAction = (action: ActionType, i: number) => {
 export function PageHeader({ title, actions }: PageHeaderProps) {
   return (
     <div className="flex items-center justify-between flex-wrap gap-4 mb-8">
-      <h1 className="scroll-m-20 text-4xl font-medium tracking-tight">{title}</h1>
+      <h1 className="scroll-m-20 text-3xl font-medium tracking-tight">{title}</h1>
       {actions && (
         <div className="flex items-center flex-wrap gap-3">{actions.map(renderAction)}</div>
       )}

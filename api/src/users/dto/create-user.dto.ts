@@ -16,7 +16,7 @@ export class CreateUserDto {
 
   @Type(() => Number)
   @IsNumber()
-  role_id: number
+  roleId: number
 
   @Type(() => Boolean)
   @IsBoolean()

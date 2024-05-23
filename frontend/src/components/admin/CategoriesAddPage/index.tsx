@@ -9,8 +9,8 @@ import { PageHeader } from '../PageHeader'
 export function CategoriesAddPage() {
   const router = useRouter()
   const [form, onSubmit] = useVespForm<CategoryFormFields>({
-    url: `admin/categories`,
-    method: 'PUT',
+    url: `categories`,
+    method: 'POST',
     schema: CategoryFormSchema,
     mapValues: (values) => {
       values.alias = slugify(values.alias || values.title)
@@ -22,7 +22,7 @@ export function CategoriesAddPage() {
       description: '',
       title: '',
       alias: '',
-      parent_id: null
+      parentId: null
     },
     onSuccess: () => {
       router.push('/admin/categories')

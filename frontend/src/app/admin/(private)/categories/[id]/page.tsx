@@ -9,6 +9,6 @@ export const metadata: Metadata = {
 }
 
 export default async function Page({ params }: { params: { id: number } }) {
-  const initialData = await apiGet<VespCategory>(`admin/categories/${params.id}`, {}, withAuth())
+  const initialData = await apiGet<VespCategory>(`categories/${params.id}?relations=parent,children,test`, {}, withAuth())
   return <CategoriesEditPage initialData={initialData} />
 }

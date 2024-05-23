@@ -15,12 +15,12 @@ export class UsersService {
     private rolesService: RolesService
   ) {}
 
-  async create({ role_id, ...fillable }: CreateUserDto) {
+  async create({ roleId, ...fillable }: CreateUserDto) {
     const user = new User()
 
     this.usersRepository.merge(user, fillable)
 
-    user.role = await this.rolesService.findOne(role_id)
+    user.role = await this.rolesService.findOne(roleId)
 
     await this.usersRepository.save(user)
 
@@ -40,13 +40,13 @@ export class UsersService {
     return this.usersRepository.findOneByOrFail({ id })
   }
 
-  async update(id: number, { role_id, ...fillable }: UpdateUserDto) {
+  async update(id: number, { roleId, ...fillable }: UpdateUserDto) {
     const user = await this.findOne(id)
 
     this.usersRepository.merge(user, fillable)
 
-    if (typeof role_id !== 'undefined') {
-      user.role = await this.rolesService.findOne(role_id)
+    if (typeof roleId !== 'undefined') {
+      user.role = await this.rolesService.findOne(roleId)
     }
 
     await this.usersRepository.save(user)

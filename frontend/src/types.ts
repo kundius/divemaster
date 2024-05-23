@@ -52,14 +52,11 @@ export type VespFileOptions = {
   [key: string]: any
 }
 
-export type VespProductFile = {
-  file_id: number
-  product_id: number
+export type ProductImage = {
+  fileId: number
+  productId: number
   rank: number
   active: boolean
-  file: {
-    id: number
-  }
 }
 
 export type PageProps<

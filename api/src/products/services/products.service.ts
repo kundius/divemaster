@@ -8,6 +8,9 @@ import { FindAllProductQueryDto } from '../dto/find-all-product-query.dto'
 import { ProductImage } from '../entities/product-image.entity'
 import { StorageService } from '@/storage/services/storage.service'
 import { join } from 'path'
+import { nanoid } from '@/lib/utils'
+import { UpdateProductImageDto } from '../dto/update-product-image.dto'
+import { SortProductImageDto } from '../dto/sort-product-image.dto'
 
 @Injectable()
 export class ProductsService {
@@ -50,30 +53,67 @@ export class ProductsService {
     await this.productsRepository.delete(id)
   }
 
-  async productImageFindAll(id: number) {
+  async createProductImage(productId: number, upload: Express.Multer.File) {
     const product = await this.productsRepository.findOneOrFail({
-      where: { id },
-      relations: {
-        images: true
-      }
-    })
-    return product.images
-  }
-
-  async productImageCreate(id: number, upload: Express.Multer.File) {
-    const product = await this.productsRepository.findOneOrFail({
-      where: { id },
+      where: { id: productId },
       relations: {
         images: true
       }
     })
 
-    const file = await this.storageService.upload(upload, join(String(id), upload.originalname))
+    const file = await this.storageService.upload(
+      upload,
+      join(String(productId), `${nanoid()}-${upload.originalname}`)
+    )
     const productImage = new ProductImage()
     productImage.file = file
     productImage.product = product
     productImage.rank = product.images.length
     await this.productImageRepository.save(productImage)
     return productImage
+  }
+
+  async findAllProductImage(productId: number) {
+    return await this.productImageRepository.find({
+      where: { productId },
+      order: {
+        rank: 'ASC'
+      }
+    })
+  }
+
+  async findOneProductImage(productId: number, fileId: number) {
+    return this.productImageRepository.findOneByOrFail({ productId, fileId })
+  }
+
+  async updateProductImage(
+    productId: number,
+    fileId: number,
+    { ...fillable }: UpdateProductImageDto
+  ) {
+    const productImage = await this.findOneProductImage(productId, fileId)
+
+    this.productImageRepository.merge(productImage, fillable)
+
+    await this.productImageRepository.save(productImage)
+  }
+
+  async sortProductImage(productId: number, { files }: SortProductImageDto) {
+    for (const fileId of Object.keys(files)) {
+      const productImage = await this.productImageRepository.findOneByOrFail({
+        productId,
+        fileId: +fileId
+      })
+      productImage.rank = files[fileId]
+      await this.productImageRepository.save(productImage)
+    }
+  }
+
+  async removeProductImage(productId: number, fileId: number) {
+    await this.productImageRepository.delete({
+      productId,
+      fileId
+    })
+    await this.storageService.remove(fileId)
   }
 }

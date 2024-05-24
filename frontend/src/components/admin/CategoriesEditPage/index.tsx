@@ -2,13 +2,13 @@
 
 import { useVespForm } from '@/components/vesp/VespForm'
 import { slugify } from '@/lib/utils'
-import { VespCategory } from '@/types'
+import { Category } from '@/types'
 import { CategoryForm, CategoryFormFields, CategoryFormSchema } from '../CategoryForm'
 import { PageHeader } from '../PageHeader'
 import { useRouter } from 'next/navigation'
 
 export interface CategoriesEditPageProps {
-  initialData: VespCategory
+  initialData: Category
 }
 
 export function CategoriesEditPage({ initialData }: CategoriesEditPageProps) {

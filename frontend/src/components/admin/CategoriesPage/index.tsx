@@ -6,22 +6,22 @@ import { Button } from '@/components/ui/button'
 import { VespRemoveDialog } from '@/components/vesp/VespRemoveDialog'
 import { useVespTable } from '@/components/vesp/VespTable'
 import { VespTableData } from '@/components/vesp/VespTable/types'
-import { VespCategory } from '@/types'
+import { Category } from '@/types'
 import { CheckCircleIcon, PencilIcon, TrashIcon, XCircleIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { PageHeader, PageHeaderProps } from '../PageHeader'
 
 export interface CategoriesPageProps {
-  initialData?: VespTableData<VespCategory>
+  initialData?: VespTableData<Category>
 }
 
 export function CategoriesPage({ initialData }: CategoriesPageProps) {
-  const vespTable = useVespTable<VespCategory>({
+  const vespTable = useVespTable<Category>({
     url: 'categories',
     initialData
   })
 
-  const columns: DataTableColumn<VespCategory>[] = [
+  const columns: DataTableColumn<Category>[] = [
     {
       key: 'id',
       label: 'ID'
@@ -85,7 +85,7 @@ export function CategoriesPage({ initialData }: CategoriesPageProps) {
   return (
     <>
       <PageHeader title="Категории" actions={actions} />
-      <DataTable<VespCategory>
+      <DataTable<Category>
         data={vespTable.data.rows}
         columns={columns}
         filter={{

@@ -34,6 +34,7 @@ import Image from 'next/image'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
 import { CSS } from '@dnd-kit/utilities'
+import { Skeleton } from '@/components/ui/skeleton'
 
 interface SortableItemProps {
   id: number
@@ -180,7 +181,8 @@ export function ProductGallery(props: ProductGalleryProps) {
 
   const auth = useAuth()
 
-  const [loading, setLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [isPending, setIsPending] = useState(false)
   const [sorted, setSorted] = useState(false)
   const [items, setItems] = useState<ItemType[]>([])
   const sensors = useSensors(
@@ -233,7 +235,7 @@ export function ProductGallery(props: ProductGalleryProps) {
         body
       })
     }
-    setLoading(true)
+    setIsPending(true)
     try {
       for (const file of nativeFiles) {
         if (file.type.includes('image/')) {
@@ -248,12 +250,12 @@ export function ProductGallery(props: ProductGalleryProps) {
         }
       }
     } finally {
-      setLoading(false)
+      setIsPending(false)
     }
   }
 
   async function fetch() {
-    setLoading(true)
+    setIsLoading(true)
     try {
       const data = await apiGet<ProductImage[]>(url, {}, withToken(auth.token)())
       setItems(
@@ -263,7 +265,7 @@ export function ProductGallery(props: ProductGalleryProps) {
         }))
       )
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
@@ -285,44 +287,52 @@ export function ProductGallery(props: ProductGalleryProps) {
     <div>
       <div className="justify-end flex items-center mb-4">
         <Button onClick={onFileSelect}>
-          <PlusCircleIcon className="w-6 h-6 mr-2 -ml-2" />
           Загрузить
         </Button>
       </div>
 
-      <Overlay show={loading}>
-        <div
-          onDrop={(e) => {
-            e.preventDefault()
-            onAddFiles(e.dataTransfer.files)
-          }}
-          onDragOver={(e) => {
-            e.preventDefault()
-          }}
-          className="grid grid-cols-4 gap-4"
-        >
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <SortableContext items={items} strategy={rectSortingStrategy}>
-              {items.map((item) => (
-                <SortableItem
-                  key={item.id}
-                  id={item.id}
-                  width={thumbWidth}
-                  height={thumbHeight}
-                  src={`${getApiUrl()}storage/${item.fileId}/read`}
-                  active={item.active}
-                  setItems={setItems}
-                  url={url}
-                />
-              ))}
-            </SortableContext>
-          </DndContext>
+      {isLoading ? (
+        <div className="grid grid-cols-4 gap-4">
+          <Skeleton className="h-60" />
+          <Skeleton className="h-60" />
+          <Skeleton className="h-60" />
+          <Skeleton className="h-60" />
         </div>
-      </Overlay>
+      ) : (
+        <Overlay show={isPending}>
+          <div
+            onDrop={(e) => {
+              e.preventDefault()
+              onAddFiles(e.dataTransfer.files)
+            }}
+            onDragOver={(e) => {
+              e.preventDefault()
+            }}
+            className="grid grid-cols-4 gap-4"
+          >
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext items={items} strategy={rectSortingStrategy}>
+                {items.map((item) => (
+                  <SortableItem
+                    key={item.id}
+                    id={item.id}
+                    width={thumbWidth}
+                    height={thumbHeight}
+                    src={`${getApiUrl()}storage/${item.fileId}/read`}
+                    active={item.active}
+                    setItems={setItems}
+                    url={url}
+                  />
+                ))}
+              </SortableContext>
+            </DndContext>
+          </div>
+        </Overlay>
+      )}
     </div>
   )
 }

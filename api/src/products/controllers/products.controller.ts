@@ -19,6 +19,7 @@ import { FileInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
 import { UpdateProductImageDto } from '../dto/update-product-image.dto'
 import { SortProductImageDto } from '../dto/sort-product-image.dto'
+import { UpdateProductCategoryDto } from '../dto/update-product-category.dto'
 
 @Controller('products')
 export class ProductsController {
@@ -49,8 +50,21 @@ export class ProductsController {
     return this.productsService.remove(+id)
   }
 
+  @Get(':productId/categories')
+  findAllProductCategory(@Param('productId') productId: string) {
+    return this.productsService.findAllProductCategory(+productId)
+  }
+
+  @Patch(':productId/categories')
+  updateProductCategory(
+    @Param('productId') productId: string,
+    @Body() dto: UpdateProductCategoryDto
+  ) {
+    return this.productsService.updateProductCategory(+productId, dto)
+  }
+
   @Get(':productId/images')
-  findAllProductImages(@Param('productId') productId: string) {
+  findAllProductImage(@Param('productId') productId: string) {
     return this.productsService.findAllProductImage(+productId)
   }
 

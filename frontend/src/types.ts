@@ -13,9 +13,9 @@ export interface VespUserRole {
   scope: string[] | null
 }
 
-export interface VespCategory {
+export interface Category {
   id: number
-  parentId: number
+  parentId: number | null
   title: string
   alias: string
   description: string | null

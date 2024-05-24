@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer'
-import { IsEnum, IsInt, IsOptional, IsString, Max, Min } from 'class-validator'
+import { IsBoolean, IsEnum, IsInt, IsOptional, IsString, Max, Min } from 'class-validator'
 import { FindManyOptions, FindOptionsOrder, FindOptionsWhere } from 'typeorm'
 
 export enum SortDir {
@@ -30,6 +30,11 @@ export class PaginationQueryDto<Entity = any> {
   @IsOptional()
   readonly dir?: SortDir
 
+  @Type(() => Boolean)
+  @IsBoolean()
+  @IsOptional()
+  readonly all: boolean = false
+
   get take(): number {
     return this.limit
   }
@@ -51,11 +56,14 @@ export class PaginationQueryDto<Entity = any> {
   }
 
   get options(): FindManyOptions<Entity> {
-    return {
+    const options: FindManyOptions<Entity> = {
       where: this.where,
-      order: this.order,
-      take: this.take,
-      skip: this.skip
+      order: this.order
     }
+    if (!this.all) {
+      options.skip = this.skip
+      options.take = this.take
+    }
+    return options
   }
 }

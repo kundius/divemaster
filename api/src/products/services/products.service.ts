@@ -11,6 +11,8 @@ import { join } from 'path'
 import { nanoid } from '@/lib/utils'
 import { UpdateProductImageDto } from '../dto/update-product-image.dto'
 import { SortProductImageDto } from '../dto/sort-product-image.dto'
+import { Category } from '../entities/category.entity'
+import { UpdateProductCategoryDto } from '../dto/update-product-category.dto'
 
 @Injectable()
 export class ProductsService {
@@ -19,6 +21,8 @@ export class ProductsService {
     private productsRepository: Repository<Product>,
     @InjectRepository(ProductImage)
     private productImageRepository: Repository<ProductImage>,
+    @InjectRepository(Category)
+    private categoryRepository: Repository<Category>,
     private storageService: StorageService
   ) {}
 
@@ -115,5 +119,43 @@ export class ProductsService {
       fileId
     })
     await this.storageService.remove(fileId)
+  }
+
+  async findAllProductCategory(productId: number) {
+    const product = await this.productsRepository.findOne({
+      where: {
+        id: productId
+      },
+      relations: {
+        categories: true
+      }
+      // order: {
+      //   rank: 'ASC'
+      // }
+    })
+    return product?.categories || []
+  }
+
+  async updateProductCategory(productId: number, { categories }: UpdateProductCategoryDto) {
+    console.log(productId, categories)
+    // const product = await this.productsRepository.findOne({
+    //   where: {
+    //     id: productId
+    //   },
+    //   // relations: {
+    //   //   categories
+    //   // }
+    // })
+    // const categories: Category[] = []
+    // for (const categoryId of categories) {
+    //   // console.log(productId, categoryId)
+    //   const category = await this.categoryRepository.findOneByOrFail({
+    //     id: +categoryId
+    //   })
+    //   categories.push(category)
+    // //   productImage.rank = files[categoryId]
+    // //   await this.productImageRepository.save(productImage)
+    // }
+    // product?.categories = categories
   }
 }

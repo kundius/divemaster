@@ -5,6 +5,7 @@ import styles from './CatalogButton.module.scss'
 import { createPortal } from 'react-dom'
 import { cn, disableScroll, enableScroll } from '@/lib/utils'
 import dynamic from 'next/dynamic'
+import { usePathname } from 'next/navigation'
 
 const CatalogButtonContentDynamic = dynamic(() => import('./CatalogButtonContent'), {
   ssr: false,
@@ -12,9 +13,14 @@ const CatalogButtonContentDynamic = dynamic(() => import('./CatalogButtonContent
 })
 
 export function CatalogButton() {
+  const pathname = usePathname()
   const [offsetTop, setOffsetTop] = useState(0)
   const [isLoaded, setIsLoaded] = useState(false)
   const [isOpened, setIsOpened] = useState(false)
+
+  useEffect(() => {
+    close()
+  }, [pathname])
 
   const handleToggle = () => {
     if (isOpened) {

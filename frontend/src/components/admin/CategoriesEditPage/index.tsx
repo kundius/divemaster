@@ -6,6 +6,7 @@ import { Category } from '@/types'
 import { CategoryForm, CategoryFormFields, CategoryFormSchema } from '../CategoryForm'
 import { PageHeader } from '../PageHeader'
 import { useRouter } from 'next/navigation'
+import { number } from 'zod'
 
 export interface CategoriesEditPageProps {
   initialData: Category
@@ -23,7 +24,8 @@ export function CategoriesEditPage({ initialData }: CategoriesEditPageProps) {
       return values
     },
     defaultValues: {
-      parentId: initialData.parent,
+      parentId:
+        typeof initialData.parent === 'number' ? initialData.parent : initialData.parent?.id,
       active: initialData.active,
       description: initialData.description || '',
       title: initialData.title,

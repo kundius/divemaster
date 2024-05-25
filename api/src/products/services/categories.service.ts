@@ -5,6 +5,7 @@ import { FindAllCategoryQueryDto } from '../dto/find-all-category-query.dto'
 import { UpdateCategoryDto } from '../dto/update-category.dto'
 import { EntityRepository } from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
+import { GetTreeCategoryQueryDto } from '../dto/get-tree-category-query.dto'
 
 @Injectable()
 export class CategoriesService {
@@ -30,6 +31,14 @@ export class CategoriesService {
   async findAll(query: FindAllCategoryQueryDto) {
     const [rows, total] = await this.categoriesRepository.findAndCount(query.where, query.options)
     return { rows, total }
+  }
+
+  async getTree(query: GetTreeCategoryQueryDto) {
+    return await this.categoriesRepository.find(query.where, {
+      populate: new Array(query.depth)
+        .fill('children')
+        .map((item, i) => new Array(i + 1).fill(item).join('.')) as never[]
+    })
   }
 
   async findOne(id: number) {

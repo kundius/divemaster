@@ -1,19 +1,18 @@
-import { Container } from '../Container'
-import { TopMenu } from './TopMenu'
-import { CitySelect } from './CitySelect'
-import styles from './index.module.scss'
-import { Sticky } from './Sticky'
 import Image from 'next/image'
-import { Search } from './Search'
 import Link from 'next/link'
+import { Container } from '../Container'
 import { CatalogButton } from './CatalogButton'
-import { Toolbar } from './Toolbar'
 import { CatalogMenu } from './CatalogMenu'
+import { CitySelect } from './CitySelect'
 import { DesktopContacts } from './DesktopContacts'
-import { MobileContacts } from './MobileContacts'
-import { cn } from '@/lib/utils'
 import { MenuButton } from './MenuButton'
+import { MobileContacts } from './MobileContacts'
 import { MobileNavigation } from './MobileNavigation'
+import { Search } from './Search'
+import { Sticky } from './Sticky'
+import { Toolbar } from './Toolbar'
+import { TopMenu } from './TopMenu'
+import styles from './index.module.scss'
 
 export function Header() {
   return (
@@ -103,7 +102,7 @@ export function Header() {
       </div>
       <Sticky>
         <Container>
-          <div className={styles['primary-container']} data-header-primary=''>
+          <div className={styles['primary-container']} data-header-primary="">
             <div className={styles.logo}>
               <Link href="/">
                 <Image src="/logo.png" width={148} height={71} alt="" className="max-md:hidden" />
@@ -123,7 +122,7 @@ export function Header() {
 
             <div className={styles.space2} />
 
-            <div className={styles.toolbar} data-header-toolbar=''>
+            <div className={styles.toolbar} data-header-toolbar="">
               <Toolbar />
             </div>
 
@@ -132,7 +131,7 @@ export function Header() {
             </div>
           </div>
 
-          <div className={styles['secondary-container']} data-header-secondary=''>
+          <div className={styles['secondary-container']} data-header-secondary="">
             <div className={styles['catalog-menu']}>
               <CatalogMenu />
             </div>

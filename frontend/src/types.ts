@@ -14,11 +14,12 @@ export interface VespUserRole {
 
 export interface Category {
   id: number
-  parent: number | null
+  parent: number | Category | null
   title: string
   alias: string
   description: string | null
   active: boolean
+  children: Category[]
 }
 
 export interface VespProduct {

@@ -44,10 +44,9 @@ export function ProductCategories({ productId }: ProductCategoriesProps) {
     queryFn: () =>
       apiGet<Category[]>(`products/${productId}/categories`, {}, withToken(auth.token)())
   })
-  const categoriesQuery = useQuery<VespTableData<Category>>({
-    queryKey: ['categories', 'all'],
-    queryFn: () =>
-      apiGet<VespTableData<Category>>(`categories`, { all: true }, withToken(auth.token)())
+  const categoriesQuery = useQuery<Category[]>({
+    queryKey: ['categories', 'tree'],
+    queryFn: () => apiGet<Category[]>(`categories/tree`, {}, withToken(auth.token)())
   })
   const mutation = useMutation<void, Error, string[]>({
     mutationFn: async (categories) => {
@@ -55,24 +54,36 @@ export function ProductCategories({ productId }: ProductCategoriesProps) {
     }
   })
 
-  console.log(categoriesQuery.data?.rows)
-
   const nodes = useMemo(() => {
-    const list = categoriesQuery.data?.rows || []
-    const fn = (parentId: number | null): NodeType[] => {
-      return list
-        .filter((item) => item.parent === parentId)
-        .map((item) => {
-          const children = fn(item.id)
-          return {
-            label: item.title,
-            value: String(item.id),
-            children: children.length > 0 ? children : undefined
-          }
-        })
+    const fn = (list: Category[]): NodeType[] => {
+      return list.map((item) => {
+        const children = fn(item.children)
+        return {
+          label: item.title,
+          value: String(item.id),
+          children: children.length > 0 ? children : undefined
+        }
+      })
     }
-    return fn(null)
-  }, [categoriesQuery.data?.rows])
+    return fn(categoriesQuery.data || [])
+  }, [categoriesQuery.data])
+
+  // const nodes = useMemo(() => {
+  //   const list = categoriesQuery.data?.rows || []
+  //   const fn = (parentId: number | null): NodeType[] => {
+  //     return list
+  //       .filter((item) => item.parent === parentId)
+  //       .map((item) => {
+  //         const children = fn(item.id)
+  //         return {
+  //           label: item.title,
+  //           value: String(item.id),
+  //           children: children.length > 0 ? children : undefined
+  //         }
+  //       })
+  //   }
+  //   return fn(null)
+  // }, [categoriesQuery.data?.rows])
 
   useEffect(() => {
     setChecked(productCategoriesQuery.data?.map((item) => String(item.id)) || [])

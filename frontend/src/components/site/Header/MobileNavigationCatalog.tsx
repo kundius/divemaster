@@ -8,36 +8,36 @@ import {
 import Link from 'next/link'
 import styles from './MobileNavigationCatalog.module.scss'
 import { spearfishing, brands, diving } from './menu'
+import { apiGet } from '@/lib/api'
+import { Category } from '@/types'
 
-export default function MobileNavigationCatalog() {
+export default async function MobileNavigationCatalog() {
+  const data = await apiGet<Category[]>('categories/tree', { active: true })
   return (
     <div className={styles.root}>
       <VerticalMenu>
         <VerticalMenuList>
-          <VerticalMenuItem>
-            <VerticalMenuTrigger>Всё для подводной охоты</VerticalMenuTrigger>
-            <VerticalMenuList>
-              {spearfishing.map((item, i) => (
-                <VerticalMenuItem key={i}>
-                  <VerticalMenuLink href={item.href}>{item.title}</VerticalMenuLink>
-                </VerticalMenuItem>
-              ))}
-            </VerticalMenuList>
-          </VerticalMenuItem>
-          <VerticalMenuItem>
-            <VerticalMenuTrigger>Всё для дайвинга</VerticalMenuTrigger>
-            <VerticalMenuList>
-              {diving.map((item, i) => (
-                <VerticalMenuItem key={i}>
-                  <VerticalMenuLink href={item.href}>{item.title}</VerticalMenuLink>
-                </VerticalMenuItem>
-              ))}
-            </VerticalMenuList>
-          </VerticalMenuItem>
-          <VerticalMenuItem>
-            <VerticalMenuLink href="#Все для плавания">Все для плавания</VerticalMenuLink>
-          </VerticalMenuItem>
-          <VerticalMenuItem>
+          {data.map((item) => (
+            <VerticalMenuItem key={item.id}>
+              {item.children.length > 0 ? (
+                <>
+                <VerticalMenuTrigger>{item.title}</VerticalMenuTrigger>
+                <VerticalMenuList>
+                  {item.children.map((item) => (
+                    <VerticalMenuItem key={item.id}>
+                      <VerticalMenuLink href={`/category/${item.alias}`}>
+                        {item.title}
+                      </VerticalMenuLink>
+                    </VerticalMenuItem>
+                  ))}
+                </VerticalMenuList>
+                </>
+              ) : (
+                <VerticalMenuLink href={`/category/${item.alias}`}>{item.title}</VerticalMenuLink>
+              )}
+            </VerticalMenuItem>
+          ))}
+          {/* <VerticalMenuItem>
             <VerticalMenuTrigger>Бренды</VerticalMenuTrigger>
             <VerticalMenuList>
               {diving.map((item, i) => (
@@ -46,17 +46,17 @@ export default function MobileNavigationCatalog() {
                 </VerticalMenuItem>
               ))}
             </VerticalMenuList>
-          </VerticalMenuItem>
-          <VerticalMenuItem>
+          </VerticalMenuItem> */}
+          {/* <VerticalMenuItem>
             <Link href={`#sale`} className={styles.sale}>
               <span className="sale" />
             </Link>
-          </VerticalMenuItem>
+          </VerticalMenuItem> */}
         </VerticalMenuList>
       </VerticalMenu>
-      <Link href="#" className={styles.gift}>
+      {/* <Link href="#" className={styles.gift}>
         Подарочный сертификат
-      </Link>
+      </Link> */}
     </div>
   )
 }

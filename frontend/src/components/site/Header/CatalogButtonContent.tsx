@@ -4,43 +4,62 @@ import Link from 'next/link'
 import { spearfishing, diving, brands } from './menu'
 import { Container } from '../Container'
 import { cn } from '@/lib/utils'
+import { apiGet } from '@/lib/api'
+import { Category } from '@/types'
+import { useQuery } from '@tanstack/react-query'
 
 export default function CatalogButtonContent() {
+  const query = useQuery<Category[]>({
+    queryKey: ['CatalogButtonContent', 'categories', 'tree'],
+    queryFn: () => apiGet<Category[]>(`categories/tree`, { active: true })
+  })
+  const spearfishing = query.data?.find((item) => item.id === 1)
+  const diving = query.data?.find((item) => item.id === 34)
+  const swimming = query.data?.find((item) => item.id === 60)
   return (
     <div className={styles.root}>
       <Container>
         <div className={styles.grid}>
-          <div className={styles['grid-spearfishing']}>
-            <Link href="#Всё для подводной охоты" className={styles.headline}>
-              <span className={styles['headline-icon']}>
-                <Image src="/icons/catalog/spearfishing-small.svg" width={48} height={48} alt="" />
-              </span>
-              <span className={styles['headline-title']}>Всё для подводной охоты</span>
-            </Link>
-            <ul className={cn(styles.list, 'max-lg:columns-1 columns-2 gap-12')}>
-              {spearfishing.map((item, i) => (
-                <li key={i}>
-                  <Link href={item.href}>{item.title}</Link>
-                </li>
-              ))}
-              <li className={styles['spearfishing-spacer']}></li>
-            </ul>
-          </div>
-          <div className={styles['grid-diving']}>
-            <Link href="#Всё для дайвинга" className={styles.headline}>
-              <span className={styles['headline-icon']}>
-                <Image src="/icons/catalog/diving-small.svg" width={55} height={50} alt="" />
-              </span>
-              <span className={styles['headline-title']}>Всё для дайвинга</span>
-            </Link>
-            <ul className={cn(styles.list, 'max-lg:columns-1 max-xl:columns-2')}>
-              {diving.map((item, i) => (
-                <li key={i}>
-                  <Link href={item.href}>{item.title}</Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {spearfishing && (
+            <div className={styles['grid-spearfishing']}>
+              <Link href={`/category/${spearfishing.alias}`} className={styles.headline}>
+                <span className={styles['headline-icon']}>
+                  <Image
+                    src="/icons/catalog/spearfishing-small.svg"
+                    width={48}
+                    height={48}
+                    alt=""
+                  />
+                </span>
+                <span className={styles['headline-title']}>{spearfishing.title}</span>
+              </Link>
+              <ul className={cn(styles.list, 'max-lg:columns-1 columns-2 gap-12')}>
+                {spearfishing.children.map((item) => (
+                  <li key={item.id}>
+                    <Link href={`/category/${item.alias}`}>{item.title}</Link>
+                  </li>
+                ))}
+                <li className={styles['spearfishing-spacer']}></li>
+              </ul>
+            </div>
+          )}
+          {diving && (
+            <div className={styles['grid-diving']}>
+              <Link href={`/category/${diving.alias}`} className={styles.headline}>
+                <span className={styles['headline-icon']}>
+                  <Image src="/icons/catalog/diving-small.svg" width={55} height={50} alt="" />
+                </span>
+                <span className={styles['headline-title']}>{diving.title}</span>
+              </Link>
+              <ul className={cn(styles.list, 'max-lg:columns-1 max-xl:columns-2')}>
+                {diving.children.map((item) => (
+                  <li key={diving.id}>
+                    <Link href={`/category/${item.alias}`}>{item.title}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           <div className={styles['grid-brands']}>
             <Link href="#Бренды" className={styles.headline}>
               <span className={styles['headline-icon']}>
@@ -56,14 +75,16 @@ export default function CatalogButtonContent() {
               ))}
             </ul>
           </div>
-          <div className={styles['grid-swimming']}>
-            <Link href="#Всё для плавания" className={styles.headline}>
-              <span className={styles['headline-icon']}>
-                <Image src="/icons/catalog/swimming-small.svg" width={62} height={52} alt="" />
-              </span>
-              <span className={styles['headline-title']}>Всё для плавания</span>
-            </Link>
-          </div>
+          {swimming && (
+            <div className={styles['grid-swimming']}>
+              <Link href={`/category/${swimming.alias}`} className={styles.headline}>
+                <span className={styles['headline-icon']}>
+                  <Image src="/icons/catalog/swimming-small.svg" width={62} height={52} alt="" />
+                </span>
+                <span className={styles['headline-title']}>{swimming.title}</span>
+              </Link>
+            </div>
+          )}
           <div className={styles['grid-sale']}>
             <Link href={'#Товары со скидкой'} className={styles.headline}>
               <span className={styles['headline-icon']}>

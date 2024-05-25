@@ -2,44 +2,33 @@ import Link from 'next/link'
 import styles from './CatalogMenu.module.scss'
 import { cn } from '@/lib/utils'
 import { spearfishing, diving, brands } from './menu'
+import { apiGet } from '@/lib/api'
+import { Category } from '@/types'
 
-export function CatalogMenu() {
+export async function CatalogMenu() {
+  const data = await apiGet<Category[]>('categories/tree', { active: true })
+
   return (
     <ul className={styles.first}>
-      <li className={styles['first-item']}>
-        <Link href="#" className={styles['first-link']}>
-          Всё для подводной охоты
-        </Link>
-        <ul className={cn(styles.second, 'gap-8 columns-3')}>
-          {spearfishing.map((item, i) => (
-            <li key={i} className={styles['second-item']}>
-              <Link href={item.href} className={styles['second-link']}>
-                {item.title}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </li>
-      <li className={styles['first-item']}>
-        <Link href="#" className={styles['first-link']}>
-          Всё для дайвинга
-        </Link>
-        <ul className={cn(styles.second, styles['second-diving'], 'gap-8 columns-3')}>
-          {diving.map((item, i) => (
-            <li key={i} className={styles['second-item']}>
-              <Link href={item.href} className={styles['second-link']}>
-                {item.title}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </li>
-      <li className={styles['first-item']}>
-        <Link href="#Всё для плавания" className={styles['first-link']}>
-          Всё для плавания
-        </Link>
-      </li>
-      <li className={cn(styles['first-item'], 'max-lg:hidden')}>
+      {data.map((item) => (
+        <li className={styles['first-item']} key={item.id}>
+          <Link href={`/category/${item.alias}`} className={styles['first-link']}>
+            {item.title}
+          </Link>
+          {item.children.length > 0 && (
+            <ul className={cn(styles.second, 'gap-8 columns-3')}>
+              {item.children.map((item) => (
+                <li key={item.id} className={styles['second-item']}>
+                  <Link href={`/category/${item.alias}`} className={styles['second-link']}>
+                    {item.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </li>
+      ))}
+      {/* <li className={cn(styles['first-item'], 'max-lg:hidden')}>
         <Link href="#Бренды" className={styles['first-link']}>
           Бренды
         </Link>
@@ -52,12 +41,12 @@ export function CatalogMenu() {
             </li>
           ))}
         </ul>
-      </li>
-      <li className={cn(styles['first-item'], 'max-lg:hidden')}>
+      </li> */}
+      {/* <li className={cn(styles['first-item'], 'max-lg:hidden')}>
         <Link href="#" className={styles.sale}>
           <span className="sale" />
         </Link>
-      </li>
+      </li> */}
     </ul>
   )
 }

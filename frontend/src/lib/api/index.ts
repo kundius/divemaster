@@ -20,33 +20,68 @@ export async function api<TResult = unknown>(route: string, init?: RequestInit):
   }
 }
 
-export const apiGet = <TResult = unknown>(route: string, params = {}, init?: RequestInit) =>
+export const apiGet = <
+  TResult = unknown,
+  TParams extends Record<string, any> = Record<string, any>
+>(
+  route: string,
+  params?: TParams,
+  init?: RequestInit
+) =>
   api<TResult>(`${route}?${new URLSearchParams(params)}`, {
     ...withJson(init),
     method: 'GET'
   })
 
-export const apiDelete = <TResult = unknown>(route: string, params = {}, init?: RequestInit) =>
+export const apiDelete = <
+  TResult = unknown,
+  TParams extends Record<string, any> = Record<string, any>
+>(
+  route: string,
+  params?: TParams,
+  init?: RequestInit
+) =>
   api<TResult>(`${route}?${new URLSearchParams(params)}`, {
     ...withJson(init),
     method: 'DELETE'
   })
 
-export const apiPost = <TResult = unknown>(route: string, params = {}, init?: RequestInit) =>
+export const apiPost = <
+  TResult = unknown,
+  TParams extends Record<string, any> = Record<string, any>
+>(
+  route: string,
+  params?: TParams,
+  init?: RequestInit
+) =>
   api<TResult>(route, {
     ...withJson(init),
     method: 'POST',
     body: JSON.stringify(params)
   })
 
-export const apiPut = <TResult = unknown>(route: string, params = {}, init?: RequestInit) =>
+export const apiPut = <
+  TResult = unknown,
+  TParams extends Record<string, any> = Record<string, any>
+>(
+  route: string,
+  params?: TParams,
+  init?: RequestInit
+) =>
   api<TResult>(route, {
     ...withJson(init),
     method: 'PUT',
     body: JSON.stringify(params)
   })
 
-export const apiPatch = <TResult = unknown>(route: string, params = {}, init?: RequestInit) =>
+export const apiPatch = <
+  TResult = unknown,
+  TParams extends Record<string, any> = Record<string, any>
+>(
+  route: string,
+  params?: TParams,
+  init?: RequestInit
+) =>
   api<TResult>(route, {
     ...withJson(init),
     method: 'PATCH',

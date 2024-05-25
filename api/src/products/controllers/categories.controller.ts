@@ -3,6 +3,7 @@ import { FindAllCategoryQueryDto } from '../dto/find-all-category-query.dto'
 import { UpdateCategoryDto } from '../dto/update-category.dto'
 import { CategoriesService } from '../services/categories.service'
 import { CreateCategoryDto } from '../dto/create-category.dto'
+import { GetTreeCategoryQueryDto } from '../dto/get-tree-category-query.dto'
 
 @Controller('categories')
 export class CategoriesController {
@@ -16,6 +17,11 @@ export class CategoriesController {
   @Get()
   findAll(@Query() query: FindAllCategoryQueryDto) {
     return this.categoriesService.findAll(query)
+  }
+
+  @Get('tree')
+  getTree(@Query() query: GetTreeCategoryQueryDto) {
+    return this.categoriesService.getTree(query)
   }
 
   @Get(':id')

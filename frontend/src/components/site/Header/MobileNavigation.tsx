@@ -2,9 +2,10 @@
 
 import { cn, disableScroll, enableScroll } from '@/lib/utils'
 import dynamic from 'next/dynamic'
-import { ComponentType, PropsWithChildren, createContext, useContext, useState } from 'react'
+import { ComponentType, PropsWithChildren, createContext, useContext, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import styles from './MobileNavigation.module.scss'
+import { usePathname } from 'next/navigation'
 
 const MobileNavigationCatalogDynamic = dynamic(() => import('./MobileNavigationCatalog'), {
   ssr: false,
@@ -27,10 +28,15 @@ interface MobileNavigationContextType {
 const MobileNavigationContext = createContext<MobileNavigationContextType>(null!)
 
 export function MobileNavigation({ children }: PropsWithChildren) {
+  const pathname = usePathname()
   const [offsetTop, setOffsetTop] = useState(0)
   const [offsetBottom, setOffsetBottom] = useState(0)
   const [opened, setOpened] = useState<MenuName[]>([])
   const [loaded, setLoaded] = useState<MenuName[]>([])
+
+  useEffect(() => {
+    close()
+  }, [pathname])
 
   const open = (name: MenuName) => {
     disableScroll()

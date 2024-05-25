@@ -143,12 +143,6 @@ export class ProductsService {
   async updateProductCategory(productId: number, { categories }: UpdateProductCategoryDto) {
     const product = await this.productsRepository.findOneOrFail({ id: productId })
     await product.categories.removeAll()
-    // for (const category of product.categories) {
-    //   console.log(category)
-    // //   const category = await this.categoryRepository.findOneOrFail({ id: +categoryId })
-    // //   product.categories.remove((t) => !categories.includes(String(t.id)))
-    // //   product.categories.add(category)
-    // }
     for (const categoryId of categories) {
       const category = await this.categoryRepository.findOneOrFail({ id: +categoryId })
       product.categories.add(category)

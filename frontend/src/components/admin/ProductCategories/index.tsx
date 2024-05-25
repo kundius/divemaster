@@ -55,11 +55,13 @@ export function ProductCategories({ productId }: ProductCategoriesProps) {
     }
   })
 
+  console.log(categoriesQuery.data?.rows)
+
   const nodes = useMemo(() => {
     const list = categoriesQuery.data?.rows || []
     const fn = (parentId: number | null): NodeType[] => {
       return list
-        .filter((item) => item.parentId === parentId)
+        .filter((item) => item.parent === parentId)
         .map((item) => {
           const children = fn(item.id)
           return {
@@ -74,7 +76,7 @@ export function ProductCategories({ productId }: ProductCategoriesProps) {
 
   useEffect(() => {
     setChecked(productCategoriesQuery.data?.map((item) => String(item.id)) || [])
-    setExpanded(productCategoriesQuery.data?.map((item) => String(item.parentId)) || [])
+    setExpanded(productCategoriesQuery.data?.map((item) => String(item.parent)) || [])
   }, [productCategoriesQuery.data])
 
   const onSubmit = async () => {

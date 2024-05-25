@@ -1,13 +1,8 @@
+import { FilterQuery, FindOptions, OrderDefinition, QueryOrder } from '@mikro-orm/core'
 import { Type } from 'class-transformer'
 import { IsBoolean, IsEnum, IsInt, IsOptional, IsString, Max, Min } from 'class-validator'
-import { FindManyOptions, FindOptionsOrder, FindOptionsWhere } from 'typeorm'
 
-export enum SortDir {
-  ASC = 'ASC',
-  DESC = 'DESC'
-}
-
-export class PaginationQueryDto<Entity = any> {
+export class PaginationQueryDto<Entity = unknown> {
   @Type(() => Number)
   @IsInt()
   @Min(1)
@@ -26,9 +21,9 @@ export class PaginationQueryDto<Entity = any> {
   @IsOptional()
   readonly sort?: keyof Entity
 
-  @IsEnum(SortDir)
+  @IsEnum(QueryOrder)
   @IsOptional()
-  readonly dir?: SortDir
+  readonly dir?: QueryOrder
 
   @Type(() => Boolean)
   @IsBoolean()
@@ -43,27 +38,26 @@ export class PaginationQueryDto<Entity = any> {
     return (this.page - 1) * this.limit
   }
 
-  get order() {
-    const order: FindOptionsOrder<Entity> = {}
+  get orderBy(): OrderDefinition<Entity> | undefined {
     if (this.sort && this.dir) {
-      order[this.sort as string] = this.dir // 'as string' добавлен, потому что 'keyof Entity' почему-то не срабатывает здесь
+      return { [this.sort]: this.dir } as OrderDefinition<Entity>
     }
-    return order
+    return undefined
   }
 
-  get where(): FindOptionsWhere<Entity> {
+  get where(): FilterQuery<Entity> {
     return {}
   }
 
-  get options(): FindManyOptions<Entity> {
-    const options: FindManyOptions<Entity> = {
-      where: this.where,
-      order: this.order
-    }
+  get options(): FindOptions<Entity, never, '*', never> {
+    const output: FindOptions<Entity, never, '*', never> = {}
     if (!this.all) {
-      options.skip = this.skip
-      options.take = this.take
+      output.limit = this.take
+      output.offset = this.skip
     }
-    return options
+    if (this.orderBy) {
+      output.orderBy = this.orderBy
+    }
+    return output
   }
 }

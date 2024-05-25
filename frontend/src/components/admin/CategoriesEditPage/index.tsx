@@ -23,7 +23,7 @@ export function CategoriesEditPage({ initialData }: CategoriesEditPageProps) {
       return values
     },
     defaultValues: {
-      parentId: initialData.parentId,
+      parentId: initialData.parent,
       active: initialData.active,
       description: initialData.description || '',
       title: initialData.title,

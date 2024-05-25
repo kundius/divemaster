@@ -18,7 +18,7 @@ export function UsersUpdatePage({ initialData }: UsersUpdatePageProps) {
     schema: UserFormSchema,
     defaultValues: {
       email: initialData.email || '',
-      roleId: initialData.roleId,
+      roleId: initialData.role.id,
       name: initialData.name,
       password: '',
       active: initialData.active

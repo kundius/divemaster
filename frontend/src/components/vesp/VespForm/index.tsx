@@ -2,6 +2,7 @@
 
 import { api } from '@/lib/api'
 import { withToken } from '@/lib/api/with-token'
+import { withJson } from '@/lib/api/with-json'
 import { useAuth } from '@/lib/auth/use-auth'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { DefaultValues, FieldValues, UseFormReturn, useForm } from 'react-hook-form'
@@ -46,6 +47,7 @@ export function useVespForm<TFieldValues extends FieldValues = FieldValues, TRes
     try {
       const data = await api<TResult>(url, {
         ...withToken(auth.token)(),
+        ...withJson(),
         method,
         body: JSON.stringify(values)
       })

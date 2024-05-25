@@ -1,26 +1,28 @@
-import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm'
-import { Product } from './product.entity'
 import { File } from '@/storage/entities/file.entity'
+import { Entity, ManyToOne, PrimaryKeyProp, Property } from '@mikro-orm/core'
+import { Product } from './product.entity'
 
 @Entity()
 export class ProductImage {
-  @Column()
-  @PrimaryColumn()
-  fileId: number
+  [PrimaryKeyProp]?: ['file', 'product']
 
-  @Column()
-  @PrimaryColumn()
-  productId: number
+  // @PrimaryKey()
+  // fileId: number
 
-  @ManyToOne(() => File)
+  // @PrimaryKey()
+  // productId: number
+
+  // @PrimaryKey()
+  @ManyToOne(() => File, { primary: true })
   file: File
 
-  @ManyToOne(() => Product, (product) => product.images)
+  // @PrimaryKey()
+  @ManyToOne(() => Product, { primary: true })
   product: Product
 
-  @Column({ default: 0 })
+  @Property({ default: 0 })
   rank: number = 0
 
-  @Column({ default: true })
+  @Property({ default: true })
   active: boolean = true
 }

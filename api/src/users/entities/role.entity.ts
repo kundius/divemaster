@@ -1,17 +1,17 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm'
+import { Collection, Entity, OneToMany, PrimaryKey, Property } from '@mikro-orm/core'
 import { User } from './user.entity'
 
 @Entity()
 export class Role {
-  @PrimaryGeneratedColumn()
+  @PrimaryKey()
   id: number
 
-  @Column({ unique: true })
+  @Property({ unique: true })
   title: string
 
-  @Column({ nullable: true, type: 'json' })
+  @Property({ nullable: true, type: 'json' })
   scope?: Array<string>
 
   @OneToMany(() => User, (user) => user.role)
-  users: User[]
+  users = new Collection<User>(this)
 }

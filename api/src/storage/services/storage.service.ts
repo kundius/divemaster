@@ -1,23 +1,27 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { InjectRepository } from '@nestjs/typeorm'
 import { createReadStream, createWriteStream, mkdirSync, unlinkSync, existsSync } from 'fs'
 import { sync as md5FileSync } from 'md5-file'
 import * as stream from 'node:stream'
 import { dirname, join } from 'path'
-import { Repository } from 'typeorm'
 import { File } from '../entities/file.entity'
+import { InjectRepository } from '@mikro-orm/nestjs'
+import { EntityRepository } from '@mikro-orm/mariadb'
 
 @Injectable()
 export class StorageService {
   constructor(
     @InjectRepository(File)
-    private fileRepository: Repository<File>,
+    private fileRepository: EntityRepository<File>,
     private configService: ConfigService
   ) {}
 
   async findOne(id: number): Promise<File | null> {
-    return this.fileRepository.findOneBy({ id })
+    return this.fileRepository.findOne({ id })
+  }
+
+  async findOneOrFail(id: number): Promise<File> {
+    return this.fileRepository.findOneOrFail({ id })
   }
 
   fullPath(path: string) {
@@ -51,7 +55,7 @@ export class StorageService {
     file.size = upload.size
     file.type = upload.mimetype
     file.hash = md5FileSync(upload.path)
-    await this.fileRepository.save(file)
+    await this.fileRepository.getEntityManager().persistAndFlush(file)
 
     return file
   }
@@ -60,7 +64,7 @@ export class StorageService {
     const file = await this.findOne(fileId)
     if (file) {
       await this.unlink(file)
-      await this.fileRepository.delete(file)
+      await this.fileRepository.getEntityManager().removeAndFlush(file)
     }
   }
 

@@ -1,48 +1,33 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Collection, Entity, ManyToMany, OneToMany, PrimaryKey, Property } from '@mikro-orm/core'
 import { Category } from './category.entity'
 import { ProductImage } from './product-image.entity'
 
 @Entity()
 export class Product {
-  @PrimaryGeneratedColumn()
+  @PrimaryKey()
   id: number
 
-  @Column()
+  @Property()
   title: string
 
-  @Column({ unique: true })
+  @Property({ unique: true })
   alias: string
 
-  @Column({ nullable: true })
+  @Property({ nullable: true })
   sku?: string
 
-  @Column()
+  @Property()
   price: number
 
-  @Column({ nullable: true, type: 'text' })
+  @Property({ nullable: true, type: 'text' })
   description?: string
 
-  @Column({ default: true })
+  @Property({ default: true })
   active: boolean
 
-  @ManyToMany(() => Category)
-  @JoinTable()
-  categories: Category[]
+  @ManyToMany(() => Category, (category) => category.products)
+  categories = new Collection<Category>(this)
 
   @OneToMany(() => ProductImage, (image) => image.product)
-  images: ProductImage[]
-
-  // @ManyToMany(() => File)
-  // @JoinTable({
-  //   name: 'product_images_file',
-  //   joinColumn: {
-  //     name: 'productId',
-  //     referencedColumnName: 'id'
-  //   },
-  //   inverseJoinColumn: {
-  //     name: 'fileId',
-  //     referencedColumnName: 'id'
-  //   }
-  // })
-  // images: File[]
+  images = new Collection<ProductImage>(this)
 }

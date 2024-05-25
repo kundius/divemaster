@@ -11,7 +11,7 @@ export class AuthService {
 
   async signIn(email: string, pass: string): Promise<{ token: string }> {
     const user = await this.usersService.findOneByEmail(email)
-    if (user?.password !== pass) {
+    if (!(await this.usersService.checkPasswordHash(pass, user.password))) {
       throw new UnauthorizedException()
     }
     const payload = { sub: user.id, email: user.email }

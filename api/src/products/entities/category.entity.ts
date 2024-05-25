@@ -1,32 +1,37 @@
-import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import {
+  Collection,
+  Entity,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  PrimaryKey,
+  Property
+} from '@mikro-orm/core'
 import { Product } from './product.entity'
 
 @Entity()
 export class Category {
-  @PrimaryGeneratedColumn()
+  @PrimaryKey()
   id: number
 
-  @Column()
+  @Property()
   title: string
 
-  @Column({ unique: true })
+  @Property({ unique: true })
   alias: string
 
-  @Column({ nullable: true, type: 'text' })
+  @Property({ nullable: true, type: 'text' })
   description?: string
 
-  @Column({ default: true })
+  @Property({ default: true })
   active: boolean
 
   @ManyToMany(() => Product)
-  products: Product[]
+  products = new Collection<Product>(this)
 
   @OneToMany(() => Category, (category) => category.parent)
-  children: Category[]
+  children = new Collection<Category>(this)
 
-  @ManyToOne(() => Category, (category) => category.children)
-  parent: Category
-
-  @Column()
-  public parentId: number
+  @ManyToOne(() => Category, { nullable: true })
+  parent?: Category
 }

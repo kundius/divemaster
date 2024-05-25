@@ -1,26 +1,23 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm'
+import { Entity, ManyToOne, PrimaryKey, Property } from '@mikro-orm/core'
 import { Role } from './role.entity'
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
+  @PrimaryKey()
   id: number
 
-  @Column({ unique: true })
+  @Property({ unique: true })
   email: string
 
-  @Column()
+  @Property()
   name: string
 
-  @Column()
+  @Property()
   password: string
 
-  @Column({ default: true })
+  @Property({ default: true })
   active: boolean
 
-  @ManyToOne(() => Role, (role) => role.users, { eager: true })
+  @ManyToOne(() => Role)
   role: Role
-
-  @Column()
-  public roleId: number
 }

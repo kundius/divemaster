@@ -1,8 +1,8 @@
 import { PaginationQueryDto } from '@/lib/pagination-query.dto'
 import { Type } from 'class-transformer'
 import { IsOptional, IsString } from 'class-validator'
-import { FindOptionsWhere, Like } from 'typeorm'
 import { User } from '../entities/user.entity'
+import { FilterQuery } from '@mikro-orm/core'
 
 export class FindAllUserQueryDto extends PaginationQueryDto<User> {
   @Type(() => String)
@@ -11,9 +11,11 @@ export class FindAllUserQueryDto extends PaginationQueryDto<User> {
   readonly query?: string
 
   get where() {
-    const where: FindOptionsWhere<User> = {}
+    const where: FilterQuery<User> = {}
     if (this.query) {
-      where.name = Like('%' + this.query + '%')
+      where.name = {
+        $like: '%' + this.query + '%'
+      }
     }
     return where
   }

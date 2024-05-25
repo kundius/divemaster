@@ -202,7 +202,7 @@ export function ProductGallery(props: ProductGalleryProps) {
       setSorted(false)
       const _files: { [key: number]: number } = {}
       items.forEach((i, idx) => {
-        _files[i.file] = idx
+        _files[typeof i.file === 'number' ? i.file : i.file.id] = idx
       })
       apiPut(url, { files: _files })
     }
@@ -244,7 +244,7 @@ export function ProductGallery(props: ProductGalleryProps) {
             ...prev,
             {
               ...item,
-              id: item.file
+              id: typeof item.file === 'number' ? item.file : item.file.id
             }
           ])
         }
@@ -261,7 +261,7 @@ export function ProductGallery(props: ProductGalleryProps) {
       setItems(
         data.map((item) => ({
           ...item,
-          id: item.file
+          id: typeof item.file === 'number' ? item.file : item.file.id
         }))
       )
     } finally {
@@ -322,7 +322,7 @@ export function ProductGallery(props: ProductGalleryProps) {
                     id={item.id}
                     width={thumbWidth}
                     height={thumbHeight}
-                    src={`${getApiUrl()}storage/${item.file}/read`}
+                    src={`${getApiUrl()}storage/${item.id}/read`}
                     active={item.active}
                     setItems={setItems}
                     url={url}

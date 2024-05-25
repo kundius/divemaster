@@ -52,8 +52,8 @@ export type VespFileOptions = {
 }
 
 export type ProductImage = {
-  file: number
-  product: number
+  file: number | VespFile
+  product: number | VespProduct
   rank: number
   active: boolean
 }

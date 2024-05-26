@@ -1,5 +1,6 @@
 'use client'
 
+import useSWR from 'swr'
 import { VespTableData } from '@/components/vesp/VespTable/types'
 import { apiGet, apiPatch } from '@/lib/api'
 import { withToken } from '@/lib/api/with-token'
@@ -36,8 +37,14 @@ interface NodeType {
 export function ProductCategories({ productId }: ProductCategoriesProps) {
   const auth = useAuth()
 
+  const [saving, setSaving] = useState(false)
   const [checked, setChecked] = useState<string[]>([])
   const [expanded, setExpanded] = useState<string[]>([])
+
+  const productCategoriesSWR = useSWR<Category[]>(`products/${productId}/categories`, (url: string) => {
+    return apiGet<Category[]>(url, {}, withToken(auth.token)())
+  })
+  console.log(productCategoriesSWR)
 
   const productCategoriesQuery = useQuery<Category[]>({
     queryKey: ['products', productId, 'categories'],
@@ -47,11 +54,6 @@ export function ProductCategories({ productId }: ProductCategoriesProps) {
   const categoriesQuery = useQuery<Category[]>({
     queryKey: ['categories', 'tree'],
     queryFn: () => apiGet<Category[]>(`categories/tree`, {}, withToken(auth.token)())
-  })
-  const mutation = useMutation<void, Error, string[]>({
-    mutationFn: async (categories) => {
-      return apiPatch(`products/${productId}/categories`, { categories }, withToken(auth.token)())
-    }
   })
 
   const nodes = useMemo(() => {
@@ -91,14 +93,15 @@ export function ProductCategories({ productId }: ProductCategoriesProps) {
   }, [productCategoriesQuery.data])
 
   const onSubmit = async () => {
-    const res = await mutation.mutate(checked)
-    console.log(checked, res)
+    setSaving(true)
+    await apiPatch(`products/${productId}/categories`, { categories: checked }, withToken(auth.token)())
+    setSaving(false)
   }
 
   return (
     <div>
       <div className="justify-end flex items-center mb-4">
-        <Button onClick={onSubmit} loading={mutation.isPending}>
+        <Button onClick={onSubmit} loading={saving}>
           Сохранить
         </Button>
       </div>

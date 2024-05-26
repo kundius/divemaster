@@ -23,6 +23,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { CheckboxTree } from '@/components/ui/checkbox-tree'
+import { useApi } from '@/lib/napi/use-api'
 
 export interface ProductCategoriesProps {
   productId: number
@@ -35,25 +36,33 @@ interface NodeType {
 }
 
 export function ProductCategories({ productId }: ProductCategoriesProps) {
-  const auth = useAuth()
+  console.log('render ProductCategories')
+
+  const api = useApi({
+    auth: true
+  })
+
+  // const auth = useAuth()
 
   const [saving, setSaving] = useState(false)
   const [checked, setChecked] = useState<string[]>([])
   const [expanded, setExpanded] = useState<string[]>([])
 
-  const productCategoriesSWR = useSWR<Category[]>(`products/${productId}/categories`, (url: string) => {
-    return apiGet<Category[]>(url, {}, withToken(auth.token)())
-  })
-  console.log(productCategoriesSWR)
+  const productCategoriesSWR = useSWR<Category[]>(
+    `products/${productId}/categories`,
+    (url: string) => {
+      return api.get<Category[]>(url, {})
+    }
+  )
+  // console.log('productCategoriesSWR', productCategoriesSWR)
 
   const productCategoriesQuery = useQuery<Category[]>({
     queryKey: ['products', productId, 'categories'],
-    queryFn: () =>
-      apiGet<Category[]>(`products/${productId}/categories`, {}, withToken(auth.token)())
+    queryFn: () => api.get<Category[]>(`products/${productId}/categories`, {})
   })
   const categoriesQuery = useQuery<Category[]>({
     queryKey: ['categories', 'tree'],
-    queryFn: () => apiGet<Category[]>(`categories/tree`, {}, withToken(auth.token)())
+    queryFn: () => api.get<Category[]>(`categories/tree`, {})
   })
 
   const nodes = useMemo(() => {
@@ -94,7 +103,11 @@ export function ProductCategories({ productId }: ProductCategoriesProps) {
 
   const onSubmit = async () => {
     setSaving(true)
-    await apiPatch(`products/${productId}/categories`, { categories: checked }, withToken(auth.token)())
+    await apiPatch(
+      `products/${productId}/categories`,
+      { categories: checked },
+      withToken(auth.token)()
+    )
     setSaving(false)
   }
 

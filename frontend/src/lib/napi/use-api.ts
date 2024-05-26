@@ -7,21 +7,23 @@ export interface UseApiParams {
   json?: boolean
 }
 
-export function useApi({ auth = false, json = true }: UseApiParams) {
+export function useApi(params?: UseApiParams) {
+  const { auth = true, json = true } = params || {}
+
   const { token } = useAuth()
 
-  const headers = new Headers()
-
-  if (auth && token) {
-    headers.set('Authorization', `Bearer ${token}`)
-  }
-
-  if (json) {
-    headers.set('Content-Type', 'application/json')
-  }
-
   async function api<TResult = unknown>(route: string, init?: RequestInit): Promise<TResult> {
-    const response = await fetch(`${getApiUrl()}${route}`, init)
+    const headers = new Headers(init?.headers)
+
+    if (auth && token) {
+      headers.set('Authorization', `Bearer ${token}`)
+    }
+
+    if (json) {
+      headers.set('Content-Type', 'application/json')
+    }
+
+    const response = await fetch(`${getApiUrl()}${route}`, { ...init, headers })
 
     if (!response.ok) {
       if (response.status === 404) {

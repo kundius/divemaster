@@ -5,7 +5,7 @@ import { withToken } from '@/lib/api/with-token'
 import { withJson } from '@/lib/api/with-json'
 import { useAuth } from '@/lib/auth/use-auth'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { DefaultValues, FieldValues, UseFormReturn, useForm } from 'react-hook-form'
+import { DefaultValues, FieldValues, UseFormProps, UseFormReturn, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
@@ -14,7 +14,7 @@ interface VespFormProps<TFieldValues extends FieldValues = FieldValues, TResult 
   method: string
   successMessage?: string
   schema: z.Schema
-  defaultValues: DefaultValues<TFieldValues>
+  defaultValues: UseFormProps<TFieldValues, any>['defaultValues']
   redirect?: 'form' | 'table' | 'back' | false
   mapValues?: (values: TFieldValues) => Promise<TFieldValues> | TFieldValues
   onSuccess?: (data: TResult) => Promise<void> | void

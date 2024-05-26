@@ -38,9 +38,7 @@ interface NodeType {
 export function ProductCategories({ productId }: ProductCategoriesProps) {
   console.log('render ProductCategories')
 
-  const api = useApi({
-    auth: true
-  })
+  const api = useApi()
 
   // const auth = useAuth()
 
@@ -48,22 +46,14 @@ export function ProductCategories({ productId }: ProductCategoriesProps) {
   const [checked, setChecked] = useState<string[]>([])
   const [expanded, setExpanded] = useState<string[]>([])
 
-  const productCategoriesSWR = useSWR<Category[]>(
+  const productCategoriesQuery = useSWR<Category[]>(
     `products/${productId}/categories`,
-    (url: string) => {
-      return api.get<Category[]>(url, {})
-    }
+    (url: string) => api.get<Category[]>(url, {})
   )
-  // console.log('productCategoriesSWR', productCategoriesSWR)
-
-  const productCategoriesQuery = useQuery<Category[]>({
-    queryKey: ['products', productId, 'categories'],
-    queryFn: () => api.get<Category[]>(`products/${productId}/categories`, {})
-  })
-  const categoriesQuery = useQuery<Category[]>({
-    queryKey: ['categories', 'tree'],
-    queryFn: () => api.get<Category[]>(`categories/tree`, {})
-  })
+  const categoriesQuery = useSWR<Category[]>(
+    `categories/tree`,
+    (url: string) => api.get<Category[]>(url, {})
+  )
 
   const nodes = useMemo(() => {
     const fn = (list: Category[]): NodeType[] => {
@@ -103,10 +93,9 @@ export function ProductCategories({ productId }: ProductCategoriesProps) {
 
   const onSubmit = async () => {
     setSaving(true)
-    await apiPatch(
+    await api.patch(
       `products/${productId}/categories`,
-      { categories: checked },
-      withToken(auth.token)()
+      { categories: checked }
     )
     setSaving(false)
   }
@@ -120,7 +109,7 @@ export function ProductCategories({ productId }: ProductCategoriesProps) {
       </div>
 
       <div className="p-4 bg-neutral-50/95 rounded-md">
-        {categoriesQuery.isPending || productCategoriesQuery.isPending ? (
+        {categoriesQuery.isLoading || productCategoriesQuery.isLoading ? (
           <div className="space-y-4">
             <Skeleton className="h-4 w-60" />
             <Skeleton className="h-4 w-32 ml-8" />

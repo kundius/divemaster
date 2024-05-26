@@ -19,7 +19,7 @@ export interface UsersPageProps {
 export function UsersPage({ initialData }: UsersPageProps) {
   const vespTable = useVespTable<VespUser>({
     url: 'users',
-    initialData
+    // initialData
   })
 
   const columns: DataTableColumn<VespUser>[] = [

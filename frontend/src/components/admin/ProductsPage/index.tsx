@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button'
 import { VespRemoveDialog } from '@/components/vesp/VespRemoveDialog'
 import { useVespTable } from '@/components/vesp/VespTable'
 import { VespTableData } from '@/components/vesp/VespTable/types'
-import { getImageLink } from '@/lib/utils'
 import { VespProduct } from '@/types'
 import { CheckCircleIcon, PencilIcon, TrashIcon, XCircleIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
@@ -38,7 +37,7 @@ export function ProductsPage({ initialData }: ProductsPageProps) {
       formatter: (title, row) => {
         return (
           <div className="flex items-center gap-2">
-            {row.file && (
+            {/* {row.file && (
               <Image
                 className="rounded"
                 src={getImageLink(row.file, { fit: 'crop', w: thumbWidth, h: thumbHeight })}
@@ -46,7 +45,7 @@ export function ProductsPage({ initialData }: ProductsPageProps) {
                 height={thumbHeight}
                 alt=""
               />
-            )}
+            )} */}
             <div className="">{title}</div>
           </div>
         )

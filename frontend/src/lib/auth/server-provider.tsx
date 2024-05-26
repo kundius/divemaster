@@ -5,12 +5,11 @@ import { TOKEN_NAME } from './constants'
 import { authPreloadEnabled } from './auth-preload'
 
 export async function AuthServerProvider({ children }: React.PropsWithChildren) {
-  let authToken = undefined
   let authUser = undefined
 
   // загружать пользователя только если на странице был вызван `enableAuthPreload`
   if (authPreloadEnabled()) {
-    authToken = cookies().get(TOKEN_NAME)?.value
+    const authToken = cookies().get(TOKEN_NAME)?.value
     authUser = authToken ? await getUser(authToken) : undefined
   }
 
@@ -32,7 +31,7 @@ export async function AuthServerProvider({ children }: React.PropsWithChildren) 
   // }
 
   return (
-    <AuthClientProvider initialToken={authToken} initialUser={authUser}>
+    <AuthClientProvider initialUser={authUser}>
       {children}
     </AuthClientProvider>
   )

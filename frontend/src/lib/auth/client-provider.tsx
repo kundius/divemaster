@@ -2,34 +2,28 @@
 
 import { deleteCookie, getCookie, setCookie } from 'cookies-next'
 import { useEffect, useState } from 'react'
-import { getApiUrl } from '../utils'
 import { getUser } from './actions'
 import { MAX_AGE, TOKEN_NAME } from './constants'
 import { AuthContext } from './context'
-import { AuthContextType, VespUser } from './types'
+import { AuthContextType, User } from './types'
 
 export function AuthClientProvider({
   children,
-  initialToken,
   initialUser
-}: React.PropsWithChildren<{ initialToken?: string; initialUser?: VespUser }>) {
-  const [token, setToken] = useState(initialToken)
+}: React.PropsWithChildren<{ initialToken?: string; initialUser?: User }>) {
   const [user, setUser] = useState(initialUser)
 
   useEffect(() => {
-    if (!(initialToken && initialUser)) {
-      initialLoad()
-    }
+    initialLoad()
   }, [])
 
   async function initialLoad() {
-    const _token = getCookie(TOKEN_NAME)
-    if (_token) {
-      const _user = await getUser(_token)
-      if (_user) {
-        setToken(_token)
-        setUser(_user)
-      }
+    if (!!initialUser) return
+
+    const token = getCookie(TOKEN_NAME)
+
+    if (token) {
+      setUser(await getUser(token))
     }
   }
 
@@ -58,33 +52,17 @@ export function AuthClientProvider({
     return check(scopes)
   }
 
-  // async function deactivateToken(_token: string) {
-  //   await fetch(`${getApiUrl()}security/logout`, {
-  //     method: 'POST',
-  //     headers: {
-  //       Authorization: `Bearer ${_token}`
-  //     }
-  //   })
-  // }
+  async function login(token: string) {
+    const user = await getUser(token)
 
-  async function login(_token: string) {
-    const _user = await getUser(_token)
-
-    if (_user) {
-      setCookie(TOKEN_NAME, _token, { path: '/', maxAge: MAX_AGE })
-      setToken(_token)
-      setUser(_user)
-    } else {
-      // await deactivateToken(_token)
+    if (user) {
+      setCookie(TOKEN_NAME, token, { path: '/', maxAge: MAX_AGE })
+      setUser(user)
     }
   }
 
   async function logout() {
-    // if (token) {
-    //   await deactivateToken(token)
-    // }
     deleteCookie(TOKEN_NAME)
-    setToken(undefined)
     setUser(undefined)
   }
 
@@ -92,7 +70,6 @@ export function AuthClientProvider({
     <AuthContext.Provider
       value={{
         user,
-        token,
         hasScope,
         login,
         logout

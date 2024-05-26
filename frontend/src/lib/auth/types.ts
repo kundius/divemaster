@@ -1,25 +1,19 @@
-export type VespUserRole = {
+export type UserRole = {
   id: number
   title: string
   scope: string[]
-  [key: string]: any
 }
 
-export interface VespUser {
+export interface User {
   id: number
-  username: string
-  fullname?: string
-  password?: string
-  email?: string
-  active?: boolean
-  role_id?: number
-  role?: VespUserRole
-  [key: string]: any
+  name: string
+  email: string
+  active: boolean
+  role: UserRole
 }
 
 export interface AuthContextType {
-  user?: VespUser
-  token?: string
+  user?: User
   hasScope: (scopes: string | string[]) => boolean
   logout: () => Promise<void>
   login: (token: string) => Promise<void>

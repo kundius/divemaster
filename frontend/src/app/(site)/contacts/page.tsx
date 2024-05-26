@@ -1,10 +1,5 @@
-import { getStaticParams } from '@/locales/server'
 
-export function generateStaticParams() {
-  return getStaticParams()
-}
-
-export default function Page({ params: { locale } }: { params: { locale: string } }) {
+export default function Page() {
   return (
     <>
       Contacts

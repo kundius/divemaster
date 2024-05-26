@@ -2,8 +2,6 @@
 // import { useTranslations } from 'next-intl'
 'use client'
 
-import { useI18n, useScopedI18n } from '@/locales/client'
-
 export function DashboardPage() {
   // const t = useTranslations('Index')
   // requireUserPreload(true)

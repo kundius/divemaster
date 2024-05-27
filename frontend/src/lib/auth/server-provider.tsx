@@ -10,7 +10,9 @@ export async function AuthServerProvider({ children }: React.PropsWithChildren) 
   // загружать пользователя только если на странице был вызван `enableAuthPreload`
   if (authPreloadEnabled()) {
     const authToken = cookies().get(TOKEN_NAME)?.value
-    authUser = authToken ? await getUser(authToken) : undefined
+    if (authToken) {
+      authUser = await getUser(authToken)
+    }
   }
 
   // let authToken = undefined

@@ -1,18 +1,4 @@
-import { setStaticParamsLocale } from 'next-international/server'
-
-export async function generateStaticParams() {
-  return [
-    {
-      product: 'qqq'
-    },
-    {
-      product: 'ddd'
-    }
-  ]
-}
-
 export default function Page({ params }: { params: { product: string; locale: string } }) {
-  setStaticParamsLocale(params.locale)
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">

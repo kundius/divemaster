@@ -19,7 +19,7 @@ export interface UsersPageProps {
 export function UsersPage({ initialData }: UsersPageProps) {
   const vespTable = useVespTable<VespUser>({
     url: 'users',
-    // initialData
+    initialData
   })
 
   const columns: DataTableColumn<VespUser>[] = [
@@ -81,6 +81,7 @@ export function UsersPage({ initialData }: UsersPageProps) {
       <PageHeader title="Пользователи" actions={actions} />
       <DataTable<VespUser>
         data={vespTable.data.rows}
+        isLoading={vespTable.isLoading}
         columns={columns}
         filter={{
           value: vespTable.filter,

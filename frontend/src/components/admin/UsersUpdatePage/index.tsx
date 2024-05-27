@@ -5,14 +5,14 @@ import { VespUser } from '@/types'
 import { useRouter } from 'next/navigation'
 import { PageHeader } from '../PageHeader'
 import { UserForm, UserFormFields, UserFormSchema } from '../UserForm'
-import { useApi } from '@/lib/napi/use-api'
+import { apiGet } from '@/lib/api'
+import { withClientAuth } from '@/lib/api/with-client-auth'
 
 export interface UsersUpdatePageProps {
   initialData: VespUser
 }
 
 export function UsersUpdatePage({ initialData }: UsersUpdatePageProps) {
-  const api = useApi()
   const router = useRouter()
   const [form, onSubmit] = useVespForm<UserFormFields>({
     url: `users/${initialData.id}`,
@@ -26,7 +26,7 @@ export function UsersUpdatePage({ initialData }: UsersUpdatePageProps) {
     //   active: initialData.active
     // },
     defaultValues: async () => {
-      const user = await api.get<VespUser>(`users/${initialData.id}`)
+      const user = await apiGet<VespUser>(`users/${initialData.id}`, {}, withClientAuth())
       return {
         email: user.email || '',
         roleId: user.role.id,

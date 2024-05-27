@@ -119,6 +119,7 @@ export function UserRolesPage({ initialData }: UserRolesPageProps) {
       <PageHeader title="Доступы" actions={actions} />
       <DataTable<VespUserRole>
         data={vespTable.data.rows}
+        isLoading={vespTable.isLoading}
         columns={columns}
         filter={{
           value: vespTable.filter,

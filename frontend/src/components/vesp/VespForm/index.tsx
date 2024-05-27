@@ -1,11 +1,10 @@
 'use client'
 
 import { api } from '@/lib/api'
-import { withToken } from '@/lib/api/with-token'
-import { withJson } from '@/lib/api/with-json'
-import { useAuth } from '@/lib/auth/use-auth'
+import { withClientAuth } from '@/lib/api/with-client-auth'
+import { withJsonContent } from '@/lib/api/with-json-content'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { DefaultValues, FieldValues, UseFormProps, UseFormReturn, useForm } from 'react-hook-form'
+import { FieldValues, UseFormProps, UseFormReturn, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
@@ -32,8 +31,6 @@ export function useVespForm<TFieldValues extends FieldValues = FieldValues, TRes
   UseFormReturn<TFieldValues, any, undefined>,
   (values: TFieldValues) => Promise<void>
 ] {
-  const auth = useAuth()
-
   const form = useForm<TFieldValues>({
     resolver: zodResolver(schema),
     defaultValues
@@ -46,8 +43,8 @@ export function useVespForm<TFieldValues extends FieldValues = FieldValues, TRes
 
     try {
       const data = await api<TResult>(url, {
-        ...withToken(auth.token)(),
-        ...withJson(),
+        ...withClientAuth(),
+        ...withJsonContent(),
         method,
         body: JSON.stringify(values)
       })

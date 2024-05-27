@@ -1,6 +1,5 @@
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -10,11 +9,10 @@ import {
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
-import { PropsWithChildren, ReactNode, useState } from 'react'
-import { toast } from 'sonner'
 import { apiDelete } from '@/lib/api'
-import { useAuth } from '@/lib/auth/use-auth'
-import { withToken } from '@/lib/api/with-token'
+import { withClientAuth } from '@/lib/api/with-client-auth'
+import { PropsWithChildren, useState } from 'react'
+import { toast } from 'sonner'
 
 // export interface VespRemoveActionState {
 //   isPending: boolean
@@ -33,7 +31,6 @@ export function VespRemoveDialog({
   url,
   onSuccess
 }: PropsWithChildren<VespRemoveDialogProps>) {
-  const auth = useAuth()
   const [isPending, setIsPending] = useState(false)
   const [open, setOpen] = useState(false)
 
@@ -41,7 +38,7 @@ export function VespRemoveDialog({
     setIsPending(true)
 
     try {
-      await apiDelete(url, {}, withToken(auth.token)())
+      await apiDelete(url, {}, withClientAuth())
       toast.success(`Удалено`)
       setOpen(false)
       onSuccess?.()

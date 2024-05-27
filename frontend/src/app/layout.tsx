@@ -1,5 +1,5 @@
 import { Toaster } from '@/components/ui/sonner'
-import QueryProvider from '@/lib/api/query-provider'
+import { SWRGlobalProvider } from '@/lib/api/swr-global-provider'
 import { AuthServerProvider } from '@/lib/auth/server-provider'
 import { cn } from '@/lib/utils'
 import '@/styles/globals.scss'
@@ -50,9 +50,9 @@ export default async function RootLayout({
           fontMontserrat.variable
         )}
       >
-        <QueryProvider>
+        <SWRGlobalProvider>
           <AuthServerProvider>{children}</AuthServerProvider>
-        </QueryProvider>
+        </SWRGlobalProvider>
         <Toaster richColors />
       </body>
     </html>

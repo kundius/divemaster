@@ -1,21 +1,19 @@
-import Image from 'next/image'
-import styles from './CatalogButtonContent.module.scss'
-import Link from 'next/link'
-import { spearfishing, diving, brands } from './menu'
-import { Container } from '../Container'
 import { cn } from '@/lib/utils'
-import { apiGet } from '@/lib/api'
 import { Category } from '@/types'
-import { useQuery } from '@tanstack/react-query'
+import Image from 'next/image'
+import Link from 'next/link'
+import useSWR from 'swr'
+import { Container } from '../Container'
+import styles from './CatalogButtonContent.module.scss'
+import { brands } from './menu'
 
 export default function CatalogButtonContent() {
-  const query = useQuery<Category[]>({
-    queryKey: ['CatalogButtonContent', 'categories', 'tree'],
-    queryFn: () => apiGet<Category[]>(`categories/tree`, { active: true })
-  })
+  const query = useSWR<Category[]>([`categories/tree`, { active: true }])
+
   const spearfishing = query.data?.find((item) => item.id === 1)
   const diving = query.data?.find((item) => item.id === 34)
   const swimming = query.data?.find((item) => item.id === 60)
+
   return (
     <div className={styles.root}>
       <Container>

@@ -126,6 +126,7 @@ export function ProductsPage({ initialData }: ProductsPageProps) {
       <PageHeader title="Товары" actions={actions} />
       <DataTable<VespProduct>
         data={vespTable.data.rows}
+        isLoading={vespTable.isLoading}
         columns={columns}
         filter={{
           value: vespTable.filter,

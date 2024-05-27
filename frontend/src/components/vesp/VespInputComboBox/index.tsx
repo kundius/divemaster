@@ -1,3 +1,4 @@
+import { Pagination } from '@/components/admin/Pagination'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -9,13 +10,10 @@ import {
 } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { apiGet } from '@/lib/api'
-import { withToken } from '@/lib/api/with-token'
-import { useAuth } from '@/lib/auth/use-auth'
 import { cn } from '@/lib/utils'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline'
-import { useQuery } from '@tanstack/react-query'
-import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import { Pagination } from '@/components/admin/Pagination'
+import { ReactNode, useEffect, useRef, useState } from 'react'
+import useSWR from 'swr'
 
 interface LoadParams {
   limit?: number
@@ -89,8 +87,6 @@ export function VespInputComboBox<TRow extends unknown = unknown>(
 
   // Загрузка моделей
 
-  const auth = useAuth()
-
   const loadParams: LoadParams = { limit, page, query, ...filter }
   if (sort) {
     loadParams.sort = sort
@@ -99,10 +95,7 @@ export function VespInputComboBox<TRow extends unknown = unknown>(
     loadParams.dir = dir
   }
 
-  const { data, isPending, error, refetch } = useQuery<LoadData<TRow>>({
-    queryKey: ['VespInputComboBox', ...Object.values(loadParams)],
-    queryFn: () => apiGet<LoadData<TRow>>(url, loadParams, withToken(auth.token)())
-  })
+  const swrQuery = useSWR<LoadData<TRow>>([url, loadParams])
 
   // Загрузить модель для значения по умолчанию
 
@@ -159,7 +152,7 @@ export function VespInputComboBox<TRow extends unknown = unknown>(
           <CommandList>
             <CommandEmpty>No framework found.</CommandEmpty>
             <CommandGroup>
-              {data?.rows.map((row) => (
+              {swrQuery.data?.rows.map((row) => (
                 <CommandItem
                   key={String(getValue(row))}
                   value={String(getValue(row))}
@@ -186,14 +179,14 @@ export function VespInputComboBox<TRow extends unknown = unknown>(
             </CommandGroup>
           </CommandList>
         </Command>
-        {(data?.total || 0) > limit && (
+        {(swrQuery.data?.total || 0) > limit && (
           <div className="px-1 pb-1">
             <Pagination
               showLimit={false}
               showTotal={false}
               limit={limit}
               page={page}
-              total={data?.total || 0}
+              total={swrQuery.data?.total || 0}
               onChange={(page: number, limit: number) => {
                 setPage(page)
               }}

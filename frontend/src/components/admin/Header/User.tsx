@@ -19,13 +19,13 @@ export function User() {
       <DropdownMenuTrigger asChild>
         <Avatar>
           <AvatarImage src="https://github.com/shadcn.png" />
-          <AvatarFallback>{user?.fullname?.slice(0, 1)}</AvatarFallback>
+          <AvatarFallback>{user?.name?.slice(0, 1)}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <div className="px-2 py-1.5 text-sm font-normal min-w-40">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{user?.fullname}</p>
+            <p className="text-sm font-medium leading-none">{user?.name}</p>
             <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
           </div>
         </div>

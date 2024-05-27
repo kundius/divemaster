@@ -3,8 +3,6 @@
 import { Button } from '@/components/ui/button'
 import { Overlay } from '@/components/ui/overlay'
 import { api, apiDelete, apiGet, apiPatch, apiPut } from '@/lib/api'
-import { withToken } from '@/lib/api/with-token'
-import { useAuth } from '@/lib/auth/use-auth'
 import { getApiUrl } from '@/lib/utils'
 import { ProductImage } from '@/types'
 import {
@@ -23,18 +21,13 @@ import {
   sortableKeyboardCoordinates,
   useSortable
 } from '@dnd-kit/sortable'
-import {
-  ArrowPathIcon,
-  CheckIcon,
-  PlusCircleIcon,
-  PowerIcon,
-  TrashIcon
-} from '@heroicons/react/24/outline'
+import { ArrowPathIcon, CheckIcon, PowerIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
-import { CSS } from '@dnd-kit/utilities'
 import { Skeleton } from '@/components/ui/skeleton'
+import { withClientAuth } from '@/lib/api/with-client-auth'
+import { CSS } from '@dnd-kit/utilities'
 
 interface SortableItemProps {
   id: number
@@ -179,8 +172,6 @@ interface ItemType extends ProductImage {
 export function ProductGallery(props: ProductGalleryProps) {
   const { productId, thumbHeight = 200, thumbWidth = 200 } = props
 
-  const auth = useAuth()
-
   const [isLoading, setIsLoading] = useState(false)
   const [isPending, setIsPending] = useState(false)
   const [sorted, setSorted] = useState(false)
@@ -257,7 +248,7 @@ export function ProductGallery(props: ProductGalleryProps) {
   async function fetch() {
     setIsLoading(true)
     try {
-      const data = await apiGet<ProductImage[]>(url, {}, withToken(auth.token)())
+      const data = await apiGet<ProductImage[]>(url, {}, withClientAuth())
       setItems(
         data.map((item) => ({
           ...item,
@@ -286,9 +277,7 @@ export function ProductGallery(props: ProductGalleryProps) {
   return (
     <div>
       <div className="justify-end flex items-center mb-4">
-        <Button onClick={onFileSelect}>
-          Загрузить
-        </Button>
+        <Button onClick={onFileSelect}>Загрузить</Button>
       </div>
 
       {isLoading ? (

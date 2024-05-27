@@ -1,5 +1,3 @@
-import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'
-
 export interface VespTableData<TRow> {
   rows: TRow[]
   total: number
@@ -16,10 +14,8 @@ export interface VespTableProps<TRow> {
 
 export interface VespTableContext<TRow> {
   data: VespTableData<TRow>
-  isPending: boolean
-  refetch: (
-    options?: RefetchOptions | undefined
-  ) => Promise<QueryObserverResult<VespTableData<TRow>, Error>>
+  isLoading: boolean
+  refetch: () => void
   error: Error | null
   limit: number
   page: number

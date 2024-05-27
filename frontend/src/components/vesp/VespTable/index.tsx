@@ -1,25 +1,21 @@
 'use client'
 
-import { apiGet } from '@/lib/api'
-import { withToken } from '@/lib/api/with-token'
-import { useAuth } from '@/lib/auth/use-auth'
-import { useQuery } from '@tanstack/react-query'
 import { useSearchParams } from 'next/navigation'
-import { PropsWithChildren, useCallback, useMemo } from 'react'
-import { DEFAULT_LIMIT } from './constants'
+import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react'
+import useSWR from 'swr'
+import { DEFAULT_LIMIT, DEFAULT_PAGE } from './constants'
 import type { VespTableContext, VespTableData, VespTableProps } from './types'
 
 export function useVespTable<TRow extends unknown>({
   url,
   initialData
 }: PropsWithChildren<VespTableProps<TRow>>): VespTableContext<TRow> {
-  const auth = useAuth()
   const searchParams = useSearchParams()
 
   const { filter, ...memoizedParams } = useMemo(() => {
     const output: Pick<VespTableContext<TRow>, 'page' | 'limit' | 'sort' | 'dir' | 'filter'> = {
       limit: DEFAULT_LIMIT,
-      page: 1
+      page: DEFAULT_PAGE
     }
 
     if (searchParams.has('page')) {
@@ -134,22 +130,35 @@ export function useVespTable<TRow extends unknown>({
     [filter, memoizedParams.page, searchParams]
   )
 
-  const { data, isPending, error, refetch } = useQuery<VespTableData<TRow>>({
-    initialData,
-    queryKey: [url, searchParams.toString()],
-    queryFn: () =>
-      apiGet<VespTableData<TRow>>(url, { ...memoizedParams, ...filter }, withToken(auth.token)())
-  })
+  const swrQuery = useSWR<VespTableData<TRow>>([url, { ...memoizedParams, ...filter }])
+  const refetch = () => swrQuery.mutate(swrQuery.data, { revalidate: true })
+
+  // Сохраняем последние загруженные данные, чтобы при загруке показывать предыдущее состояние
+  const [previousData, setPreviousData] = useState<VespTableData<TRow> | undefined>(undefined)
+  useEffect(() => {
+    if (!swrQuery.isLoading) {
+      setPreviousData(swrQuery.data)
+    }
+  }, [swrQuery.data, swrQuery.isLoading])
+
+  // показываем данные исходя из стратегии ниже
+  const emptyData: VespTableData<TRow> = {
+    rows: [],
+    total: 0
+  }
+  const getData = () => {
+    if (swrQuery.isLoading) {
+      return previousData || initialData || emptyData
+    }
+    return swrQuery.data || emptyData
+  }
 
   return {
     ...memoizedParams,
-    data: data || {
-      rows: [],
-      total: 0
-    },
+    data: getData(),
     refetch,
-    isPending,
-    error,
+    isLoading: swrQuery.isLoading,
+    error: swrQuery.error,
     filter,
     onChangeFilter,
     onChangePagination,

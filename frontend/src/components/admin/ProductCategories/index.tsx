@@ -1,29 +1,13 @@
 'use client'
 
-import useSWR from 'swr'
-import { VespTableData } from '@/components/vesp/VespTable/types'
-import { apiGet, apiPatch } from '@/lib/api'
-import { withToken } from '@/lib/api/with-token'
-import { useAuth } from '@/lib/auth/use-auth'
-import { Category } from '@/types'
-import {
-  ArrowPathIcon,
-  CheckCircleIcon,
-  ChevronDownIcon,
-  ChevronRightIcon,
-  DocumentIcon,
-  FolderIcon,
-  FolderOpenIcon,
-  MinusIcon,
-  PlusCircleIcon,
-  PlusIcon
-} from '@heroicons/react/24/outline'
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { useEffect, useMemo, useState } from 'react'
-import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { CheckboxTree } from '@/components/ui/checkbox-tree'
-import { useApi } from '@/lib/napi/use-api'
+import { Skeleton } from '@/components/ui/skeleton'
+import { apiPatch } from '@/lib/api'
+import { withClientAuth } from '@/lib/api/with-client-auth'
+import { Category } from '@/types'
+import { useEffect, useMemo, useState } from 'react'
+import useSWR from 'swr'
 
 export interface ProductCategoriesProps {
   productId: number
@@ -38,22 +22,12 @@ interface NodeType {
 export function ProductCategories({ productId }: ProductCategoriesProps) {
   console.log('render ProductCategories')
 
-  const api = useApi()
-
-  // const auth = useAuth()
-
   const [saving, setSaving] = useState(false)
   const [checked, setChecked] = useState<string[]>([])
   const [expanded, setExpanded] = useState<string[]>([])
 
-  const productCategoriesQuery = useSWR<Category[]>(
-    `products/${productId}/categories`,
-    (url: string) => api.get<Category[]>(url, {})
-  )
-  const categoriesQuery = useSWR<Category[]>(
-    `categories/tree`,
-    (url: string) => api.get<Category[]>(url, {})
-  )
+  const productCategoriesQuery = useSWR<Category[]>(`products/${productId}/categories`)
+  const categoriesQuery = useSWR<Category[]>(`categories/tree`)
 
   const nodes = useMemo(() => {
     const fn = (list: Category[]): NodeType[] => {
@@ -93,10 +67,7 @@ export function ProductCategories({ productId }: ProductCategoriesProps) {
 
   const onSubmit = async () => {
     setSaving(true)
-    await api.patch(
-      `products/${productId}/categories`,
-      { categories: checked }
-    )
+    await apiPatch(`products/${productId}/categories`, { categories: checked }, withClientAuth())
     setSaving(false)
   }
 

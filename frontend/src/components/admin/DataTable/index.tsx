@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
+import { cn } from '@/lib/utils'
 import { ArrowsUpDownIcon, BarsArrowDownIcon, BarsArrowUpIcon } from '@heroicons/react/24/outline'
 import { ReactNode } from 'react'
 
@@ -26,6 +27,7 @@ export type DataTableColumn<T> = {
 }[keyof T]
 
 export interface DataTableProps<TRow> {
+  isLoading?: boolean
   columns?: DataTableColumn<TRow>[]
   data?: TRow[]
   keyId?: keyof TRow
@@ -43,6 +45,7 @@ export interface DataTableProps<TRow> {
 export function DataTable<TRow extends object = object>(props: DataTableProps<TRow>) {
   const {
     keyId,
+    isLoading,
     data = [],
     columns = [],
     filter,

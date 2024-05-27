@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { getApiUrl } from '../utils'
-import { withJson } from './with-json'
+import { withJsonContent } from './with-json-content'
 
 export async function api<TResult = unknown>(route: string, init?: RequestInit): Promise<TResult> {
   const response = await fetch(`${getApiUrl()}${route}`, init)
@@ -26,10 +26,10 @@ export const apiGet = <
 >(
   route: string,
   params?: TParams,
-  init?: RequestInit
+  init?: Omit<RequestInit, 'method'>
 ) =>
   api<TResult>(`${route}?${new URLSearchParams(params)}`, {
-    ...withJson(init),
+    ...withJsonContent(init),
     method: 'GET'
   })
 
@@ -39,10 +39,10 @@ export const apiDelete = <
 >(
   route: string,
   params?: TParams,
-  init?: RequestInit
+  init?: Omit<RequestInit, 'method'>
 ) =>
   api<TResult>(`${route}?${new URLSearchParams(params)}`, {
-    ...withJson(init),
+    ...withJsonContent(init),
     method: 'DELETE'
   })
 
@@ -52,10 +52,10 @@ export const apiPost = <
 >(
   route: string,
   params?: TParams,
-  init?: RequestInit
+  init?: Omit<RequestInit, 'method' | 'body'>
 ) =>
   api<TResult>(route, {
-    ...withJson(init),
+    ...withJsonContent(init),
     method: 'POST',
     body: JSON.stringify(params)
   })
@@ -66,10 +66,10 @@ export const apiPut = <
 >(
   route: string,
   params?: TParams,
-  init?: RequestInit
+  init?: Omit<RequestInit, 'method' | 'body'>
 ) =>
   api<TResult>(route, {
-    ...withJson(init),
+    ...withJsonContent(init),
     method: 'PUT',
     body: JSON.stringify(params)
   })
@@ -80,10 +80,10 @@ export const apiPatch = <
 >(
   route: string,
   params?: TParams,
-  init?: RequestInit
+  init?: Omit<RequestInit, 'method' | 'body'>
 ) =>
   api<TResult>(route, {
-    ...withJson(init),
+    ...withJsonContent(init),
     method: 'PATCH',
     body: JSON.stringify(params)
   })

@@ -11,32 +11,31 @@ import {
 import { Input } from '@/components/ui/input'
 import { useAuth } from '@/lib/auth/use-auth'
 import { apiPatch } from '@/lib/api'
-import { withToken } from '@/lib/api/with-token'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import { PageHeader, PageHeaderProps } from '../PageHeader'
+import { withClientAuth } from '@/lib/api/with-client-auth'
 
 const formSchema = z.object({
-  username: z.string(),
+  name: z.string(),
   password: z.string().optional(),
-  fullname: z.string(),
   email: z.string().email()
 })
 
 type FormFields = z.infer<typeof formSchema>
 
 export function ProfilePage() {
-  const { user, token } = useAuth()
+  const { user } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
 
   const onSubmit = async (values: FormFields) => {
     setIsLoading(true)
 
     try {
-      await apiPatch('auth/profile', values, withToken(token)())
+      await apiPatch('auth/profile', values, withClientAuth())
 
       toast.success(`Сохранено`)
     } catch (e) {
@@ -49,9 +48,8 @@ export function ProfilePage() {
   const form = useForm<FormFields>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: user?.username,
+      name: user?.name,
       email: user?.email,
-      fullname: user?.fullname,
       password: ''
     }
   })
@@ -71,7 +69,7 @@ export function ProfilePage() {
 
         <FormField
           control={form.control}
-          name="username"
+          name="name"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Логин</FormLabel>
@@ -91,20 +89,6 @@ export function ProfilePage() {
               <FormLabel>Пароль</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="fullname"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Полное имя</FormLabel>
-              <FormControl>
-                <Input {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

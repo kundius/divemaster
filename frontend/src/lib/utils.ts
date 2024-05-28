@@ -1,4 +1,4 @@
-import { VespFile, VespFileOptions } from '@/types'
+import { FileEntity, FileEntityOptions } from '@/types'
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import slugifyFn from 'slugify'

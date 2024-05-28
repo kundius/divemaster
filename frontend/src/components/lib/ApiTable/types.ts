@@ -1,19 +1,19 @@
-export interface VespTableData<TRow> {
+export interface ApiTableData<TRow> {
   rows: TRow[]
   total: number
 }
 
-export interface VespTableFilter {
+export interface ApiTableFilter {
   [key: string]: string | string[] | undefined
 }
 
-export interface VespTableProps<TRow> {
+export interface ApiTableProps<TRow> {
   url: string
-  initialData?: VespTableData<TRow>
+  initialData?: ApiTableData<TRow>
 }
 
-export interface VespTableContext<TRow> {
-  data: VespTableData<TRow>
+export interface ApiTableContext<TRow> {
+  data: ApiTableData<TRow>
   isLoading: boolean
   refetch: () => void
   error: Error | null
@@ -21,8 +21,8 @@ export interface VespTableContext<TRow> {
   page: number
   sort?: string
   dir?: string
-  filter?: VespTableFilter
+  filter?: ApiTableFilter
   onChangePagination: (page: number, limit: number) => void
   onChangeSorting: (sort?: string, dir?: string) => void
-  onChangeFilter: (values?: VespTableFilter) => void
+  onChangeFilter: (values?: ApiTableFilter) => void
 }

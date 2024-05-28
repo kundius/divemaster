@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils'
-import { Category } from '@/types'
+import { CategoryEntity } from '@/types'
 import Image from 'next/image'
 import Link from 'next/link'
 import useSWR from 'swr'
@@ -8,7 +8,7 @@ import styles from './CatalogButtonContent.module.scss'
 import { brands } from './menu'
 
 export default function CatalogButtonContent() {
-  const query = useSWR<Category[]>([`categories/tree`, { active: true }])
+  const query = useSWR<CategoryEntity[]>([`categories/tree`, { active: true }])
 
   const spearfishing = query.data?.find((item) => item.id === 1)
   const diving = query.data?.find((item) => item.id === 34)
@@ -32,7 +32,7 @@ export default function CatalogButtonContent() {
                 <span className={styles['headline-title']}>{spearfishing.title}</span>
               </Link>
               <ul className={cn(styles.list, 'max-lg:columns-1 columns-2 gap-12')}>
-                {spearfishing.children.map((item) => (
+                {spearfishing.children?.map((item) => (
                   <li key={item.id}>
                     <Link href={`/category/${item.alias}`}>{item.title}</Link>
                   </li>
@@ -50,7 +50,7 @@ export default function CatalogButtonContent() {
                 <span className={styles['headline-title']}>{diving.title}</span>
               </Link>
               <ul className={cn(styles.list, 'max-lg:columns-1 max-xl:columns-2')}>
-                {diving.children.map((item) => (
+                {diving.children?.map((item) => (
                   <li key={diving.id}>
                     <Link href={`/category/${item.alias}`}>{item.title}</Link>
                   </li>

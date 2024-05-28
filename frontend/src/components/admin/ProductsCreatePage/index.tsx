@@ -1,14 +1,14 @@
 'use client'
 
-import { useVespForm } from '@/components/vesp/VespForm'
+import { useApiForm } from '@/components/lib/ApiForm'
 import { slugify } from '@/lib/utils'
-import { VespProduct } from '@/types'
+import { ProductEntity } from '@/types'
 import { useRouter } from 'next/navigation'
 import { ProductForm, ProductFormFields, ProductFormSchema } from '../ProductForm'
 
 export function ProductsCreatePage() {
   const router = useRouter()
-  const [form, onSubmit] = useVespForm<ProductFormFields, VespProduct>({
+  const [form, onSubmit] = useApiForm<ProductFormFields, ProductEntity>({
     url: `products`,
     method: 'POST',
     schema: ProductFormSchema,

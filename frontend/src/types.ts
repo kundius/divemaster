@@ -1,39 +1,39 @@
-export interface VespUser {
+export interface UserEntity {
   id: number
   name: string
   email: string
   active: boolean
-  role: VespUserRole
+  role: UserRoleEntity
 }
 
-export interface VespUserRole {
+export interface UserRoleEntity {
   id: number
   title: string
   scope: string[] | null
 }
 
-export interface Category {
+export interface CategoryEntity {
   id: number
-  parent: number | Category | null
+  parent: number | CategoryEntity | null
   title: string
   alias: string
   description: string | null
   active: boolean
-  children: Category[]
+  children?: CategoryEntity[]
 }
 
-export interface VespProduct {
+export interface ProductEntity {
   id: number
   price: number
   title: string
   alias: string
   description: string | null
   sku: string | null
-  file: VespFile | null
+  file: FileEntity | null
   active: boolean
 }
 
-export type VespFile = {
+export type FileEntity = {
   id: number
   file: string
   path: string
@@ -43,7 +43,7 @@ export type VespFile = {
   metadata?: string
 }
 
-export type VespFileOptions = {
+export type FileEntityOptions = {
   w?: string | number
   h?: string | number
   fit?: string
@@ -52,9 +52,9 @@ export type VespFileOptions = {
   [key: string]: any
 }
 
-export type ProductImage = {
-  file: number | VespFile
-  product: number | VespProduct
+export type ProductImageEntity = {
+  file: number | FileEntity
+  product: number | ProductEntity
   rank: number
   active: boolean
 }

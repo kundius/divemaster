@@ -11,7 +11,6 @@ export function Subscribe() {
           <input
             type="text"
             className={styles.input}
-            value=""
             placeholder="Ваша электронная почта"
           />
           <button type="submit" className={styles.submit}>

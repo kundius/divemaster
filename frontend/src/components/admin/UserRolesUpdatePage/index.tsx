@@ -1,18 +1,18 @@
 'use client'
 
-import { useVespForm } from '@/components/vesp/VespForm'
+import { useApiForm } from '@/components/lib/ApiForm'
 import { useRouter } from 'next/navigation'
 import { PageHeader } from '../PageHeader'
 import { UserRoleForm, UserRoleFormFields, UserRoleFormSchema } from '../UserRoleForm'
-import { VespUserRole } from '@/types'
+import { UserRoleEntity } from '@/types'
 
 export interface UserRolesUpdatePageProps {
-  initialData: VespUserRole
+  initialData: UserRoleEntity
 }
 
 export function UserRolesUpdatePage({ initialData }: UserRolesUpdatePageProps) {
   const router = useRouter()
-  const [form, onSubmit] = useVespForm<UserRoleFormFields>({
+  const [form, onSubmit] = useApiForm<UserRoleFormFields>({
     url: `roles/${initialData.id}`,
     method: 'PATCH',
     schema: UserRoleFormSchema,

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Overlay } from '@/components/ui/overlay'
 import { api, apiDelete, apiGet, apiPatch, apiPut } from '@/lib/api'
 import { getApiUrl } from '@/lib/utils'
-import { ProductImage } from '@/types'
+import { ProductImageEntity } from '@/types'
 import {
   DndContext,
   DragEndEvent,
@@ -165,7 +165,7 @@ export interface ProductGalleryProps {
   thumbHeight?: number
 }
 
-interface ItemType extends ProductImage {
+interface ItemType extends ProductImageEntity {
   id: number
 }
 
@@ -218,10 +218,10 @@ export function ProductGallery(props: ProductGalleryProps) {
     if (!nativeFiles.length) {
       return
     }
-    const asyncLoad = async (file: File): Promise<ProductImage> => {
+    const asyncLoad = async (file: File): Promise<ProductImageEntity> => {
       const body = new FormData()
       body.append('file', file)
-      return await api<ProductImage>(url, {
+      return await api<ProductImageEntity>(url, {
         method: 'POST',
         body
       })
@@ -248,7 +248,7 @@ export function ProductGallery(props: ProductGalleryProps) {
   async function fetch() {
     setIsLoading(true)
     try {
-      const data = await apiGet<ProductImage[]>(url, {}, withClientAuth())
+      const data = await apiGet<ProductImageEntity[]>(url, {}, withClientAuth())
       setItems(
         data.map((item) => ({
           ...item,

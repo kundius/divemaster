@@ -19,18 +19,18 @@ import { toast } from 'sonner'
 //   run: () => void
 // }
 
-export interface VespRemoveDialogProps {
+export interface ApiRemoveDialogProps {
   url: string
   onSuccess?: () => void
   // action: () => Promise<void>
   // children: (state: VespRemoveActionState) => ReactNode
 }
 
-export function VespRemoveDialog({
+export function ApiRemoveDialog({
   children,
   url,
   onSuccess
-}: PropsWithChildren<VespRemoveDialogProps>) {
+}: PropsWithChildren<ApiRemoveDialogProps>) {
   const [isPending, setIsPending] = useState(false)
   const [open, setOpen] = useState(false)
 

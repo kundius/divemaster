@@ -6,6 +6,7 @@ import { UpdateCategoryDto } from '../dto/update-category.dto'
 import { EntityRepository } from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { GetTreeCategoryQueryDto } from '../dto/get-tree-category-query.dto'
+import { FindOneCategoryQueryDto } from '../dto/find-one-category-query.dto'
 
 @Injectable()
 export class CategoriesService {
@@ -41,8 +42,12 @@ export class CategoriesService {
     })
   }
 
-  async findOne(id: number) {
-    return this.categoriesRepository.findOneOrFail({ id })
+  async findOne(id: number, query?: FindOneCategoryQueryDto) {
+    return this.categoriesRepository.findOneOrFail({ id }, query?.options)
+  }
+
+  async findOneByAlias(alias: string, query?: FindOneCategoryQueryDto) {
+    return this.categoriesRepository.findOne({ alias }, query?.options)
   }
 
   async update(id: number, { parentId, ...fillable }: UpdateCategoryDto) {

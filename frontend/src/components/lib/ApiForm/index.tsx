@@ -8,7 +8,7 @@ import { FieldValues, UseFormProps, UseFormReturn, useForm } from 'react-hook-fo
 import { toast } from 'sonner'
 import { z } from 'zod'
 
-interface VespFormProps<TFieldValues extends FieldValues = FieldValues, TResult = unknown> {
+interface ApiFormProps<TFieldValues extends FieldValues = FieldValues, TResult = unknown> {
   url: string
   method: string
   successMessage?: string
@@ -19,7 +19,7 @@ interface VespFormProps<TFieldValues extends FieldValues = FieldValues, TResult 
   onSuccess?: (data: TResult) => Promise<void> | void
 }
 
-export function useVespForm<TFieldValues extends FieldValues = FieldValues, TResult = unknown>({
+export function useApiForm<TFieldValues extends FieldValues = FieldValues, TResult = unknown>({
   defaultValues,
   schema,
   successMessage = 'Сохранено',
@@ -27,7 +27,7 @@ export function useVespForm<TFieldValues extends FieldValues = FieldValues, TRes
   method,
   mapValues,
   onSuccess
-}: VespFormProps<TFieldValues, TResult>): [
+}: ApiFormProps<TFieldValues, TResult>): [
   UseFormReturn<TFieldValues, any, undefined>,
   (values: TFieldValues) => Promise<void>
 ] {

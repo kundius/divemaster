@@ -4,25 +4,25 @@ import { DataTable, DataTableColumn } from '@/components/admin/DataTable'
 import type { FilterField } from '@/components/admin/Filter'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { VespRemoveDialog } from '@/components/vesp/VespRemoveDialog'
-import { useVespTable } from '@/components/vesp/VespTable'
-import { VespTableData } from '@/components/vesp/VespTable/types'
-import { VespUser } from '@/types'
+import { ApiRemoveDialog } from '@/components/lib/ApiRemoveDialog'
+import { useApiTable } from '@/components/lib/ApiTable'
+import { ApiTableData } from '@/components/lib/ApiTable/types'
+import { UserEntity } from '@/types'
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { PageHeader, PageHeaderProps } from '../PageHeader'
 
 export interface UsersPageProps {
-  initialData?: VespTableData<VespUser>
+  initialData?: ApiTableData<UserEntity>
 }
 
 export function UsersPage({ initialData }: UsersPageProps) {
-  const vespTable = useVespTable<VespUser>({
+  const vespTable = useApiTable<UserEntity>({
     url: 'users',
     initialData
   })
 
-  const columns: DataTableColumn<VespUser>[] = [
+  const columns: DataTableColumn<UserEntity>[] = [
     {
       key: 'id',
       label: 'ID'
@@ -52,11 +52,11 @@ export function UsersPage({ initialData }: UsersPageProps) {
               <PencilIcon className="w-4 h-4" />
             </Button>
           </Link>
-          <VespRemoveDialog url={`users/${id}`} onSuccess={vespTable.refetch}>
+          <ApiRemoveDialog url={`users/${id}`} onSuccess={vespTable.refetch}>
             <Button variant="destructive-outline" size="sm-icon">
               <TrashIcon className="w-4 h-4" />
             </Button>
-          </VespRemoveDialog>
+          </ApiRemoveDialog>
         </div>
       )
     }
@@ -79,7 +79,7 @@ export function UsersPage({ initialData }: UsersPageProps) {
   return (
     <>
       <PageHeader title="Пользователи" actions={actions} />
-      <DataTable<VespUser>
+      <DataTable<UserEntity>
         data={vespTable.data.rows}
         isLoading={vespTable.isLoading}
         columns={columns}

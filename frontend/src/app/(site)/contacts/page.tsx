@@ -1,11 +1,11 @@
-import { DEFAULT_LIMIT } from "@/components/vesp/VespTable/constants"
-import { VespTableData } from "@/components/vesp/VespTable/types"
+import { DEFAULT_LIMIT } from "@/components/lib/ApiTable/constants"
+import { ApiTableData } from "@/components/lib/ApiTable/types"
 import { apiGet } from "@/lib/api"
 import { withServerAuth } from "@/lib/api/with-server-auth"
-import { VespProduct } from "@/types"
+import { ProductEntity } from "@/types"
 
 export default async function Page() {
-  const initialData = await apiGet<VespTableData<VespProduct>>(
+  const initialData = await apiGet<ApiTableData<ProductEntity>>(
     'products',
     {
       limit: DEFAULT_LIMIT,

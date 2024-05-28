@@ -5,7 +5,7 @@ import { CheckboxTree } from '@/components/ui/checkbox-tree'
 import { Skeleton } from '@/components/ui/skeleton'
 import { apiPatch } from '@/lib/api'
 import { withClientAuth } from '@/lib/api/with-client-auth'
-import { Category } from '@/types'
+import { CategoryEntity } from '@/types'
 import { useEffect, useMemo, useState } from 'react'
 import useSWR from 'swr'
 
@@ -26,13 +26,13 @@ export function ProductCategories({ productId }: ProductCategoriesProps) {
   const [checked, setChecked] = useState<string[]>([])
   const [expanded, setExpanded] = useState<string[]>([])
 
-  const productCategoriesQuery = useSWR<Category[]>(`products/${productId}/categories`)
-  const categoriesQuery = useSWR<Category[]>(`categories/tree`)
+  const productCategoriesQuery = useSWR<CategoryEntity[]>(`products/${productId}/categories`)
+  const categoriesQuery = useSWR<CategoryEntity[]>(`categories/tree`)
 
   const nodes = useMemo(() => {
-    const fn = (list: Category[]): NodeType[] => {
+    const fn = (list: CategoryEntity[]): NodeType[] => {
       return list.map((item) => {
-        const children = fn(item.children)
+        const children = fn(item.children || [])
         return {
           label: item.title,
           value: String(item.id),

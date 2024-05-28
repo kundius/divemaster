@@ -29,7 +29,7 @@ interface LoadData<TRow> {
   total: number
 }
 
-interface VespInputComboBoxProps<TRow> extends LoadParams {
+interface ApiInputComboBoxProps<TRow> extends LoadParams {
   url: string
   renderText?: (row: TRow) => ReactNode
   getValue?: (row: TRow) => number
@@ -39,8 +39,8 @@ interface VespInputComboBoxProps<TRow> extends LoadParams {
   onChange?: (value: number | null) => void
 }
 
-export function VespInputComboBox<TRow extends unknown = unknown>(
-  props: VespInputComboBoxProps<TRow>
+export function ApiInputComboBox<TRow extends unknown = unknown>(
+  props: ApiInputComboBoxProps<TRow>
 ) {
   const {
     url,
@@ -67,7 +67,7 @@ export function VespInputComboBox<TRow extends unknown = unknown>(
 
   //
 
-  const renderText: VespInputComboBoxProps<TRow>['renderText'] =
+  const renderText: ApiInputComboBoxProps<TRow>['renderText'] =
     props.renderText ||
     ((row: TRow) => {
       if (row && typeof row === 'object' && 'title' in row) {
@@ -76,7 +76,7 @@ export function VespInputComboBox<TRow extends unknown = unknown>(
       throw new Error('Запись не является подходящим объектом')
     })
 
-  const getValue: VespInputComboBoxProps<TRow>['getValue'] =
+  const getValue: ApiInputComboBoxProps<TRow>['getValue'] =
     props.getValue ||
     ((row: TRow) => {
       if (row && typeof row === 'object' && 'id' in row) {

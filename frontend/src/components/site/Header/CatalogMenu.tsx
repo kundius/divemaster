@@ -3,10 +3,10 @@ import styles from './CatalogMenu.module.scss'
 import { cn } from '@/lib/utils'
 import { spearfishing, diving, brands } from './menu'
 import { apiGet } from '@/lib/api'
-import { Category } from '@/types'
+import { CategoryEntity } from '@/types'
 
 export async function CatalogMenu() {
-  const data = await apiGet<Category[]>('categories/tree', { active: true })
+  const data = await apiGet<CategoryEntity[]>('categories/tree', { active: true })
 
   return (
     <ul className={styles.first}>
@@ -15,9 +15,9 @@ export async function CatalogMenu() {
           <Link href={`/category/${item.alias}`} className={styles['first-link']}>
             {item.title}
           </Link>
-          {item.children.length > 0 && (
+          {(item.children || []).length > 0 && (
             <ul className={cn(styles.second, 'gap-8 columns-3')}>
-              {item.children.map((item) => (
+              {(item.children || []).map((item) => (
                 <li key={item.id} className={styles['second-item']}>
                   <Link href={`/category/${item.alias}`} className={styles['second-link']}>
                     {item.title}

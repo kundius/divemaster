@@ -3,25 +3,25 @@
 import { DataTable, DataTableColumn } from '@/components/admin/DataTable'
 import type { FilterField } from '@/components/admin/Filter'
 import { Button } from '@/components/ui/button'
-import { VespRemoveDialog } from '@/components/vesp/VespRemoveDialog'
-import { useVespTable } from '@/components/vesp/VespTable'
-import { VespTableData } from '@/components/vesp/VespTable/types'
-import { Category } from '@/types'
+import { ApiRemoveDialog } from '@/components/lib/ApiRemoveDialog'
+import { useApiTable } from '@/components/lib/ApiTable'
+import { ApiTableData } from '@/components/lib/ApiTable/types'
+import { CategoryEntity } from '@/types'
 import { CheckCircleIcon, PencilIcon, TrashIcon, XCircleIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { PageHeader, PageHeaderProps } from '../PageHeader'
 
 export interface CategoriesPageProps {
-  initialData?: VespTableData<Category>
+  initialData?: ApiTableData<CategoryEntity>
 }
 
 export function CategoriesPage({ initialData }: CategoriesPageProps) {
-  const vespTable = useVespTable<Category>({
+  const vespTable = useApiTable<CategoryEntity>({
     url: 'categories',
     initialData
   })
 
-  const columns: DataTableColumn<Category>[] = [
+  const columns: DataTableColumn<CategoryEntity>[] = [
     {
       key: 'id',
       label: 'ID'
@@ -58,11 +58,11 @@ export function CategoriesPage({ initialData }: CategoriesPageProps) {
               <PencilIcon className="w-4 h-4" />
             </Button>
           </Link>
-          <VespRemoveDialog url={`categories/${id}`} onSuccess={vespTable.refetch}>
+          <ApiRemoveDialog url={`categories/${id}`} onSuccess={vespTable.refetch}>
             <Button variant="destructive-outline" size="sm-icon">
               <TrashIcon className="w-4 h-4" />
             </Button>
-          </VespRemoveDialog>
+          </ApiRemoveDialog>
         </div>
       )
     }
@@ -85,7 +85,7 @@ export function CategoriesPage({ initialData }: CategoriesPageProps) {
   return (
     <>
       <PageHeader title="Категории" actions={actions} />
-      <DataTable<Category>
+      <DataTable<CategoryEntity>
         data={vespTable.data.rows}
         columns={columns}
         filter={{

@@ -9,21 +9,21 @@ import Link from 'next/link'
 import styles from './MobileNavigationCatalog.module.scss'
 import { spearfishing, brands, diving } from './menu'
 import { apiGet } from '@/lib/api'
-import { Category } from '@/types'
+import { CategoryEntity } from '@/types'
 
 export default async function MobileNavigationCatalog() {
-  const data = await apiGet<Category[]>('categories/tree', { active: true })
+  const data = await apiGet<CategoryEntity[]>('categories/tree', { active: true })
   return (
     <div className={styles.root}>
       <VerticalMenu>
         <VerticalMenuList>
           {data.map((item) => (
             <VerticalMenuItem key={item.id}>
-              {item.children.length > 0 ? (
+              {(item.children || []).length > 0 ? (
                 <>
                 <VerticalMenuTrigger>{item.title}</VerticalMenuTrigger>
                 <VerticalMenuList>
-                  {item.children.map((item) => (
+                  {(item.children || []).map((item) => (
                     <VerticalMenuItem key={item.id}>
                       <VerticalMenuLink href={`/category/${item.alias}`}>
                         {item.title}

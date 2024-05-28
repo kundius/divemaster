@@ -4,16 +4,16 @@ import { useSearchParams } from 'next/navigation'
 import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react'
 import useSWR from 'swr'
 import { DEFAULT_LIMIT, DEFAULT_PAGE } from './constants'
-import type { VespTableContext, VespTableData, VespTableProps } from './types'
+import type { ApiTableContext, ApiTableData, ApiTableProps } from './types'
 
-export function useVespTable<TRow extends unknown>({
+export function useApiTable<TRow extends unknown>({
   url,
   initialData
-}: PropsWithChildren<VespTableProps<TRow>>): VespTableContext<TRow> {
+}: PropsWithChildren<ApiTableProps<TRow>>): ApiTableContext<TRow> {
   const searchParams = useSearchParams()
 
   const { filter, ...memoizedParams } = useMemo(() => {
-    const output: Pick<VespTableContext<TRow>, 'page' | 'limit' | 'sort' | 'dir' | 'filter'> = {
+    const output: Pick<ApiTableContext<TRow>, 'page' | 'limit' | 'sort' | 'dir' | 'filter'> = {
       limit: DEFAULT_LIMIT,
       page: DEFAULT_PAGE
     }
@@ -53,7 +53,7 @@ export function useVespTable<TRow extends unknown>({
     return output
   }, [searchParams])
 
-  const onChangePagination = useCallback<VespTableContext<TRow>['onChangePagination']>(
+  const onChangePagination = useCallback<ApiTableContext<TRow>['onChangePagination']>(
     (page, limit) => {
       const params = new URLSearchParams(searchParams.toString())
 
@@ -74,7 +74,7 @@ export function useVespTable<TRow extends unknown>({
     [searchParams]
   )
 
-  const onChangeSorting = useCallback<VespTableContext<TRow>['onChangeSorting']>(
+  const onChangeSorting = useCallback<ApiTableContext<TRow>['onChangeSorting']>(
     (sort, dir) => {
       const params = new URLSearchParams(searchParams.toString())
 
@@ -95,7 +95,7 @@ export function useVespTable<TRow extends unknown>({
     [searchParams]
   )
 
-  const onChangeFilter = useCallback<VespTableContext<TRow>['onChangeFilter']>(
+  const onChangeFilter = useCallback<ApiTableContext<TRow>['onChangeFilter']>(
     (values) => {
       const params = new URLSearchParams(searchParams.toString())
 
@@ -130,11 +130,11 @@ export function useVespTable<TRow extends unknown>({
     [filter, memoizedParams.page, searchParams]
   )
 
-  const swrQuery = useSWR<VespTableData<TRow>>([url, { ...memoizedParams, ...filter }])
+  const swrQuery = useSWR<ApiTableData<TRow>>([url, { ...memoizedParams, ...filter }])
   const refetch = () => swrQuery.mutate(swrQuery.data, { revalidate: true })
 
   // Сохраняем последние загруженные данные, чтобы при загруке показывать предыдущее состояние
-  const [previousData, setPreviousData] = useState<VespTableData<TRow> | undefined>(undefined)
+  const [previousData, setPreviousData] = useState<ApiTableData<TRow> | undefined>(undefined)
   useEffect(() => {
     if (!swrQuery.isLoading) {
       setPreviousData(swrQuery.data)
@@ -142,7 +142,7 @@ export function useVespTable<TRow extends unknown>({
   }, [swrQuery.data, swrQuery.isLoading])
 
   // показываем данные исходя из стратегии ниже
-  const emptyData: VespTableData<TRow> = {
+  const emptyData: ApiTableData<TRow> = {
     rows: [],
     total: 0
   }

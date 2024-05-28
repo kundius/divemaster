@@ -1,7 +1,7 @@
 'use client'
 
-import { useVespForm } from '@/components/vesp/VespForm'
-import { VespUser } from '@/types'
+import { useApiForm } from '@/components/lib/ApiForm'
+import { UserEntity } from '@/types'
 import { useRouter } from 'next/navigation'
 import { PageHeader } from '../PageHeader'
 import { UserForm, UserFormFields, UserFormSchema } from '../UserForm'
@@ -9,12 +9,12 @@ import { apiGet } from '@/lib/api'
 import { withClientAuth } from '@/lib/api/with-client-auth'
 
 export interface UsersUpdatePageProps {
-  initialData: VespUser
+  initialData: UserEntity
 }
 
 export function UsersUpdatePage({ initialData }: UsersUpdatePageProps) {
   const router = useRouter()
-  const [form, onSubmit] = useVespForm<UserFormFields>({
+  const [form, onSubmit] = useApiForm<UserFormFields>({
     url: `users/${initialData.id}`,
     method: 'PATCH',
     schema: UserFormSchema,
@@ -26,7 +26,7 @@ export function UsersUpdatePage({ initialData }: UsersUpdatePageProps) {
     //   active: initialData.active
     // },
     defaultValues: async () => {
-      const user = await apiGet<VespUser>(`users/${initialData.id}`, {}, withClientAuth())
+      const user = await apiGet<UserEntity>(`users/${initialData.id}`, {}, withClientAuth())
       return {
         email: user.email || '',
         roleId: user.role.id,

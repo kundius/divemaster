@@ -1,20 +1,20 @@
 'use client'
 
-import { useVespForm } from '@/components/vesp/VespForm'
+import { useApiForm } from '@/components/lib/ApiForm'
 import { slugify } from '@/lib/utils'
-import { Category } from '@/types'
+import { CategoryEntity } from '@/types'
 import { CategoryForm, CategoryFormFields, CategoryFormSchema } from '../CategoryForm'
 import { PageHeader } from '../PageHeader'
 import { useRouter } from 'next/navigation'
 import { number } from 'zod'
 
 export interface CategoriesEditPageProps {
-  initialData: Category
+  initialData: CategoryEntity
 }
 
 export function CategoriesEditPage({ initialData }: CategoriesEditPageProps) {
   const router = useRouter()
-  const [form, onSubmit] = useVespForm<CategoryFormFields>({
+  const [form, onSubmit] = useApiForm<CategoryFormFields>({
     url: `categories/${initialData.id}`,
     method: 'PATCH',
     schema: CategoryFormSchema,

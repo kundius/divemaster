@@ -12,7 +12,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
-import { VespInputComboBox } from '@/components/vesp/VespInputComboBox'
+import { ApiInputComboBox } from '@/components/lib/ApiInputComboBox'
 import { UseFormReturn } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -88,7 +88,7 @@ export function CategoryForm({ form, onSubmit }: CategoryFormProps) {
               <FormItem>
                 <FormLabel>Родительская</FormLabel>
                 <FormControl>
-                  <VespInputComboBox
+                  <ApiInputComboBox
                     url="categories"
                     value={field.value}
                     onChange={field.onChange}

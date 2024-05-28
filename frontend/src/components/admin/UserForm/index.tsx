@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
-import { VespInputComboBox } from '@/components/vesp/VespInputComboBox'
+import { ApiInputComboBox } from '@/components/lib/ApiInputComboBox'
 import { UseFormReturn } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -55,7 +55,7 @@ export function UserForm({ form, onSubmit }: UserFormProps) {
               <FormItem>
                 <FormLabel>Группа</FormLabel>
                 <FormControl>
-                  <VespInputComboBox
+                  <ApiInputComboBox
                     url="roles"
                     value={field.value}
                     onChange={field.onChange}

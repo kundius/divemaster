@@ -1,13 +1,13 @@
 'use client'
 
-import { useVespForm } from '@/components/vesp/VespForm'
+import { useApiForm } from '@/components/lib/ApiForm'
 import { useRouter } from 'next/navigation'
 import { PageHeader } from '../PageHeader'
 import { UserForm, UserFormFields, UserFormSchema } from '../UserForm'
 
 export function UsersCreatePage() {
   const router = useRouter()
-  const [form, onSubmit] = useVespForm<UserFormFields>({
+  const [form, onSubmit] = useApiForm<UserFormFields>({
     url: `users`,
     method: 'POST',
     schema: UserFormSchema,

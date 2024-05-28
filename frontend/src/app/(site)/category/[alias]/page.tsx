@@ -1,11 +1,22 @@
-export default function Page({ params }: { params: { product: string; locale: string } }) {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Product {params.product}
-        </p>
-      </div>
-    </main>
-  )
+import { CategoryPage } from '@/components/site/CategoryPage'
+import { ParentCategoryPage } from '@/components/site/ParentCategoryPage'
+import { ApiTableData } from '@/components/lib/ApiTable/types'
+import { apiGet } from '@/lib/api'
+import { CategoryEntity } from '@/types'
+
+export async function generateStaticParams() {
+  const categories = await apiGet<ApiTableData<CategoryEntity>>(`categories`, { all: true })
+  return categories.rows.map(({ alias }) => ({ alias }))
+}
+
+export default async function Page({ params }: { params: { alias: string } }) {
+  const category = await apiGet<CategoryEntity>(`categories/alias:${params.alias}`, {
+    populate: ['children', 'parent']
+  })
+
+  if (!!category.children?.length) {
+    return <ParentCategoryPage alias={params.alias} />
+  }
+
+  return <CategoryPage alias={params.alias} />
 }

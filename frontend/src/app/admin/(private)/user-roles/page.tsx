@@ -1,9 +1,9 @@
 import { UserRolesPage } from '@/components/admin/UserRolesPage'
-import { DEFAULT_LIMIT } from '@/components/vesp/VespTable/constants'
-import { VespTableData } from '@/components/vesp/VespTable/types'
+import { DEFAULT_LIMIT } from '@/components/lib/ApiTable/constants'
+import { ApiTableData } from '@/components/lib/ApiTable/types'
 import { apiGet } from '@/lib/api'
 import { withServerAuth } from '@/lib/api/with-server-auth'
-import { PageProps, VespUserRole } from '@/types'
+import { PageProps, UserRoleEntity } from '@/types'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 }
 
 export default async function Page(props: PageProps) {
-  const initialData = await apiGet<VespTableData<VespUserRole>>(
+  const initialData = await apiGet<ApiTableData<UserRoleEntity>>(
     'roles',
     {
       limit: DEFAULT_LIMIT,

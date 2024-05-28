@@ -4,29 +4,29 @@ import { DataTable, DataTableColumn } from '@/components/admin/DataTable'
 import type { FilterField } from '@/components/admin/Filter'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { VespRemoveDialog } from '@/components/vesp/VespRemoveDialog'
-import { useVespTable } from '@/components/vesp/VespTable'
-import { VespTableData } from '@/components/vesp/VespTable/types'
-import { VespProduct } from '@/types'
+import { ApiRemoveDialog } from '@/components/lib/ApiRemoveDialog'
+import { useApiTable } from '@/components/lib/ApiTable'
+import { ApiTableData } from '@/components/lib/ApiTable/types'
+import { ProductEntity } from '@/types'
 import { CheckCircleIcon, PencilIcon, TrashIcon, XCircleIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import Link from 'next/link'
 import { PageHeader, PageHeaderProps } from '../PageHeader'
 
 export interface ProductsPageProps {
-  initialData?: VespTableData<VespProduct>
+  initialData?: ApiTableData<ProductEntity>
 }
 
 export function ProductsPage({ initialData }: ProductsPageProps) {
   const thumbWidth = 40
   const thumbHeight = 40
 
-  const vespTable = useVespTable<VespProduct>({
+  const vespTable = useApiTable<ProductEntity>({
     url: 'products',
     initialData
   })
 
-  const columns: DataTableColumn<VespProduct>[] = [
+  const columns: DataTableColumn<ProductEntity>[] = [
     {
       key: 'title',
       label: 'Товар',
@@ -97,11 +97,11 @@ export function ProductsPage({ initialData }: ProductsPageProps) {
               <PencilIcon className="w-4 h-4" />
             </Button>
           </Link>
-          <VespRemoveDialog url={`admin/products/${id}`} onSuccess={vespTable.refetch}>
+          <ApiRemoveDialog url={`admin/products/${id}`} onSuccess={vespTable.refetch}>
             <Button variant="destructive-outline" size="sm-icon">
               <TrashIcon className="w-4 h-4" />
             </Button>
-          </VespRemoveDialog>
+          </ApiRemoveDialog>
         </div>
       )
     }
@@ -124,7 +124,7 @@ export function ProductsPage({ initialData }: ProductsPageProps) {
   return (
     <>
       <PageHeader title="Товары" actions={actions} />
-      <DataTable<VespProduct>
+      <DataTable<ProductEntity>
         data={vespTable.data.rows}
         isLoading={vespTable.isLoading}
         columns={columns}

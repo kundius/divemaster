@@ -1,17 +1,17 @@
 'use client'
 
-import { useVespForm } from '@/components/vesp/VespForm'
+import { useApiForm } from '@/components/lib/ApiForm'
 import { slugify } from '@/lib/utils'
-import { VespProduct } from '@/types'
+import { ProductEntity } from '@/types'
 import { ProductForm, ProductFormFields, ProductFormSchema } from '../ProductForm'
 
 export interface ProductsUpdatePageProps {
-  initialData: VespProduct
+  initialData: ProductEntity
 }
 
 export function ProductsUpdatePage({ initialData }: ProductsUpdatePageProps) {
   console.log(initialData)
-  const [form, onSubmit] = useVespForm<ProductFormFields>({
+  const [form, onSubmit] = useApiForm<ProductFormFields>({
     url: `products/${initialData.id}`,
     method: 'PATCH',
     schema: ProductFormSchema,

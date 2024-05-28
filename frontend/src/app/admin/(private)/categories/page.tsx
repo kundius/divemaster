@@ -1,9 +1,9 @@
 import { CategoriesPage } from '@/components/admin/CategoriesPage'
-import { DEFAULT_LIMIT } from '@/components/vesp/VespTable/constants'
-import { VespTableData } from '@/components/vesp/VespTable/types'
+import { DEFAULT_LIMIT } from '@/components/lib/ApiTable/constants'
+import { ApiTableData } from '@/components/lib/ApiTable/types'
 import { apiGet } from '@/lib/api'
 import { withServerAuth } from '@/lib/api/with-server-auth'
-import { PageProps, Category } from '@/types'
+import { PageProps, CategoryEntity } from '@/types'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 }
 
 export default async function Page(props: PageProps) {
-  const initialData = await apiGet<VespTableData<Category>>(
+  const initialData = await apiGet<ApiTableData<CategoryEntity>>(
     'categories',
     {
       limit: DEFAULT_LIMIT,

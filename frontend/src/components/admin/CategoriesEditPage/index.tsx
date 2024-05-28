@@ -25,7 +25,9 @@ export function CategoriesEditPage({ initialData }: CategoriesEditPageProps) {
     },
     defaultValues: {
       parentId:
-        typeof initialData.parent === 'number' ? initialData.parent : initialData.parent?.id,
+        typeof initialData.parent === 'number'
+          ? initialData.parent
+          : initialData.parent?.id || null,
       active: initialData.active,
       description: initialData.description || '',
       title: initialData.title,

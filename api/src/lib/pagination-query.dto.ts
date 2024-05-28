@@ -1,6 +1,6 @@
 import { FilterQuery, FindOptions, OrderDefinition, QueryOrder } from '@mikro-orm/core'
-import { Type } from 'class-transformer'
-import { IsBoolean, IsEnum, IsInt, IsOptional, IsString, Max, Min } from 'class-validator'
+import { Transform, Type } from 'class-transformer'
+import { IsArray, IsBoolean, IsEnum, IsInt, IsOptional, IsString, Max, Min } from 'class-validator'
 
 export class PaginationQueryDto<Entity = unknown> {
   @Type(() => Number)
@@ -30,6 +30,11 @@ export class PaginationQueryDto<Entity = unknown> {
   @IsOptional()
   readonly all: boolean = false
 
+  @Transform(({ value }) => value.split(','))
+  @IsArray()
+  @IsOptional()
+  readonly populate?: never[]
+
   get take(): number {
     return this.limit
   }
@@ -57,6 +62,9 @@ export class PaginationQueryDto<Entity = unknown> {
     }
     if (this.orderBy) {
       output.orderBy = this.orderBy
+    }
+    if (this.populate) {
+      output.populate = this.populate
     }
     return output
   }

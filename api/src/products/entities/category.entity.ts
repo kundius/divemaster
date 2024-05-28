@@ -8,6 +8,7 @@ import {
   Property
 } from '@mikro-orm/core'
 import { Product } from './product.entity'
+import { File } from '@/storage/entities/file.entity'
 
 @Entity()
 export class Category {
@@ -21,10 +22,13 @@ export class Category {
   alias: string
 
   @Property({ nullable: true, type: 'text' })
-  description?: string
+  description: string | null = null
 
   @Property({ default: true })
   active: boolean
+
+  @ManyToOne(() => File, { nullable: true })
+  image: File | null = null
 
   @ManyToMany(() => Product)
   products = new Collection<Product>(this)
@@ -33,5 +37,5 @@ export class Category {
   children = new Collection<Category>(this)
 
   @ManyToOne(() => Category, { nullable: true })
-  parent?: Category
+  parent: Category | null = null
 }

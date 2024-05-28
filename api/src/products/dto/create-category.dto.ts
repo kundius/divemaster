@@ -23,4 +23,9 @@ export class CreateCategoryDto {
   @IsNumber()
   @IsOptional()
   parentId?: number | null
+
+  @Type(() => Number)
+  @IsNumber()
+  @IsOptional()
+  imageId?: number | null
 }

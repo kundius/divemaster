@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common'
 import { CreateCategoryDto } from '../dto/create-category.dto'
 import { FindAllCategoryQueryDto } from '../dto/find-all-category-query.dto'
-import { GetTreeCategoryQueryDto } from '../dto/get-tree-category-query.dto'
 import { UpdateCategoryDto } from '../dto/update-category.dto'
 import { CategoriesService } from '../services/categories.service'
 import { FindOneCategoryQueryDto } from '../dto/find-one-category-query.dto'
@@ -28,11 +27,6 @@ export class CategoriesController {
   @Get()
   findAll(@Query() query: FindAllCategoryQueryDto) {
     return this.categoriesService.findAll(query)
-  }
-
-  @Get('tree')
-  getTree(@Query() query: GetTreeCategoryQueryDto) {
-    return this.categoriesService.getTree(query)
   }
 
   @Get('alias::alias')

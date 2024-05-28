@@ -1,5 +1,6 @@
 'use client'
 
+import { ApiTableData } from '@/components/lib/ApiTable/types'
 import { Button } from '@/components/ui/button'
 import { CheckboxTree } from '@/components/ui/checkbox-tree'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -20,14 +21,19 @@ interface NodeType {
 }
 
 export function ProductCategories({ productId }: ProductCategoriesProps) {
-  console.log('render ProductCategories')
-
   const [saving, setSaving] = useState(false)
   const [checked, setChecked] = useState<string[]>([])
   const [expanded, setExpanded] = useState<string[]>([])
 
   const productCategoriesQuery = useSWR<CategoryEntity[]>(`products/${productId}/categories`)
-  const categoriesQuery = useSWR<CategoryEntity[]>(`categories/tree`)
+  const categoriesQuery = useSWR<ApiTableData<CategoryEntity>>([
+    `categories`,
+    {
+      parent: 0,
+      all: 1,
+      populate: ['children']
+    }
+  ])
 
   const nodes = useMemo(() => {
     const fn = (list: CategoryEntity[]): NodeType[] => {
@@ -40,7 +46,7 @@ export function ProductCategories({ productId }: ProductCategoriesProps) {
         }
       })
     }
-    return fn(categoriesQuery.data || [])
+    return fn(categoriesQuery.data?.rows || [])
   }, [categoriesQuery.data])
 
   // const nodes = useMemo(() => {

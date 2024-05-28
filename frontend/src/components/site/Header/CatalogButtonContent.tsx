@@ -1,3 +1,6 @@
+'use client'
+
+import { ApiTableData } from '@/components/lib/ApiTable/types'
 import { cn } from '@/lib/utils'
 import { CategoryEntity } from '@/types'
 import Image from 'next/image'
@@ -8,11 +11,19 @@ import styles from './CatalogButtonContent.module.scss'
 import { brands } from './menu'
 
 export default function CatalogButtonContent() {
-  const query = useSWR<CategoryEntity[]>([`categories/tree`, { active: true }])
+  const query = useSWR<ApiTableData<CategoryEntity>>([
+    `categories`,
+    {
+      active: true,
+      parent: 0,
+      all: 1,
+      populate: ['children']
+    }
+  ])
 
-  const spearfishing = query.data?.find((item) => item.id === 1)
-  const diving = query.data?.find((item) => item.id === 34)
-  const swimming = query.data?.find((item) => item.id === 60)
+  const spearfishing = query.data?.rows.find((item) => item.id === 1)
+  const diving = query.data?.rows.find((item) => item.id === 34)
+  const swimming = query.data?.rows.find((item) => item.id === 60)
 
   return (
     <div className={styles.root}>

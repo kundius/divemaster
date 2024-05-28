@@ -1,3 +1,6 @@
+'use client'
+
+import { ApiTableData } from '@/components/lib/ApiTable/types'
 import {
   VerticalMenu,
   VerticalMenuItem,
@@ -5,32 +8,39 @@ import {
   VerticalMenuList,
   VerticalMenuTrigger
 } from '@/components/ui/vertical-menu'
-import Link from 'next/link'
-import styles from './MobileNavigationCatalog.module.scss'
-import { spearfishing, brands, diving } from './menu'
-import { apiGet } from '@/lib/api'
 import { CategoryEntity } from '@/types'
+import useSWR from 'swr'
+import styles from './MobileNavigationCatalog.module.scss'
 
-export default async function MobileNavigationCatalog() {
-  const data = await apiGet<CategoryEntity[]>('categories/tree', { active: true })
+export default function MobileNavigationCatalog() {
+  const query = useSWR<ApiTableData<CategoryEntity>>([
+    `categories`,
+    {
+      active: true,
+      parent: 0,
+      all: 1,
+      populate: ['children']
+    }
+  ])
+
   return (
     <div className={styles.root}>
       <VerticalMenu>
         <VerticalMenuList>
-          {data.map((item) => (
+          {query.data?.rows.map((item) => (
             <VerticalMenuItem key={item.id}>
               {(item.children || []).length > 0 ? (
                 <>
-                <VerticalMenuTrigger>{item.title}</VerticalMenuTrigger>
-                <VerticalMenuList>
-                  {(item.children || []).map((item) => (
-                    <VerticalMenuItem key={item.id}>
-                      <VerticalMenuLink href={`/category/${item.alias}`}>
-                        {item.title}
-                      </VerticalMenuLink>
-                    </VerticalMenuItem>
-                  ))}
-                </VerticalMenuList>
+                  <VerticalMenuTrigger>{item.title}</VerticalMenuTrigger>
+                  <VerticalMenuList>
+                    {(item.children || []).map((item) => (
+                      <VerticalMenuItem key={item.id}>
+                        <VerticalMenuLink href={`/category/${item.alias}`}>
+                          {item.title}
+                        </VerticalMenuLink>
+                      </VerticalMenuItem>
+                    ))}
+                  </VerticalMenuList>
                 </>
               ) : (
                 <VerticalMenuLink href={`/category/${item.alias}`}>{item.title}</VerticalMenuLink>

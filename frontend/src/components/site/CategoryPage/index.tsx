@@ -9,39 +9,40 @@ export interface CategoryPageProps {
 
 export async function CategoryPage({ alias }: CategoryPageProps) {
   const category = await apiGet<CategoryEntity>(`categories/alias:${alias}`, {
-    populate: ['children', 'parent']
+    populate: ['children', 'parent', 'parent.parent']
   })
 
-  const getCrumbs = () => {
-    const crumbs: PageHeadlineCrumb[] = [
-      {
-        title: 'Главная',
-        href: '/'
-      },
-      {
-        title: 'Каталог',
-        href: '/catalog'
-      }
-    ]
+  const crumbs: PageHeadlineCrumb[] = [
+    {
+      title: 'Главная',
+      href: '/'
+    },
+    {
+      title: 'Каталог',
+      href: '/catalog'
+    }
+  ]
 
+  const addParents = (category: CategoryEntity) => {
     if (!!category.parent && typeof category.parent === 'object') {
+      addParents(category.parent)
       crumbs.push({
         title: category.parent.title,
         href: `/category/${category.parent.alias}`
       })
     }
-
-    crumbs.push({
-      title: category.title
-    })
-
-    return crumbs
   }
+
+  addParents(category)
+
+  crumbs.push({
+    title: category.title
+  })
 
   return (
     <Container>
-      <PageHeadline title={category.title} crumbs={getCrumbs()} />
-      {category.title}
+      <PageHeadline title={category.title} crumbs={crumbs} />
+      CategoryPage
     </Container>
   )
 }

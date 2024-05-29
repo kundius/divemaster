@@ -1,0 +1,65 @@
+/**
+ * Input
+ */
+
+ .input {
+  --input-accent: var(--neutral300);
+  --input-background: var(--white);
+
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: space-between;
+  width: 100%;
+  border: 2px dashed var(--input-accent);
+  border-radius: calc(var(--radius) - 2px);
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.inputError {
+  --input-accent: var(--red400);
+}
+
+.inputDragActive {
+  --input-accent: var(--emerald400);
+}
+
+.inputDisabled {
+  --input-accent: var(--neutral200);
+  --input-background: var(--neutral50);
+}
+
+.input:focus {
+  --input-accent: var(--black);
+  
+  outline: none;
+}
+
+/**
+ * Name
+ */
+
+.name {
+  font-size: 0.875rem;
+  line-height: 2rem;
+  font-weight: 500;
+  color: var(--black);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/**
+ * Actions
+ */
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}

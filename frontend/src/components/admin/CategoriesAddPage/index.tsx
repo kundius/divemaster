@@ -22,7 +22,8 @@ export function CategoriesAddPage() {
       description: '',
       title: '',
       alias: '',
-      parentId: null
+      parentId: null,
+      imageId: null
     },
     onSuccess: () => {
       router.push('/admin/categories')

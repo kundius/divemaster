@@ -15,9 +15,11 @@ import { Textarea } from '@/components/ui/textarea'
 import { ApiInputComboBox } from '@/components/lib/ApiInputComboBox'
 import { UseFormReturn } from 'react-hook-form'
 import { z } from 'zod'
+import { ApiInputFile } from '@/components/lib/ApiInputFile'
 
 export const CategoryFormSchema = z.object({
   parentId: z.number().nullable(),
+  imageId: z.number().nullable(),
   title: z.string().trim().min(1),
   alias: z.string().trim(),
   description: z.string().trim(),
@@ -93,6 +95,19 @@ export function CategoryForm({ form, onSubmit }: CategoryFormProps) {
                     value={field.value}
                     onChange={field.onChange}
                   />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="imageId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Изображение</FormLabel>
+                <FormControl>
+                  <ApiInputFile value={field.value} onChange={field.onChange} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

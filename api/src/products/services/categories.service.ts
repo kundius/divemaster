@@ -21,8 +21,11 @@ export class CategoriesService {
 
     this.categoriesRepository.assign(category, fillable)
 
-    if (typeof parentId === 'number') {
-      category.parent = await this.findOne(parentId)
+    if (typeof parentId === 'undefined') {
+      category.parent = parentId ? await this.findOne(parentId) : null
+    }
+    if (typeof imageId !== 'undefined') {
+      category.image = imageId ? await this.storageService.findOne(imageId) : null
     }
 
     await this.categoriesRepository.getEntityManager().persistAndFlush(category)
@@ -51,8 +54,8 @@ export class CategoriesService {
     if (typeof parentId !== 'undefined') {
       category.parent = parentId ? await this.findOne(parentId) : null
     }
-    if (typeof parentId !== 'undefined') {
-      category.parent = parentId ? await this.findOne(parentId) : null
+    if (typeof imageId !== 'undefined') {
+      category.image = imageId ? await this.storageService.findOne(imageId) : null
     }
 
     await this.categoriesRepository.getEntityManager().persistAndFlush(category)

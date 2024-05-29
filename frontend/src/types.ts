@@ -15,6 +15,7 @@ export interface UserRoleEntity {
 export interface CategoryEntity {
   id: number
   parent: number | CategoryEntity | null
+  image: number | CategoryEntity | null
   title: string
   alias: string
   description: string | null
@@ -38,7 +39,7 @@ export type FileEntity = {
   file: string
   path: string
   type?: string
-  title?: string
+  hash?: string
   size?: number
   metadata?: string
 }

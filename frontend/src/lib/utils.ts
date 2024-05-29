@@ -2,6 +2,8 @@ import { FileEntity, FileEntityOptions } from '@/types'
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import slugifyFn from 'slugify'
+import { getCookie } from 'cookies-next'
+import { TOKEN_NAME } from './auth/constants'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -54,4 +56,24 @@ export function displayPrice(value: number) {
 
 export function slugify(value: string) {
   return slugifyFn(value.toLocaleLowerCase(), { remove: /[*+~.()'"!:@]/g })
+}
+
+export const uploadFile = async (file: File): Promise<FileEntity> => {
+  const Bearer = getCookie(TOKEN_NAME)
+  const fd = new FormData()
+  fd.append('file', file)
+  const uploadResponse = await fetch(`${getApiUrl()}storage/upload`, {
+    method: 'POST',
+    headers: {
+      authorization: Bearer ? `Bearer ${Bearer}` : ''
+    },
+    body: fd
+  })
+  const uploadJson: FileEntity = await uploadResponse.json()
+
+  if (uploadResponse.status === 500) {
+    throw uploadJson
+  }
+
+  return uploadJson
 }

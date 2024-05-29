@@ -2,6 +2,8 @@ import { apiGet } from '@/lib/api'
 import { CategoryEntity, ProductEntity } from '@/types'
 import { Container } from '../Container'
 import { PageHeadline, PageHeadlineCrumb } from '../PageHeadline'
+import { CategoryCard } from '../CategoryCard'
+import { getFileUrl } from '@/lib/utils'
 
 export interface ParentCategoryPageProps {
   alias: string
@@ -44,7 +46,13 @@ export async function ParentCategoryPage({ alias }: ParentCategoryPageProps) {
       <PageHeadline title={category.title} crumbs={crumbs} />
       <div className="grid grid-cols-5">
         {category.children?.map((item) => (
-          <div key={item.id}>{item.title}</div>
+          <div key={item.id}>
+            <CategoryCard
+              title={item.title}
+              href={`/category/${item.alias}`}
+              image={!!item.image ? getFileUrl(item.image) : undefined}
+            />
+          </div>
         ))}
       </div>
     </Container>

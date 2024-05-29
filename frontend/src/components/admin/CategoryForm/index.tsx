@@ -107,7 +107,7 @@ export function CategoryForm({ form, onSubmit }: CategoryFormProps) {
               <FormItem>
                 <FormLabel>Изображение</FormLabel>
                 <FormControl>
-                  <ApiInputFile value={field.value} onChange={field.onChange} />
+                  <ApiInputFile value={field.value} onChange={field.onChange} allowedTypes={['image/jpeg', 'image/png']} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -118,7 +118,7 @@ export function CategoryForm({ form, onSubmit }: CategoryFormProps) {
             name="active"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Активен</FormLabel>
+                <FormLabel>Активна</FormLabel>
                 <FormControl>
                   <div className="w-full">
                     <Switch checked={field.value} onCheckedChange={field.onChange} />

@@ -10,12 +10,6 @@ import React, { useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import styles from './index.module.scss'
 
-// export interface ApiInputFileValue {
-//   url?: string | null
-//   uuid?: string | null
-//   name?: string | null
-// }
-
 export interface ApiInputFileProps {
   errorMessage?: React.ReactNode
   infoMessage?: React.ReactNode
@@ -30,7 +24,7 @@ export function ApiInputFile({
   value: controlledValue,
   onChange: controlledOnChange,
   placeholder = 'Выбрать файл',
-  errorMessage = 'test',
+  errorMessage,
   infoMessage,
   allowedTypes,
   maxSize

@@ -15,7 +15,7 @@ export interface UserRoleEntity {
 export interface CategoryEntity {
   id: number
   parent: number | CategoryEntity | null
-  image: number | CategoryEntity | null
+  image: number | FileEntity | null
   title: string
   alias: string
   description: string | null

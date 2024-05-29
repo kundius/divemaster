@@ -14,6 +14,13 @@ export function getApiUrl(): string {
   return API_URL.endsWith('/') ? API_URL : API_URL + '/'
 }
 
+export function getFileUrl(file: FileEntity | number): string {
+  if (typeof file === 'number') {
+    return `${getApiUrl()}storage/${file}/read`
+  }
+  return `${getApiUrl()}storage/${file.id}/read`
+}
+
 export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
 export function disableScroll() {

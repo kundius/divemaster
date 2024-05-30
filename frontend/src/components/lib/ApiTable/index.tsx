@@ -8,13 +8,14 @@ import type { ApiTableContext, ApiTableData, ApiTableProps } from './types'
 
 export function useApiTable<TRow extends unknown>({
   url,
-  initialData
+  initialData,
+  defaultLimit = DEFAULT_LIMIT
 }: PropsWithChildren<ApiTableProps<TRow>>): ApiTableContext<TRow> {
   const searchParams = useSearchParams()
 
   const { filter, ...memoizedParams } = useMemo(() => {
     const output: Pick<ApiTableContext<TRow>, 'page' | 'limit' | 'sort' | 'dir' | 'filter'> = {
-      limit: DEFAULT_LIMIT,
+      limit: defaultLimit,
       page: DEFAULT_PAGE
     }
 
@@ -51,7 +52,7 @@ export function useApiTable<TRow extends unknown>({
     })
 
     return output
-  }, [searchParams])
+  }, [searchParams, defaultLimit])
 
   const onChangePagination = useCallback<ApiTableContext<TRow>['onChangePagination']>(
     (page, limit) => {
@@ -63,7 +64,7 @@ export function useApiTable<TRow extends unknown>({
         params.set('page', String(page))
       }
 
-      if (limit === DEFAULT_LIMIT) {
+      if (limit === defaultLimit) {
         params.delete('limit')
       } else {
         params.set('limit', String(limit))
@@ -71,7 +72,7 @@ export function useApiTable<TRow extends unknown>({
 
       window.history.pushState(null, '', `?${params.toString()}`)
     },
-    [searchParams]
+    [searchParams, defaultLimit]
   )
 
   const onChangeSorting = useCallback<ApiTableContext<TRow>['onChangeSorting']>(

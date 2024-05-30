@@ -6,6 +6,8 @@ import { CategoryCard } from '../CategoryCard'
 import { getFileUrl } from '@/lib/utils'
 import { ConsultationWidget } from '../ConsultationWidget'
 import { BenefitsSideSlider, BenefitsSideSliderDiscount } from '../BenefitsSideSlider'
+import { Suspense } from 'react'
+import { Products } from './Products'
 
 export interface ParentCategoryPageProps {
   alias: string
@@ -77,7 +79,9 @@ export async function ParentCategoryPage({ alias }: ParentCategoryPageProps) {
           />
         </div>
         <div className="w-4/5">
-          4/5
+          <Suspense fallback="loading">
+            <Products />
+          </Suspense>
         </div>
       </div>
     </Container>

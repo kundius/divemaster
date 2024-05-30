@@ -10,6 +10,7 @@ export interface ApiTableFilter {
 export interface ApiTableProps<TRow> {
   url: string
   initialData?: ApiTableData<TRow>
+  defaultLimit?: number
 }
 
 export interface ApiTableContext<TRow> {

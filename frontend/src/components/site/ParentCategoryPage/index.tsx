@@ -5,6 +5,7 @@ import { PageHeadline, PageHeadlineCrumb } from '../PageHeadline'
 import { CategoryCard } from '../CategoryCard'
 import { getFileUrl } from '@/lib/utils'
 import { ConsultationWidget } from '../ConsultationWidget'
+import { BenefitsSideSlider, BenefitsSideSliderDiscount } from '../BenefitsSideSlider'
 
 export interface ParentCategoryPageProps {
   alias: string
@@ -56,8 +57,24 @@ export async function ParentCategoryPage({ alias }: ParentCategoryPageProps) {
         ))}
       </div>
       <div className="flex gap-x-5 pb-40 pt-14">
-        <div className="w-1/5">
+        <div className="w-1/5 space-y-5">
           <ConsultationWidget />
+          <BenefitsSideSlider
+            items={[
+              {
+                content: <BenefitsSideSliderDiscount />,
+                name: 'BenefitsSideSliderDiscount1'
+              },
+              {
+                content: <BenefitsSideSliderDiscount />,
+                name: 'BenefitsSideSliderDiscount2'
+              },
+              {
+                content: <BenefitsSideSliderDiscount />,
+                name: 'BenefitsSideSliderDiscount3'
+              }
+            ]}
+          />
         </div>
         <div className="w-4/5">
           4/5

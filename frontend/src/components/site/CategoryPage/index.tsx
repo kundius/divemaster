@@ -2,6 +2,8 @@ import { apiGet } from '@/lib/api'
 import { CategoryEntity, ProductEntity } from '@/types'
 import { Container } from '../Container'
 import { PageHeadline, PageHeadlineCrumb } from '../PageHeadline'
+import { ConsultationWidget } from '../ConsultationWidget'
+import { BenefitsSideSlider, BenefitsSideSliderDiscount } from '../BenefitsSideSlider'
 
 export interface CategoryPageProps {
   alias: string
@@ -42,7 +44,28 @@ export async function CategoryPage({ alias }: CategoryPageProps) {
   return (
     <Container>
       <PageHeadline title={category.title} crumbs={crumbs} />
-      CategoryPage
+      <div className="flex gap-x-5 pb-40 pt-14">
+        <div className="w-1/5 space-y-5">
+          <ConsultationWidget />
+          <BenefitsSideSlider
+            items={[
+              {
+                content: <BenefitsSideSliderDiscount />,
+                name: 'BenefitsSideSliderDiscount1'
+              },
+              {
+                content: <BenefitsSideSliderDiscount />,
+                name: 'BenefitsSideSliderDiscount2'
+              },
+              {
+                content: <BenefitsSideSliderDiscount />,
+                name: 'BenefitsSideSliderDiscount3'
+              }
+            ]}
+          />
+        </div>
+        <div className="w-4/5">4/5</div>
+      </div>
     </Container>
   )
 }

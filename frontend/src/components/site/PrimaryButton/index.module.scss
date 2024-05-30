@@ -1,5 +1,5 @@
 .button {
-  font-size: 12px;
+  font-size: 16px;
   text-transform: uppercase;
   font-family: var(--font-sans-narrow);
   color: #ffffff;
@@ -73,4 +73,17 @@
   .arrow::after {
     left: 6px;
   }
+}
+
+.button.sizeSmall {
+  font-size: 12px;
+  height: 36px;
+  min-width: 142px;
+  border-radius: 18px;
+}
+
+.variantOutline {
+  color: #393939;
+  box-shadow: 0px 0px 9.8px 0.2px rgba(0, 29, 47, 0.14);
+  background: #ffffff;
 }

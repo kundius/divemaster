@@ -4,6 +4,7 @@ import { Container } from '../Container'
 import { PageHeadline, PageHeadlineCrumb } from '../PageHeadline'
 import { CategoryCard } from '../CategoryCard'
 import { getFileUrl } from '@/lib/utils'
+import { ConsultationWidget } from '../ConsultationWidget'
 
 export interface ParentCategoryPageProps {
   alias: string
@@ -44,16 +45,23 @@ export async function ParentCategoryPage({ alias }: ParentCategoryPageProps) {
   return (
     <Container>
       <PageHeadline title={category.title} crumbs={crumbs} />
-      <div className="grid grid-cols-5">
+      <div className="grid grid-cols-5 gap-x-5 mt-10 gap-y-16 pb-10 border-b mb-14 border-neutral-100">
         {category.children?.map((item) => (
-          <div key={item.id}>
-            <CategoryCard
-              title={item.title}
-              href={`/category/${item.alias}`}
-              image={!!item.image ? getFileUrl(item.image) : undefined}
-            />
-          </div>
+          <CategoryCard
+            key={item.id}
+            title={item.title}
+            href={`/category/${item.alias}`}
+            image={!!item.image ? getFileUrl(item.image) : '/noimage.png'}
+          />
         ))}
+      </div>
+      <div className="flex gap-x-5 pb-40 pt-14">
+        <div className="w-1/5">
+          <ConsultationWidget />
+        </div>
+        <div className="w-4/5">
+          4/5
+        </div>
       </div>
     </Container>
   )

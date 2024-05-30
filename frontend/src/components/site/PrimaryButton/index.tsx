@@ -7,11 +7,17 @@ import styles from './index.module.scss'
 const buttonVariants = cva(styles.button, {
   variants: {
     size: {
-      default: styles.sizeDefault
+      default: styles.sizeDefault,
+      sm: styles.sizeSmall
+    },
+    variant: {
+      default: styles.variantDefault,
+      outline: styles.variantOutline
     }
   },
   defaultVariants: {
-    size: 'default'
+    size: 'default',
+    variant: 'default'
   }
 })
 
@@ -22,10 +28,10 @@ export interface PrimaryButtonProps
 }
 
 const PrimaryButton = React.forwardRef<HTMLButtonElement, PrimaryButtonProps>(
-  ({ className, size, asChild = false, children, ...props }, ref) => {
+  ({ className, size, variant, asChild = false, children, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button'
     return (
-      <Comp className={cn(buttonVariants({ size, className }))} ref={ref} {...props}>
+      <Comp className={cn(buttonVariants({ size, variant, className }))} ref={ref} {...props}>
         {children}
       </Comp>
     )

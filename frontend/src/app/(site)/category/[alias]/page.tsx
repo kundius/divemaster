@@ -10,8 +10,10 @@ export async function generateStaticParams() {
 }
 
 export default async function Page({ params }: { params: { alias: string } }) {
+  // TODO: HIERARCHY_DEPTH_LIMIT
+  // в populate указана необходимоя вложенность родителей 
   const category = await apiGet<CategoryEntity>(`categories/alias:${params.alias}`, {
-    populate: ['children', 'parent']
+    populate: ['children', 'parent', 'parent.parent']
   })
 
   if (!!category.children?.length) {

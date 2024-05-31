@@ -62,7 +62,7 @@ export default function CatalogButtonContent() {
               </Link>
               <ul className={cn(styles.list, 'max-lg:columns-1 max-xl:columns-2')}>
                 {diving.children?.map((item) => (
-                  <li key={diving.id}>
+                  <li key={item.id}>
                     <Link href={`/category/${item.alias}`}>{item.title}</Link>
                   </li>
                 ))}

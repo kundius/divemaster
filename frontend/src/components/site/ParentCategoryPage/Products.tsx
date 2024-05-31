@@ -11,20 +11,17 @@ import { CheckCircleIcon, XCircleIcon, PencilIcon } from '@heroicons/react/24/ou
 import { TrashIcon } from '@radix-ui/react-icons'
 import Link from 'next/link'
 import { data } from 'tailwindcss/defaultTheme'
+import { useResorces } from '@/components/lib/Resources'
 
 export function Products() {
-  const table = useApiTable<ProductEntity>({
-    url: 'products',
-    defaultLimit: 24
-    // initialData
-  })
+  const { total, rows } = useResorces<ProductEntity>()
 
   return (
     <div>
       <div>
-        Всего товаров: {table.data.total}
+        Всего товаров: {total}
       </div>
-      {table.data.rows.map((item) => (
+      {rows.map((item) => (
         <div key={item.id}>{item.title}</div>
       ))}
     </div>

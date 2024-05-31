@@ -10,6 +10,8 @@ export interface CategoryPageProps {
 }
 
 export async function CategoryPage({ alias }: CategoryPageProps) {
+  // TODO: HIERARCHY_DEPTH_LIMIT
+  // в populate указана необходимоя вложенность родителей
   const category = await apiGet<CategoryEntity>(`categories/alias:${alias}`, {
     populate: ['children', 'parent', 'parent.parent']
   })

@@ -5,6 +5,7 @@ import { ArrowPathIcon } from '@heroicons/react/24/outline'
 import { getCookie } from 'cookies-next'
 import { useEffect, useRef } from 'react'
 import styles from './styles.module.scss'
+import { UploadAdapter } from './UploadAdapter.mjs'
 
 export interface EditorInputProps {
   placeholder?: string
@@ -17,7 +18,6 @@ export function EditorInput({ placeholder, value, onChange }: EditorInputProps) 
   const container = useRef(null)
 
   useEffect(() => {
-    console.log('useEffect')
     if (!container.current || loading.current) return
 
     loading.current = true
@@ -26,16 +26,8 @@ export function EditorInput({ placeholder, value, onChange }: EditorInputProps) 
 
     import('ckeditor5-custom-build').then((module) => {
       const Editor = module.default
-      const token = getCookie(TOKEN_NAME)
 
       Editor.create(el, {
-        simpleUpload: {
-          uploadUrl: `${process.env.NEXT_PUBLIC_API_URL}storage/upload`,
-          withCredentials: false,
-          headers: {
-            Authorization: 'Bearer ' + token
-          }
-        },
         placeholder,
         initialData: value
       }).then((editor) => {
@@ -44,14 +36,19 @@ export function EditorInput({ placeholder, value, onChange }: EditorInputProps) 
         editor.model.document.on('change:data', (evt, data) => {
           onChange?.(editor.getData())
         })
+        editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+          return new UploadAdapter(loader)
+        }
       })
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
-    <div ref={container} className={styles.wrapper}>
-      <ArrowPathIcon className="h-4 w-4 animate-spin" />
+    <div className={styles.wrapper}>
+      <div ref={container}>
+        <ArrowPathIcon className="h-4 w-4 animate-spin" />
+      </div>
     </div>
   )
 }

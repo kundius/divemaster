@@ -26,8 +26,6 @@ export function ResorcesSyncParams() {
   }, [searchParams])
 
   useEffect(() => {
-    console.log('useEffect searchParams', shallowEqual(params, parsedSearchParams))
-
     setIsPersisted(true)
 
     if (!shallowEqual(params, parsedSearchParams)) {

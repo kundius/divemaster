@@ -9,6 +9,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export function getClientUrl(): string {
+  const CLIENT_URL = String(process.env.NEXT_PUBLIC_CLIENT_URL)
+  return CLIENT_URL.endsWith('/') ? CLIENT_URL : CLIENT_URL + '/'
+}
+
 export function getApiUrl(): string {
   const API_URL = String(process.env.NEXT_PUBLIC_API_URL)
   return API_URL.endsWith('/') ? API_URL : API_URL + '/'
@@ -16,9 +21,9 @@ export function getApiUrl(): string {
 
 export function getFileUrl(file: FileEntity | number): string {
   if (typeof file === 'number') {
-    return `${getApiUrl()}storage/${file}/read`
+    return `${getClientUrl()}storage/${file}/read`
   }
-  return `${getApiUrl()}storage/${file.id}/read`
+  return `${getClientUrl()}storage/${file.id}/read`
 }
 
 export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))

@@ -11,6 +11,7 @@ import { Products } from './Products'
 import { Resorces } from '@/components/lib/Resources'
 import { ResorcesSyncParams } from '@/components/lib/Resources/SyncSearchParams'
 import { Pagination } from '@/components/lib/Resources/Pagination'
+import { CategoryContent } from '../CategoryContent'
 
 export interface ParentCategoryPageProps {
   alias: string
@@ -57,7 +58,12 @@ export async function ParentCategoryPage({ alias }: ParentCategoryPageProps) {
           <ResorcesSyncParams />
         </Suspense>
 
-        <PageHeadline title={category.title} crumbs={crumbs} />
+        <PageHeadline
+          title={category.title}
+          crumbs={crumbs}
+          titleView={!!category.longTitle ? 'div' : 'h1'}
+        />
+
         <div className="grid grid-cols-5 gap-x-5 mt-10 gap-y-16 pb-10 border-b mb-14 border-neutral-100">
           {category.children?.map((item) => (
             <CategoryCard
@@ -68,7 +74,8 @@ export async function ParentCategoryPage({ alias }: ParentCategoryPageProps) {
             />
           ))}
         </div>
-        <div className="flex gap-x-5 pb-40 pt-14">
+
+        <div className="flex gap-x-5 mb-40 mt-14">
           <div className="w-1/5 space-y-5">
             <ConsultationWidget />
             <BenefitsSideSlider
@@ -93,6 +100,10 @@ export async function ParentCategoryPage({ alias }: ParentCategoryPageProps) {
             <Pagination />
           </div>
         </div>
+        <CategoryContent
+          title={category.longTitle || undefined}
+          content={category.description || undefined}
+        />
       </Container>
     </Resorces>
   )

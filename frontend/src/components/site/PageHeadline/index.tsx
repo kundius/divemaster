@@ -8,11 +8,18 @@ export interface PageHeadlineCrumb {
 
 export interface PageHeadlineProps {
   title: string
+  titleView?: 'h1' | 'div' | 'h2' | 'h3'
   description?: string
   crumbs?: PageHeadlineCrumb[]
 }
 
-export function PageHeadline({ title, description, crumbs = [] }: PageHeadlineProps) {
+export function PageHeadline({
+  title,
+  titleView = 'h1',
+  description,
+  crumbs = []
+}: PageHeadlineProps) {
+  const Title = titleView
   return (
     <div className={styles.wrap}>
       {crumbs.length > 0 && (
@@ -34,7 +41,7 @@ export function PageHeadline({ title, description, crumbs = [] }: PageHeadlinePr
         </div>
       )}
       <div className={styles.titleBox}>
-        <div className={styles.title}>{title}</div>
+        <Title className={styles.title}>{title}</Title>
         {description && <div className={styles.description}>{description}</div>}
       </div>
     </div>

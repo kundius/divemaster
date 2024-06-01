@@ -1,5 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  async rewrites() {
+    return [
+      {
+        source: '/storage/:path*',
+        destination: `${process.env.NEXT_PUBLIC_API_URL}storage/:path*` // Proxy to Backend
+      }
+    ]
+  },
   images: {
     remotePatterns: [
       {
@@ -22,14 +30,6 @@ const nextConfig = {
         port: '8090'
       },
     ]
-  },
-  serverRuntimeConfig: {
-    // secondSecret: process.env.SECRET
-  },
-  publicRuntimeConfig: {
-    // apiUrl: process.env.API_URL,
-    // localUrl: process.env.LOCAL_URL,
-    // graphqlUrl: process.env.GRAPHQL_URL
   },
   sassOptions: {
     prependData: `

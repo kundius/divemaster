@@ -50,6 +50,7 @@ export type FileEntity = {
   id: number
   file: string
   path: string
+  url: string
   type?: string
   hash?: string
   size?: number

@@ -1,11 +1,10 @@
 'use client'
 
-import React, { Suspense, useEffect, useRef, useState } from 'react'
-import { CKEditor } from '@ckeditor/ckeditor5-react'
-import Editor from 'ckeditor5-custom-build'
-import styles from './styles.module.scss'
-import { getCookie } from 'cookies-next'
 import { TOKEN_NAME } from '@/lib/auth/constants'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
+import { getCookie } from 'cookies-next'
+import { useEffect, useRef } from 'react'
+import styles from './styles.module.scss'
 
 export interface EditorInputProps {
   placeholder?: string
@@ -14,36 +13,45 @@ export interface EditorInputProps {
 }
 
 export function EditorInput({ placeholder, value, onChange }: EditorInputProps) {
-  const [token, setToken] = useState('')
-  const [mounted, setMounted] = useState(false)
+  const loading = useRef<boolean>(false)
+  const container = useRef(null)
 
   useEffect(() => {
-    const token = getCookie(TOKEN_NAME)
-    setToken(token || '')
-    setMounted(true)
+    console.log('useEffect')
+    if (!container.current || loading.current) return
+
+    loading.current = true
+
+    const el = container.current
+
+    import('ckeditor5-custom-build').then((module) => {
+      const Editor = module.default
+      const token = getCookie(TOKEN_NAME)
+
+      Editor.create(el, {
+        simpleUpload: {
+          uploadUrl: `${process.env.NEXT_PUBLIC_API_URL}storage/upload`,
+          withCredentials: false,
+          headers: {
+            Authorization: 'Bearer ' + token
+          }
+        },
+        placeholder,
+        initialData: value
+      }).then((editor) => {
+        loading.current = false
+
+        editor.model.document.on('change:data', (evt, data) => {
+          onChange?.(editor.getData())
+        })
+      })
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  if (!mounted) return null
-
   return (
-    <div className={styles.wrapper}>
-      <CKEditor
-        editor={Editor}
-        config={{
-          simpleUpload: {
-            uploadUrl: `${process.env.NEXT_PUBLIC_API_URL}storage/upload`,
-            withCredentials: false,
-            headers: {
-              Authorization: 'Bearer ' + token
-            }
-          },
-          placeholder
-        }}
-        data={value}
-        onChange={(e, editor) => {
-          onChange?.(editor.getData())
-        }}
-      />
+    <div ref={container} className={styles.wrapper}>
+      <ArrowPathIcon className="h-4 w-4 animate-spin" />
     </div>
   )
 }

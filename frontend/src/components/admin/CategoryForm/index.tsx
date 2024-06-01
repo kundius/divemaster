@@ -1,5 +1,8 @@
 'use client'
 
+import { ApiInputComboBox } from '@/components/lib/ApiInputComboBox'
+import { ApiInputFile } from '@/components/lib/ApiInputFile'
+import { EditorInput } from '@/components/lib/EditorInput'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -11,19 +14,8 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
-import { Textarea } from '@/components/ui/textarea'
-import { ApiInputComboBox } from '@/components/lib/ApiInputComboBox'
 import { UseFormReturn } from 'react-hook-form'
 import { z } from 'zod'
-import { ApiInputFile } from '@/components/lib/ApiInputFile'
-import dynamic from 'next/dynamic'
-
-const EditorInput = dynamic(
-  () => import('@/components/lib/EditorInput').then((mod) => mod.EditorInput),
-  {
-    loading: () => <p>Loading...</p>
-  }
-)
 
 export const CategoryFormSchema = z.object({
   title: z.string().trim().min(1),

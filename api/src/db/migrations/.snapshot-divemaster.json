@@ -12,6 +12,44 @@
           "nullable": false,
           "mappedType": "integer"
         },
+        "title": {
+          "name": "title",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        }
+      },
+      "name": "brand",
+      "indexes": [
+        {
+          "keyName": "PRIMARY",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
         "file": {
           "name": "file",
           "type": "varchar(255)",
@@ -122,6 +160,15 @@
           "autoincrement": false,
           "primary": false,
           "nullable": false,
+          "mappedType": "string"
+        },
+        "long_title": {
+          "name": "long_title",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
           "mappedType": "string"
         },
         "alias": {
@@ -265,6 +312,15 @@
           "nullable": false,
           "mappedType": "string"
         },
+        "long_title": {
+          "name": "long_title",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
         "alias": {
           "name": "alias",
           "type": "varchar(255)",
@@ -292,6 +348,15 @@
           "nullable": false,
           "mappedType": "integer"
         },
+        "old_price": {
+          "name": "old_price",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
         "description": {
           "name": "description",
           "type": "text",
@@ -310,6 +375,45 @@
           "nullable": false,
           "default": "true",
           "mappedType": "boolean"
+        },
+        "in_stock": {
+          "name": "in_stock",
+          "type": "tinyint(1)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "true",
+          "mappedType": "boolean"
+        },
+        "recent": {
+          "name": "recent",
+          "type": "tinyint(1)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "false",
+          "mappedType": "boolean"
+        },
+        "favorite": {
+          "name": "favorite",
+          "type": "tinyint(1)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "false",
+          "mappedType": "boolean"
+        },
+        "brand_id": {
+          "name": "brand_id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
         }
       },
       "name": "product",
@@ -325,6 +429,16 @@
           "unique": true
         },
         {
+          "columnNames": [
+            "brand_id"
+          ],
+          "composite": false,
+          "keyName": "product_brand_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
           "keyName": "PRIMARY",
           "columnNames": [
             "id"
@@ -336,7 +450,21 @@
         }
       ],
       "checks": [],
-      "foreignKeys": {},
+      "foreignKeys": {
+        "product_brand_id_foreign": {
+          "constraintName": "product_brand_id_foreign",
+          "columnNames": [
+            "brand_id"
+          ],
+          "localTableName": "product",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "brand",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        }
+      },
       "nativeEnums": {}
     },
     {
@@ -415,6 +543,92 @@
             "product_id"
           ],
           "localTableName": "category_products",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "product",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "brand_id": {
+          "name": "brand_id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "product_id": {
+          "name": "product_id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        }
+      },
+      "name": "brand_products",
+      "indexes": [
+        {
+          "columnNames": [
+            "brand_id"
+          ],
+          "composite": false,
+          "keyName": "brand_products_brand_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "product_id"
+          ],
+          "composite": false,
+          "keyName": "brand_products_product_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "PRIMARY",
+          "columnNames": [
+            "brand_id",
+            "product_id"
+          ],
+          "composite": true,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "brand_products_brand_id_foreign": {
+          "constraintName": "brand_products_brand_id_foreign",
+          "columnNames": [
+            "brand_id"
+          ],
+          "localTableName": "brand_products",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "brand",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "brand_products_product_id_foreign": {
+          "constraintName": "brand_products_product_id_foreign",
+          "columnNames": [
+            "product_id"
+          ],
+          "localTableName": "brand_products",
           "referencedColumnNames": [
             "id"
           ],

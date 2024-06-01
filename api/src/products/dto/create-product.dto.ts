@@ -19,6 +19,11 @@ export class CreateProductDto {
   @IsNumber()
   price: number
 
+  @Type(() => Number)
+  @IsNumber()
+  @IsOptional()
+  oldPrice: number
+
   @Type(() => String)
   @IsString()
   @IsOptional()
@@ -27,4 +32,21 @@ export class CreateProductDto {
   @Type(() => Boolean)
   @IsBoolean()
   active: boolean
+
+  @Type(() => Boolean)
+  @IsBoolean()
+  recent: boolean
+
+  @Type(() => Boolean)
+  @IsBoolean()
+  favorite: boolean
+
+  @Type(() => Boolean)
+  @IsBoolean()
+  inStock: boolean
+
+  @Type(() => Number)
+  @IsNumber()
+  @IsOptional()
+  brandId?: number | null
 }

@@ -13,11 +13,18 @@ export function ProductsCreatePage() {
     method: 'POST',
     schema: ProductFormSchema,
     defaultValues: {
-      active: true,
-      description: '',
       title: '',
       alias: '',
-      sku: ''
+      price: 0,
+      oldPrice: null,
+      longTitle: null,
+      description: null,
+      sku: null,
+      brandId: null,
+      active: true,
+      recent: false,
+      favorite: false,
+      inStock: false
     },
     mapValues: (values) => {
       values.alias = slugify(values.alias || values.title)

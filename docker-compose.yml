@@ -44,17 +44,27 @@ services:
     network_mode: 'service:nginx'
     restart: unless-stopped
     working_dir: /divemaster/api
-    command: sh -c 'rm -rf /tmp/* && npm i && npm run build && npm run start'
+    command: sh -c 'npm i && npm run build && npm run start'
 
   frontend:
     image: node:${NODE_VERSION:-21}
     volumes:
       - ./frontend:/divemaster/frontend
+      - ./ckeditor5:/divemaster/ckeditor5
     depends_on:
       - mariadb
+      - ckeditor5
     environment:
       - TZ=${TZ:-Europe/Moscow}
     network_mode: 'service:nginx'
     restart: unless-stopped
     working_dir: /divemaster/frontend
-    command: sh -c 'rm -rf /tmp/* && npm i && npm run build && npm run start'
+    command: sh -c 'npm i && npm run build && npm run start'
+
+  ckeditor5:
+    image: node:${NODE_VERSION:-21}
+    volumes:
+      - ./ckeditor5:/divemaster/ckeditor5
+    restart: no
+    working_dir: /divemaster/ckeditor5
+    command: sh -c 'npm i && npm run build'

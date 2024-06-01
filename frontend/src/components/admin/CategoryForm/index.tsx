@@ -16,13 +16,22 @@ import { ApiInputComboBox } from '@/components/lib/ApiInputComboBox'
 import { UseFormReturn } from 'react-hook-form'
 import { z } from 'zod'
 import { ApiInputFile } from '@/components/lib/ApiInputFile'
+import dynamic from 'next/dynamic'
+
+const EditorInput = dynamic(
+  () => import('@/components/lib/EditorInput').then((mod) => mod.EditorInput),
+  {
+    loading: () => <p>Loading...</p>
+  }
+)
 
 export const CategoryFormSchema = z.object({
-  parentId: z.number().nullable(),
-  imageId: z.number().nullable(),
   title: z.string().trim().min(1),
   alias: z.string().trim(),
-  description: z.string().trim(),
+  longTitle: z.string().trim().nullable(),
+  description: z.string().trim().nullable(),
+  parentId: z.number().nullable(),
+  imageId: z.number().nullable(),
   active: z.boolean()
 })
 
@@ -39,7 +48,7 @@ export function CategoryForm({ form, onSubmit }: CategoryFormProps) {
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="space-y-6">
           <div className="flex gap-6">
-            <div className="w-2/3">
+            <div className="w-1/2">
               <FormField
                 control={form.control}
                 name="title"
@@ -54,7 +63,7 @@ export function CategoryForm({ form, onSubmit }: CategoryFormProps) {
                 )}
               />
             </div>
-            <div className="w-1/3">
+            <div className="w-1/2">
               <FormField
                 control={form.control}
                 name="alias"
@@ -70,44 +79,67 @@ export function CategoryForm({ form, onSubmit }: CategoryFormProps) {
               />
             </div>
           </div>
+          <div className="flex gap-6">
+            <div className="w-1/2">
+              <FormField
+                control={form.control}
+                name="parentId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Родительская</FormLabel>
+                    <FormControl>
+                      <ApiInputComboBox
+                        url="categories"
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="w-1/2">
+              <FormField
+                control={form.control}
+                name="imageId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Изображение</FormLabel>
+                    <FormControl>
+                      <ApiInputFile
+                        value={field.value}
+                        onChange={field.onChange}
+                        allowedTypes={['image/jpeg', 'image/png']}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+          <FormField
+            control={form.control}
+            name="longTitle"
+            render={({ field: { value, ...field } }) => (
+              <FormItem>
+                <FormLabel>Расширенное название</FormLabel>
+                <FormControl>
+                  <Input value={value || ''} {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="description"
-            render={({ field }) => (
+            render={({ field: { value, onChange } }) => (
               <FormItem>
                 <FormLabel>Описание</FormLabel>
                 <FormControl>
-                  <Textarea {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="parentId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Родительская</FormLabel>
-                <FormControl>
-                  <ApiInputComboBox
-                    url="categories"
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="imageId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Изображение</FormLabel>
-                <FormControl>
-                  <ApiInputFile value={field.value} onChange={field.onChange} allowedTypes={['image/jpeg', 'image/png']} />
+                  <EditorInput value={value || ''} onChange={onChange} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

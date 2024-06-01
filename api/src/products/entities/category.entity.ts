@@ -18,6 +18,9 @@ export class Category {
   @Property()
   title: string
 
+  @Property({ nullable: true, type: 'varchar' })
+  longTitle?: string | null = null
+
   @Property({ unique: true })
   alias: string
 

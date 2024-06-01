@@ -12,11 +12,17 @@ export interface UserRoleEntity {
   scope: string[] | null
 }
 
+export interface BrandEntity {
+  id: number
+  title: string
+}
+
 export interface CategoryEntity {
   id: number
   parent: number | CategoryEntity | null
   image: number | FileEntity | null
   title: string
+  longTitle: string | null
   alias: string
   description: string | null
   active: boolean
@@ -26,12 +32,18 @@ export interface CategoryEntity {
 export interface ProductEntity {
   id: number
   price: number
+  oldPrice: number | null
+  brand: number | BrandEntity | null
   title: string
+  longTitle: string | null
   alias: string
   description: string | null
   sku: string | null
   file: FileEntity | null
   active: boolean
+  recent: boolean
+  favorite: boolean
+  inStock: boolean
 }
 
 export type FileEntity = {

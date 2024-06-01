@@ -13,6 +13,7 @@ import { Category } from '../entities/category.entity'
 import { UpdateProductCategoryDto } from '../dto/update-product-category.dto'
 import { EntityRepository, QueryOrder } from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
+import { Brand } from '../entities/brand.entity'
 
 @Injectable()
 export class ProductsService {
@@ -23,13 +24,19 @@ export class ProductsService {
     private productImageRepository: EntityRepository<ProductImage>,
     @InjectRepository(Category)
     private categoryRepository: EntityRepository<Category>,
+    @InjectRepository(Brand)
+    private brandRepository: EntityRepository<Brand>,
     private storageService: StorageService
   ) {}
 
-  async create({ ...fillable }: CreateProductDto) {
+  async create({ brandId, ...fillable }: CreateProductDto) {
     const product = new Product()
 
     this.productsRepository.assign(product, fillable)
+
+    if (typeof brandId !== 'undefined') {
+      product.brand = brandId ? await this.brandRepository.findOneOrFail({ id: +brandId }) : null
+    }
 
     await this.productsRepository.getEntityManager().persistAndFlush(product)
 
@@ -45,10 +52,14 @@ export class ProductsService {
     return this.productsRepository.findOneOrFail({ id })
   }
 
-  async update(id: number, { ...fillable }: UpdateProductDto) {
+  async update(id: number, { brandId, ...fillable }: UpdateProductDto) {
     const product = await this.findOne(id)
 
     this.productsRepository.assign(product, fillable)
+
+    if (typeof brandId !== 'undefined') {
+      product.brand = brandId ? await this.brandRepository.findOneOrFail({ id: +brandId }) : null
+    }
 
     await this.productsRepository.getEntityManager().persistAndFlush(product)
   }

@@ -16,12 +16,19 @@ export function ProductsUpdatePage({ initialData }: ProductsUpdatePageProps) {
     method: 'PATCH',
     schema: ProductFormSchema,
     defaultValues: {
-      active: initialData.active,
-      description: initialData.description || '',
       title: initialData.title,
       alias: initialData.alias,
       price: initialData.price,
-      sku: initialData.sku || ''
+      oldPrice: initialData.oldPrice,
+      longTitle: initialData.longTitle,
+      description: initialData.description,
+      sku: initialData.sku,
+      brandId:
+        typeof initialData.brand === 'number' ? initialData.brand : initialData.brand?.id || null,
+      active: initialData.active,
+      recent: initialData.recent,
+      favorite: initialData.favorite,
+      inStock: initialData.inStock
     },
     mapValues: (values) => {
       values.alias = slugify(values.alias || values.title)

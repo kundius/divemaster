@@ -3,12 +3,10 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { apiGet } from '@/lib/api'
 import { getApiUrl, uploadFile } from '@/lib/utils'
 import { FileEntity } from '@/types'
-import { TrashIcon } from '@heroicons/react/24/outline'
+import { ArrowPathIcon, TrashIcon } from '@heroicons/react/24/outline'
 import { DownloadIcon, ExclamationTriangleIcon, InfoCircledIcon } from '@radix-ui/react-icons'
-import classNames from 'classnames'
 import React, { useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
-import styles from './index.module.scss'
 
 export interface ApiInputFileProps {
   errorMessage?: React.ReactNode
@@ -38,15 +36,17 @@ export function ApiInputFile({
   const value = controlledValue || uncontrolledValue
   const setValue = controlledOnChange || setUncontrolledValue
 
+  const isValueWithoutEntity = !!value && !fileEntity
+
   useEffect(() => {
-    if (!!value && !fileEntity) {
+    const initialLoad = async () => {
+      setFileEntity(await apiGet<FileEntity>(`files/${value}`))
+    }
+
+    if (isValueWithoutEntity) {
       initialLoad()
     }
-  }, [])
-
-  const initialLoad = async () => {
-    setFileEntity(await apiGet<FileEntity>(`files/${value}`))
-  }
+  }, [isValueWithoutEntity, value])
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     multiple: false,
@@ -122,21 +122,6 @@ export function ApiInputFile({
   const renderActions = () => {
     const actions: React.ReactNode[] = []
 
-    if (isLoading) {
-      actions.push(
-        <Button
-          key="loading"
-          type="button"
-          size="sm-icon"
-          loading
-          onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-            e.preventDefault()
-            e.stopPropagation()
-          }}
-        />
-      )
-    }
-
     if (!!(loadingError || errorMessage || infoMessage)) {
       actions.push(
         <Popover open={showMessage} onOpenChange={setShowMessage}>
@@ -144,8 +129,8 @@ export function ApiInputFile({
             <Button
               key="message"
               type="button"
-              size="sm-icon"
-              variant="outline"
+              size="icon"
+              variant="ghost"
               onClick={handleShowMessage}
             >
               {loadingError || errorMessage ? (
@@ -165,8 +150,8 @@ export function ApiInputFile({
         <Button
           key="download"
           type="button"
-          size="sm-icon"
-          variant="outline"
+          size="icon"
+          variant="ghost"
           onClick={handleDownloadClick}
         >
           <DownloadIcon className="w-4 h-4" />
@@ -174,44 +159,33 @@ export function ApiInputFile({
       )
     }
 
-    if (!!value) {
+    if (!!value && !!fileEntity) {
       actions.push(
-        <Button
-          key="delete"
-          type="button"
-          size="sm-icon"
-          variant="destructive-outline"
-          onClick={handleDeleteClick}
-        >
+        <Button key="delete" type="button" size="icon" variant="ghost" onClick={handleDeleteClick}>
           <TrashIcon className="w-4 h-4" />
         </Button>
       )
     }
 
     if (actions.length > 0) {
-      return <div className={styles.actions}>{actions}</div>
+      return <div className="flex items-center">{actions}</div>
     }
 
     return null
   }
 
-  const renderedActions = renderActions()
-
   return (
-    <div
-      {...getRootProps({
-        className: classNames(styles.input, {
-          [styles.inputDragActive]: isDragActive,
-          [styles.inputNotEmpty]: !!fileEntity,
-          [styles.inputError]: !!loadingError
-        })
-      })}
-    >
-      <input {...getInputProps()} />
-
-      <div className={styles.name}>{fileEntity?.file || placeholder}</div>
-
-      {renderedActions}
+    <div className="flex items-center gap-2">
+      <Button
+        type="button"
+        loading={isLoading || isValueWithoutEntity}
+        variant={!!loadingError ? 'destructive-outline' : 'outline'}
+        {...getRootProps()}
+      >
+        <input {...getInputProps()} />
+        {isValueWithoutEntity ? 'Загрузка...' : fileEntity ? fileEntity.file : placeholder}
+      </Button>
+      {renderActions()}
     </div>
   )
 }

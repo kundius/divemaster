@@ -94,13 +94,10 @@ export function ApiInputComboBox<TRow extends unknown = unknown>(
   if (dir) {
     loadParams.dir = dir
   }
-
   const swrQuery = useSWR<LoadData<TRow>>([url, loadParams])
 
   // Загрузить модель для значения по умолчанию
-
   const isValueWithoutSelected = !!value && !selected
-
   useEffect(() => {
     const load = async () => {
       setSelected(await apiGet<TRow>(`${url}/${value}`))
@@ -111,13 +108,11 @@ export function ApiInputComboBox<TRow extends unknown = unknown>(
   }, [value, isValueWithoutSelected, url])
 
   // Рассчитать ширину поповера относительно кнопки
-
   const resizeHandler = () => {
     if (!buttonRef.current) return
     const { width } = buttonRef.current.getBoundingClientRect()
     setWidth(width)
   }
-
   useEffect(() => {
     window.addEventListener('resize', resizeHandler)
     resizeHandler()
@@ -133,12 +128,12 @@ export function ApiInputComboBox<TRow extends unknown = unknown>(
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between"
+          className="w-full"
           loading={isValueWithoutSelected}
           ref={buttonRef}
         >
-          {isValueWithoutSelected ? '' : selected ? renderText(selected) : placeholder}
-          <ChevronUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          {isValueWithoutSelected ? 'Загрузка...' : selected ? renderText(selected) : placeholder}
+          <ChevronUpDownIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="p-0" style={{ width }}>

@@ -2,13 +2,14 @@
 
 import { useApiForm } from '@/components/lib/ApiForm'
 import { slugify } from '@/lib/utils'
+import { CategoryEntity } from '@/types'
 import { useRouter } from 'next/navigation'
 import { CategoryForm, CategoryFormFields, CategoryFormSchema } from '../CategoryForm'
 import { PageHeader } from '../PageHeader'
 
 export function CategoriesAddPage() {
   const router = useRouter()
-  const [form, onSubmit] = useApiForm<CategoryFormFields>({
+  const [form, onSubmit] = useApiForm<CategoryFormFields, CategoryEntity>({
     url: `categories`,
     method: 'POST',
     schema: CategoryFormSchema,
@@ -19,14 +20,15 @@ export function CategoriesAddPage() {
     },
     defaultValues: {
       active: true,
-      description: '',
       title: '',
       alias: '',
+      description: null,
+      longTitle: null,
       parentId: null,
       imageId: null
     },
-    onSuccess: () => {
-      router.push('/admin/categories')
+    onSuccess: (data) => {
+      router.push(`/admin/categories/${data.id}`)
     }
   })
   return (

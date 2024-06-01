@@ -21,7 +21,7 @@ export class CategoriesService {
 
     this.categoriesRepository.assign(category, fillable)
 
-    if (typeof parentId === 'undefined') {
+    if (typeof parentId !== 'undefined') {
       category.parent = parentId ? await this.findOne(parentId) : null
     }
     if (typeof imageId !== 'undefined') {

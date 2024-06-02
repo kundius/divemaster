@@ -1,24 +1,12 @@
 'use client'
 
-import { DataTable, DataTableColumn } from '@/components/admin/DataTable'
-import { FilterField } from '@/components/admin/Filter'
-import { PageHeaderProps } from '@/components/admin/PageHeader'
-import { ApiRemoveDialog } from '@/components/lib/ApiRemoveDialog'
-import { useApiTable } from '@/components/lib/ApiTable'
-import { Button } from '@/components/ui/button'
-import { ProductEntity } from '@/types'
-import { CheckCircleIcon, XCircleIcon, PencilIcon } from '@heroicons/react/24/outline'
-import { TrashIcon } from '@radix-ui/react-icons'
-import Link from 'next/link'
-import { data } from 'tailwindcss/defaultTheme'
 import { useResorces } from '@/components/lib/Resources'
-import { ProductCard } from '../ProductCard'
 import { getFileUrl } from '@/lib/utils'
+import { ProductEntity } from '@/types'
+import { ProductCard } from '../ProductCard'
 
 export function Products() {
   const { total, rows } = useResorces<ProductEntity>()
-
-  // console.log(rows)
 
   return (
     <div className="grid grid-cols-4 gap-4">

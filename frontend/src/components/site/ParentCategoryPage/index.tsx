@@ -10,8 +10,8 @@ import { Suspense } from 'react'
 import { Products } from './Products'
 import { Resorces } from '@/components/lib/Resources'
 import { ResorcesSyncParams } from '@/components/lib/Resources/SyncSearchParams'
-import { Pagination } from '@/components/lib/Resources/Pagination'
 import { CategoryContent } from '../CategoryContent'
+import { CategoryPagination } from '../CategoryPagination'
 
 export interface ParentCategoryPageProps {
   alias: string
@@ -100,7 +100,7 @@ export async function ParentCategoryPage({ alias }: ParentCategoryPageProps) {
           </div>
           <div className="w-4/5">
             <Products />
-            <Pagination />
+            <CategoryPagination />
           </div>
         </div>
         <CategoryContent

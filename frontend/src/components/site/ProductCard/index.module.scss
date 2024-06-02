@@ -270,13 +270,11 @@
   justify-content: flex-start;
   font-size: 18px;
   line-height: 20px;
-  margin-top: 12px;
 
   @include --max-md {
     font-size: 12px;
     line-height: 1.2;
     gap: 8px;
-    margin-top: 4px;
   }
 }
 
@@ -296,12 +294,13 @@
   flex-grow: 1;
   display: flex;
   align-items: center;
-  margin: -20px -20px 0; // fix lags
+  margin: -20px -20px 12px; // fix lags
 
   @include --max-md {
     margin-top: -6px;
     margin-left: -6px;
     margin-right: -6px;
+    margin-bottom: 4px;
   }
 }
 

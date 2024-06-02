@@ -6,7 +6,6 @@ import { CategoryEntity } from '@/types'
 import { useRouter } from 'next/navigation'
 import { CategoryForm, CategoryFormFields, CategoryFormSchema } from '../CategoryForm'
 import { PageHeader } from '../PageHeader'
-import { Suspense } from 'react'
 
 export interface CategoriesEditPageProps {
   initialData: CategoryEntity

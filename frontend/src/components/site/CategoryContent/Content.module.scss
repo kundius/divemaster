@@ -1,0 +1,106 @@
+.content {
+  font-size: 18px;
+  color: rgb(0, 0, 0);
+  line-height: 1.2;
+
+  h2 {
+    font-size: 28px;
+    font-weight: bold;
+  }
+  * + h2 {
+    margin-top: 24px;
+
+    @include --max-lg {
+      margin-top: 16px;
+    }
+  }
+  h3 {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  * + h3 {
+    margin-top: 24px;
+
+    @include --max-lg {
+      margin-top: 16px;
+    }
+  }
+  h4 {
+    font-size: 22px;
+    font-weight: bold;
+  }
+  * + h4 {
+    margin-top: 24px;
+
+    @include --max-lg {
+      margin-top: 16px;
+    }
+  }
+  p {
+    margin: 0;
+  }
+  * + p {
+    margin-top: 24px;
+
+    @include --max-lg {
+      margin-top: 16px;
+    }
+  }
+  ul {
+    margin: 12px 0 36px;
+    padding: 0;
+    list-style: none;
+    li {
+      padding-left: 60px;
+      position: relative;
+      margin-top: 2px;
+      &::before {
+        content: '';
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #00cdff;
+        position: absolute;
+        top: 2px;
+        left: 34px;
+      }
+    }
+    @include --max-xl {
+      li {
+        &::before {
+          top: 4px;
+        }
+      }
+    }
+    @include --max-lg {
+      margin-bottom: 16px;
+      li {
+        padding-left: 20px;
+        &::before {
+          left: 2px;
+        }
+      }
+    }
+    @include --max-md {
+      margin-bottom: 32px;
+      li {
+        padding-left: 36px;
+        margin-top: 12px;
+        &::before {
+          content: '';
+          width: 8px;
+          height: 8px;
+          top: 4px;
+          left: 12px;
+        }
+      }
+    }
+  }
+  * + ul {
+    margin-top: 24px;
+
+    @include --max-lg {
+      margin-top: 16px;
+    }
+  }
+}

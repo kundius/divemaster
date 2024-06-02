@@ -13,7 +13,7 @@ export class FindAllProductQueryDto extends PaginationQueryDto<Product> {
   @Type(() => Number)
   @IsNumber()
   @IsOptional()
-  readonly parent?: number
+  readonly category?: number
 
   get where() {
     const where: FilterQuery<Product> = {}
@@ -22,17 +22,17 @@ export class FindAllProductQueryDto extends PaginationQueryDto<Product> {
         $like: '%' + this.query + '%'
       }
     }
-    if (typeof this.parent !== 'undefined') {
+    if (typeof this.category !== 'undefined') {
       // TODO: HIERARCHY_DEPTH_LIMIT
       // товары выбираются без учета подкатегорий
       where.categories = {
         $some: {
           $or: [
             {
-              id: this.parent
+              id: this.category
             }
             // {
-            //   parent: this.parent
+            //   parent: this.category
             // }
           ]
         }

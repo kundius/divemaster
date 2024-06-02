@@ -21,7 +21,7 @@ export interface ResorcesParams {
   page: number
   limit: number
 
-  [key: string]: string | number
+  [key: string]: string | number | string[]
 }
 
 interface ResorcesContextValue<TRow> {

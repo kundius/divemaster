@@ -19,7 +19,7 @@ export interface ParentCategoryPageProps {
 
 export async function ParentCategoryPage({ alias }: ParentCategoryPageProps) {
   // TODO: HIERARCHY_DEPTH_LIMIT
-  // в populate указана необходимоя вложенность родителей
+  // в populate указана необходимая вложенность родителей
   const category = await apiGet<CategoryEntity>(`categories/alias:${alias}`, {
     populate: ['children', 'parent', 'parent.parent']
   })
@@ -52,7 +52,10 @@ export async function ParentCategoryPage({ alias }: ParentCategoryPageProps) {
   })
 
   return (
-    <Resorces<ProductEntity> url="products" defaultParams={{ limit: 24, parent: category.id }}>
+    <Resorces<ProductEntity>
+      url="products"
+      defaultParams={{ limit: 24, category: category.id, populate: ['images', 'brand'] }}
+    >
       <Container>
         <Suspense fallback="loading">
           <ResorcesSyncParams />

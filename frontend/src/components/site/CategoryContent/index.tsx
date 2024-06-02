@@ -1,8 +1,8 @@
-import Image from 'next/image'
-import styles from './index.module.scss'
-import { cn } from '@/lib/utils'
+import { Content } from './Content'
 import { Discount } from './Discount'
 import { Guest } from './Guest'
+import { Questions } from './Questions'
+import styles from './index.module.scss'
 
 export interface CategoryContentProps {
   title?: string
@@ -24,10 +24,10 @@ export function CategoryContent({ title, content }: CategoryContentProps) {
     if (parsedContent.length === 2) {
       return (
         <div className={styles.grid}>
-          <div className={styles.content} dangerouslySetInnerHTML={{ __html: parsedContent[0] }} />
+          <Content content={parsedContent[0]} />
           <Discount />
           <Guest />
-          <div className={styles.content} dangerouslySetInnerHTML={{ __html: parsedContent[1] }} />
+          <Content content={parsedContent[1]} />
         </div>
       )
     }
@@ -35,7 +35,7 @@ export function CategoryContent({ title, content }: CategoryContentProps) {
     if (parsedContent.length === 1) {
       return (
         <div className={styles.grid}>
-          <div className={styles.content} dangerouslySetInnerHTML={{ __html: parsedContent[0] }} />
+          <Content content={parsedContent[0]} />
           <Guest />
         </div>
       )
@@ -49,17 +49,10 @@ export function CategoryContent({ title, content }: CategoryContentProps) {
   }
   if (!content && !title) return null
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.block}>
       {title && <div className={styles.title} dangerouslySetInnerHTML={{ __html: title }} />}
       {renderContent()}
-      <div className={styles.questions}>
-        <div className={styles.questionsTitle}>Остались вопросы?</div>
-        <div className={styles.questionsContent}>
-          Позвоните нам по телефону +7 (906) 586-55-55 или напишите
-          <br />
-          на <a href="mailto:info@divemaster.pro">info@divemaster.pro</a>
-        </div>
-      </div>
+      <Questions />
     </div>
   )
 }

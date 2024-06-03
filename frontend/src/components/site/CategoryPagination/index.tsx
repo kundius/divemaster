@@ -4,7 +4,7 @@ import { useResorces } from '@/components/lib/Resources'
 import { Pagination as SitePagination } from '@/components/site/Pagination'
 
 export function CategoryPagination() {
-  const { params, total, setParams } = useResorces()
+  const { params, total, setParams, listRef } = useResorces()
 
   const onChange = (page: number, limit: number) => {
     setParams({
@@ -12,6 +12,9 @@ export function CategoryPagination() {
       page,
       limit
     })
+    if (listRef.current) {
+      listRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
   }
 
   if (total <= params.limit) {

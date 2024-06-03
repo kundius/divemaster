@@ -1,6 +1,7 @@
 import {
   Collection,
   Entity,
+  Filter,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -12,6 +13,10 @@ import { ProductImage } from './product-image.entity'
 import { Brand } from './brand.entity'
 
 @Entity()
+@Filter({ name: 'active', cond: { active: { $eq: true } } })
+@Filter({ name: 'recent', cond: { recent: { $eq: true } } })
+@Filter({ name: 'favorite', cond: { favorite: { $eq: true } } })
+@Filter({ name: 'inStock', cond: { inStock: { $eq: true } } })
 export class Product {
   @PrimaryKey()
   id: number

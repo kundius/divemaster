@@ -5,11 +5,11 @@ import { getFileUrl } from '@/lib/utils'
 import { ProductEntity } from '@/types'
 import { ProductCard } from '../ProductCard'
 
-export function Products() {
-  const { total, rows } = useResorces<ProductEntity>()
+export function CategoryProducts() {
+  const { total, rows, listRef } = useResorces<ProductEntity>()
 
   return (
-    <div className="grid grid-cols-4 gap-4">
+    <div className="grid grid-cols-4 gap-5 scroll-mt-48 max-2xl:scroll-mt-40 max-2xl:grid-cols-3" ref={listRef}>
       {rows.map((item) => (
         <ProductCard
           key={item.id}

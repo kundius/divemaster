@@ -4,20 +4,11 @@ import { usePrevNextButtons } from '@/components/lib/EmblaCarousel/usePrevNextBu
 import { ProductCard } from '@/components/site/ProductCard'
 import useEmblaCarousel from 'embla-carousel-react'
 import styles from './index.module.scss'
+import { ProductEntity } from '@/types'
+import { getFileUrl } from '@/lib/utils'
 
 export interface BestDdealCarouselProps {
-  items: {
-    images: string[]
-    hit: boolean
-    new: boolean
-    discount: number
-    price: number
-    oldPrice?: number
-    title: string
-    brand: string
-    colors: string[]
-    sizes: string[]
-  }[]
+  items: ProductEntity[]
 }
 
 export function BestDdealCarousel({ items }: BestDdealCarouselProps) {
@@ -40,7 +31,21 @@ export function BestDdealCarousel({ items }: BestDdealCarouselProps) {
           <div className={styles.container}>
             {items.map((item, i) => (
               <div className={styles.slide} key={i}>
-                <ProductCard {...item} />
+                <ProductCard
+                  key={item.id}
+                  id={item.id}
+                  title={item.title}
+                  price={item.price}
+                  favorite={item.favorite}
+                  recent={item.recent}
+                  oldPrice={item.oldPrice || undefined}
+                  images={item.images ? item.images.map((item) => getFileUrl(item.file)) : []}
+                  brand={
+                    item.brand !== null && typeof item.brand === 'object'
+                      ? item.brand.title
+                      : undefined
+                  }
+                />
               </div>
             ))}
           </div>

@@ -1,6 +1,7 @@
 import {
   Collection,
   Entity,
+  Filter,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -11,6 +12,7 @@ import { Product } from './product.entity'
 import { File } from '@/storage/entities/file.entity'
 
 @Entity()
+@Filter({ name: 'active', cond: { active: { $eq: true } } })
 export class Category {
   @PrimaryKey()
   id: number

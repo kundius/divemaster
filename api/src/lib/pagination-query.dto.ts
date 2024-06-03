@@ -35,6 +35,11 @@ export class PaginationQueryDto<Entity = unknown> {
   @IsOptional()
   readonly populate?: never[]
 
+  @Transform(({ value }) => value.split(','))
+  @IsArray()
+  @IsOptional()
+  readonly filters?: never[]
+
   get take(): number {
     return this.limit
   }
@@ -65,6 +70,9 @@ export class PaginationQueryDto<Entity = unknown> {
     }
     if (this.populate) {
       output.populate = this.populate
+    }
+    if (this.filters) {
+      output.filters = this.filters
     }
     return output
   }

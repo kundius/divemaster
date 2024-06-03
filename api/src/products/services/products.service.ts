@@ -14,6 +14,7 @@ import { UpdateProductCategoryDto } from '../dto/update-product-category.dto'
 import { EntityRepository, QueryOrder } from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { Brand } from '../entities/brand.entity'
+import { FindOneProductQueryDto } from '../dto/find-one-product-query.dto'
 
 @Injectable()
 export class ProductsService {
@@ -48,8 +49,8 @@ export class ProductsService {
     return { rows, total }
   }
 
-  async findOne(id: number) {
-    return this.productsRepository.findOneOrFail({ id })
+  async findOne(id: number, query?: FindOneProductQueryDto) {
+    return this.productsRepository.findOneOrFail({ id }, query?.options)
   }
 
   async update(id: number, { brandId, ...fillable }: UpdateProductDto) {

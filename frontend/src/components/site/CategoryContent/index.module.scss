@@ -4,19 +4,21 @@
 }
 
 .grid {
+  --gap: 48px;
+
   background: url('./assets/divemaster.png') no-repeat 50% 50%;
   display: grid;
-  gap: 48px;
-  grid-template-columns: 1fr 1fr;
+  gap: var(--gap);
+  grid-template-columns: calc(50% - calc(var(--gap) / 2)) calc(50% - calc(var(--gap) / 2));
 
   @include --max-xl {
-    gap: 36px;
+    --gap: 36px;
   }
   @include --max-lg {
-    gap: 24px;
+    --gap: 24px;
   }
   @include --max-md {
-    gap: 16px;
+    --gap: 16px;
   }
 }
 

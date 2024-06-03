@@ -8,7 +8,9 @@ import {
   SetStateAction,
   Dispatch,
   useContext,
-  useEffect
+  useEffect,
+  useRef,
+  MutableRefObject
 } from 'react'
 import useSWR from 'swr'
 
@@ -21,7 +23,7 @@ export interface ResorcesParams {
   page: number
   limit: number
 
-  [key: string]: string | number | string[]
+  [key: string]: string | string[] | number | boolean
 }
 
 interface ResorcesContextValue<TRow> {
@@ -32,6 +34,7 @@ interface ResorcesContextValue<TRow> {
   params: ResorcesParams
   defaultParams: ResorcesParams
   setParams: Dispatch<SetStateAction<ResorcesParams>>
+  listRef: MutableRefObject<HTMLDivElement | null>
 }
 
 const ResorcesContext = createContext<ResorcesContextValue<unknown>>(null!)
@@ -49,6 +52,14 @@ export function Resorces<TRow extends unknown>({
   initialData
 }: PropsWithChildren<ResorcesProps<TRow>>) {
   const [params, setParams] = useState<ResorcesParams>({ ...DEFAULT_PARAMS, ...defaultParams })
+  const listRef = useRef<HTMLDivElement | null>(null)
+
+  // const setListRef = (value: any) => {
+  //   listRef.current = value
+  // }
+  // const getListRef = (value: any) => {
+  //   return listRef.current
+  // }
 
   const swrQuery = useSWR<ApiTableData<TRow>>([url, params])
   const refetch = () => swrQuery.mutate(swrQuery.data, { revalidate: true })
@@ -78,7 +89,8 @@ export function Resorces<TRow extends unknown>({
         loading: swrQuery.isLoading,
         defaultParams: { ...DEFAULT_PARAMS, ...defaultParams },
         params,
-        setParams
+        setParams,
+        listRef
       }}
     >
       {children}

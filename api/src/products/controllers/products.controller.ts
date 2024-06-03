@@ -20,6 +20,7 @@ import { diskStorage } from 'multer'
 import { UpdateProductImageDto } from '../dto/update-product-image.dto'
 import { SortProductImageDto } from '../dto/sort-product-image.dto'
 import { UpdateProductCategoryDto } from '../dto/update-product-category.dto'
+import { FindOneProductQueryDto } from '../dto/find-one-product-query.dto'
 
 @Controller('products')
 export class ProductsController {
@@ -36,8 +37,8 @@ export class ProductsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productsService.findOne(+id)
+  findOne(@Param('id') id: string, @Query() query: FindOneProductQueryDto) {
+    return this.productsService.findOne(+id, query)
   }
 
   @Patch(':id')

@@ -8,10 +8,18 @@ export class FindOneQueryDto<Entity extends object> {
   @IsOptional()
   readonly populate?: never[]
 
+  @Transform(({ value }) => value.split(','))
+  @IsArray()
+  @IsOptional()
+  readonly filters?: never[]
+
   get options(): FindOneOptions<Entity, never, '*', never> {
     const output: FindOneOptions<Entity, never, '*', never> = {}
     if (this.populate) {
       output.populate = this.populate
+    }
+    if (this.filters) {
+      output.filters = this.filters
     }
     return output
   }

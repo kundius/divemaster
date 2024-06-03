@@ -14,10 +14,10 @@ export default function CatalogButtonContent() {
   const query = useSWR<ApiTableData<CategoryEntity>>([
     `categories`,
     {
-      active: true,
       parent: 0,
       all: 1,
-      populate: ['children']
+      populate: ['children'],
+      filters: ['active']
     }
   ])
 

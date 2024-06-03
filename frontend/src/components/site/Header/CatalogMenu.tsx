@@ -7,10 +7,10 @@ import styles from './CatalogMenu.module.scss'
 
 export async function CatalogMenu() {
   const data = await apiGet<ApiTableData<CategoryEntity>>('categories', {
-    active: true,
     parent: 0,
     all: 1,
-    populate: ['children']
+    populate: ['children'],
+    filters: ['active']
   })
 
   return (

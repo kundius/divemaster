@@ -1,8 +1,8 @@
 import { PaginationQueryDto } from '@/lib/pagination-query.dto'
+import { FilterQuery } from '@mikro-orm/core'
 import { Type } from 'class-transformer'
 import { IsNumber, IsOptional, IsString } from 'class-validator'
 import { Product } from '../entities/product.entity'
-import { FilterQuery } from '@mikro-orm/core'
 
 export class FindAllProductQueryDto extends PaginationQueryDto<Product> {
   @Type(() => String)

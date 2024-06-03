@@ -2,9 +2,9 @@
 
 import { DataTable, DataTableColumn } from '@/components/admin/DataTable'
 import type { FilterField } from '@/components/admin/Filter'
-import { ApiRemoveDialog } from '@/components/lib/ApiRemoveDialog'
-import { useApiTable } from '@/components/lib/ApiTable'
-import { ApiTableData } from '@/components/lib/ApiTable/types'
+import { ApiRemoveDialog } from '@/lib/ApiRemoveDialog'
+import { useApiTable } from '@/lib/ApiTable'
+import { ApiTableData } from '@/lib/ApiTable/types'
 import { Button } from '@/components/ui/button'
 import { BrandEntity } from '@/types'
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'

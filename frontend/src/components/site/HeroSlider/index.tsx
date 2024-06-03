@@ -3,8 +3,8 @@
 import { cn } from '@/lib/utils'
 import styles from './index.module.scss'
 
-import { useDotButton } from '@/components/lib/EmblaCarousel/useDotButton'
-import { usePrevNextButtons } from '@/components/lib/EmblaCarousel/usePrevNextButtons'
+import { useDotButton } from '@/lib/EmblaCarousel/useDotButton'
+import { usePrevNextButtons } from '@/lib/EmblaCarousel/usePrevNextButtons'
 import { EmblaCarouselType, EmblaEventType } from 'embla-carousel'
 import useEmblaCarousel from 'embla-carousel-react'
 import { ReactNode, useCallback, useEffect, useRef } from 'react'

@@ -1,6 +1,6 @@
 'use client'
 
-import { useApiForm } from '@/components/lib/ApiForm'
+import { useApiForm } from '@/lib/ApiForm'
 import { UserEntity } from '@/types'
 import { useRouter } from 'next/navigation'
 import { PageHeader } from '../PageHeader'

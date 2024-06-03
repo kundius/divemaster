@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
-import { ApiInputComboBox } from '@/components/lib/ApiInputComboBox'
+import { ApiInputComboBox } from '@/lib/ApiInputComboBox'
 import { UseFormReturn } from 'react-hook-form'
 import { z } from 'zod'
 

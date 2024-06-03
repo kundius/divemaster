@@ -1,6 +1,6 @@
 'use client'
 
-import { useResorces } from '@/components/lib/Resources'
+import { useResorces } from '@/lib/Resources'
 import { Pagination as SitePagination } from '@/components/site/Pagination'
 
 export function CategoryPagination() {

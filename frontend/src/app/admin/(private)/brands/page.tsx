@@ -1,6 +1,6 @@
 import { BrandsPage } from '@/components/admin/BrandsPage'
-import { DEFAULT_LIMIT } from '@/components/lib/ApiTable/constants'
-import { ApiTableData } from '@/components/lib/ApiTable/types'
+import { DEFAULT_LIMIT } from '@/lib/ApiTable/constants'
+import { ApiTableData } from '@/lib/ApiTable/types'
 import { apiGet } from '@/lib/api'
 import { withServerAuth } from '@/lib/api/with-server-auth'
 import { BrandEntity, PageProps } from '@/types'

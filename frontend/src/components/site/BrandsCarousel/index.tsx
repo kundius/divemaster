@@ -1,6 +1,6 @@
 'use client'
 
-import { usePrevNextButtons } from '@/components/lib/EmblaCarousel/usePrevNextButtons'
+import { usePrevNextButtons } from '@/lib/EmblaCarousel/usePrevNextButtons'
 import Autoplay from 'embla-carousel-autoplay'
 import useEmblaCarousel from 'embla-carousel-react'
 import { useMediaQuery } from 'react-responsive'

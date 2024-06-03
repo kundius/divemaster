@@ -45,6 +45,7 @@ export interface ProductEntity {
   favorite: boolean
   inStock: boolean
   images?: ProductImageEntity[]
+  categories?: CategoryEntity[]
 }
 
 export type FileEntity = {

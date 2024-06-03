@@ -1,6 +1,6 @@
 'use client'
 
-import { ApiTableData } from '@/components/lib/ApiTable/types'
+import { ApiTableData } from '@/lib/ApiTable/types'
 import {
   PropsWithChildren,
   useState,

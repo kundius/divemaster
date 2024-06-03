@@ -1,7 +1,7 @@
 'use client'
 
-import { useDotButton } from '@/components/lib/EmblaCarousel/useDotButton'
-import { usePrevNextButtons } from '@/components/lib/EmblaCarousel/usePrevNextButtons'
+import { useDotButton } from '@/lib/EmblaCarousel/useDotButton'
+import { usePrevNextButtons } from '@/lib/EmblaCarousel/usePrevNextButtons'
 import { cn } from '@/lib/utils'
 import { EmblaCarouselType, EmblaEventType } from 'embla-carousel'
 import useEmblaCarousel from 'embla-carousel-react'

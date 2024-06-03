@@ -9,7 +9,8 @@ import {
   Query,
   UseInterceptors,
   UploadedFile,
-  Put
+  Put,
+  NotFoundException
 } from '@nestjs/common'
 import { ProductsService } from '../services/products.service'
 import { CreateProductDto } from '../dto/create-product.dto'
@@ -34,6 +35,15 @@ export class ProductsController {
   @Get()
   findAll(@Query() query: FindAllProductQueryDto) {
     return this.productsService.findAll(query)
+  }
+
+  @Get('alias::alias')
+  async findOneByAlias(@Param('alias') alias: string, @Query() query: FindOneProductQueryDto) {
+    const product = await this.productsService.findOneByAlias(alias, query)
+    if (!product) {
+      throw new NotFoundException()
+    }
+    return product
   }
 
   @Get(':id')

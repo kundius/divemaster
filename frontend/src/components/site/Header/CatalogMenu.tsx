@@ -1,4 +1,4 @@
-import { ApiTableData } from '@/components/lib/ApiTable/types'
+import { ApiTableData } from '@/lib/ApiTable/types'
 import { apiGet } from '@/lib/api'
 import { cn } from '@/lib/utils'
 import { CategoryEntity } from '@/types'

@@ -1,4 +1,4 @@
-import { ApiTableData } from '@/components/lib/ApiTable/types'
+import { ApiTableData } from '@/lib/ApiTable/types'
 import { AllCategories } from '@/components/site/AllCategories'
 import { BenefitsSlider, BenefitsSliderDiscount } from '@/components/site/BenefitsSlider'
 import { BestDdealCarousel } from '@/components/site/BestDdealCarousel'

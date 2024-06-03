@@ -8,6 +8,7 @@ import Link from 'next/link'
 export interface ProductCardProps {
   id: number
   title: string
+  href: string
   price: number
   images: string[]
 
@@ -22,6 +23,7 @@ export interface ProductCardProps {
 export function ProductCard({
   id,
   title,
+  href,
   favorite = false,
   recent = false,
   images,
@@ -98,7 +100,7 @@ export function ProductCard({
         <div className={styles.realPrice}>{displayPrice(price)}</div>
         {oldPrice && <div className={styles.oldPrice}>{displayPrice(oldPrice)}</div>}
       </div>
-      <Link href={`/product/${id}`} className={styles.title}>
+      <Link href={href} className={styles.title}>
         {title}
       </Link>
       {brand && <div className={styles.brand}>{brand}</div>}

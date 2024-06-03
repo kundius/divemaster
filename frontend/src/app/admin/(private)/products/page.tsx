@@ -1,6 +1,6 @@
 import { ProductsPage } from '@/components/admin/ProductsPage'
-import { DEFAULT_LIMIT } from '@/components/lib/ApiTable/constants'
-import { ApiTableData } from '@/components/lib/ApiTable/types'
+import { DEFAULT_LIMIT } from '@/lib/ApiTable/constants'
+import { ApiTableData } from '@/lib/ApiTable/types'
 import { apiGet } from '@/lib/api'
 import { withServerAuth } from '@/lib/api/with-server-auth'
 import { PageProps, ProductEntity } from '@/types'

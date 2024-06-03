@@ -53,6 +53,10 @@ export class ProductsService {
     return this.productsRepository.findOneOrFail({ id }, query?.options)
   }
 
+  async findOneByAlias(alias: string, query?: FindOneProductQueryDto) {
+    return this.productsRepository.findOne({ alias }, query?.options)
+  }
+
   async update(id: number, { brandId, ...fillable }: UpdateProductDto) {
     const product = await this.findOne(id)
 

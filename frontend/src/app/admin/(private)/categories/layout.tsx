@@ -1,4 +1,4 @@
-import { HasScope } from '@/components/lib/HasScope'
+import { HasScope } from '@/lib/HasScope'
 import { PropsWithChildren } from 'react'
 
 export default function Layout({ children }: PropsWithChildren) {

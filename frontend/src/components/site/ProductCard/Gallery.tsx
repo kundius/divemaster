@@ -2,7 +2,7 @@ import Image from 'next/image'
 import useEmblaCarousel from 'embla-carousel-react'
 import { EmblaCarouselType } from 'embla-carousel'
 import styles from './Gallery.module.scss'
-import { usePrevNextButtons } from '@/components/lib/EmblaCarousel/usePrevNextButtons'
+import { usePrevNextButtons } from '@/lib/EmblaCarousel/usePrevNextButtons'
 import { RefObject, useEffect } from 'react'
 import { cn } from '@/lib/utils'
 

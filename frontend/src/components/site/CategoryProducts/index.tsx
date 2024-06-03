@@ -1,6 +1,6 @@
 'use client'
 
-import { useResorces } from '@/components/lib/Resources'
+import { useResorces } from '@/lib/Resources'
 import { getFileUrl } from '@/lib/utils'
 import { ProductEntity } from '@/types'
 import { ProductCard } from '../ProductCard'
@@ -15,6 +15,7 @@ export function CategoryProducts() {
           key={item.id}
           id={item.id}
           title={item.title}
+          href={`/product/${item.alias}`}
           price={item.price}
           favorite={item.favorite}
           recent={item.recent}

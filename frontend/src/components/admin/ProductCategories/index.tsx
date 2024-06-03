@@ -1,6 +1,6 @@
 'use client'
 
-import { ApiTableData } from '@/components/lib/ApiTable/types'
+import { ApiTableData } from '@/lib/ApiTable/types'
 import { Button } from '@/components/ui/button'
 import { CheckboxTree } from '@/components/ui/checkbox-tree'
 import { Skeleton } from '@/components/ui/skeleton'

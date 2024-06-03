@@ -1,6 +1,6 @@
 'use client'
 
-import { ApiInputComboBox } from '@/components/lib/ApiInputComboBox'
+import { ApiInputComboBox } from '@/lib/ApiInputComboBox'
 import { Button } from '@/components/ui/button'
 import {
   Form,

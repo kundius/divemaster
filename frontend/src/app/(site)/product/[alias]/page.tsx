@@ -23,6 +23,7 @@ import { ReviewsShort } from '@/components/site/ProductPage/ReviewsShort'
 import { SpecButton } from '@/components/site/ProductPage/SpecButton'
 import { CartActions } from '@/components/site/ProductPage/CartActions'
 import { DeliveryInfo } from '@/components/site/ProductPage/DeliveryInfo'
+import { Warranty } from '@/components/site/ProductPage/Warranty'
 
 export async function generateStaticParams() {
   const categories = await apiGet<ApiTableData<ProductEntity>>(`products`, {
@@ -77,9 +78,9 @@ export default async function Page({ params: { alias } }: { params: { alias: str
       <div className="pb-6 pt-6">
         <Breadcrumbs items={crumbs} />
       </div>
-      <div className="flex gap-20">
-        <div className="w-3/5">gallery</div>
-        <div className="w-2/5">
+      <div className={styles.layout}>
+        <div className={styles.layoutGallery}>gallery</div>
+        <div className={styles.layoutInfo}>
           <div className="flex items-center justify-between">
             {!!product.brand && typeof product.brand === 'object' && (
               <div className={styles.brand}>{product.brand.title}</div>
@@ -101,6 +102,10 @@ export default async function Page({ params: { alias } }: { params: { alias: str
           <CartActions />
           <DeliveryInfo />
         </div>
+        <div className={styles.layoutWarranty}>
+          <Warranty />
+        </div>
+        <div className={styles.layoutContent}>layoutContent</div>
       </div>
     </Container>
   )

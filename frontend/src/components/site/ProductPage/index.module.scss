@@ -61,3 +61,31 @@
   font-weight: bold;
   line-height: 1.2;
 }
+
+.layout {
+  --gap: 80px;
+
+  display: grid;
+  column-gap: var(--gap);
+  grid-template-columns: calc(60% - calc(var(--gap) / 2)) calc(40% - calc(var(--gap) / 2));
+}
+
+.layoutGallery {
+  grid-row: 1 / 2;
+  grid-column: 1 / 2;
+}
+
+.layoutInfo {
+  grid-row: 1 / 4;
+  grid-column: 2 / 3;
+}
+
+.layoutWarranty {
+  grid-row: 2 / 3;
+  grid-column: 1 / 2;
+}
+
+.layoutContent {
+  grid-row: 3 / 4;
+  grid-column: 1 / 2;
+}

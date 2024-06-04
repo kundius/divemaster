@@ -1,0 +1,24 @@
+.wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: rgb(158, 158, 158);
+  line-height: 1.2;
+}
+
+.wrap:hover {
+  color: #000;
+}
+
+.wrap::before {
+  content: '';
+  width: 16px;
+  height: 16px;
+  display: block;
+  background: var(--icon-tag-blue);
+}
+
+.wrap span {
+  border-bottom: 1px dashed currentColor;
+}

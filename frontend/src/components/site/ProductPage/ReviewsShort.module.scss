@@ -1,0 +1,43 @@
+.wrap {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  color: rgb(158, 158, 158);
+}
+
+.wrap:hover {
+  color: #000;
+}
+
+.rating {
+  background: #e3e3e3;
+  width: 80px;
+  height: 15px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.rating::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background: url('/rating.png') 0 0 no-repeat;
+}
+
+.ratingFill {
+  background: #5054fe;
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+}
+
+.count {
+  font-size: 12px;
+  line-height: 1.2;
+  border-bottom: 1px dashed currentColor;
+  white-space: nowrap;
+}

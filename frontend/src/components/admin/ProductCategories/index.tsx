@@ -9,6 +9,7 @@ import { withClientAuth } from '@/lib/api/with-client-auth'
 import { CategoryEntity } from '@/types'
 import { useEffect, useMemo, useState } from 'react'
 import useSWR from 'swr'
+import { OnCheckNode } from 'react-checkbox-tree'
 
 export interface ProductCategoriesProps {
   productId: number
@@ -79,6 +80,32 @@ export function ProductCategories({ productId }: ProductCategoriesProps) {
     setSaving(false)
   }
 
+  const checkTree = (value: string) => {
+    const rows = categoriesQuery.data?.rows || []
+
+    function findTreeIds(data: CategoryEntity[], id: number): string[] {
+      const res: string[] = []
+      const forFn = function (arr: CategoryEntity[], key: number) {
+        for (let i = 0; i < arr.length; i += 1) {
+          const item = arr[i]
+          if (item.id === key) {
+            res.push(String(item.id))
+            if (item.parent) {
+              forFn(data, typeof item.parent === 'number' ? item.parent : item.parent.id)
+            }
+            break
+          } else if (item.children) {
+            forFn(item.children, key)
+          }
+        }
+      }
+      forFn(data, id)
+      return res
+    }
+
+    setChecked((prev) => [...prev, ...findTreeIds(rows, Number(value))])
+  }
+
   return (
     <div>
       <div className="justify-end flex items-center mb-4">
@@ -104,7 +131,12 @@ export function ProductCategories({ productId }: ProductCategoriesProps) {
             nodes={nodes}
             checked={checked}
             expanded={expanded}
-            onCheck={(checked) => setChecked(checked)}
+            onCheck={(checked, targetNode) => {
+              setChecked(checked)
+              if (targetNode.checked) {
+                checkTree(targetNode.value)
+              }
+            }}
             onExpand={(expanded) => setExpanded(expanded)}
             noCascade
           />

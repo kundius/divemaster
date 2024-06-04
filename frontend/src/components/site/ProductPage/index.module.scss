@@ -1,0 +1,63 @@
+.brand {
+  font-size: 14px;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-family: var(--sans-narrow);
+  color: #b2b2b2;
+}
+
+.title {
+  font-size: 36px;
+  font-family: var(--font-sans-narrow);
+  color: rgb(0, 0, 0);
+  text-transform: uppercase;
+  line-height: 1.2;
+  margin: 0;
+  font-weight: bold;
+}
+
+.sku {
+  font-size: 12px;
+  color: rgb(172, 172, 188);
+  line-height: 1.2;
+}
+
+.prices {
+}
+
+.discount {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  // background: #e50001;
+  background: linear-gradient( 63deg, #d20001 100%, #fb0001 100%);
+  font-size: 14px;
+  text-transform: uppercase;
+  color: #ffffff;
+  font-weight: 700;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @include --max-md {
+    font-size: 10px;
+    width: 30px;
+    height: 30px;
+  }
+}
+
+
+.oldPrice {
+  font-size: 16px;
+  color: rgb(156, 156, 156);
+  text-decoration: line-through;
+  line-height: 1.2;
+}
+
+.realPrice {
+  font-size: 30px;
+  color: rgb(182, 53, 157);
+  font-weight: bold;
+  line-height: 1.2;
+}

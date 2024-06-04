@@ -35,6 +35,7 @@ export function BestDdealCarousel({ items }: BestDdealCarouselProps) {
                   key={item.id}
                   id={item.id}
                   title={item.title}
+                  href={`/product/${item.alias}`}
                   price={item.price}
                   favorite={item.favorite}
                   recent={item.recent}

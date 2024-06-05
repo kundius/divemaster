@@ -12,9 +12,9 @@ export class ProductContent {
   @Property()
   content: string
 
-  @ManyToOne(() => Product, { primary: true })
-  product: Product
-
   @Property({ default: 0 })
   rank: number = 0
+
+  @ManyToOne(() => Product, { primary: true })
+  product: Product
 }

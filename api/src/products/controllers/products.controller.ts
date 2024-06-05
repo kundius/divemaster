@@ -1,27 +1,30 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  Query,
-  UseInterceptors,
-  UploadedFile,
+  Get,
+  NotFoundException,
+  Param,
+  Patch,
+  Post,
   Put,
-  NotFoundException
+  Query,
+  UploadedFile,
+  UseInterceptors
 } from '@nestjs/common'
-import { ProductsService } from '../services/products.service'
-import { CreateProductDto } from '../dto/create-product.dto'
-import { UpdateProductDto } from '../dto/update-product.dto'
-import { FindAllProductQueryDto } from '../dto/find-all-product-query.dto'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
-import { UpdateProductImageDto } from '../dto/update-product-image.dto'
+import { CreateProductContentDto } from '../dto/create-product-content.dto'
+import { CreateProductDto } from '../dto/create-product.dto'
+import { FindAllProductQueryDto } from '../dto/find-all-product-query.dto'
+import { FindOneProductQueryDto } from '../dto/find-one-product-query.dto'
+import { SortProductContentDto } from '../dto/sort-product-content.dto'
 import { SortProductImageDto } from '../dto/sort-product-image.dto'
 import { UpdateProductCategoryDto } from '../dto/update-product-category.dto'
-import { FindOneProductQueryDto } from '../dto/find-one-product-query.dto'
+import { UpdateProductContentDto } from '../dto/update-product-content.dto'
+import { UpdateProductImageDto } from '../dto/update-product-image.dto'
+import { UpdateProductDto } from '../dto/update-product.dto'
+import { ProductsService } from '../services/products.service'
 
 @Controller('products')
 export class ProductsController {
@@ -106,5 +109,44 @@ export class ProductsController {
   @UseInterceptors(FileInterceptor('file', { storage: diskStorage({}) }))
   async removeProductImage(@Param('productId') productId: string, @Param('fileId') fileId: string) {
     return this.productsService.removeProductImage(+productId, +fileId)
+  }
+
+  @Get(':productId/content')
+  findAllProductContent(@Param('productId') productId: string) {
+    return this.productsService.findAllProductContent(+productId)
+  }
+
+  @Post(':productId/content')
+  async createProductContent(
+    @Param('productId') productId: string,
+    @Body() dto: CreateProductContentDto
+  ) {
+    return this.productsService.createProductContent(+productId, dto)
+  }
+
+  @Put(':productId/content')
+  async sortProductContent(
+    @Param('productId') productId: string,
+    @Body() dto: SortProductContentDto
+  ) {
+    return this.productsService.sortProductContent(+productId, dto)
+  }
+
+  @Patch(':productId/content/:contentId')
+  async updateProductContent(
+    @Param('productId') productId: string,
+    @Param('contentId') contentId: string,
+    @Body() dto: UpdateProductContentDto
+  ) {
+    return this.productsService.updateProductContent(+productId, +contentId, dto)
+  }
+
+  @Delete(':productId/content/:contentId')
+  @UseInterceptors(FileInterceptor('file', { storage: diskStorage({}) }))
+  async removeProductContent(
+    @Param('productId') productId: string,
+    @Param('contentId') contentId: string
+  ) {
+    return this.productsService.removeProductContent(+productId, +contentId)
   }
 }

@@ -11,9 +11,13 @@ import { Product } from './entities/product.entity'
 import { BrandsService } from './services/brands.service'
 import { CategoriesService } from './services/categories.service'
 import { ProductsService } from './services/products.service'
+import { ProductContent } from './entities/product-content.entity'
 
 @Module({
-  imports: [MikroOrmModule.forFeature([Category, Product, ProductImage, Brand]), StorageModule],
+  imports: [
+    MikroOrmModule.forFeature([Category, Product, ProductImage, Brand, ProductContent]),
+    StorageModule
+  ],
   controllers: [ProductsController, CategoriesController, BrandsController],
   providers: [ProductsService, CategoriesService, BrandsService]
 })

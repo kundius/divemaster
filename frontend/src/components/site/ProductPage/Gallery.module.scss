@@ -1,0 +1,138 @@
+.root {
+  display: flex;
+  gap: 12px;
+}
+
+.mainSlider {
+  --slide-height: 19rem;
+  --slide-spacing: 1rem;
+  --slide-size: 100%;
+
+  flex-grow: 1;
+}
+
+.mainViewport {
+  overflow: hidden;
+}
+
+.mainContainer {
+  backface-visibility: hidden;
+  display: flex;
+  touch-action: pan-y pinch-zoom;
+  margin-left: calc(var(--slide-spacing) * -1);
+}
+
+.mainSlide {
+  flex: 0 0 var(--slide-size);
+  min-width: 0;
+  padding-left: var(--slide-spacing);
+}
+
+.mainFigure {
+  position: relative;
+  aspect-ratio: 1 / 1;
+}
+
+.mainFigure img {
+  object-fit: contain;
+}
+
+.thumbsSlider {
+  --slide-spacing: 8px;
+  --slide-size: 20%;
+
+  width: 120px;
+  flex-shrink: 0;
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.thumbsViewport {
+  overflow: hidden;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.thumbsContainer {
+  backface-visibility: hidden;
+  display: flex;
+  touch-action: pan-x pinch-zoom;
+  margin-top: calc(var(--slide-spacing) * -1);
+  // height: calc(var(--slide-spacing) + var(--slide-height));
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.thumbsSlide {
+  flex: 0 0 var(--slide-size);
+  min-height: 0;
+  padding-top: var(--slide-spacing);
+}
+
+.thumbsFigure {
+  position: relative;
+  border: 1px solid var(--neutral200);
+  width: 100%;
+  height: 100%;
+  opacity: 0.6;
+}
+
+.thumbsFigure img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.thumbsFigureActive {
+  opacity: 1;
+}
+
+.thumbsPrev {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--neutral600);
+
+  &:hover {
+    background: var(--neutral100);
+  }
+  &:disabled {
+    color: var(--neutral200);
+    &:hover {
+      background: transparent;
+    }
+  }
+}
+
+.thumbsNext {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--neutral600);
+
+  &:hover {
+    background: var(--neutral100);
+  }
+  &:disabled {
+    color: var(--neutral200);
+    &:hover {
+      background: transparent;
+    }
+  }
+}

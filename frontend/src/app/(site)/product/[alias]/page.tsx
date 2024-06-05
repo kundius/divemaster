@@ -24,6 +24,7 @@ import { SpecButton } from '@/components/site/ProductPage/SpecButton'
 import { CartActions } from '@/components/site/ProductPage/CartActions'
 import { DeliveryInfo } from '@/components/site/ProductPage/DeliveryInfo'
 import { Warranty } from '@/components/site/ProductPage/Warranty'
+import { Gallery } from '@/components/site/ProductPage/Gallery'
 
 export async function generateStaticParams() {
   const categories = await apiGet<ApiTableData<ProductEntity>>(`products`, {
@@ -79,7 +80,9 @@ export default async function Page({ params: { alias } }: { params: { alias: str
         <Breadcrumbs items={crumbs} />
       </div>
       <div className={styles.layout}>
-        <div className={styles.layoutGallery}>gallery</div>
+        <div className={styles.layoutGallery}>
+          <Gallery items={product.images?.map((item) => getFileUrl(item.file)) || []} />
+        </div>
         <div className={styles.layoutInfo}>
           <div className="flex items-center justify-between">
             {!!product.brand && typeof product.brand === 'object' && (
@@ -96,7 +99,9 @@ export default async function Page({ params: { alias } }: { params: { alias: str
           </div>
           <div className={styles.prices}>
             {discount > 0 && <div className={styles.discount}>-{discount}%</div>}
-            {product.oldPrice && <div className={styles.oldPrice}>{displayPrice(product.oldPrice)}</div>}
+            {product.oldPrice && (
+              <div className={styles.oldPrice}>{displayPrice(product.oldPrice)}</div>
+            )}
             <div className={styles.realPrice}>{displayPrice(product.price)}</div>
           </div>
           <CartActions />

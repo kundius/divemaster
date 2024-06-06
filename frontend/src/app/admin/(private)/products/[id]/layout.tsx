@@ -25,10 +25,6 @@ export default function Layout({
       href: `/admin/products/${params.id}/gallery`
     },
     {
-      title: 'Описание',
-      href: `/admin/products/${params.id}/content`
-    },
-    {
       title: 'Параметры',
       href: `/admin/products/${params.id}/options`
     }

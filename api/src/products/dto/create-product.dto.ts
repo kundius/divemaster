@@ -29,6 +29,16 @@ export class CreateProductDto {
   @IsOptional()
   description?: string
 
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  specifications?: string
+
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  exploitation?: string
+
   @Type(() => Boolean)
   @IsBoolean()
   active: boolean

@@ -20,9 +20,6 @@ export default function Layout({ children }: PropsWithChildren) {
       title: 'Галерея'
     },
     {
-      title: 'Описание'
-    },
-    {
       title: 'Параметры'
     }
   ]

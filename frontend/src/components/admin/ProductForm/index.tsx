@@ -1,7 +1,13 @@
 'use client'
 
-import { ApiInputComboBox } from '@/lib/ApiInputComboBox'
 import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -12,7 +18,8 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
-import { Textarea } from '@/components/ui/textarea'
+import { ApiInputComboBox } from '@/lib/ApiInputComboBox'
+import { EditorInput } from '@/lib/EditorInput'
 import { UseFormReturn } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -22,6 +29,8 @@ export const ProductFormSchema = z.object({
   sku: z.string().trim().nullable(),
   longTitle: z.string().trim().nullable(),
   description: z.string().trim().nullable(),
+  specifications: z.string().trim().nullable(),
+  exploitation: z.string().trim().nullable(),
   price: z.number(),
   oldPrice: z.number().nullable(),
   brandId: z.number().nullable(),
@@ -165,19 +174,79 @@ export function ProductForm({ form, onSubmit }: ProductFormProps) {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field: { value, ...field } }) => (
-              <FormItem>
-                <FormLabel>Описание</FormLabel>
-                <FormControl>
-                  <Textarea value={value || ''} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="space-y-2">
+            <label className="block text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+              Текстовая информация
+            </label>
+            <div className="flex gap-2">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline">Описание</Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[800px]">
+                  <DialogHeader>
+                    <DialogTitle>Описание</DialogTitle>
+                  </DialogHeader>
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field: { value, onChange } }) => (
+                      <FormItem>
+                        <FormControl>
+                          <EditorInput value={value || ''} onChange={onChange} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </DialogContent>
+              </Dialog>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline">Характеристики</Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[800px]">
+                  <DialogHeader>
+                    <DialogTitle>Характеристики</DialogTitle>
+                  </DialogHeader>
+                  <FormField
+                    control={form.control}
+                    name="specifications"
+                    render={({ field: { value, onChange } }) => (
+                      <FormItem>
+                        <FormControl>
+                          <EditorInput value={value || ''} onChange={onChange} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </DialogContent>
+              </Dialog>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline">Правила эксплуатации</Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[800px]">
+                  <DialogHeader>
+                    <DialogTitle>Правила эксплуатации</DialogTitle>
+                  </DialogHeader>
+                  <FormField
+                    control={form.control}
+                    name="exploitation"
+                    render={({ field: { value, onChange } }) => (
+                      <FormItem>
+                        <FormControl>
+                          <EditorInput value={value || ''} onChange={onChange} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
           <div className="flex flex-wrap gap-x-12 gap-y-6">
             <FormField
               control={form.control}

@@ -38,6 +38,8 @@ export interface ProductEntity {
   longTitle: string | null
   alias: string
   description: string | null
+  specifications: string | null
+  exploitation: string | null
   sku: string | null
   file: FileEntity | null
   active: boolean
@@ -46,6 +48,14 @@ export interface ProductEntity {
   inStock: boolean
   images?: ProductImageEntity[]
   categories?: CategoryEntity[]
+  descriptions?: ProductDescription[]
+}
+
+export interface ProductDescription {
+  id: number
+  title: string
+  content: string
+  rank: number
 }
 
 export type FileEntity = {

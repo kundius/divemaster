@@ -15,18 +15,12 @@ import { EntityRepository, QueryOrder } from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { Brand } from '../entities/brand.entity'
 import { FindOneProductQueryDto } from '../dto/find-one-product-query.dto'
-import { CreateProductContentDto } from '../dto/create-product-content.dto'
-import { ProductContent } from '../entities/product-content.entity'
-import { UpdateProductContentDto } from '../dto/update-product-content.dto'
-import { SortProductContentDto } from '../dto/sort-product-content.dto'
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private productsRepository: EntityRepository<Product>,
-    @InjectRepository(ProductContent)
-    private productContentRepository: EntityRepository<ProductContent>,
     @InjectRepository(ProductImage)
     private productImageRepository: EntityRepository<ProductImage>,
     @InjectRepository(Category)
@@ -170,71 +164,5 @@ export class ProductsService {
       product.categories.add(category)
     }
     await this.productsRepository.getEntityManager().persistAndFlush(product)
-  }
-
-  async createProductContent(productId: number, dto: CreateProductContentDto) {
-    const product = await this.productsRepository.findOneOrFail(
-      { id: productId },
-      {
-        populate: ['content']
-      }
-    )
-
-    const productContent = new ProductContent()
-    productContent.content = dto.content
-    productContent.title = dto.title
-    productContent.rank = product.content.length
-    productContent.product = product
-
-    await this.productContentRepository.getEntityManager().persistAndFlush(productContent)
-
-    return productContent
-  }
-
-  async findAllProductContent(productId: number) {
-    const product = await this.productsRepository.findOneOrFail({ id: productId })
-    return await this.productContentRepository.find(
-      { product },
-      {
-        orderBy: {
-          rank: QueryOrder.ASC
-        }
-      }
-    )
-  }
-
-  async findOneProductContent(productId: number, contentId: number) {
-    return this.productContentRepository.findOneOrFail({ id: contentId })
-  }
-
-  async updateProductContent(
-    productId: number,
-    contentId: number,
-    { ...fillable }: UpdateProductContentDto
-  ) {
-    const productContent = await this.productContentRepository.findOneOrFail({ id: contentId })
-
-    this.productContentRepository.assign(productContent, fillable)
-
-    await this.productContentRepository.getEntityManager().persistAndFlush(productContent)
-
-    return productContent
-  }
-
-  async removeProductContent(productId: number, contentId: number) {
-    const productContent = await this.productContentRepository.findOneOrFail({ id: contentId })
-
-    await this.productContentRepository.getEntityManager().removeAndFlush(productContent)
-  }
-
-  async sortProductContent(productId: number, { items }: SortProductContentDto) {
-    for (const contentId of Object.keys(items)) {
-      const productContent = await this.productContentRepository.findOneOrFail({
-        id: +contentId
-      })
-      productContent.rank = items[contentId]
-      await this.productContentRepository.getEntityManager().persist(productContent)
-    }
-    await this.productContentRepository.getEntityManager().flush()
   }
 }

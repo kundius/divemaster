@@ -10,7 +10,6 @@ export interface ProductsUpdatePageProps {
 }
 
 export function ProductsUpdatePage({ initialData }: ProductsUpdatePageProps) {
-  console.log(initialData)
   const [form, onSubmit] = useApiForm<ProductFormFields>({
     url: `products/${initialData.id}`,
     method: 'PATCH',
@@ -22,6 +21,8 @@ export function ProductsUpdatePage({ initialData }: ProductsUpdatePageProps) {
       oldPrice: initialData.oldPrice,
       longTitle: initialData.longTitle,
       description: initialData.description,
+      specifications: initialData.specifications,
+      exploitation: initialData.exploitation,
       sku: initialData.sku,
       brandId:
         typeof initialData.brand === 'number' ? initialData.brand : initialData.brand?.id || null,

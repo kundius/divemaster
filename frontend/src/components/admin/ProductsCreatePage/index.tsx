@@ -19,6 +19,8 @@ export function ProductsCreatePage() {
       oldPrice: null,
       longTitle: null,
       description: null,
+      specifications: null,
+      exploitation: null,
       sku: null,
       brandId: null,
       active: true,

@@ -11,7 +11,6 @@ import {
 import { Category } from './category.entity'
 import { ProductImage } from './product-image.entity'
 import { Brand } from './brand.entity'
-import { ProductContent } from './product-content.entity'
 
 @Entity()
 @Filter({ name: 'active', cond: { active: { $eq: true } } })
@@ -43,6 +42,12 @@ export class Product {
   @Property({ nullable: true, type: 'text' })
   description: string | null = null
 
+  @Property({ nullable: true, type: 'text' })
+  specifications: string | null = null
+
+  @Property({ nullable: true, type: 'text' })
+  exploitation: string | null = null
+
   @Property({ default: true })
   active: boolean = true
 
@@ -60,9 +65,6 @@ export class Product {
 
   @OneToMany(() => ProductImage, (image) => image.product)
   images = new Collection<ProductImage>(this)
-
-  @OneToMany(() => ProductContent, (content) => content.product)
-  content = new Collection<ProductContent>(this)
 
   @ManyToOne(() => Brand, { nullable: true })
   brand: Brand | null = null

@@ -14,12 +14,18 @@
   line-height: 1.2;
   margin: 0;
   font-weight: bold;
+  id-template-rows: [gellery-start] auto [gellery-end] 80px [warranty-start] auto [warranty-end] 30px [content-start] auto [content-end];
+
+  @include --max-xl {
+    font-size: 32px;
+  }
 }
 
 .sku {
   font-size: 12px;
   color: rgb(172, 172, 188);
   line-height: 1.2;
+  margin-top: 8px;
 }
 
 .prices {
@@ -39,6 +45,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 12px;
 
   @include --max-md {
     font-size: 10px;
@@ -53,6 +60,7 @@
   color: rgb(156, 156, 156);
   text-decoration: line-through;
   line-height: 1.2;
+  margin-bottom: 8px;
 }
 
 .realPrice {
@@ -63,29 +71,31 @@
 }
 
 .layout {
-  --gap: 80px;
-
   display: grid;
-  column-gap: var(--gap);
-  grid-template-columns: calc(60% - calc(var(--gap) / 2)) calc(40% - calc(var(--gap) / 2));
+  grid-template-columns: [left-start] 60fr [left-end] 80px [right-start] 40fr [right-end];
+  grid-template-rows: [gellery-start] auto [gellery-end] 80px [warranty-start] auto [warranty-end] 30px [content-start] auto [content-end];
+
+  @include --max-xl {
+    grid-template-columns: [left-start] 60fr [left-end] 54px [right-start] 40fr [right-end];
+  }
 }
 
 .layoutGallery {
-  grid-row: 1 / 2;
-  grid-column: 1 / 2;
+  grid-row: gellery-start / gellery-end;
+  grid-column: left-start / left-end;
 }
 
 .layoutInfo {
-  grid-row: 1 / 4;
-  grid-column: 2 / 3;
+  grid-row: gellery-start / content-end;
+  grid-column: right-start / right-end;
 }
 
 .layoutWarranty {
-  grid-row: 2 / 3;
-  grid-column: 1 / 2;
+  grid-row: warranty-start / warranty-end;
+  grid-column: left-start / left-end;
 }
 
 .layoutContent {
-  grid-row: 3 / 4;
-  grid-column: 1 / 2;
+  grid-row: content-start / content-end;
+  grid-column: left-start / left-end;
 }

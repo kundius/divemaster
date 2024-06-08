@@ -1,13 +1,5 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from '@/components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -19,7 +11,6 @@ import {
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { ApiInputComboBox } from '@/lib/ApiInputComboBox'
-import { EditorInput } from '@/lib/EditorInput'
 import { UseFormReturn } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -50,268 +41,186 @@ export interface ProductFormProps {
 export function ProductForm({ form, onSubmit }: ProductFormProps) {
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="space-y-6">
-          <div className="flex gap-6">
-            <div className="w-1/2">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Название</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="w-1/2">
-              <FormField
-                control={form.control}
-                name="alias"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Псевдоним</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <div className="flex gap-6">
+          <div className="w-1/2">
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Название</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
-          <div className="flex gap-6">
-            <div className="w-1/2">
-              <FormField
-                control={form.control}
-                name="brandId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Бренд</FormLabel>
-                    <FormControl>
-                      <ApiInputComboBox
-                        url="brands"
-                        value={field.value}
-                        onChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="w-1/2">
-              <FormField
-                control={form.control}
-                name="sku"
-                render={({ field: { value, ...field } }) => (
-                  <FormItem>
-                    <FormLabel>Артикул</FormLabel>
-                    <FormControl>
-                      <Input value={value || ''} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+          <div className="w-1/2">
+            <FormField
+              control={form.control}
+              name="alias"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Псевдоним</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
-          <div className="flex gap-6">
-            <div className="w-1/2">
-              <FormField
-                control={form.control}
-                name="price"
-                render={({ field: { onChange, ...field } }) => (
-                  <FormItem>
-                    <FormLabel>Цена</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        onChange={(e) => onChange(Number(e.target.value))}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="w-1/2">
-              <FormField
-                control={form.control}
-                name="oldPrice"
-                render={({ field: { onChange, value, ...field } }) => (
-                  <FormItem>
-                    <FormLabel>Старая цена</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        onChange={(e) => onChange(!e.target.value ? null : Number(e.target.value))}
-                        value={value === null ? '' : value}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+        </div>
+        <FormField
+          control={form.control}
+          name="longTitle"
+          render={({ field: { value, ...field } }) => (
+            <FormItem>
+              <FormLabel>Расширенное название</FormLabel>
+              <FormControl>
+                <Input value={value || ''} {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="flex gap-6">
+          <div className="w-1/2">
+            <FormField
+              control={form.control}
+              name="brandId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Бренд</FormLabel>
+                  <FormControl>
+                    <ApiInputComboBox url="brands" value={field.value} onChange={field.onChange} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
+          <div className="w-1/2">
+            <FormField
+              control={form.control}
+              name="sku"
+              render={({ field: { value, ...field } }) => (
+                <FormItem>
+                  <FormLabel>Артикул</FormLabel>
+                  <FormControl>
+                    <Input value={value || ''} {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+        <div className="flex gap-6">
+          <div className="w-1/2">
+            <FormField
+              control={form.control}
+              name="price"
+              render={({ field: { onChange, ...field } }) => (
+                <FormItem>
+                  <FormLabel>Цена</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      onChange={(e) => onChange(Number(e.target.value))}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="w-1/2">
+            <FormField
+              control={form.control}
+              name="oldPrice"
+              render={({ field: { onChange, value, ...field } }) => (
+                <FormItem>
+                  <FormLabel>Старая цена</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      onChange={(e) => onChange(!e.target.value ? null : Number(e.target.value))}
+                      value={value === null ? '' : value}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-x-12 gap-y-6">
           <FormField
             control={form.control}
-            name="longTitle"
-            render={({ field: { value, ...field } }) => (
+            name="active"
+            render={({ field }) => (
               <FormItem>
-                <FormLabel>Расширенное название</FormLabel>
+                <FormLabel>Активен</FormLabel>
                 <FormControl>
-                  <Input value={value || ''} {...field} />
+                  <div className="w-full">
+                    <Switch checked={field.value} onCheckedChange={field.onChange} />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <div className="space-y-2">
-            <label className="block text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Текстовая информация
-            </label>
-            <div className="flex gap-2">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="outline">Описание</Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[800px]">
-                  <DialogHeader>
-                    <DialogTitle>Описание</DialogTitle>
-                  </DialogHeader>
-                  <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field: { value, onChange } }) => (
-                      <FormItem>
-                        <FormControl>
-                          <EditorInput value={value || ''} onChange={onChange} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </DialogContent>
-              </Dialog>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="outline">Характеристики</Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[800px]">
-                  <DialogHeader>
-                    <DialogTitle>Характеристики</DialogTitle>
-                  </DialogHeader>
-                  <FormField
-                    control={form.control}
-                    name="specifications"
-                    render={({ field: { value, onChange } }) => (
-                      <FormItem>
-                        <FormControl>
-                          <EditorInput value={value || ''} onChange={onChange} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </DialogContent>
-              </Dialog>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="outline">Правила эксплуатации</Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[800px]">
-                  <DialogHeader>
-                    <DialogTitle>Правила эксплуатации</DialogTitle>
-                  </DialogHeader>
-                  <FormField
-                    control={form.control}
-                    name="exploitation"
-                    render={({ field: { value, onChange } }) => (
-                      <FormItem>
-                        <FormControl>
-                          <EditorInput value={value || ''} onChange={onChange} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </DialogContent>
-              </Dialog>
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-x-12 gap-y-6">
-            <FormField
-              control={form.control}
-              name="active"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Активен</FormLabel>
-                  <FormControl>
-                    <div className="w-full">
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="favorite"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Популярный</FormLabel>
-                  <FormControl>
-                    <div className="w-full">
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="recent"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Новый</FormLabel>
-                  <FormControl>
-                    <div className="w-full">
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="inStock"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>В наличии</FormLabel>
-                  <FormControl>
-                    <div className="w-full">
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <Button loading={form.formState.isSubmitting} type="submit">
-            Сохранить
-          </Button>
+          <FormField
+            control={form.control}
+            name="favorite"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Популярный</FormLabel>
+                <FormControl>
+                  <div className="w-full">
+                    <Switch checked={field.value} onCheckedChange={field.onChange} />
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="recent"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Новый</FormLabel>
+                <FormControl>
+                  <div className="w-full">
+                    <Switch checked={field.value} onCheckedChange={field.onChange} />
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="inStock"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>В наличии</FormLabel>
+                <FormControl>
+                  <div className="w-full">
+                    <Switch checked={field.value} onCheckedChange={field.onChange} />
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
       </form>
     </Form>

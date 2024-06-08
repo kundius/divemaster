@@ -7,7 +7,7 @@
 }
 
 .item + .item {
-  margin-top: 12px;
+  margin-top: 20px;
 }
 
 .icon {
@@ -16,6 +16,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-right: 12px;
 
   svg {
     fill: rgb(169, 0, 131);
@@ -37,6 +38,7 @@
   font-size: 12px;
   color: rgb(158, 158, 158);
   line-height: 1.2;
+  margin-top: 4px;
 }
 
 .action {
@@ -45,7 +47,7 @@
   text-transform: uppercase;
   line-height: 1;
   align-self: flex-start;
-  margin: 10px 0;
+  margin: 8px 0;
 }
 
 a.action {

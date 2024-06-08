@@ -1,9 +1,12 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
 import { useApiForm } from '@/lib/ApiForm'
 import { slugify } from '@/lib/utils'
 import { ProductEntity } from '@/types'
+import { PageLayout } from '../PageLayout'
 import { ProductForm, ProductFormFields, ProductFormSchema } from '../ProductForm'
+import { ProductLayout } from '../ProductLayout'
 
 export interface ProductsUpdatePageProps {
   initialData: ProductEntity
@@ -37,5 +40,18 @@ export function ProductsUpdatePage({ initialData }: ProductsUpdatePageProps) {
       return values
     }
   })
-  return <ProductForm form={form} onSubmit={onSubmit} />
+  return (
+    <PageLayout
+      title="Свойства товара"
+      actions={
+        <Button loading={form.formState.isSubmitting} onClick={form.handleSubmit(onSubmit)}>
+          Сохранить
+        </Button>
+      }
+    >
+      <ProductLayout productId={initialData.id}>
+        <ProductForm form={form} onSubmit={onSubmit} />
+      </ProductLayout>
+    </PageLayout>
+  )
 }

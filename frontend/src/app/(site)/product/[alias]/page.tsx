@@ -12,7 +12,7 @@ import { CategoryProducts } from '@/components/site/CategoryProducts'
 import { ConsultationWidget } from '@/components/site/ConsultationWidget'
 import { Container } from '@/components/site/Container'
 import { apiGet } from '@/lib/api'
-import { displayPrice, getFileUrl } from '@/lib/utils'
+import { cn, displayPrice, getFileUrl } from '@/lib/utils'
 import { CategoryEntity, ProductEntity } from '@/types'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
@@ -25,6 +25,7 @@ import { CartActions } from '@/components/site/ProductPage/CartActions'
 import { DeliveryInfo } from '@/components/site/ProductPage/DeliveryInfo'
 import { Warranty } from '@/components/site/ProductPage/Warranty'
 import { Gallery } from '@/components/site/ProductPage/Gallery'
+import { Description } from '@/components/site/ProductPage/Description'
 
 export async function generateStaticParams() {
   const categories = await apiGet<ApiTableData<ProductEntity>>(`products`, {
@@ -79,12 +80,12 @@ export default async function Page({ params: { alias } }: { params: { alias: str
       <div className="pb-6 pt-6">
         <Breadcrumbs items={crumbs} />
       </div>
-      <div className={styles.layout}>
+      <div className={cn(styles.layout, 'mb-40')}>
         <div className={styles.layoutGallery}>
           <Gallery items={product.images?.map((item) => getFileUrl(item.file)) || []} />
         </div>
         <div className={styles.layoutInfo}>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mb-2">
             {!!product.brand && typeof product.brand === 'object' && (
               <div className={styles.brand}>{product.brand.title}</div>
             )}
@@ -93,24 +94,36 @@ export default async function Page({ params: { alias } }: { params: { alias: str
           </div>
           <h1 className={styles.title}>{product.longTitle || product.title}</h1>
           {!!product.sku && <div className={styles.sku}>{product.sku}</div>}
-          <div className="flex justify-between items-center gap-8 max-w-96">
+          <div className="flex justify-between items-center gap-8 max-w-96 mt-3">
             <ReviewsShort count={0} rating={4} />
-            <SpecButton />
+            {product.specifications && <SpecButton />}
           </div>
-          <div className={styles.prices}>
+          <div className={cn(styles.prices, 'mt-3')}>
             {discount > 0 && <div className={styles.discount}>-{discount}%</div>}
             {product.oldPrice && (
               <div className={styles.oldPrice}>{displayPrice(product.oldPrice)}</div>
             )}
             <div className={styles.realPrice}>{displayPrice(product.price)}</div>
           </div>
-          <CartActions />
-          <DeliveryInfo />
+          <div className="mt-12">
+            <CartActions />
+          </div>
+          <div className="mt-10">
+            <DeliveryInfo />
+          </div>
         </div>
         <div className={styles.layoutWarranty}>
           <Warranty />
         </div>
-        <div className={styles.layoutContent}>layoutContent</div>
+        <div className={cn(styles.layoutContent, 'space-y-24')}>
+          {product.description && <Description title="Описание" content={product.description} />}
+          {product.specifications && (
+            <Description title="Характеристики" content={product.specifications} />
+          )}
+          {product.exploitation && (
+            <Description title="Правила эксплуатации" content={product.exploitation} />
+          )}
+        </div>
       </div>
     </Container>
   )

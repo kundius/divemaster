@@ -1,15 +1,16 @@
 'use client'
 
-import { ApiTableData } from '@/lib/ApiTable/types'
 import { Button } from '@/components/ui/button'
 import { CheckboxTree } from '@/components/ui/checkbox-tree'
 import { Skeleton } from '@/components/ui/skeleton'
+import { ApiTableData } from '@/lib/ApiTable/types'
 import { apiPatch } from '@/lib/api'
 import { withClientAuth } from '@/lib/api/with-client-auth'
 import { CategoryEntity } from '@/types'
 import { useEffect, useMemo, useState } from 'react'
 import useSWR from 'swr'
-import { OnCheckNode } from 'react-checkbox-tree'
+import { PageLayout } from '../PageLayout'
+import { ProductLayout } from '../ProductLayout'
 
 export interface ProductCategoriesProps {
   productId: number
@@ -107,41 +108,44 @@ export function ProductCategories({ productId }: ProductCategoriesProps) {
   }
 
   return (
-    <div>
-      <div className="justify-end flex items-center mb-4">
-        <Button onClick={onSubmit} loading={saving}>
+    <PageLayout
+      title="Категории товара"
+      actions={
+        <Button loading={saving} onClick={onSubmit}>
           Сохранить
         </Button>
-      </div>
-
-      <div className="p-4 bg-neutral-50/95 rounded-md">
-        {categoriesQuery.isLoading || productCategoriesQuery.isLoading ? (
-          <div className="space-y-4">
-            <Skeleton className="h-4 w-60" />
-            <Skeleton className="h-4 w-32 ml-8" />
-            <Skeleton className="h-4 w-48 ml-8" />
-            <Skeleton className="h-4 w-40 ml-8" />
-            <Skeleton className="h-4 w-60" />
-            <Skeleton className="h-4 w-32 ml-8" />
-            <Skeleton className="h-4 w-48 ml-8" />
-            <Skeleton className="h-4 w-40 ml-8" />
-          </div>
-        ) : (
-          <CheckboxTree
-            nodes={nodes}
-            checked={checked}
-            expanded={expanded}
-            onCheck={(checked, targetNode) => {
-              setChecked(checked)
-              if (targetNode.checked) {
-                checkTree(targetNode.value)
-              }
-            }}
-            onExpand={(expanded) => setExpanded(expanded)}
-            noCascade
-          />
-        )}
-      </div>
-    </div>
+      }
+    >
+      <ProductLayout productId={productId}>
+        <div className="bg-neutral-50 p-4 rounded-md">
+          {categoriesQuery.isLoading || productCategoriesQuery.isLoading ? (
+            <div className="space-y-4">
+              <Skeleton className="h-4 w-60" />
+              <Skeleton className="h-4 w-32 ml-8" />
+              <Skeleton className="h-4 w-48 ml-8" />
+              <Skeleton className="h-4 w-40 ml-8" />
+              <Skeleton className="h-4 w-60" />
+              <Skeleton className="h-4 w-32 ml-8" />
+              <Skeleton className="h-4 w-48 ml-8" />
+              <Skeleton className="h-4 w-40 ml-8" />
+            </div>
+          ) : (
+            <CheckboxTree
+              nodes={nodes}
+              checked={checked}
+              expanded={expanded}
+              onCheck={(checked, targetNode) => {
+                setChecked(checked)
+                if (targetNode.checked) {
+                  checkTree(targetNode.value)
+                }
+              }}
+              onExpand={(expanded) => setExpanded(expanded)}
+              noCascade
+            />
+          )}
+        </div>
+      </ProductLayout>
+    </PageLayout>
   )
 }

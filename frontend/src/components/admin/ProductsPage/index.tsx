@@ -2,16 +2,14 @@
 
 import { DataTable, DataTableColumn } from '@/components/admin/DataTable'
 import type { FilterField } from '@/components/admin/Filter'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ApiRemoveDialog } from '@/lib/ApiRemoveDialog'
 import { useApiTable } from '@/lib/ApiTable'
 import { ApiTableData } from '@/lib/ApiTable/types'
 import { ProductEntity } from '@/types'
 import { CheckCircleIcon, PencilIcon, TrashIcon, XCircleIcon } from '@heroicons/react/24/outline'
-import Image from 'next/image'
 import Link from 'next/link'
-import { PageHeader, PageHeaderProps } from '../PageHeader'
+import { PageLayout } from '../PageLayout'
 
 export interface ProductsPageProps {
   initialData?: ApiTableData<ProductEntity>
@@ -115,15 +113,15 @@ export function ProductsPage({ initialData }: ProductsPageProps) {
     }
   ]
 
-  const actions: PageHeaderProps['actions'] = [
-    <Link href="/admin/products/create" key="create">
-      <Button>Добавить товар</Button>
-    </Link>
-  ]
-
   return (
-    <>
-      <PageHeader title="Товары" actions={actions} />
+    <PageLayout
+      title="Товары"
+      actions={
+        <Link href="/admin/products/create">
+          <Button>Добавить товар</Button>
+        </Link>
+      }
+    >
       <DataTable<ProductEntity>
         data={vespTable.data.rows}
         isLoading={vespTable.isLoading}
@@ -145,6 +143,6 @@ export function ProductsPage({ initialData }: ProductsPageProps) {
         onChangePagination={vespTable.onChangePagination}
         onChangeSorting={vespTable.onChangeSorting}
       />
-    </>
+    </PageLayout>
   )
 }

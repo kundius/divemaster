@@ -5,6 +5,9 @@ import { slugify } from '@/lib/utils'
 import { ProductEntity } from '@/types'
 import { useRouter } from 'next/navigation'
 import { ProductForm, ProductFormFields, ProductFormSchema } from '../ProductForm'
+import { PageLayout } from '../PageLayout'
+import { ProductLayout } from '../ProductLayout'
+import { Button } from '@/components/ui/button'
 
 export function ProductsCreatePage() {
   const router = useRouter()
@@ -37,5 +40,18 @@ export function ProductsCreatePage() {
       router.push(`/admin/products/${data.id}`)
     }
   })
-  return <ProductForm form={form} onSubmit={onSubmit} />
+  return (
+    <PageLayout
+      title="Добавить товар"
+      actions={
+        <Button loading={form.formState.isSubmitting} onClick={form.handleSubmit(onSubmit)}>
+          Сохранить
+        </Button>
+      }
+    >
+      <ProductLayout>
+        <ProductForm form={form} onSubmit={onSubmit} />
+      </ProductLayout>
+    </PageLayout>
+  )
 }

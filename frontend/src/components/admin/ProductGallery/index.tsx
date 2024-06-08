@@ -28,6 +28,8 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { withClientAuth } from '@/lib/api/with-client-auth'
 import { CSS } from '@dnd-kit/utilities'
+import { PageLayout } from '../PageLayout'
+import { ProductLayout } from '../ProductLayout'
 
 interface SortableItemProps {
   id: number
@@ -89,7 +91,7 @@ export function SortableItem(props: SortableItemProps) {
     <div
       ref={setNodeRef}
       style={style}
-      className="relative flex flex-col border rounded-lg p-2 hover:border-neutral-300 hover:bg-neutral-50 hover:shadow-sm"
+      className="relative flex flex-col border rounded-lg p-2 bg-white hover:border-neutral-300 hover:bg-neutral-50 hover:shadow-sm"
     >
       <div
         className="flex items-center justify-center relative"
@@ -275,53 +277,54 @@ export function ProductGallery(props: ProductGalleryProps) {
   }
 
   return (
-    <div>
-      <div className="justify-end flex items-center mb-4">
-        <Button onClick={onFileSelect}>Загрузить</Button>
-      </div>
-
-      {isLoading ? (
-        <div className="grid grid-cols-4 gap-4">
-          <Skeleton className="h-60" />
-          <Skeleton className="h-60" />
-          <Skeleton className="h-60" />
-          <Skeleton className="h-60" />
-        </div>
-      ) : (
-        <Overlay show={isPending}>
-          <div
-            onDrop={(e) => {
-              e.preventDefault()
-              onAddFiles(e.dataTransfer.files)
-            }}
-            onDragOver={(e) => {
-              e.preventDefault()
-            }}
-            className="grid grid-cols-4 gap-4"
-          >
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd}
-            >
-              <SortableContext items={items} strategy={rectSortingStrategy}>
-                {items.map((item) => (
-                  <SortableItem
-                    key={item.id}
-                    id={item.id}
-                    width={thumbWidth}
-                    height={thumbHeight}
-                    src={`${getApiUrl()}storage/${item.id}/read`}
-                    active={item.active}
-                    setItems={setItems}
-                    url={url}
-                  />
-                ))}
-              </SortableContext>
-            </DndContext>
+    <PageLayout
+      title="Галерея товара"
+      actions={<Button onClick={onFileSelect}>Добавить фото</Button>}
+    >
+      <ProductLayout productId={productId}>
+        {isLoading ? (
+          <div className="grid grid-cols-4 gap-4">
+            <Skeleton className="h-60" />
+            <Skeleton className="h-60" />
+            <Skeleton className="h-60" />
+            <Skeleton className="h-60" />
           </div>
-        </Overlay>
-      )}
-    </div>
+        ) : (
+          <Overlay show={isPending}>
+            <div
+              onDrop={(e) => {
+                e.preventDefault()
+                onAddFiles(e.dataTransfer.files)
+              }}
+              onDragOver={(e) => {
+                e.preventDefault()
+              }}
+              className="grid grid-cols-4 gap-4"
+            >
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+              >
+                <SortableContext items={items} strategy={rectSortingStrategy}>
+                  {items.map((item) => (
+                    <SortableItem
+                      key={item.id}
+                      id={item.id}
+                      width={thumbWidth}
+                      height={thumbHeight}
+                      src={`${getApiUrl()}storage/${item.id}/read`}
+                      active={item.active}
+                      setItems={setItems}
+                      url={url}
+                    />
+                  ))}
+                </SortableContext>
+              </DndContext>
+            </div>
+          </Overlay>
+        )}
+      </ProductLayout>
+    </PageLayout>
   )
 }

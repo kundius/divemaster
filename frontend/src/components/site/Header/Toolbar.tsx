@@ -4,9 +4,11 @@ import { cn } from '@/lib/utils'
 import styles from './Toolbar.module.scss'
 import Link from 'next/link'
 import { useMobileNavigation } from './MobileNavigation'
+import { useAuth } from '@/lib/auth/use-auth'
 
 export function Toolbar() {
   const mobileNavigation = useMobileNavigation()
+  const auth = useAuth()
 
   const handleClick = () => {
     if (mobileNavigation.opened.includes('catalog')) {
@@ -42,7 +44,7 @@ export function Toolbar() {
         <span className={styles.title}>Избранное</span>
         <span className={styles.badge}>0</span>
       </Link>
-      <Link href="#" className={cn(styles.button, 'block')}>
+      <Link href={auth.user ? '/office' : '/auth/signin'} className={cn(styles.button, 'block')}>
         <span className={cn(styles.icon, styles['icon-profile'])}></span>
         <span className={styles.title}>Профиль</span>
       </Link>

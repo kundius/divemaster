@@ -8,7 +8,7 @@ export function AccessDeniedPage() {
     <AuthLayout>
       <div className={styles.title}>Аутентификация</div>
       <div className={styles.desc}>У вас нет доступа к данной странице.</div>
-      <Link href="/admin/auth/login" passHref key="signin">
+      <Link href="/auth/signin" passHref key="signin">
         <div className={styles.submit}>
           <Button>Вход</Button>
         </div>

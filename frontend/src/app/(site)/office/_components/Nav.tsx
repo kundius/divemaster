@@ -1,9 +1,12 @@
+'use client'
+
 import Link from 'next/link'
 import styles from './Nav.module.scss'
 import { cn } from '@/lib/utils'
-import { LogoutButton } from './LogoutButton'
+import { useAuth } from '@/lib/auth/use-auth'
 
 export function Nav() {
+  const { logout, user } = useAuth()
   return (
     <ul className={styles.items}>
       <li>
@@ -46,15 +49,27 @@ export function Nav() {
           <span className={styles.text}>Избранное</span>
         </Link>
       </li>
+      {user && (
+        <li>
+          <Link href="/admin" className={styles.item}>
+            <span className={styles.icon}>
+              <svg viewBox="0 0 24 24" width="20" height="20">
+                <use href="/sprite.svg#office-admin"></use>
+              </svg>
+            </span>
+            <span className={styles.text}>Панель управления</span>
+          </Link>
+        </li>
+      )}
       <li>
-        <LogoutButton className={cn(styles.item, styles.gray)}>
+        <button className={cn(styles.item, styles.gray)} onClick={logout}>
           <span className={styles.icon}>
             <svg viewBox="0 0 19 17" width="19" height="17">
               <use href="/sprite.svg#office-logout"></use>
             </svg>
           </span>
           <span className={styles.text}>Выйти</span>
-        </LogoutButton>
+        </button>
       </li>
     </ul>
   )

@@ -19,7 +19,7 @@ export function AuthLayout({ children }: PropsWithChildren) {
         © 2008-{(new Date()).getFullYear()} &ldquo;ДАЙВМАСТЕР&rdquo;. Все права защищены
       </div>
       <div className={styles.links}>
-        <Link href="/">Ползовательское соглашение</Link> <Link href="/">Политика конфиденциальности</Link>
+        {/* <Link href="/">Ползовательское соглашение</Link> <Link href="/">Политика конфиденциальности</Link> */}
       </div>
       </div>
     </div>

@@ -1,10 +1,11 @@
 import { Container } from '@/components/site/Container'
+import { PropsWithChildren } from 'react'
 
-export default async function Page() {
+export default function Layout({ children }: PropsWithChildren) {
   return (
     <div className="pt-12 pb-40">
       <Container>
-        <div className="text-4xl font-sans-narrow uppercase font-bold mb-12">Контакты</div>
+        {children}
       </Container>
     </div>
   )

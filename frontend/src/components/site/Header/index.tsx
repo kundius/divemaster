@@ -29,12 +29,12 @@ export function Header() {
                 primary={[
                   {
                     title: 'Доставка и оплата',
-                    href: '/',
+                    href: '/info/delivery-and-payment',
                     icon: 'delivery'
                   },
                   {
                     title: 'Оптовикам',
-                    href: '#',
+                    href: '/info/wholesalers',
                     icon: 'salers'
                   },
                   {
@@ -44,7 +44,7 @@ export function Header() {
                   },
                   {
                     title: 'Блог',
-                    href: '#',
+                    href: '/blog',
                     icon: 'blog',
                     className: 'max-lg:hidden'
                   }
@@ -52,25 +52,25 @@ export function Header() {
                 secondary={[
                   {
                     title: 'Блог',
-                    href: '#',
+                    href: '/blog',
                     className: 'lg:hidden'
                   },
                   {
                     title: 'О магазине',
-                    href: '/'
+                    href: '/info/about'
                   },
                   {
                     title: 'Скидочные карты',
-                    href: '/contacts'
+                    href: '/info/discount'
                   },
                   {
                     title: 'Подарочные сертификаты',
-                    href: '#',
+                    href: '/info/gift-certificates',
                     className: '2xl:hidden'
                   },
                   {
                     title: 'Школа подводной охоты и дайвинга',
-                    href: '#',
+                    href: '/info/school',
                     className: '2xl:hidden'
                   }
                 ]}
@@ -82,12 +82,12 @@ export function Header() {
                 primary={[
                   {
                     title: 'Подарочные сертификаты',
-                    href: '#',
+                    href: '/info/gift-certificates',
                     icon: 'gift'
                   },
                   {
                     title: 'Школа подводной охоты и дайвинга',
-                    href: '#',
+                    href: '/info/school',
                     icon: 'school'
                   }
                 ]}

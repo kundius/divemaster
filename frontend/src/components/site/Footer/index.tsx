@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { Container } from '../Container'
 import { About } from './About'
 import { Bottom } from './Bottom'
@@ -25,31 +26,31 @@ export function Footer() {
                 items={[
                   {
                     title: 'Каталог',
-                    href: '#'
+                    href: '/catalog'
                   },
                   {
                     title: 'О магазине',
-                    href: '#'
+                    href: '/info/about'
                   },
                   {
                     title: 'Бренды',
-                    href: '#'
+                    href: '/brand'
                   },
                   {
                     title: 'Доставка и оплата',
-                    href: '#'
+                    href: '/info/delivery-and-payment'
                   },
                   {
                     title: 'Возврат и обмен',
-                    href: '#'
+                    href: '/info/returns'
                   },
                   {
                     title: 'Скидки',
-                    href: '#'
+                    href: '/info/discount'
                   },
                   {
                     title: 'Блог',
-                    href: '#'
+                    href: '/blog'
                   }
                 ]}
               />
@@ -60,11 +61,11 @@ export function Footer() {
                 items={[
                   {
                     title: 'Прайс-лист',
-                    href: '#'
+                    href: '/info/wholesalers'
                   },
                   {
                     title: 'Контакты',
-                    href: '#'
+                    href: '/contacts'
                   }
                 ]}
               />
@@ -78,10 +79,10 @@ export function Footer() {
             <div className={styles.cellStat}>
               <div className="flex items-center justify-between">
                 <div className="max-md:hidden" />
-                <a href="#" className="text-[#9b9b9b] hover:text-white underline">
+                <Link href="/info/site-map" className="text-[#9b9b9b] hover:text-white underline">
                   Карта сайта
-                </a>
-                <div>Counters</div>
+                </Link>
+                <div></div>
               </div>
             </div>
           </div>

@@ -16,44 +16,42 @@ export default function MobileNavigationPages() {
             <VerticalMenuTrigger>О магазине</VerticalMenuTrigger>
             <VerticalMenuList>
               <VerticalMenuItem>
-                <VerticalMenuLink href="#О нас">О нас</VerticalMenuLink>
+                <VerticalMenuLink href="/info/about">О нас</VerticalMenuLink>
               </VerticalMenuItem>
               <VerticalMenuItem>
-                <VerticalMenuLink href="#Скидочные карты">Скидочные карты</VerticalMenuLink>
+                <VerticalMenuLink href="/info/discount">Скидочные карты</VerticalMenuLink>
               </VerticalMenuItem>
-              <VerticalMenuItem>
+              {/* <VerticalMenuItem>
                 <VerticalMenuLink href="#Программа лояльности">
                   Программа лояльности
                 </VerticalMenuLink>
-              </VerticalMenuItem>
+              </VerticalMenuItem> */}
               <VerticalMenuItem>
-                <VerticalMenuLink href="#Школа подводной охоты и дайвинга">
+                <VerticalMenuLink href="/info/school">
                   Школа подводной охоты и дайвинга
                 </VerticalMenuLink>
               </VerticalMenuItem>
             </VerticalMenuList>
           </VerticalMenuItem>
           <VerticalMenuItem>
-            <VerticalMenuLink href="#Доставка и оплата">Доставка и оплата</VerticalMenuLink>
+            <VerticalMenuLink href="/info/delivery-and-payment">Доставка и оплата</VerticalMenuLink>
           </VerticalMenuItem>
           <VerticalMenuItem>
-            <VerticalMenuLink href="#Оптовикам">Оптовикам</VerticalMenuLink>
+            <VerticalMenuLink href="/info/wholesalers">Оптовикам</VerticalMenuLink>
           </VerticalMenuItem>
           <VerticalMenuItem>
-            <VerticalMenuLink href="#Блог">Блог</VerticalMenuLink>
+            <VerticalMenuLink href="/blog">Блог</VerticalMenuLink>
           </VerticalMenuItem>
           <VerticalMenuItem>
-            <VerticalMenuLink href="#Подарочные сертификаты">
+            <VerticalMenuLink href="/info/gift-certificates">
               Подарочные сертификаты
             </VerticalMenuLink>
           </VerticalMenuItem>
           <VerticalMenuItem>
-            <VerticalMenuLink href="#Контакты">Контакты</VerticalMenuLink>
+            <VerticalMenuLink href="/contacts">Контакты</VerticalMenuLink>
           </VerticalMenuItem>
           <VerticalMenuItem>
-            <VerticalMenuLink href="#Юридическая информация">
-              Юридическая информация
-            </VerticalMenuLink>
+            <VerticalMenuLink href="/info/legal">Юридическая информация</VerticalMenuLink>
           </VerticalMenuItem>
         </VerticalMenuList>
       </VerticalMenu>

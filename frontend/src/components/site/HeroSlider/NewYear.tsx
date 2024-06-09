@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import styles from './NewYear.module.scss'
+import Link from 'next/link'
 
 export function NewYear() {
   return (
@@ -35,9 +36,9 @@ export function NewYear() {
           Готовь сани летом, а новогодний отпуск сейчас - выгодные предложения и скидки на товары
           любимых брендов
         </div>
-        <a href="#" className={styles.button}>
+        <Link href="/auth/signin" className={styles.button}>
           Авторизоваться
-        </a>
+        </Link>
         <div className={styles.price}>
           <div className={styles['price-label']}>
             скидки до

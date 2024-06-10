@@ -11,13 +11,12 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'http',
-        hostname: 'localhost'
+        protocol: 'https',
+        hostname: 'divermaster.ru'
       },
       {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '8080'
+        protocol: 'https',
+        hostname: 'api.divermaster.ru'
       },
       {
         protocol: 'http',

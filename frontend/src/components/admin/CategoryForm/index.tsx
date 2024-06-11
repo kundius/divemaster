@@ -16,6 +16,7 @@ import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { UseFormReturn } from 'react-hook-form'
 import { z } from 'zod'
+import Link from 'next/link'
 
 export const CategoryFormSchema = z.object({
   title: z.string().trim().min(1),
@@ -152,9 +153,16 @@ export function CategoryForm({ form, onSubmit }: CategoryFormProps) {
               </FormItem>
             )}
           />
-          <Button loading={form.formState.isSubmitting} type="submit">
-            Сохранить
-          </Button>
+          <div className="p-5 rounded-md flex items-center justify-end gap-4 bg-neutral-50">
+            <Link href="/admin/categories">
+              <Button type="button" variant="outline">
+                Отмена
+              </Button>
+            </Link>
+            <Button loading={form.formState.isSubmitting} type="submit">
+              Сохранить
+            </Button>
+          </div>
         </div>
       </form>
     </Form>

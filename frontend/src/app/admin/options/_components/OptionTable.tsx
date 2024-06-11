@@ -10,11 +10,11 @@ import { OptionEntity } from '@/types'
 import { CheckCircleIcon, PencilIcon, TrashIcon, XCircleIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 
-export interface TableProps {
+export interface OptionTableProps {
   initialData?: ApiTableData<OptionEntity>
 }
 
-export function Table({ initialData }: TableProps) {
+export function OptionTable({ initialData }: OptionTableProps) {
   const apiTable = useApiTable<OptionEntity>({
     url: 'options',
     initialData
@@ -37,18 +37,13 @@ export function Table({ initialData }: TableProps) {
       label: 'Подпись',
       headProps: {
         className: 'w-5/12'
-      },
-      formatter: (active) => {
-        const Icon = active ? CheckCircleIcon : XCircleIcon
-        const color = active ? 'text-green-500' : 'text-amber-500'
-        return <Icon className={`w-6 h-6 ${color}`} />
       }
     },
     {
       key: 'inCart',
       label: 'Корзина',
       headProps: {
-        className: 'w-5/12'
+        className: 'w-1/12'
       },
       formatter: (active) => {
         const Icon = active ? CheckCircleIcon : XCircleIcon
@@ -60,7 +55,7 @@ export function Table({ initialData }: TableProps) {
       key: 'inFilter',
       label: 'Фильтр',
       headProps: {
-        className: 'w-5/12'
+        className: 'w-1/12'
       },
       formatter: (active) => {
         const Icon = active ? CheckCircleIcon : XCircleIcon

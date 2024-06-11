@@ -91,6 +91,15 @@ export interface OptionEntity {
   caption: string
   inFilter: boolean
   inCart: boolean
+  type: OptionType
+}
+
+export enum OptionType {
+  // RANGE = 'range',
+  // BOOLEAN = 'boolean',
+  COLOR = 'color',
+  SIZE = 'size',
+  VARIANT = 'variant'
 }
 
 export type PageProps<

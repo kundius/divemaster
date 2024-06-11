@@ -7,7 +7,7 @@ import { withServerAuth } from '@/lib/api/with-server-auth'
 import { OptionEntity, PageProps } from '@/types'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { Table } from './_components/Table'
+import { OptionTable } from './_components/OptionTable'
 
 export const metadata: Metadata = {
   title: 'Параметры'
@@ -32,7 +32,7 @@ export default async function Page(props: PageProps) {
         </Link>
       }
     >
-      <Table initialData={initialData} />
+      <OptionTable initialData={initialData} />
     </PageLayout>
   )
 }

@@ -29,10 +29,18 @@ export async function generateStaticParams() {
 export default async function Page({ params: { alias } }: { params: { alias: string } }) {
   // TODO: HIERARCHY_DEPTH_LIMIT
   // в populate указана необходимая вложенность родителей
-  const category = await apiGet<CategoryEntity>(`categories/alias:${alias}`, {
-    populate: ['children', 'parent', 'parent.parent'],
-    filters: ['active']
-  })
+  const category = await apiGet<CategoryEntity>(
+    `categories/alias:${alias}`,
+    {
+      populate: ['children', 'parent', 'parent.parent'],
+      filters: ['active']
+    },
+    {
+      next: {
+        revalidate: 60 * 5
+      }
+    }
+  )
 
   const crumbs: BreadcrumbsProps['items'] = [
     {
@@ -63,10 +71,7 @@ export default async function Page({ params: { alias } }: { params: { alias: str
     limit: 24,
     category: category.id,
     populate: ['images', 'brand'],
-    filters: [
-      'active',
-      isParent ? 'favorite' : ''
-    ]
+    filters: ['active', isParent ? 'favorite' : '']
   }
 
   return (
@@ -115,7 +120,11 @@ export default async function Page({ params: { alias } }: { params: { alias: str
             />
           </div>
           <div className="w-4/5 max-2xl:w-3/4">
-            {isParent && <div className="mb-6 text-xl font-sans-narrow uppercase font-bold">Популярные товары</div>}
+            {isParent && (
+              <div className="mb-6 text-xl font-sans-narrow uppercase font-bold">
+                Популярные товары
+              </div>
+            )}
             <CategoryProducts />
             <CategoryPagination />
           </div>

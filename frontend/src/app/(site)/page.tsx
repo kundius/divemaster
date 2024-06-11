@@ -33,16 +33,32 @@ const demoProduct = {
 
 export default async function Page() {
   const [favoriteProducts, recentProducts] = await Promise.all([
-    apiGet<ApiTableData<ProductEntity>>(`products`, {
-      limit: 10,
-      populate: ['images', 'brand'],
-      filters: ['active', 'favorite']
-    }),
-    apiGet<ApiTableData<ProductEntity>>(`products`, {
-      limit: 10,
-      populate: ['images', 'brand'],
-      filters: ['active', 'recent']
-    })
+    apiGet<ApiTableData<ProductEntity>>(
+      `products`,
+      {
+        limit: 10,
+        populate: ['images', 'brand'],
+        filters: ['active', 'favorite']
+      },
+      {
+        next: {
+          revalidate: 60 * 5
+        }
+      }
+    ),
+    apiGet<ApiTableData<ProductEntity>>(
+      `products`,
+      {
+        limit: 10,
+        populate: ['images', 'brand'],
+        filters: ['active', 'recent']
+      },
+      {
+        next: {
+          revalidate: 60 * 5
+        }
+      }
+    )
   ])
 
   return (

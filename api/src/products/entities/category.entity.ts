@@ -10,6 +10,7 @@ import {
 } from '@mikro-orm/core'
 import { Product } from './product.entity'
 import { File } from '@/storage/entities/file.entity'
+import { Option } from './option.entity'
 
 @Entity()
 @Filter({ name: 'active', cond: { active: { $eq: true } } })
@@ -37,6 +38,9 @@ export class Category {
 
   @ManyToMany(() => Product)
   products = new Collection<Product>(this)
+
+  @ManyToMany(() => Option)
+  options = new Collection<Option>(this)
 
   @OneToMany(() => Category, (category) => category.parent)
   children = new Collection<Category>(this)

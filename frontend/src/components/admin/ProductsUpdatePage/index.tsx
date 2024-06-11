@@ -7,13 +7,14 @@ import { ProductEntity } from '@/types'
 import { PageLayout } from '../PageLayout'
 import { ProductForm, ProductFormFields, ProductFormSchema } from '../ProductForm'
 import { ProductLayout } from '../ProductLayout'
+import { revalidatePath } from 'next/cache'
 
 export interface ProductsUpdatePageProps {
   initialData: ProductEntity
 }
 
 export function ProductsUpdatePage({ initialData }: ProductsUpdatePageProps) {
-  const [form, onSubmit] = useApiForm<ProductFormFields>({
+  const [form, onSubmit] = useApiForm<ProductFormFields, ProductEntity>({
     url: `products/${initialData.id}`,
     method: 'PATCH',
     schema: ProductFormSchema,
@@ -34,7 +35,7 @@ export function ProductsUpdatePage({ initialData }: ProductsUpdatePageProps) {
       favorite: initialData.favorite,
       inStock: initialData.inStock
     },
-    mapValues: (values) => {
+    mapValues(values) {
       values.alias = slugify(values.alias || values.title)
       form.setValue('alias', values.alias)
       return values

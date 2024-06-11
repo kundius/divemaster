@@ -303,6 +303,202 @@
           "nullable": false,
           "mappedType": "integer"
         },
+        "key": {
+          "name": "key",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "caption": {
+          "name": "caption",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "type": {
+          "name": "type",
+          "type": "enum('color','size','variant')",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "enumItems": [
+            "color",
+            "size",
+            "variant"
+          ],
+          "mappedType": "enum"
+        },
+        "in_filter": {
+          "name": "in_filter",
+          "type": "tinyint(1)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "false",
+          "mappedType": "boolean"
+        },
+        "in_cart": {
+          "name": "in_cart",
+          "type": "tinyint(1)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "false",
+          "mappedType": "boolean"
+        },
+        "rank": {
+          "name": "rank",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "0",
+          "mappedType": "integer"
+        },
+        "properties": {
+          "name": "properties",
+          "type": "json",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
+        }
+      },
+      "name": "option",
+      "indexes": [
+        {
+          "columnNames": [
+            "key"
+          ],
+          "composite": false,
+          "keyName": "option_key_unique",
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "PRIMARY",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "category_id": {
+          "name": "category_id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "option_id": {
+          "name": "option_id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        }
+      },
+      "name": "category_options",
+      "indexes": [
+        {
+          "columnNames": [
+            "category_id"
+          ],
+          "composite": false,
+          "keyName": "category_options_category_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "option_id"
+          ],
+          "composite": false,
+          "keyName": "category_options_option_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "PRIMARY",
+          "columnNames": [
+            "category_id",
+            "option_id"
+          ],
+          "composite": true,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "category_options_category_id_foreign": {
+          "constraintName": "category_options_category_id_foreign",
+          "columnNames": [
+            "category_id"
+          ],
+          "localTableName": "category_options",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "category",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "category_options_option_id_foreign": {
+          "constraintName": "category_options_option_id_foreign",
+          "columnNames": [
+            "option_id"
+          ],
+          "localTableName": "category_options",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "option",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
         "title": {
           "name": "title",
           "type": "varchar(255)",
@@ -480,6 +676,117 @@
           ],
           "referencedTableName": "brand",
           "deleteRule": "set null",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "value": {
+          "name": "value",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "option_id": {
+          "name": "option_id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "product_id": {
+          "name": "product_id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "rank": {
+          "name": "rank",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "0",
+          "mappedType": "integer"
+        }
+      },
+      "name": "option_variant",
+      "indexes": [
+        {
+          "columnNames": [
+            "option_id"
+          ],
+          "composite": false,
+          "keyName": "option_variant_option_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "product_id"
+          ],
+          "composite": false,
+          "keyName": "option_variant_product_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "PRIMARY",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "option_variant_option_id_foreign": {
+          "constraintName": "option_variant_option_id_foreign",
+          "columnNames": [
+            "option_id"
+          ],
+          "localTableName": "option_variant",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "option",
+          "updateRule": "cascade"
+        },
+        "option_variant_product_id_foreign": {
+          "constraintName": "option_variant_product_id_foreign",
+          "columnNames": [
+            "product_id"
+          ],
+          "localTableName": "option_variant",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "product",
           "updateRule": "cascade"
         }
       },

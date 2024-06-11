@@ -28,19 +28,27 @@ import { Gallery } from '@/components/site/ProductPage/Gallery'
 import { Description } from '@/components/site/ProductPage/Description'
 
 export async function generateStaticParams() {
-  const categories = await apiGet<ApiTableData<ProductEntity>>(`products`, {
+  const products = await apiGet<ApiTableData<ProductEntity>>(`products`, {
     all: true,
     filters: ['active']
   })
-  return categories.rows.map(({ alias }) => ({ alias }))
+  return products.rows.map(({ alias }) => ({ alias }))
 }
 
 export default async function Page({ params: { alias } }: { params: { alias: string } }) {
   const [product] = await Promise.all([
-    apiGet<ProductEntity>(`products/alias:${alias}`, {
-      populate: ['categories', 'images', 'brand'],
-      filters: ['active']
-    })
+    apiGet<ProductEntity>(
+      `products/alias:${alias}`,
+      {
+        populate: ['categories', 'images', 'brand'],
+        filters: ['active']
+      },
+      {
+        next: {
+          revalidate: 60 * 5
+        }
+      }
+    )
   ])
 
   const crumbs: BreadcrumbsProps['items'] = [

@@ -11,7 +11,7 @@ import { Category } from './category.entity'
 import { OptionVariant } from './option-variant.entity'
 
 export enum OptionType {
-  // NUMBER = 'number',
+  // RANGE = 'range',
   // BOOLEAN = 'boolean',
   COLOR = 'color',
   SIZE = 'size',

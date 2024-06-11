@@ -85,6 +85,14 @@ export type ProductImageEntity = {
   active: boolean
 }
 
+export interface OptionEntity {
+  id: number
+  key: string
+  caption: string
+  inFilter: boolean
+  inCart: boolean
+}
+
 export type PageProps<
   TParams = {},
   TSearchParams = { [key: string]: string | string[] | undefined }

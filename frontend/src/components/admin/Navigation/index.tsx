@@ -52,13 +52,13 @@ const nav: Nav = [
             title: 'Бренды',
             route: '/admin/brands'
           },
-          {
-            title: 'Отзывы',
-            route: '/admin/reviews'
-          },
+          // {
+          //   title: 'Отзывы',
+          //   route: '/admin/reviews'
+          // },
           {
             title: 'Параметры',
-            route: '/admin/params'
+            route: '/admin/options'
           }
         ]
       },

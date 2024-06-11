@@ -1,0 +1,123 @@
+'use client'
+
+import { DataTable, DataTableColumn } from '@/components/admin/DataTable'
+import type { FilterField } from '@/components/admin/Filter'
+import { Button } from '@/components/ui/button'
+import { ApiRemoveDialog } from '@/lib/ApiRemoveDialog'
+import { useApiTable } from '@/lib/ApiTable'
+import { ApiTableData } from '@/lib/ApiTable/types'
+import { OptionEntity } from '@/types'
+import { CheckCircleIcon, PencilIcon, TrashIcon, XCircleIcon } from '@heroicons/react/24/outline'
+import Link from 'next/link'
+
+export interface TableProps {
+  initialData?: ApiTableData<OptionEntity>
+}
+
+export function Table({ initialData }: TableProps) {
+  const apiTable = useApiTable<OptionEntity>({
+    url: 'options',
+    initialData
+  })
+
+  const columns: DataTableColumn<OptionEntity>[] = [
+    {
+      key: 'id',
+      label: 'ID'
+    },
+    {
+      key: 'key',
+      label: 'Ключ',
+      headProps: {
+        className: 'w-5/12'
+      }
+    },
+    {
+      key: 'caption',
+      label: 'Подпись',
+      headProps: {
+        className: 'w-5/12'
+      },
+      formatter: (active) => {
+        const Icon = active ? CheckCircleIcon : XCircleIcon
+        const color = active ? 'text-green-500' : 'text-amber-500'
+        return <Icon className={`w-6 h-6 ${color}`} />
+      }
+    },
+    {
+      key: 'inCart',
+      label: 'Корзина',
+      headProps: {
+        className: 'w-5/12'
+      },
+      formatter: (active) => {
+        const Icon = active ? CheckCircleIcon : XCircleIcon
+        const color = active ? 'text-green-500' : 'text-amber-500'
+        return <Icon className={`w-6 h-6 ${color}`} />
+      }
+    },
+    {
+      key: 'inFilter',
+      label: 'Фильтр',
+      headProps: {
+        className: 'w-5/12'
+      },
+      formatter: (active) => {
+        const Icon = active ? CheckCircleIcon : XCircleIcon
+        const color = active ? 'text-green-500' : 'text-amber-500'
+        return <Icon className={`w-6 h-6 ${color}`} />
+      }
+    },
+    {
+      key: 'id',
+      headProps: {
+        className: 'w-0'
+      },
+      formatter: (id) => (
+        <div className="flex gap-2">
+          <Link href={`/admin/options/${id}`}>
+            <Button variant="outline" size="sm-icon">
+              <PencilIcon className="w-4 h-4" />
+            </Button>
+          </Link>
+          <ApiRemoveDialog url={`options/${id}`} onSuccess={apiTable.refetch}>
+            <Button variant="destructive-outline" size="sm-icon">
+              <TrashIcon className="w-4 h-4" />
+            </Button>
+          </ApiRemoveDialog>
+        </div>
+      )
+    }
+  ]
+
+  const filterFields: FilterField[] = [
+    {
+      type: 'search',
+      name: 'query',
+      placeholder: 'Поиск по названию'
+    }
+  ]
+
+  return (
+    <DataTable<OptionEntity>
+      data={apiTable.data.rows}
+      columns={columns}
+      filter={{
+        value: apiTable.filter,
+        fields: filterFields
+      }}
+      onChangeFilter={apiTable.onChangeFilter}
+      pagination={{
+        page: apiTable.page,
+        limit: apiTable.limit,
+        total: apiTable.data.total
+      }}
+      sorting={{
+        sort: apiTable.sort,
+        dir: apiTable.dir
+      }}
+      onChangePagination={apiTable.onChangePagination}
+      onChangeSorting={apiTable.onChangeSorting}
+    />
+  )
+}

@@ -11,9 +11,5 @@ export const metadata: Metadata = {
 
 export default async function Page({ params }: { params: { id: number } }) {
   const initialData = await apiGet<OptionEntity>(`options/${params.id}`, {}, withServerAuth())
-  return (
-    <PageLayout title="Редактировать параметр">
-      <OptionUpdateForm initialData={initialData} />
-    </PageLayout>
-  )
+  return <OptionUpdateForm initialData={initialData} />
 }

@@ -1,6 +1,11 @@
 import { VerticalNav } from '@/components/VerticalNav'
 import { PageLayout } from '@/components/admin/PageLayout'
+import { Metadata } from 'next'
 import { PropsWithChildren } from 'react'
+
+export const metadata: Metadata = {
+  title: 'Редактировать параметр'
+}
 
 export default function Layout({
   children,

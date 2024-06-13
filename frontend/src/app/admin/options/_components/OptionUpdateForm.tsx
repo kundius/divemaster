@@ -20,7 +20,8 @@ export function OptionUpdateForm({ initialData }: OptionUpdateFormProps) {
       inFilter: initialData.inFilter,
       key: initialData.key,
       caption: initialData.caption,
-      type: initialData.type
+      type: initialData.type,
+      rank: initialData.rank
     },
     onSuccess() {
       router.push(`/admin/options`)

@@ -16,7 +16,8 @@ export function OptionCreateForm() {
       inFilter: false,
       key: '',
       caption: '',
-      type: OptionType.VARIANT
+      type: OptionType.VARIANT,
+      rank: 0
     },
     onSuccess() {
       router.push(`/admin/options`)

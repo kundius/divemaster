@@ -7,7 +7,13 @@ import { ApiRemoveDialog } from '@/lib/ApiRemoveDialog'
 import { useApiTable } from '@/lib/ApiTable'
 import { ApiTableData } from '@/lib/ApiTable/types'
 import { OptionEntity } from '@/types'
-import { CheckCircleIcon, PencilIcon, TrashIcon, XCircleIcon } from '@heroicons/react/24/outline'
+import {
+  CheckCircleIcon,
+  PencilIcon,
+  SquaresPlusIcon,
+  TrashIcon,
+  XCircleIcon
+} from '@heroicons/react/24/outline'
 import Link from 'next/link'
 
 export interface OptionTableProps {
@@ -73,6 +79,11 @@ export function OptionTable({ initialData }: OptionTableProps) {
           <Link href={`/admin/options/${id}`}>
             <Button variant="outline" size="sm-icon">
               <PencilIcon className="w-4 h-4" />
+            </Button>
+          </Link>
+          <Link href={`/admin/options/${id}/categories`}>
+            <Button variant="outline" size="sm-icon">
+              <SquaresPlusIcon className="w-4 h-4" />
             </Button>
           </Link>
           <ApiRemoveDialog url={`options/${id}`} onSuccess={apiTable.refetch}>

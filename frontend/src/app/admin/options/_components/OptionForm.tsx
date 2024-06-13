@@ -21,11 +21,12 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+  SelectValue
+} from '@/components/ui/select'
 
 export const OptionFormSchema = z.object({
   key: z.string().trim().min(1),
+  rank: z.coerce.number(),
   caption: z.string().trim().min(1),
   inFilter: z.boolean(),
   inCart: z.boolean(),
@@ -45,7 +46,7 @@ export function OptionForm({ form, onSubmit }: OptionFormProps) {
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="space-y-6">
           <div className="flex gap-6">
-            <div className="w-1/3">
+            <div className="w-1/2">
               <FormField
                 control={form.control}
                 name="caption"
@@ -60,7 +61,7 @@ export function OptionForm({ form, onSubmit }: OptionFormProps) {
                 )}
               />
             </div>
-            <div className="w-1/3">
+            <div className="w-1/2">
               <FormField
                 control={form.control}
                 name="key"
@@ -75,7 +76,9 @@ export function OptionForm({ form, onSubmit }: OptionFormProps) {
                 )}
               />
             </div>
-            <div className="w-1/3">
+          </div>
+          <div className="flex gap-6">
+            <div className="w-1/2">
               <FormField
                 control={form.control}
                 name="type"
@@ -99,9 +102,24 @@ export function OptionForm({ form, onSubmit }: OptionFormProps) {
                 )}
               />
             </div>
+            <div className="w-1/2">
+              <FormField
+                control={form.control}
+                name="rank"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Порядок</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
           <div className="flex gap-6">
-            <div className="w-1/3">
+            <div className="w-1/2">
               <FormField
                 control={form.control}
                 name="inCart"
@@ -119,7 +137,7 @@ export function OptionForm({ form, onSubmit }: OptionFormProps) {
                 )}
               />
             </div>
-            <div className="w-1/3">
+            <div className="w-1/2">
               <FormField
                 control={form.control}
                 name="inFilter"
@@ -137,7 +155,6 @@ export function OptionForm({ form, onSubmit }: OptionFormProps) {
                 )}
               />
             </div>
-            <div className="w-1/3" />
           </div>
           <div className="p-5 rounded-md flex items-center justify-end gap-4 bg-neutral-50">
             <Link href="/admin/options">

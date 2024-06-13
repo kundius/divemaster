@@ -1,35 +1,8 @@
 import { FindOptions, OrderDefinition, QueryOrder } from '@mikro-orm/core'
 import { Transform, Type } from 'class-transformer'
-import { IsArray, IsBoolean, IsEnum, IsInt, IsOptional, IsString, Max, Min } from 'class-validator'
+import { IsArray, IsEnum, IsOptional, IsString } from 'class-validator'
 
-export class PaginationQueryDto<Entity = unknown> {
-  @Type(() => Number)
-  @IsInt()
-  @Min(1)
-  @IsOptional()
-  readonly page: number = 1
-
-  @Type(() => Number)
-  @IsInt()
-  @Min(1)
-  @Max(50)
-  @IsOptional()
-  readonly limit: number = 10
-
-  @Type(() => String)
-  @IsString()
-  @IsOptional()
-  readonly sort?: keyof Entity
-
-  @IsEnum(QueryOrder)
-  @IsOptional()
-  readonly dir?: QueryOrder
-
-  @Type(() => Boolean)
-  @IsBoolean()
-  @IsOptional()
-  readonly all: boolean = false
-
+export class FindAllQueryDto<Entity extends object> {
   @Transform(({ value }) => value.split(','))
   @IsArray()
   @IsOptional()
@@ -40,13 +13,14 @@ export class PaginationQueryDto<Entity = unknown> {
   @IsOptional()
   readonly filters?: never[]
 
-  get take(): number {
-    return this.limit
-  }
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  readonly sort?: keyof Entity
 
-  get skip(): number {
-    return (this.page - 1) * this.limit
-  }
+  @IsEnum(QueryOrder)
+  @IsOptional()
+  readonly dir?: QueryOrder
 
   get orderBy(): OrderDefinition<Entity> | undefined {
     if (this.sort && this.dir) {
@@ -57,10 +31,6 @@ export class PaginationQueryDto<Entity = unknown> {
 
   get options(): FindOptions<Entity, never, '*', never> {
     const output: FindOptions<Entity, never, '*', never> = {}
-    if (!this.all) {
-      output.limit = this.take
-      output.offset = this.skip
-    }
     if (this.orderBy) {
       output.orderBy = this.orderBy
     }

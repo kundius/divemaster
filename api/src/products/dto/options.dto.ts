@@ -1,9 +1,12 @@
+import { FindAllQueryDto } from '@/lib/find-all-query.dto'
+import { FindOneQueryDto } from '@/lib/find-one-query.dto'
 import { PaginationQueryDto } from '@/lib/pagination-query.dto'
+import { QueryOrder } from '@mikro-orm/core'
 import { PartialType } from '@nestjs/mapped-types'
 import { Type } from 'class-transformer'
 import { IsArray, IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
+import { Category } from '../entities/category.entity'
 import { Option, OptionType } from '../entities/option.entity'
-import { FindOneQueryDto } from '@/lib/find-one-query.dto'
 
 export class CreateOptionDto {
   @Type(() => String)
@@ -34,14 +37,31 @@ export class CreateOptionDto {
   @IsString()
   @IsOptional()
   properties?: string
-
-  @IsArray()
-  @IsOptional()
-  categories?: Array<string>
 }
 
 export class UpdateOptionDto extends PartialType(CreateOptionDto) {}
 
-export class FindAllOptionQueryDto extends PaginationQueryDto<Option> {}
+export class FindAllOptionDto extends PaginationQueryDto<Option> {
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  readonly query?: string
 
-export class FindOneOptionQueryDto extends FindOneQueryDto<Option> {}
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  readonly sort: keyof Option = 'rank'
+
+  @IsEnum(QueryOrder)
+  @IsOptional()
+  readonly dir: QueryOrder = QueryOrder.ASC
+}
+
+export class FindOneOptionDto extends FindOneQueryDto<Option> {}
+
+export class FindAllOptionCategoriesDto extends FindAllQueryDto<Category> {}
+
+export class UpdateOptionCategoriesDto {
+  @IsArray()
+  categories: Array<string>
+}

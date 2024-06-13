@@ -92,6 +92,8 @@ export interface OptionEntity {
   inFilter: boolean
   inCart: boolean
   type: OptionType
+  rank: number
+  categories?: CategoryEntity[]
 }
 
 export enum OptionType {

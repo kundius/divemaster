@@ -41,9 +41,6 @@ export class Option {
   @Property({ default: 0 })
   rank: number = 0
 
-  @Property({ type: 'json', nullable: true })
-  properties: Record<string, string> | null = null
-
   @ManyToMany(() => Category, (category) => category.options)
   categories = new Collection<Category>(this)
 

@@ -6,7 +6,7 @@ import { ProductEntity } from '@/types'
 import { useRouter } from 'next/navigation'
 import { ProductForm, ProductFormFields, ProductFormSchema } from './ProductForm'
 
-export function ProductCreateForm() {
+export function ProductCreate() {
   const router = useRouter()
   const [form, onSubmit] = useApiForm<ProductFormFields, ProductEntity>({
     url: `products`,

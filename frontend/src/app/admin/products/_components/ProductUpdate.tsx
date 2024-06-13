@@ -6,11 +6,11 @@ import { ProductEntity } from '@/types'
 import { useRouter } from 'next/navigation'
 import { ProductForm, ProductFormFields, ProductFormSchema } from './ProductForm'
 
-export interface ProductUpdateFormProps {
+export interface ProductUpdateProps {
   initialData: ProductEntity
 }
 
-export function ProductUpdateForm({ initialData }: ProductUpdateFormProps) {
+export function ProductUpdate({ initialData }: ProductUpdateProps) {
   const router = useRouter()
   const [form, onSubmit] = useApiForm<ProductFormFields, ProductEntity>({
     url: `products/${initialData.id}`,

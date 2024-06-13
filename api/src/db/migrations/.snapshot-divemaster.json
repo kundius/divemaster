@@ -364,15 +364,6 @@
           "nullable": false,
           "default": "0",
           "mappedType": "integer"
-        },
-        "properties": {
-          "name": "properties",
-          "type": "json",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "json"
         }
       },
       "name": "option",
@@ -728,6 +719,15 @@
           "nullable": false,
           "default": "0",
           "mappedType": "integer"
+        },
+        "properties": {
+          "name": "properties",
+          "type": "json",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
         }
       },
       "name": "option_variant",

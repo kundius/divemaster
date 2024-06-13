@@ -1,6 +1,6 @@
 import { PageLayout } from '@/components/admin/PageLayout'
 import type { Metadata } from 'next'
-import { ProductCreateForm } from '../_components/ProductCreateForm'
+import { ProductCreate } from '../_components/ProductCreate'
 import { VerticalNav } from '@/components/VerticalNav'
 
 export const metadata: Metadata = {
@@ -19,7 +19,7 @@ export default function Page() {
   ]
   return (
     <PageLayout title="Добавить товар" aside={<VerticalNav items={items} />}>
-      <ProductCreateForm />
+      <ProductCreate />
     </PageLayout>
   )
 }

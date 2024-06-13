@@ -1,3 +1,5 @@
+import { ProductOptions } from '../../_components/ProductOptions'
+
 export default async function Page({ params }: { params: { id: number } }) {
-  return <div>options</div>
+  return <ProductOptions productId={params.id} />
 }

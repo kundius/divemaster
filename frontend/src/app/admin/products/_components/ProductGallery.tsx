@@ -2,7 +2,9 @@
 
 import { Button } from '@/components/ui/button'
 import { Overlay } from '@/components/ui/overlay'
+import { Skeleton } from '@/components/ui/skeleton'
 import { api, apiDelete, apiGet, apiPatch, apiPut } from '@/lib/api'
+import { withClientAuth } from '@/lib/api/with-client-auth'
 import { getApiUrl } from '@/lib/utils'
 import { ProductImageEntity } from '@/types'
 import {
@@ -21,13 +23,10 @@ import {
   sortableKeyboardCoordinates,
   useSortable
 } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { ArrowPathIcon, CheckIcon, PowerIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-
-import { Skeleton } from '@/components/ui/skeleton'
-import { withClientAuth } from '@/lib/api/with-client-auth'
-import { CSS } from '@dnd-kit/utilities'
 
 interface SortableItemProps {
   id: number

@@ -14,13 +14,15 @@ import {
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
-import { CreateProductDto } from '../dto/create-product.dto'
-import { FindAllProductQueryDto } from '../dto/find-all-product-query.dto'
-import { FindOneProductQueryDto } from '../dto/find-one-product-query.dto'
-import { SortProductImageDto } from '../dto/sort-product-image.dto'
-import { UpdateProductCategoryDto } from '../dto/update-product-category.dto'
-import { UpdateProductImageDto } from '../dto/update-product-image.dto'
-import { UpdateProductDto } from '../dto/update-product.dto'
+import {
+  CreateProductDto,
+  FindAllProductDto,
+  FindOneProductDto,
+  SortProductImageDto,
+  UpdateProductCategoryDto,
+  UpdateProductDto,
+  UpdateProductImageDto
+} from '../dto/products.dto'
 import { ProductsService } from '../services/products.service'
 
 @Controller('products')
@@ -33,12 +35,12 @@ export class ProductsController {
   }
 
   @Get()
-  findAll(@Query() query: FindAllProductQueryDto) {
+  findAll(@Query() query: FindAllProductDto) {
     return this.productsService.findAll(query)
   }
 
   @Get('alias::alias')
-  async findOneByAlias(@Param('alias') alias: string, @Query() query: FindOneProductQueryDto) {
+  async findOneByAlias(@Param('alias') alias: string, @Query() query: FindOneProductDto) {
     const product = await this.productsService.findOneByAlias(alias, query)
     if (!product) {
       throw new NotFoundException()
@@ -47,7 +49,7 @@ export class ProductsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @Query() query: FindOneProductQueryDto) {
+  findOne(@Param('id') id: string, @Query() query: FindOneProductDto) {
     return this.productsService.findOne(+id, query)
   }
 
@@ -61,17 +63,24 @@ export class ProductsController {
     return this.productsService.remove(+id)
   }
 
+  @Get(':productId/options')
+  findAllOption(@Param('productId') productId: string) {
+    return this.productsService.findAllOption(+productId)
+  }
+
+  @Get(':productId/options/:optionId/variants')
+  findAllOptionVariant(@Param('productId') productId: string, @Param('optionId') optionId: string) {
+    return this.productsService.findAllOptionVariant(+productId, +optionId)
+  }
+
   @Get(':productId/categories')
-  findAllProductCategory(@Param('productId') productId: string) {
-    return this.productsService.findAllProductCategory(+productId)
+  findAllCategory(@Param('productId') productId: string) {
+    return this.productsService.findAllCategory(+productId)
   }
 
   @Patch(':productId/categories')
-  updateProductCategory(
-    @Param('productId') productId: string,
-    @Body() dto: UpdateProductCategoryDto
-  ) {
-    return this.productsService.updateProductCategory(+productId, dto)
+  updateCategory(@Param('productId') productId: string, @Body() dto: UpdateProductCategoryDto) {
+    return this.productsService.updateCategory(+productId, dto)
   }
 
   @Get(':productId/images')

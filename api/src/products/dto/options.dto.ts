@@ -32,11 +32,6 @@ export class CreateOptionDto {
   @IsNumber()
   @IsOptional()
   rank?: number
-
-  @Type(() => String)
-  @IsString()
-  @IsOptional()
-  properties?: string
 }
 
 export class UpdateOptionDto extends PartialType(CreateOptionDto) {}

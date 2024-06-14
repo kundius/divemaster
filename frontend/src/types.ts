@@ -96,6 +96,15 @@ export interface OptionEntity {
   categories?: CategoryEntity[]
 }
 
+export interface OptionValueEntity {
+  id: number
+  value: string
+  option: number | OptionEntity
+  product: number | ProductEntity
+  rank: number
+  properties?: string
+}
+
 export enum OptionType {
   // RANGE = 'range',
   // BOOLEAN = 'boolean',

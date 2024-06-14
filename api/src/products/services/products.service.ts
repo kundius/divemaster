@@ -1,20 +1,24 @@
-import { Injectable } from '@nestjs/common'
-import { CreateProductDto } from '../dto/create-product.dto'
-import { UpdateProductDto } from '../dto/update-product.dto'
-import { Product } from '../entities/product.entity'
-import { FindAllProductQueryDto } from '../dto/find-all-product-query.dto'
-import { ProductImage } from '../entities/product-image.entity'
-import { StorageService } from '@/storage/services/storage.service'
-import { join } from 'path'
 import { nanoid } from '@/lib/utils'
-import { UpdateProductImageDto } from '../dto/update-product-image.dto'
-import { SortProductImageDto } from '../dto/sort-product-image.dto'
-import { Category } from '../entities/category.entity'
-import { UpdateProductCategoryDto } from '../dto/update-product-category.dto'
-import { EntityRepository, QueryOrder } from '@mikro-orm/mariadb'
+import { StorageService } from '@/storage/services/storage.service'
+import { EntityRepository, FilterQuery, QueryOrder } from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
+import { Injectable } from '@nestjs/common'
+import { join } from 'path'
+import {
+  CreateProductDto,
+  FindAllProductDto,
+  FindOneProductDto,
+  SortProductImageDto,
+  UpdateProductCategoryDto,
+  UpdateProductDto,
+  UpdateProductImageDto
+} from '../dto/products.dto'
 import { Brand } from '../entities/brand.entity'
-import { FindOneProductQueryDto } from '../dto/find-one-product-query.dto'
+import { Category } from '../entities/category.entity'
+import { ProductImage } from '../entities/product-image.entity'
+import { Product } from '../entities/product.entity'
+import { Option } from '../entities/option.entity'
+import { OptionVariant } from '../entities/option-variant.entity'
 
 @Injectable()
 export class ProductsService {
@@ -25,6 +29,10 @@ export class ProductsService {
     private productImageRepository: EntityRepository<ProductImage>,
     @InjectRepository(Category)
     private categoryRepository: EntityRepository<Category>,
+    @InjectRepository(Option)
+    private optionRepository: EntityRepository<Option>,
+    @InjectRepository(OptionVariant)
+    private optionVariantRepository: EntityRepository<OptionVariant>,
     @InjectRepository(Brand)
     private brandRepository: EntityRepository<Brand>,
     private storageService: StorageService
@@ -44,16 +52,38 @@ export class ProductsService {
     return product
   }
 
-  async findAll(query: FindAllProductQueryDto) {
-    const [rows, total] = await this.productsRepository.findAndCount(query.where, query.options)
+  async findAll(query: FindAllProductDto) {
+    const where: FilterQuery<Product> = {}
+    if (query.query) {
+      where.title = {
+        $like: '%' + query.query + '%'
+      }
+    }
+    if (typeof query.category !== 'undefined') {
+      // TODO: HIERARCHY_DEPTH_LIMIT
+      // товары выбираются без учета подкатегорий
+      where.categories = {
+        $some: {
+          $or: [
+            {
+              id: query.category
+            }
+            // {
+            //   parent: this.category
+            // }
+          ]
+        }
+      }
+    }
+    const [rows, total] = await this.productsRepository.findAndCount(where, query.options)
     return { rows, total }
   }
 
-  async findOne(id: number, query?: FindOneProductQueryDto) {
+  async findOne(id: number, query?: FindOneProductDto) {
     return this.productsRepository.findOneOrFail({ id }, query?.options)
   }
 
-  async findOneByAlias(alias: string, query?: FindOneProductQueryDto) {
+  async findOneByAlias(alias: string, query?: FindOneProductDto) {
     return this.productsRepository.findOne({ alias }, query?.options)
   }
 
@@ -146,7 +176,7 @@ export class ProductsService {
     await this.storageService.remove(fileId)
   }
 
-  async findAllProductCategory(productId: number) {
+  async findAllCategory(productId: number) {
     const product = await this.productsRepository.findOne(
       { id: productId },
       {
@@ -156,7 +186,7 @@ export class ProductsService {
     return product?.categories || []
   }
 
-  async updateProductCategory(productId: number, { categories }: UpdateProductCategoryDto) {
+  async updateCategory(productId: number, { categories }: UpdateProductCategoryDto) {
     const product = await this.productsRepository.findOneOrFail({ id: productId })
     await product.categories.removeAll()
     for (const categoryId of categories) {
@@ -164,5 +194,41 @@ export class ProductsService {
       product.categories.add(category)
     }
     await this.productsRepository.getEntityManager().persistAndFlush(product)
+  }
+
+  async findAllOption(productId: number) {
+    const product = await this.productsRepository.findOne(
+      { id: productId },
+      {
+        populate: ['categories']
+      }
+    )
+    const categoryIds = product?.categories?.map((category) => category.id) || []
+    const options = await this.optionRepository.find(
+      {
+        categories: { $in: categoryIds }
+      },
+      {
+        orderBy: {
+          rank: QueryOrder.ASC
+        }
+      }
+    )
+    return options
+  }
+
+  async findAllOptionVariant(productId: number, optionId: number) {
+    const variants = await this.optionVariantRepository.find(
+      {
+        product: productId,
+        option: optionId
+      },
+      {
+        orderBy: {
+          rank: QueryOrder.ASC
+        }
+      }
+    )
+    return variants
   }
 }

@@ -323,15 +323,18 @@
         },
         "type": {
           "name": "type",
-          "type": "enum('color','size','variant')",
+          "type": "enum('text','number','boolean','color','size','options')",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
           "enumItems": [
+            "text",
+            "number",
+            "boolean",
             "color",
             "size",
-            "variant"
+            "options"
           ],
           "mappedType": "enum"
         },

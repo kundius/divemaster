@@ -106,11 +106,12 @@ export interface OptionValueEntity {
 }
 
 export enum OptionType {
-  // RANGE = 'range',
-  // BOOLEAN = 'boolean',
+  TEXT = 'text',
+  NUMBER = 'number',
+  BOOLEAN = 'boolean',
   COLOR = 'color',
   SIZE = 'size',
-  VARIANT = 'variant'
+  OPTIONS = 'options'
 }
 
 export type PageProps<

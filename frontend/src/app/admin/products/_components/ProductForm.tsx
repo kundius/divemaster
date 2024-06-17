@@ -44,37 +44,33 @@ export function ProductForm({ form, onSubmit }: ProductFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="flex gap-6">
-          <div className="w-1/2">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Название</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="w-1/2">
-            <FormField
-              control={form.control}
-              name="alias"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Псевдоним</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+        <div className="grid grid-cols-2 gap-6">
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Название</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="alias"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Псевдоним</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
         <FormField
           control={form.control}
@@ -89,80 +85,72 @@ export function ProductForm({ form, onSubmit }: ProductFormProps) {
             </FormItem>
           )}
         />
-        <div className="flex gap-6">
-          <div className="w-1/2">
-            <FormField
-              control={form.control}
-              name="brandId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Бренд</FormLabel>
-                  <FormControl>
-                    <ApiInputComboBox url="brands" value={field.value} onChange={field.onChange} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="w-1/2">
-            <FormField
-              control={form.control}
-              name="sku"
-              render={({ field: { value, ...field } }) => (
-                <FormItem>
-                  <FormLabel>Артикул</FormLabel>
-                  <FormControl>
-                    <Input value={value || ''} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+        <div className="grid grid-cols-2 gap-6">
+          <FormField
+            control={form.control}
+            name="brandId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Бренд</FormLabel>
+                <FormControl>
+                  <ApiInputComboBox url="brands" value={field.value} onChange={field.onChange} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="sku"
+            render={({ field: { value, ...field } }) => (
+              <FormItem>
+                <FormLabel>Артикул</FormLabel>
+                <FormControl>
+                  <Input value={value || ''} {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
-        <div className="flex gap-6">
-          <div className="w-1/2">
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field: { onChange, ...field } }) => (
-                <FormItem>
-                  <FormLabel>Цена</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      onChange={(e) => onChange(Number(e.target.value))}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="w-1/2">
-            <FormField
-              control={form.control}
-              name="oldPrice"
-              render={({ field: { onChange, value, ...field } }) => (
-                <FormItem>
-                  <FormLabel>Старая цена</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      onChange={(e) => onChange(!e.target.value ? null : Number(e.target.value))}
-                      value={value === null ? '' : value}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+        <div className="grid grid-cols-2 gap-6">
+          <FormField
+            control={form.control}
+            name="price"
+            render={({ field: { onChange, ...field } }) => (
+              <FormItem>
+                <FormLabel>Цена</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    onChange={(e) => onChange(Number(e.target.value))}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="oldPrice"
+            render={({ field: { onChange, value, ...field } }) => (
+              <FormItem>
+                <FormLabel>Старая цена</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    onChange={(e) => onChange(!e.target.value ? null : Number(e.target.value))}
+                    value={value === null ? '' : value}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
-        <div className="flex flex-wrap gap-x-12 gap-y-6">
+        <div className="grid grid-cols-4 gap-6">
           <FormField
             control={form.control}
             name="active"

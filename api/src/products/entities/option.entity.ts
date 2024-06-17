@@ -11,11 +11,12 @@ import { Category } from './category.entity'
 import { OptionVariant } from './option-variant.entity'
 
 export enum OptionType {
-  // RANGE = 'range',
-  // BOOLEAN = 'boolean',
+  TEXT = 'text',
+  NUMBER = 'number',
+  BOOLEAN = 'boolean',
   COLOR = 'color',
   SIZE = 'size',
-  VARIANT = 'variant'
+  OPTIONS = 'options'
 }
 
 @Entity()

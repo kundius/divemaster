@@ -14,7 +14,22 @@ export default function Page() {
       href: `/admin/products/create`
     },
     {
-      title: 'Категории'
+      title: 'Описание',
+    },
+    {
+      title: 'Категории',
+    },
+    {
+      title: 'Галерея',
+    },
+    {
+      title: 'Параметры',
+    },
+    {
+      title: 'Отзывы',
+    },
+    {
+      title: 'Связи',
     }
   ]
   return (

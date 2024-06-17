@@ -30,7 +30,7 @@ export const OptionFormSchema = z.object({
   caption: z.string().trim().min(1),
   inFilter: z.boolean(),
   inCart: z.boolean(),
-  type: z.nativeEnum(OptionType).default(OptionType.VARIANT)
+  type: z.nativeEnum(OptionType).default(OptionType.OPTIONS)
 })
 
 export type OptionFormFields = z.infer<typeof OptionFormSchema>
@@ -91,9 +91,12 @@ export function OptionForm({ form, onSubmit }: OptionFormProps) {
                           <SelectValue placeholder="Выберите тип" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value={OptionType.VARIANT}>Вариант</SelectItem>
+                          <SelectItem value={OptionType.OPTIONS}>Список с автодополнением</SelectItem>
                           <SelectItem value={OptionType.COLOR}>Цвет</SelectItem>
                           <SelectItem value={OptionType.SIZE}>Размер</SelectItem>
+                          <SelectItem value={OptionType.TEXT}>Текстовое поле</SelectItem>
+                          <SelectItem value={OptionType.NUMBER}>Числовое поле</SelectItem>
+                          <SelectItem value={OptionType.BOOLEAN}>Да/Нет</SelectItem>
                         </SelectContent>
                       </Select>
                     </FormControl>

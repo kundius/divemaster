@@ -1,91 +1,110 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from '@/components/ui/dialog'
-import { FormControl, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
-import { OptionEntity, OptionType, OptionValueEntity } from '@/types'
-import { ChevronUpDownIcon, PencilIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { apiPatch } from '@/lib/api'
+import { withClientAuth } from '@/lib/api/with-client-auth'
+import { OptionEntity, OptionType } from '@/types'
 import Link from 'next/link'
-import useSWR from 'swr'
+import { FormEvent, useState } from 'react'
 
-interface FieldProps {
-  title: string
+interface BooleanControlProps {
+  value: boolean
+  onChange: (value: boolean) => void
 }
 
-function BooleanField({ title }: FieldProps) {
+function BooleanControl({ value, onChange }: BooleanControlProps) {
+  return <Switch checked={value} onCheckedChange={onChange} />
+}
+
+interface TextControlProps {
+  value: string
+  onChange: (value: string) => void
+}
+
+function TextControl({ value, onChange }: TextControlProps) {
+  return <Input value={value} onChange={(e) => onChange(e.target.value)} />
+}
+
+interface NumberControlProps {
+  value?: number
+  onChange: (value?: number) => void
+}
+
+function NumberControl({ value, onChange }: NumberControlProps) {
   return (
-    <div className="space-y-2">
-      <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-        {title}
-      </label>
-      <div className="w-full">
-        <Switch />
-      </div>
-    </div>
+    <Input
+      type="number"
+      value={value || ''}
+      onChange={(e) => onChange(e.target.value ? Number(e.target.value) : undefined)}
+    />
   )
 }
 
-function TextField({ title }: FieldProps) {
-  return (
-    <div className="space-y-2">
-      <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-        {title}
-      </label>
-      <div className="w-full">
-        <Input />
-      </div>
-    </div>
-  )
-}
+// const controls = {
+//   [OptionType.BOOLEAN]: BooleanControl,
+//   [OptionType.COLOR]: TextControl,
+//   [OptionType.NUMBER]: TextControl,
+//   [OptionType.OPTIONS]: TextControl,
+//   [OptionType.SIZE]: TextControl,
+//   [OptionType.TEXT]: TextControl
+// }
 
-const fields = {
-  [OptionType.BOOLEAN]: BooleanField,
-  [OptionType.COLOR]: TextField,
-  [OptionType.NUMBER]: TextField,
-  [OptionType.OPTIONS]: TextField,
-  [OptionType.SIZE]: TextField,
-  [OptionType.TEXT]: TextField
-}
+export type ValuesType = Record<string, number | boolean | string | string[] | undefined>
 
 export interface ProductOptionsProps {
   productId: number
+  initialOptions: OptionEntity[]
+  initialValues: ValuesType
 }
 
-export function ProductOptions({ productId }: ProductOptionsProps) {
-  const productOptionsQuery = useSWR<OptionEntity[]>(`products/${productId}/options`)
-  console.log(productOptionsQuery.data)
+export function ProductOptions({ productId, initialOptions, initialValues }: ProductOptionsProps) {
+  const [values, setValues] = useState<ValuesType>(initialValues)
+
+  const renderControl = (item: OptionEntity) => {
+    const onChange = (value: number | boolean | string | string[] | undefined) => {
+      setValues((prev) => ({ ...prev, [item.key]: value }))
+    }
+    if (item.type === OptionType.BOOLEAN) {
+      const value = values[item.key] as boolean | undefined
+      return <Switch checked={value || false} onCheckedChange={onChange} name='test' />
+    }
+    if (item.type === OptionType.TEXT) {
+      const value = values[item.key] as string | undefined
+      return <Input value={value || ''} onChange={(e) => onChange(e.target.value)} />
+    }
+    if (item.type === OptionType.NUMBER) {
+      const value = values[item.key] as number | undefined
+      return (
+        <Input
+          type="number"
+          value={value || ''}
+          onChange={(e) => onChange(e.target.value ? Number(e.target.value) : undefined)}
+        />
+      )
+    }
+    return <div>options</div>
+  }
+
+  const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    const response = await apiPatch(`products/${productId}/option-values`, values, withClientAuth())
+
+    console.log(response)
+  }
+
   return (
-    <div className="space-y-6">
-      {productOptionsQuery.data?.map(
-        (item) => {
-          const Component = fields[item.type]
-          return <Component title={item.caption} key={item.id} />
-        }
-        // (
-        //   <div className="space-y-2" key={item.id}>
-        //     <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-        //     {item.caption}
-        //     </label>
-        //     <Input />
-        //   </div>
-        //   // <OptionVariant
-        //   //   key={item.id}
-        //   //   optionId={item.id}
-        //   //   productId={productId}
-        //   //   title={item.caption}
-        //   // />
-        // )
-      )}
+    <form onSubmit={submitHandler} className="space-y-6">
+      {initialOptions.map((item) => (
+        <div className="space-y-2" key={item.id}>
+          <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            {item.caption}
+          </label>
+          <div className="w-full">{renderControl(item)}</div>
+        </div>
+      ))}
       <div className="p-5 rounded-md flex items-center justify-end gap-4 bg-neutral-50">
         <Link href="/admin/products">
           <Button type="button" variant="outline">
@@ -94,6 +113,6 @@ export function ProductOptions({ productId }: ProductOptionsProps) {
         </Link>
         <Button type="submit">Сохранить</Button>
       </div>
-    </div>
+    </form>
   )
 }

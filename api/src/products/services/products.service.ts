@@ -17,7 +17,7 @@ import { Brand } from '../entities/brand.entity'
 import { Category } from '../entities/category.entity'
 import { ProductImage } from '../entities/product-image.entity'
 import { Product } from '../entities/product.entity'
-import { Option } from '../entities/option.entity'
+import { Option, OptionType } from '../entities/option.entity'
 import { OptionVariant } from '../entities/option-variant.entity'
 
 @Injectable()
@@ -196,7 +196,7 @@ export class ProductsService {
     await this.productsRepository.getEntityManager().persistAndFlush(product)
   }
 
-  async findAllOption(productId: number) {
+  async findAllOptions(productId: number) {
     const product = await this.productsRepository.findOne(
       { id: productId },
       {
@@ -217,18 +217,200 @@ export class ProductsService {
     return options
   }
 
-  async findAllOptionVariant(productId: number, optionId: number) {
-    const variants = await this.optionVariantRepository.find(
-      {
-        product: productId,
-        option: optionId
-      },
-      {
-        orderBy: {
-          rank: QueryOrder.ASC
+  async findAllOptionValues(productId: number) {
+    const options = await this.findAllOptions(productId)
+
+    const values: Record<string, number | boolean | string | string[] | undefined> = {}
+
+    for (const option of options) {
+      const optionVariants = await this.optionVariantRepository.find(
+        {
+          option,
+          product: productId
+        },
+        {
+          orderBy: {
+            rank: QueryOrder.ASC
+          }
+        }
+      )
+
+      if (optionVariants.length === 0) continue
+
+      switch (option.type) {
+        case OptionType.SIZE:
+        case OptionType.COLOR:
+        case OptionType.OPTIONS:
+          values[option.key] = optionVariants.map((optionVariant) => optionVariant.value)
+          break
+        case OptionType.BOOLEAN:
+          values[option.key] =
+            optionVariants[0].value === '1'
+              ? true
+              : optionVariants[0].value === '0'
+                ? false
+                : undefined
+          break
+        case OptionType.TEXT:
+          values[option.key] = String(optionVariants[0].value)
+          break
+        case OptionType.NUMBER:
+          values[option.key] = Number(optionVariants[0].value)
+          break
+      }
+    }
+
+    return values
+  }
+
+  async updateOptionValues(
+    productId: number,
+    values: Record<string, number | boolean | string | string[] | undefined>
+  ) {
+    const product = await this.findOne(productId)
+    const options = await this.findAllOptions(productId)
+    const em = this.optionVariantRepository.getEntityManager()
+
+    const findVariants = async (option: Option) => {
+      return this.optionVariantRepository.find(
+        { option, product },
+        { orderBy: { rank: QueryOrder.ASC } }
+      )
+    }
+
+    const findOrCreateVariant = async (option: Option) => {
+      const variant = await this.optionVariantRepository.findOne(
+        { option, product },
+        { orderBy: { rank: QueryOrder.ASC } }
+      )
+
+      if (!variant) {
+        return this.optionVariantRepository.create({
+          option,
+          product,
+          value: '',
+          rank: 0
+        })
+      }
+
+      return variant
+    }
+
+    const optionsUpdater = async (option: Option) => {
+      const value = values[option.key]
+      const variants = await findVariants(option)
+
+      if (typeof value === 'undefined') {
+        for (const variant of variants) {
+          em.remove(variant)
+        }
+        return
+      }
+
+      if (Array.isArray(value)) {
+        // удаляем лишние вариаты и меняем ранги для остальных
+        for (const variant of variants) {
+          const index = value.indexOf(variant.value)
+          if (index === -1) {
+            em.remove(variant)
+            continue
+          }
+          variant.rank = index
+          delete value[index]
+        }
+        // добавляем новые варианты
+        for (const key in value) {
+          this.optionVariantRepository.create({
+            option,
+            product,
+            value: value[key],
+            rank: Number(key)
+          })
         }
       }
-    )
-    return variants
+
+      throw new Error('Invalid value type')
+    }
+
+    const booleanUpdater = async (option: Option) => {
+      const value = values[option.key]
+      const variant = await findOrCreateVariant(option)
+
+      if (typeof value === 'undefined') {
+        em.remove(variant)
+        return
+      }
+
+      if (typeof value === 'boolean') {
+        variant.value = value ? '1' : '0'
+        return
+      }
+
+      throw new Error('Invalid value type')
+    }
+
+    const textUpdater = async (option: Option) => {
+      const value = values[option.key]
+      const variant = await findOrCreateVariant(option)
+
+      if (typeof value === 'undefined') {
+        em.remove(variant)
+        return
+      }
+
+      if (typeof value === 'string') {
+        variant.value = value
+        return
+      }
+
+      throw new Error('Invalid value type')
+    }
+
+    const numberUpdater = async (option: Option) => {
+      const value = values[option.key]
+      const variant = await findOrCreateVariant(option)
+
+      if (typeof value === 'undefined') {
+        em.remove(variant)
+        return
+      }
+
+      if (typeof value === 'number') {
+        variant.value = String(value)
+        return
+      }
+
+      throw new Error('Invalid value type')
+    }
+
+    const updaters = {
+      [OptionType.SIZE]: optionsUpdater,
+      [OptionType.COLOR]: optionsUpdater,
+      [OptionType.OPTIONS]: optionsUpdater,
+      [OptionType.BOOLEAN]: booleanUpdater,
+      [OptionType.TEXT]: textUpdater,
+      [OptionType.NUMBER]: numberUpdater
+    }
+
+    for (const option of options) {
+      await updaters[option.type](option)
+    }
+
+    await em.flush()
   }
+
+  // async findAllOptionVariant(productId: number, optionId: number) {
+  //   const variants = await this.optionVariantRepository.find(
+  //     {
+  //       product: productId,
+  //       option: optionId
+  //     },
+  //     {
+  //       orderBy: {
+  //         rank: QueryOrder.ASC
+  //       }
+  //     }
+  //   )
+  //   return variants
+  // }
 }

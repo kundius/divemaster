@@ -65,13 +65,26 @@ export class ProductsController {
 
   @Get(':productId/options')
   findAllOption(@Param('productId') productId: string) {
-    return this.productsService.findAllOption(+productId)
+    return this.productsService.findAllOptions(+productId)
   }
 
-  @Get(':productId/options/:optionId/variants')
-  findAllOptionVariant(@Param('productId') productId: string, @Param('optionId') optionId: string) {
-    return this.productsService.findAllOptionVariant(+productId, +optionId)
+  @Get(':productId/option-values')
+  findAllOptionValues(@Param('productId') productId: string) {
+    return this.productsService.findAllOptionValues(+productId)
   }
+
+  @Patch(':productId/option-values')
+  updateOptionValues(
+    @Param('productId') productId: string,
+    @Body() dto: Record<string, number | boolean | string | string[] | undefined>
+  ) {
+    return this.productsService.updateOptionValues(+productId, dto)
+  }
+
+  // @Get(':productId/options/:optionId/variants')
+  // findAllOptionVariant(@Param('productId') productId: string, @Param('optionId') optionId: string) {
+  //   return this.productsService.findAllOptionVariant(+productId, +optionId)
+  // }
 
   @Get(':productId/categories')
   findAllCategory(@Param('productId') productId: string) {

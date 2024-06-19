@@ -327,6 +327,7 @@ export class ProductsService {
             rank: Number(key)
           })
         }
+        return
       }
 
       throw new Error('Invalid value type')

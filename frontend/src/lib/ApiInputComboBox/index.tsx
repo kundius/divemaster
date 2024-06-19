@@ -145,7 +145,7 @@ export function ApiInputComboBox<TRow extends unknown = unknown>(
             onValueChange={setQuery}
           />
           <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
+            <CommandEmpty>Not found.</CommandEmpty>
             <CommandGroup>
               {swrQuery.data?.rows.map((row) => (
                 <CommandItem

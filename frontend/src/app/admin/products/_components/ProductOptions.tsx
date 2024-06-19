@@ -1,8 +1,10 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { CreateablePicker } from '@/components/ui/createable-picker'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
+import { TagsInput } from '@/components/ui/tags-input'
 import { apiPatch } from '@/lib/api'
 import { withClientAuth } from '@/lib/api/with-client-auth'
 import { OptionEntity, OptionType } from '@/types'
@@ -68,7 +70,7 @@ export function ProductOptions({ productId, initialOptions, initialValues }: Pro
     }
     if (item.type === OptionType.BOOLEAN) {
       const value = values[item.key] as boolean | undefined
-      return <Switch checked={value || false} onCheckedChange={onChange} name='test' />
+      return <Switch checked={value || false} onCheckedChange={onChange} name="test" />
     }
     if (item.type === OptionType.TEXT) {
       const value = values[item.key] as string | undefined
@@ -84,7 +86,34 @@ export function ProductOptions({ productId, initialOptions, initialValues }: Pro
         />
       )
     }
-    return <div>options</div>
+    if (
+      item.type === OptionType.COLOR ||
+      item.type === OptionType.OPTIONS ||
+      item.type === OptionType.SIZE
+    ) {
+      const value = values[item.key] as string[] | undefined
+      return (
+        <CreateablePicker
+          //   value={value || []}
+          //   onChange={onChange}
+          placeholder="Type name of fruit"
+          onCreateItem={(item) => {
+            onChange([...(value || []), item.value])
+          }}
+          items={[
+            { value: 'apple', label: 'Apple' },
+            { value: 'banana', label: 'Banana' },
+            { value: 'mango', label: 'Mango' },
+            { value: 'kiwi', label: 'Kiwi' }
+          ]}
+          selectedItems={value?.map((item) => ({ value: item, label: item })) || []}
+          onSelectedItemsChange={(changes) =>
+            onChange(changes.selectedItems.map((item) => item.value))
+          }
+          // suggestions={['Chocolate', 'Strawberry', 'Vanilla']}
+        />
+      )
+    }
   }
 
   const submitHandler = async (e: FormEvent<HTMLFormElement>) => {

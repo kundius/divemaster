@@ -96,20 +96,15 @@ export function ProductOptions({ productId, initialOptions, initialValues }: Pro
         <CreateablePicker
           //   value={value || []}
           //   onChange={onChange}
-          placeholder="Type name of fruit"
-          onCreateItem={(item) => {
-            onChange([...(value || []), item.value])
-          }}
-          items={[
+          placeholder="Select options"
+          options={[
             { value: 'apple', label: 'Apple' },
             { value: 'banana', label: 'Banana' },
             { value: 'mango', label: 'Mango' },
             { value: 'kiwi', label: 'Kiwi' }
           ]}
-          selectedItems={value?.map((item) => ({ value: item, label: item })) || []}
-          onSelectedItemsChange={(changes) =>
-            onChange(changes.selectedItems.map((item) => item.value))
-          }
+          value={value?.map((item) => ({ value: item, label: item })) || []}
+          onChange={(selectedItems) => onChange(selectedItems.map((item) => item.value))}
           // suggestions={['Chocolate', 'Strawberry', 'Vanilla']}
         />
       )

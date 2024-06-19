@@ -1,23 +1,9 @@
 import { cn } from '@/lib/utils'
-import { ChevronDownIcon } from '@heroicons/react/24/outline'
-import {
-  UseMultipleSelectionSelectedItemsChange,
-  useCombobox,
-  useMultipleSelection
-} from 'downshift'
+import { XMarkIcon } from '@heroicons/react/24/outline'
+import { useCombobox, useMultipleSelection } from 'downshift'
 import { matchSorter } from 'match-sorter'
-import React, { useEffect } from 'react'
-import Highlighter from 'react-highlight-words'
-import { usePopper } from 'react-popper'
-import { useDeepCompareEffect } from 'react-use'
-
-function defaultOptionFilterFunc(items: Item[], inputValue: string) {
-  return matchSorter(items, inputValue, { keys: ['value', 'label'] })
-}
-
-function defaultItemRenderer(selected: Item) {
-  return selected.label
-}
+import { useMemo, useState } from 'react'
+import styles from './createable-picker.module.scss'
 
 interface Item {
   value: string
@@ -25,68 +11,55 @@ interface Item {
 }
 
 export interface CreateablePickerProps {
-  items: Item[]
-  optionFilterFunc?: (items: Item[], inputValue: string) => Item[]
-  itemRenderer?: (selected: Item) => string
+  options: Item[]
+  value: Item[]
+  onChange: (value: Item[]) => void
   placeholder?: string
-  onCreateItem?: (value: Item) => void
-  selectedItems?: Item[]
-  onSelectedItemsChange?:
-    | ((changes: UseMultipleSelectionSelectedItemsChange<Item>) => void)
-    | undefined
 }
 
-export function CreateablePicker(props: CreateablePickerProps) {
-  const {
-    items,
-    optionFilterFunc = defaultOptionFilterFunc,
-    itemRenderer = defaultItemRenderer,
-    placeholder,
-    onCreateItem,
-    selectedItems = [],
-    ...downshiftProps
-  } = props
+function filterItems(availableItems: Item[], selectedItems: Item[], inputValue: string) {
+  const availableItemValues = availableItems.map((item) => item.value)
+  const selectedItemValues = selectedItems.map((item) => item.value)
 
-  const [isCreating, setIsCreating] = React.useState(false)
-  const [inputItems, setInputItems] = React.useState(items)
-  // const disclosureRef = React.useRef(null)
-  // const popoverRef = React.useRef(null)
-  // const { styles, attributes, forceUpdate } = usePopper(disclosureRef.current, popoverRef.current, {
-  //   placement: 'bottom-start',
-  //   modifiers: [
-  //     {
-  //       name: 'offset',
-  //       options: {
-  //         offset: [0, 8]
-  //       }
-  //     }
-  //   ]
-  // })
+  const array = matchSorter(
+    availableItems.filter((item) => !selectedItemValues.includes(item.value)),
+    inputValue,
+    { keys: ['value', 'label'] }
+  )
 
-  const {
-    getSelectedItemProps,
-    getDropdownProps,
-    addSelectedItem,
-    removeSelectedItem,
-    activeIndex
-  } = useMultipleSelection({
-    ...downshiftProps,
+  if (!!inputValue && !availableItemValues.includes(inputValue)) {
+    array.unshift({ label: `Добавить "${inputValue}"`, value: inputValue })
+  }
+
+  return array
+}
+
+export function CreateablePicker({
+  options = [],
+  value: selectedItems,
+  onChange: setSelectedItems,
+  placeholder
+}: CreateablePickerProps) {
+  const [inputValue, setInputValue] = useState('')
+  const items = useMemo(
+    () => filterItems(options, selectedItems, inputValue),
+    [options, selectedItems, inputValue]
+  )
+  const { getSelectedItemProps, getDropdownProps, removeSelectedItem } = useMultipleSelection({
     selectedItems,
-    stateReducer: (_, actionAndChanges) => {
-      const { type, changes } = actionAndChanges
+    onStateChange({ selectedItems: newSelectedItems, type }) {
       switch (type) {
+        case useMultipleSelection.stateChangeTypes.SelectedItemKeyDownBackspace:
+        case useMultipleSelection.stateChangeTypes.SelectedItemKeyDownDelete:
+        case useMultipleSelection.stateChangeTypes.DropdownKeyDownBackspace:
         case useMultipleSelection.stateChangeTypes.FunctionRemoveSelectedItem:
-          console.log(type, changes)
-          return {
-            ...changes,
-            activeIndex: undefined
-          }
+          setSelectedItems(newSelectedItems || [])
+          break
         default:
-          return changes
+          break
       }
     }
   })
-
   const {
     isOpen,
     getToggleButtonProps,
@@ -95,65 +68,44 @@ export function CreateablePicker(props: CreateablePickerProps) {
     getInputProps,
     highlightedIndex,
     getItemProps,
-    openMenu,
-    selectItem,
-    setHighlightedIndex,
-    inputValue
+    selectedItem
   } = useCombobox({
-    selectedItem: null,
-    items: inputItems,
-    onInputValueChange: ({ inputValue }) => {
-      const filteredItems = optionFilterFunc(items, inputValue || '')
-
-      if (isCreating && filteredItems.length > 0) {
-        setIsCreating(false)
-      }
-
-      setInputItems(filteredItems)
+    items,
+    itemToString(item) {
+      return item ? item.value : ''
     },
-    stateReducer: (state, actionAndChanges) => {
+    defaultHighlightedIndex: 0, // after selection, highlight the first item.
+    selectedItem: null,
+    inputValue,
+    stateReducer(state, actionAndChanges) {
       const { changes, type } = actionAndChanges
+
       switch (type) {
-        case useCombobox.stateChangeTypes.InputBlur:
-          return {
-            ...changes,
-            highlightedIndex: state.highlightedIndex,
-            inputValue: ''
-          }
         case useCombobox.stateChangeTypes.InputKeyDownEnter:
         case useCombobox.stateChangeTypes.ItemClick:
           return {
             ...changes,
-            highlightedIndex: state.highlightedIndex,
-            isOpen: true,
-            inputValue: ''
+            isOpen: true, // keep the menu open after selection.
+            highlightedIndex: 0 // with the first option highlighted.
           }
         default:
           return changes
       }
     },
-    onStateChange: ({ type, selectedItem }) => {
+    onStateChange({ inputValue: newInputValue, type, selectedItem: newSelectedItem }) {
       switch (type) {
         case useCombobox.stateChangeTypes.InputKeyDownEnter:
         case useCombobox.stateChangeTypes.ItemClick:
-          if (selectedItem) {
-            if (selectedItemValues.includes(selectedItem.value)) {
-              setTimeout(() => {
-                console.log('remove')
-                removeSelectedItem(selectedItem)
-              }, 1000)
-            } else {
-              if (onCreateItem && isCreating) {
-                onCreateItem(selectedItem)
-                setIsCreating(false)
-                setInputItems(items)
-              } else {
-                addSelectedItem(selectedItem)
-              }
-            }
-
-            selectItem(null)
+        case useCombobox.stateChangeTypes.InputBlur:
+          if (newSelectedItem) {
+            setSelectedItems([...selectedItems, newSelectedItem])
+            setInputValue('')
           }
+          break
+
+        case useCombobox.stateChangeTypes.InputChange:
+          setInputValue(newInputValue || '')
+
           break
         default:
           break
@@ -161,118 +113,76 @@ export function CreateablePicker(props: CreateablePickerProps) {
     }
   })
 
-  useEffect(() => {
-    if (inputItems.length === 0 && activeIndex === -1 && inputValue.length > 0) {
-      setIsCreating(true)
-      setInputItems([{ label: `${inputValue}`, value: inputValue }])
-      setHighlightedIndex(0)
-    }
-  }, [inputItems, setIsCreating, setHighlightedIndex, inputValue, activeIndex])
-
-  useDeepCompareEffect(() => {
-    setInputItems(items)
-  }, [items])
-
-  // useEffect(() => {
-  //   if (selectedItems && forceUpdate) {
-  //     forceUpdate()
-  //   }
-  // }, [selectedItems, forceUpdate])
-
-  const selectedItemValues = selectedItems.map((item) => item.value)
-
   return (
-    <div className="relative w-full">
-      <div>
-        <div className="my-2">
-          {selectedItems.map((selectedItem, index) => (
-            <span
-              key={`selected-item-${index}`}
-              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium leading-4 bg-indigo-100 text-indigo-800 focus:outline-none focus:shadow-outline mr-2"
-              {...getSelectedItemProps({ selectedItem, index })}
-            >
-              {selectedItem.label}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  removeSelectedItem(selectedItem)
-                }}
-                type="button"
-                className="flex-shrink-0 ml-1 inline-flex text-indigo-500 focus:outline-none focus:text-indigo-700"
-                aria-label="Remove small badge"
+    <div>
+        <div className={cn(styles.field, "flex min-h-9 gap-1 items-center flex-wrap rounded-md border bg-white p-1 shadow-sm")}>
+          {selectedItems.map(function renderSelectedItem(selectedItemForRender, index) {
+            return (
+              <span
+                className={styles.tag}
+                key={`selected-item-${index}`}
+                {...getSelectedItemProps({
+                  selectedItem: selectedItemForRender,
+                  index
+                })}
               >
-                &#10005;
-              </button>
-            </span>
-          ))}
-        </div>
-        <div className="relative">
-          <input
-            {...getInputProps(
-              getDropdownProps({
-                className:
-                  'w-full p-2 text-sm focus:outline-none focus:shadow-outline rounded border border-gray-400',
-                placeholder
-                // onClick: isOpen ? () => {} : openMenu,
-                // onFocus: isOpen ? () => {} : openMenu,
-                // ref: disclosureRef
-              })
-            )}
-          />
-          <div className="absolute right-0 top-0 bottom-0 flex items-center justify-center">
-            <button
-              className="text-gray-600 px-3 h-full focus:outline-none focus:shadow-outline"
+                {selectedItemForRender.label}
+                <span
+                  className={styles.tagRemove}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    removeSelectedItem(selectedItemForRender)
+                  }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+                    <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+                  </svg>
+                </span>
+              </span>
+            )
+          })}
+          <div className="flex grow">
+            <input
+              placeholder={placeholder}
+              className={styles.input}
+              // className={cn(styles.input, "px-2 text-sm h-8 -mt-1 -mb-1 min-w-0 w-12 grow")}
+              {...getInputProps(
+                getDropdownProps({
+                  // preventKeyAction: isOpen
+                })
+              )}
+            />
+            {/* <button
+              aria-label="toggle menu"
+              className="px-2"
+              type="button"
               {...getToggleButtonProps()}
-              aria-label={'toggle menu'}
             >
-              <ChevronDownIcon className="w-4 h-4" />
-            </button>
+              &#8595;
+            </button> */}
           </div>
         </div>
-        <div
-          // style={styles.popper}
-          // {...attributes.popper}
-          // {...getMenuProps({ ref: popoverRef, className: ' w-full' })}
-          {...getMenuProps({ className: ' w-full' })}
-        >
-          <ul className="bg-white shadow-md">
-            {isOpen &&
-              inputItems.map((item, index) => (
-                <li
-                  className={cn({
-                    'p-2 text-sm bg-white border-b': true,
-                    'bg-gray-100': highlightedIndex === index
-                  })}
-                  key={`${item.value}${index}`}
-                  {...getItemProps({ item, index })}
-                >
-                  {isCreating ? (
-                    <p>
-                      <span>Create</span>{' '}
-                      <span className="font-medium bg-yellow-300 text-yellow-900">
-                        {item.label}
-                      </span>
-                    </p>
-                  ) : (
-                    <div className="flex items-center space-x-2">
-                      {selectedItemValues.includes(item.value) && (
-                        <span role="img" aria-label="Selected">
-                          ✅
-                        </span>
-                      )}
-                      <Highlighter
-                        autoEscape
-                        searchWords={[inputValue || '']}
-                        textToHighlight={itemRenderer(item)}
-                        highlightClassName="bg-yellow-300"
-                      />
-                    </div>
-                  )}
-                </li>
-              ))}
-          </ul>
-        </div>
-      </div>
+      <ul
+        className={`absolute w-inherit bg-white mt-1 shadow-md max-h-80 overflow-scroll p-0 z-10 ${
+          !(isOpen && items.length) && 'hidden'
+        }`}
+        {...getMenuProps()}
+      >
+        {isOpen &&
+          items.map((item, index) => (
+            <li
+              className={cn(
+                highlightedIndex === index && 'bg-blue-300',
+                selectedItem === item && 'font-bold',
+                'py-2 px-3 shadow-sm flex flex-col'
+              )}
+              key={`${item.value}${index}`}
+              {...getItemProps({ item, index })}
+            >
+              <span>{item.label}</span>
+            </li>
+          ))}
+      </ul>
     </div>
   )
 }

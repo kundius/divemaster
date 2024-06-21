@@ -1,57 +1,35 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { CreateablePicker } from '@/components/ui/createable-picker'
+import { CreateablePicker, CreateablePickerItem } from '@/components/ui/createable-picker'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
-import { TagsInput } from '@/components/ui/tags-input'
 import { apiPatch } from '@/lib/api'
 import { withClientAuth } from '@/lib/api/with-client-auth'
 import { OptionEntity, OptionType } from '@/types'
+import { useToggle } from '@reactuses/core'
 import Link from 'next/link'
 import { FormEvent, useState } from 'react'
+import { toast } from 'sonner'
+import useSWR from 'swr'
 
-interface BooleanControlProps {
-  value: boolean
-  onChange: (value: boolean) => void
+interface OptionsControlProps {
+  optionId: number
+  value: CreateablePickerItem[]
+  onChange: (value: CreateablePickerItem[]) => void
 }
 
-function BooleanControl({ value, onChange }: BooleanControlProps) {
-  return <Switch checked={value} onCheckedChange={onChange} />
-}
+function OptionsControl({ optionId, value, onChange }: OptionsControlProps) {
+  const valuesQuery = useSWR<string[]>(`options/${optionId}/values`)
 
-interface TextControlProps {
-  value: string
-  onChange: (value: string) => void
-}
-
-function TextControl({ value, onChange }: TextControlProps) {
-  return <Input value={value} onChange={(e) => onChange(e.target.value)} />
-}
-
-interface NumberControlProps {
-  value?: number
-  onChange: (value?: number) => void
-}
-
-function NumberControl({ value, onChange }: NumberControlProps) {
   return (
-    <Input
-      type="number"
-      value={value || ''}
-      onChange={(e) => onChange(e.target.value ? Number(e.target.value) : undefined)}
+    <CreateablePicker
+      options={valuesQuery.data?.map((item) => ({ label: item, value: item })) || []}
+      value={value}
+      onChange={onChange}
     />
   )
 }
-
-// const controls = {
-//   [OptionType.BOOLEAN]: BooleanControl,
-//   [OptionType.COLOR]: TextControl,
-//   [OptionType.NUMBER]: TextControl,
-//   [OptionType.OPTIONS]: TextControl,
-//   [OptionType.SIZE]: TextControl,
-//   [OptionType.TEXT]: TextControl
-// }
 
 export type ValuesType = Record<string, number | boolean | string | string[] | undefined>
 
@@ -63,6 +41,7 @@ export interface ProductOptionsProps {
 
 export function ProductOptions({ productId, initialOptions, initialValues }: ProductOptionsProps) {
   const [values, setValues] = useState<ValuesType>(initialValues)
+  const [pending, pendingToggle] = useToggle(false)
 
   const renderControl = (item: OptionEntity) => {
     const onChange = (value: number | boolean | string | string[] | undefined) => {
@@ -93,19 +72,10 @@ export function ProductOptions({ productId, initialOptions, initialValues }: Pro
     ) {
       const value = values[item.key] as string[] | undefined
       return (
-        <CreateablePicker
-          //   value={value || []}
-          //   onChange={onChange}
-          placeholder="Select options"
-          options={[
-            { value: 'apple', label: 'Apple' },
-            { value: 'banana', label: 'Banana' },
-            { value: 'mango', label: 'Mango' },
-            { value: 'kiwi', label: 'Kiwi' }
-          ]}
+        <OptionsControl
+          optionId={item.id}
           value={value?.map((item) => ({ value: item, label: item })) || []}
           onChange={(selectedItems) => onChange(selectedItems.map((item) => item.value))}
-          // suggestions={['Chocolate', 'Strawberry', 'Vanilla']}
         />
       )
     }
@@ -114,9 +84,16 @@ export function ProductOptions({ productId, initialOptions, initialValues }: Pro
   const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    const response = await apiPatch(`products/${productId}/option-values`, values, withClientAuth())
+    pendingToggle()
 
-    console.log(response)
+    try {
+      await apiPatch(`products/${productId}/option-values`, values, withClientAuth())
+      toast.success('Сохранено')
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Unknown error')
+    }
+
+    pendingToggle()
   }
 
   return (
@@ -135,7 +112,9 @@ export function ProductOptions({ productId, initialOptions, initialValues }: Pro
             Отмена
           </Button>
         </Link>
-        <Button type="submit">Сохранить</Button>
+        <Button type="submit" loading={pending}>
+          Сохранить
+        </Button>
       </div>
     </form>
   )

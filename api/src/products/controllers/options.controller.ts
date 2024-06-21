@@ -50,4 +50,9 @@ export class OptionsController {
   updateCategories(@Param('optionId') optionId: string, @Body() dto: UpdateOptionCategoriesDto) {
     return this.optionsService.updateCategories(+optionId, dto)
   }
+
+  @Get(':optionId/values')
+  findAllValues(@Param('optionId') optionId: string) {
+    return this.optionsService.findAllValues(+optionId)
+  }
 }

@@ -301,7 +301,7 @@ export class ProductsService {
       const variants = await findVariants(option)
 
       if (typeof value === 'undefined') {
-        for (const variant of variants) {
+        for (const variant of variants) { 
           em.remove(variant)
         }
         return

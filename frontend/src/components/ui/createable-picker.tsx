@@ -2,22 +2,24 @@ import { cn } from '@/lib/utils'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { useCombobox, useMultipleSelection } from 'downshift'
 import { matchSorter } from 'match-sorter'
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import styles from './createable-picker.module.scss'
+import { Popover, PopoverAnchor, PopoverContent } from './popover'
+import { useElementSize } from '@reactuses/core'
 
-interface Item {
+export interface CreateablePickerItem {
   value: string
   label: string
 }
 
 export interface CreateablePickerProps {
-  options: Item[]
-  value: Item[]
-  onChange: (value: Item[]) => void
+  options: CreateablePickerItem[]
+  value: CreateablePickerItem[]
+  onChange: (value: CreateablePickerItem[]) => void
   placeholder?: string
 }
 
-function filterItems(availableItems: Item[], selectedItems: Item[], inputValue: string) {
+function filterItems(availableItems: CreateablePickerItem[], selectedItems: CreateablePickerItem[], inputValue: string) {
   const availableItemValues = availableItems.map((item) => item.value)
   const selectedItemValues = selectedItems.map((item) => item.value)
 
@@ -62,6 +64,9 @@ export function CreateablePicker({
   })
   const {
     isOpen,
+    toggleMenu,
+    openMenu,
+    closeMenu,
     getToggleButtonProps,
     getLabelProps,
     getMenuProps,
@@ -113,76 +118,89 @@ export function CreateablePicker({
     }
   })
 
+  const fieldRef = useRef<HTMLDivElement>(null)
+
+  const [width] = useElementSize(fieldRef, { box: 'border-box' })
+
   return (
     <div>
-        <div className={cn(styles.field, "flex min-h-9 gap-1 items-center flex-wrap rounded-md border bg-white p-1 shadow-sm")}>
-          {selectedItems.map(function renderSelectedItem(selectedItemForRender, index) {
-            return (
-              <span
-                className={styles.tag}
-                key={`selected-item-${index}`}
-                {...getSelectedItemProps({
-                  selectedItem: selectedItemForRender,
-                  index
-                })}
-              >
-                {selectedItemForRender.label}
-                <span
-                  className={styles.tagRemove}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    removeSelectedItem(selectedItemForRender)
-                  }}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-                    <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
-                  </svg>
-                </span>
-              </span>
-            )
-          })}
-          <div className="flex grow">
-            <input
-              placeholder={placeholder}
-              className={styles.input}
-              // className={cn(styles.input, "px-2 text-sm h-8 -mt-1 -mb-1 min-w-0 w-12 grow")}
-              {...getInputProps(
-                getDropdownProps({
-                  // preventKeyAction: isOpen
-                })
-              )}
-            />
-            {/* <button
-              aria-label="toggle menu"
-              className="px-2"
-              type="button"
-              {...getToggleButtonProps()}
-            >
-              &#8595;
-            </button> */}
-          </div>
-        </div>
-      <ul
-        className={`absolute w-inherit bg-white mt-1 shadow-md max-h-80 overflow-scroll p-0 z-10 ${
-          !(isOpen && items.length) && 'hidden'
-        }`}
-        {...getMenuProps()}
+      <Popover
+        open={isOpen && items.length > 0}
+        onOpenChange={(on) => (on ? openMenu() : closeMenu())}
       >
-        {isOpen &&
-          items.map((item, index) => (
-            <li
-              className={cn(
-                highlightedIndex === index && 'bg-blue-300',
-                selectedItem === item && 'font-bold',
-                'py-2 px-3 shadow-sm flex flex-col'
-              )}
-              key={`${item.value}${index}`}
-              {...getItemProps({ item, index })}
-            >
-              <span>{item.label}</span>
-            </li>
-          ))}
-      </ul>
+        <PopoverAnchor asChild>
+          <div
+            ref={fieldRef}
+            className={cn(
+              styles.field,
+              'flex min-h-9 gap-1 items-center flex-wrap rounded-md border bg-white p-1 shadow-sm'
+            )}
+          >
+            {selectedItems.map(function renderSelectedItem(selectedItemForRender, index) {
+              return (
+                <div
+                  className={styles.tag}
+                  key={`selected-item-${index}`}
+                  {...getSelectedItemProps({
+                    selectedItem: selectedItemForRender,
+                    index
+                  })}
+                >
+                  {selectedItemForRender.label}
+                  <div
+                    className={styles.tagRemove}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      removeSelectedItem(selectedItemForRender)
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      className="w-4 h-4"
+                    >
+                      <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+                    </svg>
+                  </div>
+                </div>
+              )
+            })}
+            <div className="flex grow">
+              <input
+                placeholder={placeholder}
+                className={styles.input}
+                {...getInputProps(getDropdownProps())}
+              />
+            </div>
+          </div>
+        </PopoverAnchor>
+        <PopoverContent
+          className="p-1"
+          style={{ width }}
+          onOpenAutoFocus={(e) => {
+            e.preventDefault()
+          }}
+          onCloseAutoFocus={(e) => {
+            e.preventDefault()
+          }}
+        >
+          <ul {...getMenuProps({}, { suppressRefError: true })}>
+            {items.map((item, index) => (
+              <li
+                className={cn(
+                  highlightedIndex === index && 'bg-accent text-accent-foreground',
+                  'relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none'
+                )}
+                key={`${item.value}${index}`}
+                {...getItemProps({ item, index })}
+              >
+                <span>{item.label}</span>
+              </li>
+            ))}
+          </ul>
+        </PopoverContent>
+      </Popover>
     </div>
   )
 }

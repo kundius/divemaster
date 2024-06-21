@@ -11,12 +11,15 @@ import {
 } from '../dto/options.dto'
 import { Option } from '../entities/option.entity'
 import { Category } from '../entities/category.entity'
+import { OptionVariant } from '../entities/option-variant.entity'
 
 @Injectable()
 export class OptionsService {
   constructor(
     @InjectRepository(Option)
     private optionsRepository: EntityRepository<Option>,
+    @InjectRepository(OptionVariant)
+    private optionVariantsRepository: EntityRepository<OptionVariant>,
     @InjectRepository(Category)
     private categoryRepository: EntityRepository<Category>
   ) {}
@@ -73,5 +76,19 @@ export class OptionsService {
       option.categories.add(category)
     }
     await this.optionsRepository.getEntityManager().persistAndFlush(option)
+  }
+
+  async findAllValues(optionId: number) {
+    const option = await this.optionsRepository.findOneOrFail({ id: optionId })
+    const optionVariants = await this.optionVariantsRepository.find(
+      {
+        option
+      },
+      {
+        groupBy: 'value'
+      }
+    )
+    console.log(optionVariants)
+    return optionVariants.map((item) => item.value)
   }
 }

@@ -63,7 +63,7 @@ export class Product {
   @ManyToMany(() => Category, (category) => category.products)
   categories = new Collection<Category>(this)
 
-  @OneToMany(() => ProductImage, (image) => image.product)
+  @OneToMany(() => ProductImage, (image) => image.product, { orderBy: { rank: 'ASC' } })
   images = new Collection<ProductImage>(this)
 
   @ManyToOne(() => Brand, { nullable: true })

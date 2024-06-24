@@ -2,7 +2,7 @@ import { FindOneQueryDto } from '@/lib/find-one-query.dto'
 import { PaginationQueryDto } from '@/lib/pagination-query.dto'
 import { PartialType } from '@nestjs/mapped-types'
 import { Type } from 'class-transformer'
-import { IsArray, IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
+import { IsArray, IsBoolean, IsEnum, IsInt, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator'
 import { Product } from '../entities/product.entity'
 import { QueryOrder } from '@mikro-orm/core'
 
@@ -25,6 +25,28 @@ export class SortProductImageDto {
 export class FindOneProductDto extends FindOneQueryDto<Product> {}
 
 export class FindAllProductDto extends PaginationQueryDto<Product> {
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @IsOptional()
+  page: number = 1
+
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(100)
+  @IsOptional()
+  limit: number = 10
+
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  sort: string = 'id'
+
+  @IsEnum(QueryOrder)
+  @IsOptional()
+  dir: QueryOrder = QueryOrder.ASC
+
   @Type(() => String)
   @IsString()
   @IsOptional()
@@ -37,18 +59,15 @@ export class FindAllProductDto extends PaginationQueryDto<Product> {
 
   @Type(() => Boolean)
   @IsBoolean()
-  includeImages: boolean = false
+  withImages: boolean = false
 
   @Type(() => Boolean)
   @IsBoolean()
-  includeContent: boolean = false
+  withContent: boolean = false
 
-  @Type(() => String)
-  @IsString()
-  sort: keyof Product = 'id'
-
-  @IsEnum(QueryOrder)
-  dir: QueryOrder = QueryOrder.ASC
+  @Type(() => Boolean)
+  @IsBoolean()
+  withOptions: boolean = false
 }
 
 export class CreateProductDto {

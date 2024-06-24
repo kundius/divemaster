@@ -6,8 +6,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryKey,
-  Property,
-  QueryOrder
+  Property
 } from '@mikro-orm/core'
 import { Category } from './category.entity'
 import { ProductImage } from './product-image.entity'
@@ -64,12 +63,12 @@ export class Product {
   @ManyToMany(() => Category, (category) => category.products)
   categories = new Collection<Category>(this)
 
-  @OneToMany(() => ProductImage, (image) => image.product, {
-    orderBy: { rank: QueryOrder.ASC },
-    where: { active: true }
-  })
+  @OneToMany(() => ProductImage, (image) => image.product)
   images = new Collection<ProductImage>(this)
 
   @ManyToOne(() => Brand, { nullable: true })
   brand: Brand | null = null
+
+  @Property({ persist: false })
+  options?: Record<string, number | boolean | string | string[] | undefined>
 }

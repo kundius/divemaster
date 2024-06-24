@@ -12,18 +12,18 @@ export class PaginationQueryDto<Entity = unknown> {
   @Type(() => Number)
   @IsInt()
   @Min(1)
-  @Max(50)
+  @Max(100)
   @IsOptional()
   readonly limit: number = 10
 
   @Type(() => String)
   @IsString()
   @IsOptional()
-  readonly sort?: keyof Entity
+  readonly sort: string = 'id'
 
   @IsEnum(QueryOrder)
   @IsOptional()
-  readonly dir?: QueryOrder
+  readonly dir: QueryOrder = QueryOrder.ASC
 
   @Type(() => Boolean)
   @IsBoolean()
@@ -48,11 +48,12 @@ export class PaginationQueryDto<Entity = unknown> {
     return (this.page - 1) * this.limit
   }
 
+  get offset(): number {
+    return (this.page - 1) * this.limit
+  }
+
   get orderBy(): OrderDefinition<Entity> | undefined {
-    if (this.sort && this.dir) {
-      return { [this.sort]: this.dir } as OrderDefinition<Entity>
-    }
-    return undefined
+    return { [this.sort]: this.dir } as OrderDefinition<Entity>
   }
 
   get options(): FindOptions<Entity, never, '*', never> {

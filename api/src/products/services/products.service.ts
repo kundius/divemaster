@@ -1,12 +1,12 @@
 import { nanoid } from '@/lib/utils'
 import { StorageService } from '@/storage/services/storage.service'
 import {
-  AutoPath,
   EntityRepository,
-  FilterQuery,
-  FindOptions,
+  ObjectQuery,
+  OrderDefinition,
   Populate,
-  QueryOrder
+  QueryOrder,
+  wrap
 } from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { Injectable } from '@nestjs/common'
@@ -59,46 +59,51 @@ export class ProductsService {
     return product
   }
 
-  async findAll(query: FindAllProductDto) {
-    const options: FindOptions<
-      Product,
-      'images' | 'images.file',
-      '*',
-      'description' | 'specifications' | 'exploitation'
-    > = { ...query.options }
+  async findAll(dto: FindAllProductDto) {
+    let exclude: ('description' | 'specifications' | 'exploitation')[] = []
+    let populate: Populate<Product, 'images'> = []
+    let populateOrderBy: OrderDefinition<Product> = {}
+    let populateWhere: ObjectQuery<Product> = {}
+    const orderBy: OrderDefinition<Product> = { [dto.sort]: dto.dir }
+    const offset = (dto.page - 1) * dto.limit
 
-    if (query.includeImages) {
-      options.populate = ['images', 'images.file']
+    if (dto.withImages) {
+      populate = [...populate, 'images']
+      populateOrderBy = { ...populateOrderBy, images: { rank: QueryOrder.ASC } }
+      populateWhere = { ...populateWhere, images: { active: true } }
     }
 
-    if (!query.includeContent) {
-      options.exclude = ['description', 'specifications', 'exploitation']
+    if (!dto.withContent) {
+      exclude = [...exclude, 'description', 'specifications', 'exploitation']
     }
 
-    const where: FilterQuery<Product> = {}
-    if (query.query) {
-      where.title = {
-        $like: '%' + query.query + '%'
-      }
+    let where: ObjectQuery<Product> = {}
+    if (dto.query) {
+      where = { ...where, title: { $like: '%' + dto.query + '%' } }
     }
-    if (typeof query.category !== 'undefined') {
+    if (typeof dto.category !== 'undefined') {
       // TODO: HIERARCHY_DEPTH_LIMIT
       // товары выбираются без учета подкатегорий
-      where.categories = {
-        $some: {
-          $or: [
-            {
-              id: query.category
-            }
-            // {
-            //   parent: this.category
-            // }
-          ]
-        }
-      }
+      where = { ...where, categories: { $in: [dto.category] } }
     }
 
-    const [rows, total] = await this.productsRepository.findAndCount(where, options)
+    const [rows, total] = await this.productsRepository.findAndCount(where, {
+      limit: dto.limit,
+      offset,
+      orderBy,
+      exclude,
+      populate,
+      populateOrderBy,
+      populateWhere
+    })
+
+    if (dto.withOptions) {
+      await Promise.all(
+        rows.map(async (item) =>
+          wrap(item).assign({ options: await this.findAllOptionValues(item.id) })
+        )
+      )
+    }
 
     return { rows, total }
   }
@@ -110,18 +115,6 @@ export class ProductsService {
   async findOneByAlias(alias: string, query?: FindOneProductDto) {
     return this.productsRepository.findOne({ alias }, query?.options)
   }
-
-  // async findOne_(id: number, query?: FindOneProductDto) {
-  //   const product = await this.productsRepository.findOneOrFail({ id }, query?.options)
-  //   const output = { ...product }
-  //   if (query?.includeImages) {
-  //     output.images = ['test']
-  //   }
-  //   //   if (query?.withParams) {
-  //   //     output.linked.params = {}
-  //   //   }
-  //   return output
-  // }
 
   async update(id: number, { brandId, ...fillable }: UpdateProductDto) {
     const product = await this.findOne(id)
@@ -233,13 +226,10 @@ export class ProductsService {
   }
 
   async findAllOptions(productId: number) {
-    const product = await this.productsRepository.findOne(
-      { id: productId },
-      {
-        populate: ['categories']
-      }
-    )
-    const categoryIds = product?.categories?.map((category) => category.id) || []
+    const categories = await this.categoryRepository.find({
+      products: { $in: [productId] }
+    })
+    const categoryIds = categories.map((category) => category.id) || []
     const options = await this.optionRepository.find(
       {
         categories: { $in: categoryIds }

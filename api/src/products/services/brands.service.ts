@@ -1,11 +1,8 @@
-import { EntityRepository } from '@mikro-orm/mariadb'
+import { EntityRepository, ObjectQuery } from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { Injectable } from '@nestjs/common'
-import { CreateBrandDto } from '../dto/create-brand.dto'
-import { FindAllBrandQueryDto } from '../dto/find-all-brand-query.dto'
-import { FindOneBrandQueryDto } from '../dto/find-one-brand-query.dto'
-import { UpdateBrandDto } from '../dto/update-brand.dto'
 import { Brand } from '../entities/brand.entity'
+import { CreateBrandDto, FindAllBrandQueryDto, UpdateBrandDto } from '../dto/brands.dto'
 
 @Injectable()
 export class BrandsService {
@@ -24,13 +21,21 @@ export class BrandsService {
     return brand
   }
 
-  async findAll(query: FindAllBrandQueryDto) {
-    const [rows, total] = await this.brandsRepository.findAndCount(query.where, query.options)
+  async findAll(dto: FindAllBrandQueryDto) {
+    let where: ObjectQuery<Brand> = {}
+    if (dto.query) {
+      where = { ...where, title: { $like: '%' + dto.query + '%' } }
+    }
+    const [rows, total] = await this.brandsRepository.findAndCount(where, {
+      limit: dto.take,
+      offset: dto.skip,
+      orderBy: { [dto.sort]: dto.dir }
+    })
     return { rows, total }
   }
 
-  async findOne(id: number, query?: FindOneBrandQueryDto) {
-    return this.brandsRepository.findOneOrFail({ id }, query?.options)
+  async findOne(id: number) {
+    return this.brandsRepository.findOneOrFail({ id })
   }
 
   async update(id: number, { ...fillable }: UpdateBrandDto) {

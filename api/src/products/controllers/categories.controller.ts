@@ -9,11 +9,12 @@ import {
   Post,
   Query
 } from '@nestjs/common'
-import { CreateCategoryDto } from '../dto/create-category.dto'
-import { FindAllCategoryQueryDto } from '../dto/find-all-category-query.dto'
-import { UpdateCategoryDto } from '../dto/update-category.dto'
 import { CategoriesService } from '../services/categories.service'
-import { FindOneCategoryQueryDto } from '../dto/find-one-category-query.dto'
+import {
+  CreateCategoryDto,
+  FindAllCategoryQueryDto,
+  UpdateCategoryDto
+} from '../dto/categories.dto'
 
 @Controller('categories')
 export class CategoriesController {
@@ -30,8 +31,8 @@ export class CategoriesController {
   }
 
   @Get('alias::alias')
-  async findOneByAlias(@Param('alias') alias: string, @Query() query: FindOneCategoryQueryDto) {
-    const category = await this.categoriesService.findOneByAlias(alias, query)
+  async findOneByAlias(@Param('alias') alias: string) {
+    const category = await this.categoriesService.findOneByAlias(alias)
     if (!category) {
       throw new NotFoundException()
     }
@@ -39,8 +40,8 @@ export class CategoriesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @Query() query: FindOneCategoryQueryDto) {
-    return this.categoriesService.findOne(+id, query)
+  findOne(@Param('id') id: string) {
+    return this.categoriesService.findOne(+id)
   }
 
   @Patch(':id')

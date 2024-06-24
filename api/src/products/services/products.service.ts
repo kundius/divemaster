@@ -14,7 +14,6 @@ import { join } from 'path'
 import {
   CreateProductDto,
   FindAllProductDto,
-  FindOneProductDto,
   SortProductImageDto,
   UpdateProductCategoryDto,
   UpdateProductDto,
@@ -64,8 +63,6 @@ export class ProductsService {
     let populate: Populate<Product, 'images'> = []
     let populateOrderBy: OrderDefinition<Product> = {}
     let populateWhere: ObjectQuery<Product> = {}
-    const orderBy: OrderDefinition<Product> = { [dto.sort]: dto.dir }
-    const offset = (dto.page - 1) * dto.limit
 
     if (dto.withImages) {
       populate = [...populate, 'images']
@@ -88,9 +85,9 @@ export class ProductsService {
     }
 
     const [rows, total] = await this.productsRepository.findAndCount(where, {
-      limit: dto.limit,
-      offset,
-      orderBy,
+      limit: dto.take,
+      offset: dto.skip,
+      orderBy: { [dto.sort]: dto.dir },
       exclude,
       populate,
       populateOrderBy,
@@ -108,12 +105,12 @@ export class ProductsService {
     return { rows, total }
   }
 
-  async findOne(id: number, query?: FindOneProductDto) {
-    return this.productsRepository.findOneOrFail({ id }, query?.options)
+  async findOne(id: number) {
+    return this.productsRepository.findOneOrFail({ id })
   }
 
-  async findOneByAlias(alias: string, query?: FindOneProductDto) {
-    return this.productsRepository.findOne({ alias }, query?.options)
+  async findOneByAlias(alias: string) {
+    return this.productsRepository.findOne({ alias })
   }
 
   async update(id: number, { brandId, ...fillable }: UpdateProductDto) {

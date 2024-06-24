@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common'
 import { Category } from '../entities/category.entity'
-import { CreateCategoryDto } from '../dto/create-category.dto'
-import { FindAllCategoryQueryDto } from '../dto/find-all-category-query.dto'
-import { UpdateCategoryDto } from '../dto/update-category.dto'
-import { EntityRepository } from '@mikro-orm/mariadb'
+import { EntityRepository, ObjectQuery } from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
-import { FindOneCategoryQueryDto } from '../dto/find-one-category-query.dto'
 import { StorageService } from '@/storage/services/storage.service'
+import {
+  CreateCategoryDto,
+  FindAllCategoryQueryDto,
+  UpdateCategoryDto
+} from '../dto/categories.dto'
 
 @Injectable()
 export class CategoriesService {
@@ -33,17 +34,28 @@ export class CategoriesService {
     return category
   }
 
-  async findAll(query: FindAllCategoryQueryDto) {
-    const [rows, total] = await this.categoriesRepository.findAndCount(query.where, query.options)
+  async findAll(dto: FindAllCategoryQueryDto) {
+    let where: ObjectQuery<Category> = {}
+    if (dto.query) {
+      where = { ...where, title: { $like: '%' + dto.query + '%' } }
+    }
+    if (typeof dto.parent !== 'undefined') {
+      where = { ...where, parent: dto.parent === 0 ? null : dto.parent }
+    }
+    const [rows, total] = await this.categoriesRepository.findAndCount(where, {
+      limit: dto.take,
+      offset: dto.skip,
+      orderBy: { [dto.sort]: dto.dir }
+    })
     return { rows, total }
   }
 
-  async findOne(id: number, query?: FindOneCategoryQueryDto) {
-    return this.categoriesRepository.findOneOrFail({ id }, query?.options)
+  async findOne(id: number) {
+    return this.categoriesRepository.findOneOrFail({ id })
   }
 
-  async findOneByAlias(alias: string, query?: FindOneCategoryQueryDto) {
-    return this.categoriesRepository.findOne({ alias }, query?.options)
+  async findOneByAlias(alias: string) {
+    return this.categoriesRepository.findOne({ alias })
   }
 
   async update(id: number, { parentId, imageId, ...fillable }: UpdateCategoryDto) {

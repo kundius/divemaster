@@ -1,9 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common'
-import { CreateBrandDto } from '../dto/create-brand.dto'
-import { FindAllBrandQueryDto } from '../dto/find-all-brand-query.dto'
-import { FindOneBrandQueryDto } from '../dto/find-one-brand-query.dto'
-import { UpdateBrandDto } from '../dto/update-brand.dto'
 import { BrandsService } from '../services/brands.service'
+import { CreateBrandDto, FindAllBrandQueryDto, UpdateBrandDto } from '../dto/brands.dto'
 
 @Controller('brands')
 export class BrandsController {
@@ -20,8 +17,8 @@ export class BrandsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @Query() query: FindOneBrandQueryDto) {
-    return this.brandsService.findOne(+id, query)
+  findOne(@Param('id') id: string) {
+    return this.brandsService.findOne(+id)
   }
 
   @Patch(':id')

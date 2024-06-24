@@ -1,12 +1,10 @@
 import { Injectable } from '@nestjs/common'
 import { verify, hash } from 'argon2'
 import { User } from '../entities/user.entity'
-import { UpdateUserDto } from '../dto/update-user.dto'
-import { CreateUserDto } from '../dto/create-user.dto'
-import { FindAllUserQueryDto } from '../dto/find-all-user-query.dto'
 import { RolesService } from './roles.service'
-import { EntityRepository } from '@mikro-orm/mariadb'
+import { EntityRepository, FilterQuery } from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
+import { CreateUserDto, FindAllUserQueryDto, UpdateUserDto } from '../dto/users.dto'
 
 @Injectable()
 export class UsersService {
@@ -33,11 +31,25 @@ export class UsersService {
     return this.usersRepository.findOneOrFail({ email })
   }
 
-  async findAll(query: FindAllUserQueryDto) {
-    const [rows, total] = await this.usersRepository.findAndCount(query.where, {
-      ...query.options,
+  async findAll(dto: FindAllUserQueryDto) {
+    let where: FilterQuery<User> = {}
+
+    if (dto.query) {
+      where = {
+        ...where,
+        name: {
+          $like: '%' + dto.query + '%'
+        }
+      }
+    }
+
+    const [rows, total] = await this.usersRepository.findAndCount(where, {
+      limit: dto.take,
+      offset: dto.skip,
+      orderBy: { [dto.sort]: dto.dir },
       populate: ['role']
     })
+
     return { rows, total }
   }
 

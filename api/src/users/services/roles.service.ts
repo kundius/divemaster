@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { CreateRoleDto } from '../dto/create-role.dto'
-import { FindAllRoleQueryDto } from '../dto/find-all-role-query.dto'
-import { UpdateRoleDto } from '../dto/update-role.dto'
 import { Role } from '../entities/role.entity'
-import { EntityRepository } from '@mikro-orm/mariadb'
+import { EntityRepository, FilterQuery, ObjectQuery, raw } from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
+import { CreateRoleDto, FindAllRoleQueryDto, UpdateRoleDto } from '../dto/roles.dto'
 
 @Injectable()
 export class RolesService {
@@ -21,8 +19,27 @@ export class RolesService {
     return role
   }
 
-  async findAll(query: FindAllRoleQueryDto) {
-    const rows = await this.rolesRepository.find(query.where, query.options)
+  async findAll(dto: FindAllRoleQueryDto) {
+    let where: ObjectQuery<Role> = {}
+    if (dto.query) {
+      where = {
+        ...where,
+        title: {
+          $like: '%' + dto.query + '%'
+        }
+      }
+    }
+    if (dto.scope) {
+      where = {
+        ...where,
+        [raw(`JSON_CONTAINS(scope, '${JSON.stringify(dto.scope)}', '$')`)]: 1
+      }
+    }
+    const rows = await this.rolesRepository.find(where, {
+      limit: dto.take,
+      offset: dto.skip,
+      orderBy: { [dto.sort]: dto.dir }
+    })
     return { rows, total: 0 }
   }
 

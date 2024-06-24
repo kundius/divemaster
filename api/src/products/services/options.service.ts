@@ -1,4 +1,4 @@
-import { EntityRepository, FilterQuery } from '@mikro-orm/mariadb'
+import { EntityRepository, FilterQuery, ObjectQuery } from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { Injectable } from '@nestjs/common'
 import {
@@ -34,19 +34,21 @@ export class OptionsService {
     return option
   }
 
-  async findAll(query: FindAllOptionDto) {
-    const where: FilterQuery<Option> = {}
-    if (query.query) {
-      where.caption = {
-        $like: '%' + query.query + '%'
-      }
+  async findAll(dto: FindAllOptionDto) {
+    let where: ObjectQuery<Option> = {}
+    if (dto.query) {
+      where = { ...where, caption: { $like: '%' + dto.query + '%' } }
     }
-    const [rows, total] = await this.optionsRepository.findAndCount(where, query.options)
+    const [rows, total] = await this.optionsRepository.findAndCount(where, {
+      limit: dto.take,
+      offset: dto.skip,
+      orderBy: { [dto.sort]: dto.dir }
+    })
     return { rows, total }
   }
 
-  async findOne(id: number, query?: FindOneOptionDto) {
-    return this.optionsRepository.findOneOrFail({ id }, query?.options)
+  async findOne(id: number, dto?: FindOneOptionDto) {
+    return this.optionsRepository.findOneOrFail({ id })
   }
 
   async update(id: number, { ...fillable }: UpdateOptionDto) {
@@ -65,7 +67,7 @@ export class OptionsService {
   async findAllCategories(optionId: number, query?: FindAllOptionCategoriesDto) {
     const where: FilterQuery<Category> = {}
     where.options = { $some: { id: optionId } }
-    return this.categoryRepository.find(where, query?.options)
+    return this.categoryRepository.find(where)
   }
 
   async updateCategories(optionId: number, { categories }: UpdateOptionCategoriesDto) {

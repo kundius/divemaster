@@ -2,8 +2,9 @@ import { FindOneQueryDto } from '@/lib/find-one-query.dto'
 import { PaginationQueryDto } from '@/lib/pagination-query.dto'
 import { PartialType } from '@nestjs/mapped-types'
 import { Type } from 'class-transformer'
-import { IsArray, IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator'
+import { IsArray, IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
 import { Product } from '../entities/product.entity'
+import { QueryOrder } from '@mikro-orm/core'
 
 export class UpdateProductImageDto {
   @Type(() => Boolean)
@@ -27,12 +28,27 @@ export class FindAllProductDto extends PaginationQueryDto<Product> {
   @Type(() => String)
   @IsString()
   @IsOptional()
-  readonly query?: string
+  query?: string
 
   @Type(() => Number)
   @IsNumber()
   @IsOptional()
-  readonly category?: number
+  category?: number
+
+  @Type(() => Boolean)
+  @IsBoolean()
+  includeImages: boolean = false
+
+  @Type(() => Boolean)
+  @IsBoolean()
+  includeContent: boolean = false
+
+  @Type(() => String)
+  @IsString()
+  sort: keyof Product = 'id'
+
+  @IsEnum(QueryOrder)
+  dir: QueryOrder = QueryOrder.ASC
 }
 
 export class CreateProductDto {

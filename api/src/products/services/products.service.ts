@@ -1,6 +1,13 @@
 import { nanoid } from '@/lib/utils'
 import { StorageService } from '@/storage/services/storage.service'
-import { EntityRepository, FilterQuery, QueryOrder } from '@mikro-orm/mariadb'
+import {
+  AutoPath,
+  EntityRepository,
+  FilterQuery,
+  FindOptions,
+  Populate,
+  QueryOrder
+} from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { Injectable } from '@nestjs/common'
 import { join } from 'path'
@@ -53,6 +60,21 @@ export class ProductsService {
   }
 
   async findAll(query: FindAllProductDto) {
+    const options: FindOptions<
+      Product,
+      'images' | 'images.file',
+      '*',
+      'description' | 'specifications' | 'exploitation'
+    > = { ...query.options }
+
+    if (query.includeImages) {
+      options.populate = ['images', 'images.file']
+    }
+
+    if (!query.includeContent) {
+      options.exclude = ['description', 'specifications', 'exploitation']
+    }
+
     const where: FilterQuery<Product> = {}
     if (query.query) {
       where.title = {
@@ -75,7 +97,9 @@ export class ProductsService {
         }
       }
     }
-    const [rows, total] = await this.productsRepository.findAndCount(where, query.options)
+
+    const [rows, total] = await this.productsRepository.findAndCount(where, options)
+
     return { rows, total }
   }
 
@@ -86,6 +110,18 @@ export class ProductsService {
   async findOneByAlias(alias: string, query?: FindOneProductDto) {
     return this.productsRepository.findOne({ alias }, query?.options)
   }
+
+  // async findOne_(id: number, query?: FindOneProductDto) {
+  //   const product = await this.productsRepository.findOneOrFail({ id }, query?.options)
+  //   const output = { ...product }
+  //   if (query?.includeImages) {
+  //     output.images = ['test']
+  //   }
+  //   //   if (query?.withParams) {
+  //   //     output.linked.params = {}
+  //   //   }
+  //   return output
+  // }
 
   async update(id: number, { brandId, ...fillable }: UpdateProductDto) {
     const product = await this.findOne(id)
@@ -301,7 +337,7 @@ export class ProductsService {
       const variants = await findVariants(option)
 
       if (typeof value === 'undefined') {
-        for (const variant of variants) { 
+        for (const variant of variants) {
           em.remove(variant)
         }
         return

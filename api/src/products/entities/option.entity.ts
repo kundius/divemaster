@@ -47,4 +47,7 @@ export class Option {
 
   @OneToMany(() => OptionVariant, (variant) => variant.option)
   variants = new Collection<OptionVariant>(this)
+
+  @Property({ persist: false })
+  value?: number | boolean | string | string[] | undefined
 }

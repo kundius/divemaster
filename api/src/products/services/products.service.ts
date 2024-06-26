@@ -120,9 +120,7 @@ export class ProductsService {
 
     if (dto.withOptions) {
       await Promise.all(
-        rows.map(async (item) =>
-          wrap(item).assign({ options: await this.findAllOptionValues(item.id) })
-        )
+        rows.map(async (item) => wrap(item).assign({ options: await this.findAllOptions(item.id) }))
       )
     }
 
@@ -170,7 +168,7 @@ export class ProductsService {
     )
 
     if (dto?.withOptions) {
-      wrap(product).assign({ options: await this.findAllOptionValues(product.id) })
+      wrap(product).assign({ options: await this.findAllOptions(product.id) })
     }
 
     return product
@@ -217,7 +215,7 @@ export class ProductsService {
     )
 
     if (product && dto?.withOptions) {
-      wrap(product).assign({ options: await this.findAllOptionValues(product.id) })
+      wrap(product).assign({ options: await this.findAllOptions(product.id) })
     }
 
     return product
@@ -347,13 +345,6 @@ export class ProductsService {
         }
       }
     )
-    return options
-  }
-
-  async findAllOptionValues(productId: number) {
-    const options = await this.findAllOptions(productId)
-
-    const values: Record<string, number | boolean | string | string[] | undefined> = {}
 
     for (const option of options) {
       const optionVariants = await this.optionVariantRepository.find(
@@ -368,16 +359,18 @@ export class ProductsService {
         }
       )
 
+      let value: number | boolean | string | string[] | undefined
+
       if (optionVariants.length === 0) continue
 
       switch (option.type) {
         case OptionType.SIZE:
         case OptionType.COLOR:
         case OptionType.OPTIONS:
-          values[option.key] = optionVariants.map((optionVariant) => optionVariant.value)
+          value = optionVariants.map((optionVariant) => optionVariant.value)
           break
         case OptionType.BOOLEAN:
-          values[option.key] =
+          value =
             optionVariants[0].value === '1'
               ? true
               : optionVariants[0].value === '0'
@@ -385,18 +378,20 @@ export class ProductsService {
                 : undefined
           break
         case OptionType.TEXT:
-          values[option.key] = String(optionVariants[0].value)
+          value = String(optionVariants[0].value)
           break
         case OptionType.NUMBER:
-          values[option.key] = Number(optionVariants[0].value)
+          value = Number(optionVariants[0].value)
           break
       }
+
+      wrap(option).assign({ value })
     }
 
-    return values
+    return options
   }
 
-  async updateOptionValues(
+  async updateOptions(
     productId: number,
     values: Record<string, number | boolean | string | string[] | undefined>
   ) {
@@ -532,19 +527,4 @@ export class ProductsService {
 
     await em.flush()
   }
-
-  // async findAllOptionVariant(productId: number, optionId: number) {
-  //   const variants = await this.optionVariantRepository.find(
-  //     {
-  //       product: productId,
-  //       option: optionId
-  //     },
-  //     {
-  //       orderBy: {
-  //         rank: QueryOrder.ASC
-  //       }
-  //     }
-  //   )
-  //   return variants
-  // }
 }

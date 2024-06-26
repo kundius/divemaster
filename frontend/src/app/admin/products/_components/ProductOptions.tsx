@@ -87,7 +87,7 @@ export function ProductOptions({ productId, initialOptions, initialValues }: Pro
     pendingToggle()
 
     try {
-      await apiPatch(`products/${productId}/option-values`, values, withClientAuth())
+      await apiPatch(`products/${productId}/options`, values, withClientAuth())
       toast.success('Сохранено')
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Unknown error')

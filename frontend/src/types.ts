@@ -95,6 +95,7 @@ export interface OptionEntity {
   type: OptionType
   rank: number
   categories?: CategoryEntity[]
+  value?: number | boolean | string | string[] | undefined
 }
 
 export interface OptionValueEntity {

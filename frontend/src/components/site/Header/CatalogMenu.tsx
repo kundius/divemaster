@@ -8,9 +8,9 @@ import styles from './CatalogMenu.module.scss'
 export async function CatalogMenu() {
   const data = await apiGet<ApiTableData<CategoryEntity>>('categories', {
     parent: 0,
-    all: 1,
-    populate: ['children'],
-    filters: ['active']
+    limit: 100,
+    active: true,
+    withChildren: true
   })
 
   return (

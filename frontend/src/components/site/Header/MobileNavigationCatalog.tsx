@@ -17,9 +17,9 @@ export default function MobileNavigationCatalog() {
     `categories`,
     {
       parent: 0,
-      all: 1,
-      populate: ['children'],
-      filters: ['active']
+      limit: 100,
+      active: true,
+      withChildren: true
     }
   ])
 

@@ -17,6 +17,7 @@ import { diskStorage } from 'multer'
 import {
   CreateProductDto,
   FindAllProductDto,
+  FindOneProductDto,
   SortProductImageDto,
   UpdateProductCategoryDto,
   UpdateProductDto,
@@ -39,8 +40,8 @@ export class ProductsController {
   }
 
   @Get('alias::alias')
-  async findOneByAlias(@Param('alias') alias: string) {
-    const product = await this.productsService.findOneByAlias(alias)
+  async findOneByAlias(@Param('alias') alias: string, @Query() dto: FindOneProductDto) {
+    const product = await this.productsService.findOneByAlias(alias, dto)
     if (!product) {
       throw new NotFoundException()
     }
@@ -48,13 +49,13 @@ export class ProductsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productsService.findOne(+id)
+  findOne(@Param('id') id: string, @Query() dto: FindOneProductDto) {
+    return this.productsService.findOne(+id, dto)
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productsService.update(+id, updateProductDto)
+  update(@Param('id') id: string, @Body() dto: UpdateProductDto) {
+    return this.productsService.update(+id, dto)
   }
 
   @Delete(':id')

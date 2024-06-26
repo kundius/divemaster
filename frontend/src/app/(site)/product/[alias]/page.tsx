@@ -40,8 +40,12 @@ export default async function Page({ params: { alias } }: { params: { alias: str
     apiGet<ProductEntity>(
       `products/alias:${alias}`,
       {
-        populate: ['categories', 'images', 'brand'],
-        filters: ['active']
+        active: true,
+        withContent: true,
+        withBrand: true,
+        withOptions: true,
+        withImages: true,
+        withCategories: true
       },
       {
         next: {
@@ -82,6 +86,8 @@ export default async function Page({ params: { alias } }: { params: { alias: str
   const discount = product.oldPrice
     ? Math.round(((product.oldPrice - product.price) / product.price) * 100)
     : 0
+
+  console.log(product.options)
 
   return (
     <Container>

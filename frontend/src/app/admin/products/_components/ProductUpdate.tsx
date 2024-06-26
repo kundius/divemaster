@@ -3,7 +3,6 @@
 import { useApiForm } from '@/lib/ApiForm'
 import { slugify } from '@/lib/utils'
 import { ProductEntity } from '@/types'
-import { useRouter } from 'next/navigation'
 import { ProductForm, ProductFormFields, ProductFormSchema } from './ProductForm'
 
 export interface ProductUpdateProps {
@@ -11,8 +10,7 @@ export interface ProductUpdateProps {
 }
 
 export function ProductUpdate({ initialData }: ProductUpdateProps) {
-  const router = useRouter()
-  const [form, onSubmit] = useApiForm<ProductFormFields, ProductEntity>({
+  const [form, onSubmit] = useApiForm<ProductFormFields>({
     url: `products/${initialData.id}`,
     method: 'PATCH',
     schema: ProductFormSchema,
@@ -37,9 +35,6 @@ export function ProductUpdate({ initialData }: ProductUpdateProps) {
       values.alias = slugify(values.alias || values.title)
       form.setValue('alias', values.alias)
       return values
-    },
-    onSuccess: (data) => {
-      router.push(`/admin/products/${data.id}`)
     }
   })
   return <ProductForm form={form} onSubmit={onSubmit} />

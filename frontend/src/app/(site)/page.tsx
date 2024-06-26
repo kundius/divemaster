@@ -18,27 +18,15 @@ import { HomeAbout } from '@/components/site/HomeAbout'
 import { apiGet } from '@/lib/api'
 import { ProductEntity } from '@/types'
 
-const demoProduct = {
-  title: 'Гидрокостюм AQUADISCOVERY Воевода V2',
-  brand: 'AQUADISCOVERY',
-  price: 14000,
-  oldPrice: 4000,
-  images: ['/products/1.png', '/products/2.png', '/products/3.png', '/products/4.png'],
-  hit: true,
-  discount: 50,
-  new: true,
-  colors: ['red', 'blue'],
-  sizes: ['S', 'M', 'L', 'XL', 'XXL']
-}
-
 export default async function Page() {
   const [favoriteProducts, recentProducts] = await Promise.all([
     apiGet<ApiTableData<ProductEntity>>(
       `products`,
       {
         limit: 10,
-        populate: ['images', 'brand'],
-        filters: ['active', 'favorite']
+        withImages: true,
+        active: true,
+        favorite: true
       },
       {
         next: {
@@ -50,8 +38,9 @@ export default async function Page() {
       `products`,
       {
         limit: 10,
-        populate: ['images', 'brand'],
-        filters: ['active', 'recent']
+        withImages: true,
+        active: true,
+        recent: true
       },
       {
         next: {

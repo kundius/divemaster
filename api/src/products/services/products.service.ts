@@ -2,6 +2,7 @@ import { nanoid } from '@/lib/utils'
 import { StorageService } from '@/storage/services/storage.service'
 import {
   EntityRepository,
+  FilterOptions,
   ObjectQuery,
   OrderDefinition,
   Populate,
@@ -14,6 +15,7 @@ import { join } from 'path'
 import {
   CreateProductDto,
   FindAllProductDto,
+  FindOneProductDto,
   SortProductImageDto,
   UpdateProductCategoryDto,
   UpdateProductDto,
@@ -60,7 +62,8 @@ export class ProductsService {
 
   async findAll(dto: FindAllProductDto) {
     let exclude: ('description' | 'specifications' | 'exploitation')[] = []
-    let populate: Populate<Product, 'images'> = []
+    let populate: Populate<Product, 'images' | 'brand' | 'categories'> = []
+    let filters: FilterOptions = []
     let populateOrderBy: OrderDefinition<Product> = {}
     let populateWhere: ObjectQuery<Product> = {}
 
@@ -70,8 +73,28 @@ export class ProductsService {
       populateWhere = { ...populateWhere, images: { active: true } }
     }
 
+    if (dto?.withBrand) {
+      populate = [...populate, 'brand']
+    }
+
+    if (dto?.withCategories) {
+      populate = [...populate, 'categories']
+    }
+
     if (!dto.withContent) {
       exclude = [...exclude, 'description', 'specifications', 'exploitation']
+    }
+
+    if (dto.active) {
+      filters = [...filters, 'active']
+    }
+
+    if (dto.favorite) {
+      filters = [...filters, 'favorite']
+    }
+
+    if (dto.recent) {
+      filters = [...filters, 'recent']
     }
 
     let where: ObjectQuery<Product> = {}
@@ -88,6 +111,7 @@ export class ProductsService {
       limit: dto.take,
       offset: dto.skip,
       orderBy: { [dto.sort]: dto.dir },
+      filters,
       exclude,
       populate,
       populateOrderBy,
@@ -105,12 +129,98 @@ export class ProductsService {
     return { rows, total }
   }
 
-  async findOne(id: number) {
-    return this.productsRepository.findOneOrFail({ id })
+  async findOne(id: number, dto?: FindOneProductDto) {
+    let exclude: ('description' | 'specifications' | 'exploitation')[] = []
+    let populate: Populate<Product, 'images' | 'brand' | 'categories'> = []
+    let filters: FilterOptions = []
+    let populateOrderBy: OrderDefinition<Product> = {}
+    let populateWhere: ObjectQuery<Product> = {}
+
+    if (dto?.withImages) {
+      populate = [...populate, 'images']
+      populateOrderBy = { ...populateOrderBy, images: { rank: QueryOrder.ASC } }
+      populateWhere = { ...populateWhere, images: { active: true } }
+    }
+
+    if (dto?.withBrand) {
+      populate = [...populate, 'brand']
+    }
+
+    if (dto?.withCategories) {
+      populate = [...populate, 'categories']
+    }
+
+    if (!dto?.withContent) {
+      exclude = [...exclude, 'description', 'specifications', 'exploitation']
+    }
+
+    if (dto?.active) {
+      filters = [...filters, 'active']
+    }
+
+    const product = await this.productsRepository.findOneOrFail(
+      { id },
+      {
+        filters,
+        exclude,
+        populate,
+        populateOrderBy,
+        populateWhere
+      }
+    )
+
+    if (dto?.withOptions) {
+      wrap(product).assign({ options: await this.findAllOptionValues(product.id) })
+    }
+
+    return product
   }
 
-  async findOneByAlias(alias: string) {
-    return this.productsRepository.findOne({ alias })
+  async findOneByAlias(alias: string, dto?: FindOneProductDto) {
+    let exclude: ('description' | 'specifications' | 'exploitation')[] = []
+    let populate: Populate<Product, 'images' | 'brand' | 'categories'> = []
+    let filters: FilterOptions = []
+    let populateOrderBy: OrderDefinition<Product> = {}
+    let populateWhere: ObjectQuery<Product> = {}
+
+    if (dto?.withImages) {
+      populate = [...populate, 'images']
+      populateOrderBy = { ...populateOrderBy, images: { rank: QueryOrder.ASC } }
+      populateWhere = { ...populateWhere, images: { active: true } }
+    }
+
+    if (dto?.withBrand) {
+      populate = [...populate, 'brand']
+    }
+
+    if (dto?.withCategories) {
+      populate = [...populate, 'categories']
+    }
+
+    if (!dto?.withContent) {
+      exclude = [...exclude, 'description', 'specifications', 'exploitation']
+    }
+
+    if (dto?.active) {
+      filters = [...filters, 'active']
+    }
+
+    const product = await this.productsRepository.findOne(
+      { alias },
+      {
+        filters,
+        exclude,
+        populate,
+        populateOrderBy,
+        populateWhere
+      }
+    )
+
+    if (product && dto?.withOptions) {
+      wrap(product).assign({ options: await this.findAllOptionValues(product.id) })
+    }
+
+    return product
   }
 
   async update(id: number, { brandId, ...fillable }: UpdateProductDto) {

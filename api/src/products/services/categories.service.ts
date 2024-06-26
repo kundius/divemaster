@@ -1,6 +1,13 @@
 import { Injectable } from '@nestjs/common'
 import { Category } from '../entities/category.entity'
-import { EntityRepository, ObjectQuery } from '@mikro-orm/mariadb'
+import {
+  EntityRepository,
+  FilterOptions,
+  ObjectQuery,
+  OrderDefinition,
+  Populate,
+  QueryOrder
+} from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { StorageService } from '@/storage/services/storage.service'
 import {
@@ -35,18 +42,48 @@ export class CategoriesService {
   }
 
   async findAll(dto: FindAllCategoryQueryDto) {
+    let exclude: 'description'[] = []
+    let populate: Populate<Category, 'children'> = []
+    let filters: FilterOptions = []
+    let populateOrderBy: OrderDefinition<Category> = {}
+    let populateWhere: ObjectQuery<Category> = {}
     let where: ObjectQuery<Category> = {}
+
+    if (dto.withChildren) {
+      populate = [...populate, 'children']
+      populateOrderBy = { ...populateOrderBy, children: { id: QueryOrder.ASC } }
+      if (dto.active) {
+        populateWhere = { ...populateWhere, children: { active: true } }
+      }
+    }
+
+    if (!dto.withContent) {
+      exclude = [...exclude, 'description']
+    }
+
+    if (dto.active) {
+      filters = [...filters, 'active']
+    }
+
     if (dto.query) {
       where = { ...where, title: { $like: '%' + dto.query + '%' } }
     }
+
     if (typeof dto.parent !== 'undefined') {
       where = { ...where, parent: dto.parent === 0 ? null : dto.parent }
     }
+
     const [rows, total] = await this.categoriesRepository.findAndCount(where, {
       limit: dto.take,
       offset: dto.skip,
-      orderBy: { [dto.sort]: dto.dir }
+      orderBy: { [dto.sort]: dto.dir },
+      exclude,
+      populate,
+      filters,
+      populateOrderBy,
+      populateWhere
     })
+
     return { rows, total }
   }
 

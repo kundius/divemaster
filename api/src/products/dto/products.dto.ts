@@ -21,7 +21,31 @@ export class SortProductImageDto {
   files: Record<string, number>
 }
 
-export class FindOneProductDto {}
+export class FindOneProductDto {
+  @Type(() => Boolean)
+  @IsBoolean()
+  active: boolean = false
+
+  @Type(() => Boolean)
+  @IsBoolean()
+  withImages: boolean = false
+
+  @Type(() => Boolean)
+  @IsBoolean()
+  withContent: boolean = false
+
+  @Type(() => Boolean)
+  @IsBoolean()
+  withOptions: boolean = false
+
+  @Type(() => Boolean)
+  @IsBoolean()
+  withBrand: boolean = false
+
+  @Type(() => Boolean)
+  @IsBoolean()
+  withCategories: boolean = false
+}
 
 export class FindAllProductDto extends PaginationQueryDto {
   @Type(() => String)
@@ -36,6 +60,18 @@ export class FindAllProductDto extends PaginationQueryDto {
 
   @Type(() => Boolean)
   @IsBoolean()
+  active: boolean = false
+
+  @Type(() => Boolean)
+  @IsBoolean()
+  favorite: boolean = false
+
+  @Type(() => Boolean)
+  @IsBoolean()
+  recent: boolean = false
+
+  @Type(() => Boolean)
+  @IsBoolean()
   withImages: boolean = false
 
   @Type(() => Boolean)
@@ -45,6 +81,14 @@ export class FindAllProductDto extends PaginationQueryDto {
   @Type(() => Boolean)
   @IsBoolean()
   withOptions: boolean = false
+
+  @Type(() => Boolean)
+  @IsBoolean()
+  withBrand: boolean = false
+
+  @Type(() => Boolean)
+  @IsBoolean()
+  withCategories: boolean = false
 
   @Type(() => String)
   @IsString()

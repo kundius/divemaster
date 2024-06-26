@@ -47,6 +47,18 @@ export class FindAllCategoryQueryDto extends PaginationQueryDto {
   @IsOptional()
   readonly parent?: number
 
+  @Type(() => Boolean)
+  @IsBoolean()
+  active: boolean = false
+
+  @Type(() => Boolean)
+  @IsBoolean()
+  withChildren: boolean = false
+
+  @Type(() => Boolean)
+  @IsBoolean()
+  withContent: boolean = false
+
   @Type(() => String)
   @IsString()
   @IsOptional()

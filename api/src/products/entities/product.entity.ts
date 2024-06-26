@@ -11,6 +11,7 @@ import {
 import { Category } from './category.entity'
 import { ProductImage } from './product-image.entity'
 import { Brand } from './brand.entity'
+import { Option, OptionType } from './option.entity'
 
 @Entity()
 @Filter({ name: 'active', cond: { active: { $eq: true } } })
@@ -70,5 +71,22 @@ export class Product {
   brand: Brand | null = null
 
   @Property({ persist: false })
-  options?: Record<string, number | boolean | string | string[] | undefined>
+  options?: {
+    option: Option
+    value: number | boolean | string | string[] | undefined
+  }[]
+
+  // @Property({ persist: false })
+  // options?: {
+  //   id: number
+  //   key: string
+  //   caption: string
+  //   type: OptionType
+  //   inFilter: boolean
+  //   inCart: boolean
+  //   rank: number
+  //   variants?: {
+      
+  //   }
+  // }[]
 }

@@ -7,8 +7,24 @@ export type Colors = Color[]
 
 export const colors: Colors = [
   {
+    color: '#828742',
+    name: 'Камуфляж зеленый'
+  },
+  {
+    color: '#a5895f',
+    name: 'Камуфляж'
+  },
+  {
+    color: '#441000',
+    name: 'Коричневый'
+  },
+  {
+    color: '#886d4e',
+    name: 'Камуфляж коричневый'
+  },
+  {
     color: 'white',
-    name: 'white'
+    name: 'Белый'
   },
   {
     color: 'black',

@@ -113,7 +113,7 @@ export enum OptionType {
   BOOLEAN = 'boolean',
   COLOR = 'color',
   SIZE = 'size',
-  OPTIONS = 'options'
+  VARIANT = 'variant'
 }
 
 export type PageProps<

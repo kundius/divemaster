@@ -1,22 +1,22 @@
-import { ApiTableData } from '@/lib/ApiTable/types'
-import { Resorces, ResorcesProps } from '@/lib/Resources'
-import { ResorcesSyncParams } from '@/lib/Resources/SyncSearchParams'
 import {
   BenefitsSideSlider,
   BenefitsSideSliderDiscount
 } from '@/components/site/BenefitsSideSlider'
-import { CategoryCard } from '@/components/site/CategoryCard'
-import { CategoryContent } from '@/components/site/CategoryContent'
-import { CategoryPagination } from '@/components/site/CategoryPagination'
-import { CategoryProducts } from '@/components/site/CategoryProducts'
+import { Breadcrumbs, BreadcrumbsProps } from '@/components/site/Breadcrumbs'
 import { ConsultationWidget } from '@/components/site/ConsultationWidget'
 import { Container } from '@/components/site/Container'
+import { ApiTableData } from '@/lib/ApiTable/types'
+import { Resorces, ResorcesProps } from '@/lib/Resources'
+import { ResorcesSyncParams } from '@/lib/Resources/SyncSearchParams'
 import { apiGet } from '@/lib/api'
 import { getFileUrl } from '@/lib/utils'
 import { CategoryEntity, ProductEntity } from '@/types'
-import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
-import { Breadcrumbs, BreadcrumbsProps } from '@/components/site/Breadcrumbs'
+import { CategoryCard } from './_components/CategoryCard'
+import { CategoryContent } from './_components/CategoryContent'
+import { CategoryPagination } from './_components/CategoryPagination'
+import { CategoryProducts } from './_components/CategoryProducts'
+import { Filter } from './_components/Filter'
 
 export async function generateStaticParams() {
   const categories = await apiGet<ApiTableData<CategoryEntity>>(`categories`, {
@@ -101,6 +101,9 @@ export default async function Page({ params: { alias } }: { params: { alias: str
 
         <div className="flex gap-x-5 mb-40 mt-14">
           <div className="w-1/5 space-y-5 max-2xl:w-1/4">
+            <div className='mb-80'>
+              <Filter />
+            </div>
             <ConsultationWidget />
             <BenefitsSideSlider
               items={[

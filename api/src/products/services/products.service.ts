@@ -366,7 +366,7 @@ export class ProductsService {
       switch (option.type) {
         case OptionType.SIZE:
         case OptionType.COLOR:
-        case OptionType.OPTIONS:
+        case OptionType.VARIANT:
           value = optionVariants.map((optionVariant) => optionVariant.value)
           break
         case OptionType.BOOLEAN:
@@ -424,7 +424,7 @@ export class ProductsService {
       return variant
     }
 
-    const optionsUpdater = async (option: Option) => {
+    const variantUpdater = async (option: Option) => {
       const value = values[option.key]
       const variants = await findVariants(option)
 
@@ -513,9 +513,9 @@ export class ProductsService {
     }
 
     const updaters = {
-      [OptionType.SIZE]: optionsUpdater,
-      [OptionType.COLOR]: optionsUpdater,
-      [OptionType.OPTIONS]: optionsUpdater,
+      [OptionType.SIZE]: variantUpdater,
+      [OptionType.COLOR]: variantUpdater,
+      [OptionType.VARIANT]: variantUpdater,
       [OptionType.BOOLEAN]: booleanUpdater,
       [OptionType.TEXT]: textUpdater,
       [OptionType.NUMBER]: numberUpdater

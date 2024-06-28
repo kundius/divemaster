@@ -5,53 +5,14 @@ import styles from './AddToCart.module.scss'
 import { OptionEntity, OptionType } from '@/types'
 import { useElementSize } from '@reactuses/core'
 import { useLayoutEffect, useRef, useState } from 'react'
+import { OptionsVariant } from './OptionsVariant'
+import { OptionsColor } from './OptionsColor'
 
 export interface AddToCartProps {
   options?: OptionEntity[]
   productId: number
   oldPrice: number | null
   price: number
-}
-
-interface OptionOptionsProps {
-  caption: string
-  items: string[]
-  selected?: string
-  onSelect?: (value: string) => void
-}
-
-function OptionOptions({ caption, items, selected, onSelect }: OptionOptionsProps) {
-  const listRef = useRef<HTMLDivElement>(null)
-  const [width, setWidth] = useState<number>()
-
-  useLayoutEffect(() => {
-    if (!listRef.current) return
-    let maxWidth = 0
-    Array.from(listRef.current.children).forEach((child) => {
-      if (child.clientWidth > maxWidth) maxWidth = child.clientWidth
-    })
-    setWidth(maxWidth)
-  }, [listRef])
-
-  return (
-    <div className={styles.option}>
-      <div className={styles.optionCaption}>{caption}</div>
-      <div className={styles.optionValues} ref={listRef}>
-        {items.map((item) => (
-          <button
-            key={item}
-            className={cn(styles.optionValue, {
-              [styles.active]: selected === item
-            })}
-            style={{ width }}
-            onClick={() => onSelect?.(item)}
-          >
-            {item}
-          </button>
-        ))}
-      </div>
-    </div>
-  )
 }
 
 export function AddToCart({ options, productId, oldPrice, price }: AddToCartProps) {
@@ -77,7 +38,7 @@ export function AddToCart({ options, productId, oldPrice, price }: AddToCartProp
 
             if (option.type === OptionType.COLOR) {
               return (
-                <OptionOptions
+                <OptionsColor
                   key={option.id}
                   caption={option.caption}
                   items={option.value as string[]}
@@ -89,7 +50,7 @@ export function AddToCart({ options, productId, oldPrice, price }: AddToCartProp
 
             if (option.type === OptionType.SIZE) {
               return (
-                <OptionOptions
+                <OptionsVariant
                   key={option.id}
                   caption={option.caption}
                   items={option.value as string[]}
@@ -99,9 +60,9 @@ export function AddToCart({ options, productId, oldPrice, price }: AddToCartProp
               )
             }
 
-            if (option.type === OptionType.OPTIONS) {
+            if (option.type === OptionType.VARIANT) {
               return (
-                <OptionOptions
+                <OptionsVariant
                   key={option.id}
                   caption={option.caption}
                   items={option.value as string[]}

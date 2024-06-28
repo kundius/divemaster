@@ -323,7 +323,7 @@
         },
         "type": {
           "name": "type",
-          "type": "enum('text','number','boolean','color','size','options')",
+          "type": "enum('text','number','boolean','color','size','variant')",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
@@ -334,7 +334,7 @@
             "boolean",
             "color",
             "size",
-            "options"
+            "variant"
           ],
           "mappedType": "enum"
         },

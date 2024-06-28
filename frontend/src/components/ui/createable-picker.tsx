@@ -2,14 +2,14 @@ import { cn } from '@/lib/utils'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { useCombobox, useMultipleSelection } from 'downshift'
 import { matchSorter } from 'match-sorter'
-import { useMemo, useRef, useState } from 'react'
+import { ReactNode, useMemo, useRef, useState } from 'react'
 import styles from './createable-picker.module.scss'
 import { Popover, PopoverAnchor, PopoverContent } from './popover'
 import { useElementSize } from '@reactuses/core'
 
 export interface CreateablePickerItem {
   value: string
-  label: string
+  label: ReactNode
 }
 
 export interface CreateablePickerProps {
@@ -137,6 +137,7 @@ export function CreateablePicker({
             )}
           >
             {selectedItems.map(function renderSelectedItem(selectedItemForRender, index) {
+              console.log(selectedItemForRender)
               return (
                 <div
                   className={styles.tag}
@@ -195,7 +196,7 @@ export function CreateablePicker({
                 key={`${item.value}${index}`}
                 {...getItemProps({ item, index })}
               >
-                <span>{item.label}</span>
+                {item.label}
               </li>
             ))}
           </ul>

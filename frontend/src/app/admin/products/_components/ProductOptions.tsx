@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { apiPatch } from '@/lib/api'
 import { withClientAuth } from '@/lib/api/with-client-auth'
+import { colors } from '@/lib/colors'
 import { OptionEntity, OptionType } from '@/types'
 import { useToggle } from '@reactuses/core'
 import Link from 'next/link'
@@ -65,11 +66,41 @@ export function ProductOptions({ productId, initialOptions, initialValues }: Pro
         />
       )
     }
-    if (
-      item.type === OptionType.COLOR ||
-      item.type === OptionType.OPTIONS ||
-      item.type === OptionType.SIZE
-    ) {
+    if (item.type === OptionType.COLOR) {
+      const value = values[item.key] as string[] | undefined
+      return (
+        <CreateablePicker
+          options={colors.map((item) => ({
+            label: (
+              <div className="flex gap-2 items-center">
+                <div
+                  className="w-3 h-3 rounded shadow-sm"
+                  style={{ backgroundColor: item.color }}
+                />
+                <div>{item.name}</div>
+              </div>
+            ),
+            value: item.name
+          }))}
+          value={
+            value?.map((item) => ({
+              value: item,
+              label: (
+                <div className="flex gap-2 items-center">
+                  <div
+                    className="w-2 h-2 rounded-full shadow-sm"
+                    style={{ background: colors.find((color) => color.name === item)?.color || 'linear-gradient(53deg, rgb(169, 0, 131) 0%, rgb(160, 45, 250) 100%)' }}
+                  />
+                  <div>{item}</div>
+                </div>
+              )
+            })) || []
+          }
+          onChange={(selectedItems) => onChange(selectedItems.map((item) => item.value))}
+        />
+      )
+    }
+    if (item.type === OptionType.VARIANT || item.type === OptionType.SIZE) {
       const value = values[item.key] as string[] | undefined
       return (
         <OptionsControl

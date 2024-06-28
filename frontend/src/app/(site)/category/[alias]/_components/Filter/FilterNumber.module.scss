@@ -1,0 +1,55 @@
+.box {
+}
+
+.headline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 14px;
+  color: rgb(34, 34, 34);
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.reset {
+  font-size: 14px;
+  color: rgb(172, 172, 188);
+  line-height: 1.2;
+  text-align: right;
+}
+
+.reset:hover {
+  color: #000;
+}
+
+.control {
+  margin-bottom: 20px;
+}
+
+.label {
+  font-size: 14px;
+  color: rgb(146, 146, 146);
+  line-height: 1.2;
+}
+
+.field {
+  flex-grow: 1;
+}
+
+.input {
+  font-size: 14px;
+  color: rgb(34, 34, 34);
+  line-height: 1.2;
+  min-height: 28px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(227, 227, 227);
+  border-radius: 4px;
+  background-color: rgb(255, 255, 255);
+  padding: 0 4px;
+  width: 100%;
+}

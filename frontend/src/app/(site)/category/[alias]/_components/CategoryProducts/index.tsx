@@ -1,9 +1,9 @@
 'use client'
 
+import { ProductCard } from '@/components/site/ProductCard'
 import { useResorces } from '@/lib/Resources'
 import { getFileUrl } from '@/lib/utils'
 import { ProductEntity } from '@/types'
-import { ProductCard } from '../ProductCard'
 
 export function CategoryProducts() {
   const { total, rows, listRef } = useResorces<ProductEntity>()

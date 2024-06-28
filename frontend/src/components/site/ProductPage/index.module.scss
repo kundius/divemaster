@@ -28,48 +28,6 @@
   margin-top: 8px;
 }
 
-.prices {
-}
-
-.discount {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  // background: #e50001;
-  background: linear-gradient( 63deg, #d20001 100%, #fb0001 100%);
-  font-size: 14px;
-  text-transform: uppercase;
-  color: #ffffff;
-  font-weight: 700;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 12px;
-
-  @include --max-md {
-    font-size: 10px;
-    width: 30px;
-    height: 30px;
-  }
-}
-
-
-.oldPrice {
-  font-size: 16px;
-  color: rgb(156, 156, 156);
-  text-decoration: line-through;
-  line-height: 1.2;
-  margin-bottom: 8px;
-}
-
-.realPrice {
-  font-size: 30px;
-  color: rgb(182, 53, 157);
-  font-weight: bold;
-  line-height: 1.2;
-}
-
 .layout {
   display: grid;
   grid-template-columns: [left-start] 60fr [left-end] 80px [right-start] 40fr [right-end];

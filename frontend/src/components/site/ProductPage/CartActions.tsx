@@ -1,7 +1,16 @@
+'use client'
+
 import { cn } from '@/lib/utils'
 import styles from './CartActions.module.scss'
+import { OptionEntity } from '@/types'
 
-export function CartActions() {
+export interface CartActionsProps {
+  options?: OptionEntity[]
+  productId: number
+}
+
+export function CartActions({ options, productId }: CartActionsProps) {
+  console.log(options)
   return (
     <div className={styles.wrap}>
       <button className={cn(styles.action, styles.actionCart)}>

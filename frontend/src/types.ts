@@ -49,7 +49,7 @@ export interface ProductEntity {
   images?: ProductImageEntity[]
   categories?: CategoryEntity[]
   descriptions?: ProductDescription[]
-  options?: Record<string, number | boolean | string | string[] | undefined>
+  options?: OptionEntity[]
 }
 
 export interface ProductDescription {

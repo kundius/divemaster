@@ -1,0 +1,150 @@
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.action {
+  container-type: size;
+  display: flex;
+  font-size: 14px;
+  line-height: 1;
+  height: 48px;
+  border-radius: 12px;
+  width: 50%;
+  font-weight: 500;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #ffffff;
+  font-family: var(--font-sans-wide);
+  background: #a90083;
+  position: relative;
+  transition: 0.3s ease;
+  z-index: 1;
+  flex-grow: 1;
+
+  svg {
+    fill: currentColor;
+  }
+
+  &:hover {
+    background: #9f2df9;
+  }
+}
+
+.action.actionCart {
+  background: linear-gradient(37deg, #a90083 0%, #a90083 25%, #a300a9 75%, #9f2df9 100%);
+  background-size: 300% 100%;
+  background-position: 0 0;
+  transition: 1.2s ease;
+
+  &:hover {
+    transition: 0.3s ease;
+    background-position: 100% 0;
+  }
+}
+
+.action.actionOneClick {
+  background: #fff;
+  color: rgba(169, 0, 131, 0.702);
+  border: 1px solid #e3e3e3;
+  max-width: 160px;
+
+  &:hover {
+    background: #d37cc0;
+    border-color: #d37cc0;
+    color: #fff;
+  }
+}
+
+.action.actionOneClick .actionInner {
+  width: min-content;
+}
+
+.discount {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  // background: #e50001;
+  background: linear-gradient(63deg, #d20001 100%, #fb0001 100%);
+  font-size: 14px;
+  text-transform: uppercase;
+  color: #ffffff;
+  font-weight: 700;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+
+  @include --max-md {
+    font-size: 10px;
+    width: 30px;
+    height: 30px;
+  }
+}
+
+.oldPrice {
+  font-size: 16px;
+  color: rgb(156, 156, 156);
+  text-decoration: line-through;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.realPrice {
+  font-size: 30px;
+  color: rgb(182, 53, 157);
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.option {
+}
+
+.optionCaption {
+  font-size: 12px;
+  color: rgb(158, 158, 158);
+  line-height: 1.2;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.optionValues {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.optionValue {
+  font-size: 14px;
+  color: rgb(34, 34, 34);
+  line-height: 42px;
+  cursor: pointer;
+  text-align: center;
+  font-weight: medium;
+  padding: 0 12px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(227, 227, 227);
+  border-radius: 4px;
+  background-color: rgb(255, 255, 255);
+}
+
+.optionValue:hover {
+  background-color: #f6f8fe;
+  border-color: #cb7eba;
+}
+
+.optionValue.active {
+  color: rgb(255, 255, 255);
+  background-color: #a90083;
+  border-color: #a90083;
+}

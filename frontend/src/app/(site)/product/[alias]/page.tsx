@@ -26,6 +26,7 @@ import { DeliveryInfo } from '@/components/site/ProductPage/DeliveryInfo'
 import { Warranty } from '@/components/site/ProductPage/Warranty'
 import { Gallery } from '@/components/site/ProductPage/Gallery'
 import { Description } from '@/components/site/ProductPage/Description'
+import { AddToCart } from './_components/AddToCart'
 
 export async function generateStaticParams() {
   const products = await apiGet<ApiTableData<ProductEntity>>(`products`, {
@@ -83,12 +84,6 @@ export default async function Page({ params: { alias } }: { params: { alias: str
     addParents(product.categories, null)
   }
 
-  const discount = product.oldPrice
-    ? Math.round(((product.oldPrice - product.price) / product.price) * 100)
-    : 0
-
-  console.log(product.options)
-
   return (
     <Container>
       <div className="pb-6 pt-6">
@@ -112,15 +107,13 @@ export default async function Page({ params: { alias } }: { params: { alias: str
             <ReviewsShort count={0} rating={4} />
             {product.specifications && <SpecButton />}
           </div>
-          <div className={cn(styles.prices, 'mt-3')}>
-            {discount > 0 && <div className={styles.discount}>-{discount}%</div>}
-            {product.oldPrice && (
-              <div className={styles.oldPrice}>{displayPrice(product.oldPrice)}</div>
-            )}
-            <div className={styles.realPrice}>{displayPrice(product.price)}</div>
-          </div>
-          <div className="mt-12">
-            <CartActions />
+          <div className="mt-3">
+            <AddToCart
+              productId={product.id}
+              options={product.options}
+              price={product.price}
+              oldPrice={product.oldPrice}
+            />
           </div>
           <div className="mt-10">
             <DeliveryInfo />

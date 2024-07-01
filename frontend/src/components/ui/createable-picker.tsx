@@ -137,7 +137,6 @@ export function CreateablePicker({
             )}
           >
             {selectedItems.map(function renderSelectedItem(selectedItemForRender, index) {
-              console.log(selectedItemForRender)
               return (
                 <div
                   className={styles.tag}

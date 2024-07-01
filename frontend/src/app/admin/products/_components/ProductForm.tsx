@@ -21,9 +21,6 @@ export const ProductFormSchema = z.object({
   alias: z.string().trim(),
   sku: z.string().trim().nullable(),
   longTitle: z.string().trim().nullable(),
-  description: z.string().trim().nullable(),
-  specifications: z.string().trim().nullable(),
-  exploitation: z.string().trim().nullable(),
   price: z.number(),
   oldPrice: z.number().nullable(),
   brandId: z.number().nullable(),
@@ -41,6 +38,7 @@ export interface ProductFormProps {
 }
 
 export function ProductForm({ form, onSubmit }: ProductFormProps) {
+  console.log(form.formState)
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

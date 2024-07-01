@@ -10,7 +10,6 @@ export interface CartActionsProps {
 }
 
 export function CartActions({ options, productId }: CartActionsProps) {
-  console.log(options)
   return (
     <div className={styles.wrap}>
       <button className={cn(styles.action, styles.actionCart)}>

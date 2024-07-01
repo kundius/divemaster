@@ -23,7 +23,6 @@ export interface ProductOptionsProps {
 
 export function ProductOptions({ productId }: ProductOptionsProps) {
   const productOptionsQuery = useSWR<OptionEntity[]>(`products/${productId}/options`)
-  console.log(productOptionsQuery.data)
   return (
     <div className="space-y-6">
       {productOptionsQuery.data?.map((item) => (
@@ -74,7 +73,6 @@ function OptionVariant({ productId, optionId, title }: OptionVariantProps) {
   const optionVariantsQuery = useSWR<OptionValueEntity[]>(
     `products/${productId}/options/${optionId}/variants`
   )
-  console.log(optionVariantsQuery.data)
   return (
     <div className="rounded-xl border bg-card text-card-foreground p-4">
       <div className="flex items-center justify-between">

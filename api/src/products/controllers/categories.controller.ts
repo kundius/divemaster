@@ -15,10 +15,14 @@ import {
   FindAllCategoryQueryDto,
   UpdateCategoryDto
 } from '../dto/categories.dto'
+import { FiltersService } from '../services/filters.service'
 
 @Controller('categories')
 export class CategoriesController {
-  constructor(private readonly categoriesService: CategoriesService) {}
+  constructor(
+    private readonly categoriesService: CategoriesService,
+    private readonly filtersService: FiltersService
+  ) {}
 
   @Post()
   create(@Body() dto: CreateCategoryDto) {
@@ -52,5 +56,10 @@ export class CategoriesController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.categoriesService.remove(+id)
+  }
+
+  @Get(':id/filters')
+  filters(@Param('id') id: string) {
+    return this.filtersService.findAll(+id)
   }
 }

@@ -29,7 +29,6 @@ export function ResorcesSyncParams() {
     setIsPersisted(true)
 
     if (!shallowEqual(params, parsedSearchParams)) {
-      console.log('push search to state')
       setParams((prev) => ({
         ...prev,
         ...parsedSearchParams
@@ -43,10 +42,7 @@ export function ResorcesSyncParams() {
       return
     }
 
-    console.log('useEffect params', shallowEqual(params, parsedSearchParams))
-
     if (!shallowEqual(params, parsedSearchParams)) {
-      console.log('push state to search')
       const urlParams = new URLSearchParams(searchParams.toString())
 
       if (params.page === defaultParams.page) {

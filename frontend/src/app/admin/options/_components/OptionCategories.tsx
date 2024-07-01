@@ -25,14 +25,12 @@ export function OptionCategories({ optionId }: OptionCategoriesProps) {
   const [expanded, setExpanded] = useState<string[]>([])
 
   const optionCategoriesQuery = useSWR<CategoryEntity[]>(`options/${optionId}/categories`)
-  // TODO: HIERARCHY_DEPTH_LIMIT
-  // в populate указана необходимоя вложенность подкатегорий
   const categoriesQuery = useSWR<ApiTableData<CategoryEntity>>([
     `categories`,
     {
       parent: 0,
-      all: 1,
-      populate: ['children', 'children.children']
+      limit: 100,
+      withChildren: true
     }
   ])
 

@@ -34,7 +34,7 @@ export function AddToCart({ options, productId, oldPrice, price }: AddToCartProp
       {options && options.length > 0 && (
         <div className={styles.options}>
           {options.map((option) => {
-            if (!option.inCart) return null
+            if (!option.inCart || typeof option.value === 'undefined') return null
 
             if (option.type === OptionType.COLOR) {
               return (

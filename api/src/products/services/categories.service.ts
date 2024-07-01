@@ -43,14 +43,15 @@ export class CategoriesService {
 
   async findAll(dto: FindAllCategoryQueryDto) {
     let exclude: 'description'[] = []
-    let populate: Populate<Category, 'children'> = []
+    let populate: Populate<Category, 'children' | 'children.children'> = []
     let filters: FilterOptions = []
     let populateOrderBy: OrderDefinition<Category> = {}
     let populateWhere: ObjectQuery<Category> = {}
     let where: ObjectQuery<Category> = {}
 
     if (dto.withChildren) {
-      populate = [...populate, 'children']
+      // HIERARCHY_DEPTH_LIMIT
+      populate = [...populate, 'children', 'children.children']
       populateOrderBy = { ...populateOrderBy, children: { id: QueryOrder.ASC } }
       if (dto.active) {
         populateWhere = { ...populateWhere, children: { active: true } }

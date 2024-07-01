@@ -90,7 +90,6 @@ export class OptionsService {
         groupBy: 'value'
       }
     )
-    console.log(optionVariants)
     return optionVariants.map((item) => item.value)
   }
 }

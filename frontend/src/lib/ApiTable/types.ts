@@ -1,3 +1,28 @@
+// export interface OptionsFilter {
+//   type: 'options'
+//   key: string
+//   title: string
+//   options: {
+//     value: string
+//     amount: number
+//   }[]
+// }
+
+// export interface RangeFilter {
+//   type: 'range'
+//   key: string
+//   title: string
+//   range: [number | null, number | null]
+// }
+
+// export interface BooleanFilter {
+//   type: 'toggle'
+//   key: string
+//   title: string
+// }
+
+// export type Filter = OptionsFilter | RangeFilter | BooleanFilter
+
 export interface ApiTableData<TRow> {
   rows: TRow[]
   total: number

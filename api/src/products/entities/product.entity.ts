@@ -12,6 +12,7 @@ import { Brand } from './brand.entity'
 import { Category } from './category.entity'
 import { Option } from './option.entity'
 import { ProductImage } from './product-image.entity'
+import { OptionVariant } from './option-variant.entity'
 
 @Entity()
 @Filter({ name: 'active', cond: { active: { $eq: true } } })
@@ -67,6 +68,9 @@ export class Product {
   @OneToMany(() => ProductImage, (image) => image.product)
   images = new Collection<ProductImage>(this)
 
+  @OneToMany(() => OptionVariant, (optionVariant) => optionVariant.product)
+  optionVariants = new Collection<OptionVariant>(this)
+
   @ManyToOne(() => Brand, { nullable: true })
   brand: Brand | null = null
 
@@ -78,4 +82,10 @@ export class Product {
 
   @Property({ persist: false })
   options?: Option[]
+
+  // @Property({ persist: false })
+  // optionVariants?: OptionVariant[]
+
+  // @Property({ persist: false })
+  // variantsTotal?: number
 }

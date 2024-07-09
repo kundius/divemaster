@@ -13,15 +13,16 @@ import { CategoriesService } from '../services/categories.service'
 import {
   CreateCategoryDto,
   FindAllCategoryQueryDto,
+  FindOneCategoryQueryDto,
   UpdateCategoryDto
 } from '../dto/categories.dto'
-import { FiltersService } from '../services/filters.service'
+import { ProductsFilterService } from '../services/products-filter.service'
 
 @Controller('categories')
 export class CategoriesController {
   constructor(
     private readonly categoriesService: CategoriesService,
-    private readonly filtersService: FiltersService
+    private readonly productsFilterService: ProductsFilterService
   ) {}
 
   @Post()
@@ -35,8 +36,8 @@ export class CategoriesController {
   }
 
   @Get('alias::alias')
-  async findOneByAlias(@Param('alias') alias: string) {
-    const category = await this.categoriesService.findOneByAlias(alias)
+  async findOneByAlias(@Param('alias') alias: string, @Query() dto: FindOneCategoryQueryDto) {
+    const category = await this.categoriesService.findOneByAlias(alias, dto)
     if (!category) {
       throw new NotFoundException()
     }
@@ -44,8 +45,8 @@ export class CategoriesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.categoriesService.findOne(+id)
+  findOne(@Param('id') id: string, @Query() dto: FindOneCategoryQueryDto) {
+    return this.categoriesService.findOne(+id, dto)
   }
 
   @Patch(':id')
@@ -56,10 +57,5 @@ export class CategoriesController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.categoriesService.remove(+id)
-  }
-
-  @Get(':id/filters')
-  filters(@Param('id') id: string) {
-    return this.filtersService.findAll(+id)
   }
 }

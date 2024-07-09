@@ -27,23 +27,25 @@ import { ProductImage } from '../entities/product-image.entity'
 import { Product } from '../entities/product.entity'
 import { Option, OptionType } from '../entities/option.entity'
 import { OptionVariant } from '../entities/option-variant.entity'
+import { ProductsFilterService } from './products-filter.service'
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectRepository(Product)
-    private productsRepository: EntityRepository<Product>,
+    private readonly productsRepository: EntityRepository<Product>,
     @InjectRepository(ProductImage)
-    private productImageRepository: EntityRepository<ProductImage>,
+    private readonly productImageRepository: EntityRepository<ProductImage>,
     @InjectRepository(Category)
-    private categoryRepository: EntityRepository<Category>,
+    private readonly categoryRepository: EntityRepository<Category>,
     @InjectRepository(Option)
-    private optionRepository: EntityRepository<Option>,
+    private readonly optionRepository: EntityRepository<Option>,
     @InjectRepository(OptionVariant)
-    private optionVariantRepository: EntityRepository<OptionVariant>,
+    private readonly optionVariantRepository: EntityRepository<OptionVariant>,
     @InjectRepository(Brand)
-    private brandRepository: EntityRepository<Brand>,
-    private storageService: StorageService
+    private readonly brandRepository: EntityRepository<Brand>,
+    private readonly storageService: StorageService,
+    private readonly productsFilterService: ProductsFilterService
   ) {}
 
   async create({ brandId, ...fillable }: CreateProductDto) {
@@ -66,6 +68,7 @@ export class ProductsService {
     let filters: FilterOptions = []
     let populateOrderBy: OrderDefinition<Product> = {}
     let populateWhere: ObjectQuery<Product> = {}
+    let where: ObjectQuery<Product> = {}
 
     if (dto.withImages) {
       populate = [...populate, 'images']
@@ -97,14 +100,24 @@ export class ProductsService {
       filters = [...filters, 'recent']
     }
 
-    let where: ObjectQuery<Product> = {}
     if (dto.query) {
       where = { ...where, title: { $like: '%' + dto.query + '%' } }
     }
+
     if (typeof dto.category !== 'undefined') {
       // TODO: HIERARCHY_DEPTH_LIMIT
       // товары выбираются без учета подкатегорий
       where = { ...where, categories: { $in: [dto.category] } }
+    }
+
+    if (dto.filter) {
+      let filter = {}
+      try {
+        filter = JSON.parse(dto.filter)
+      } catch {}
+      await this.productsFilterService.init(dto.category)
+      const ids = await this.productsFilterService.search(filter)
+      where = { ...where, id: { $in: ids } }
     }
 
     const [rows, total] = await this.productsRepository.findAndCount(where, {
@@ -124,7 +137,7 @@ export class ProductsService {
       )
     }
 
-    return { rows, total }
+    return { rows, total, filters: this.productsFilterService.filters }
   }
 
   async findOne(id: number, dto?: FindOneProductDto) {

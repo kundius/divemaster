@@ -47,6 +47,7 @@
     "negotiator": "^0.6.3",
     "next": "^14.2.0",
     "next-themes": "^0.2.1",
+    "nuqs": "^1.17.4",
     "object-path": "^0.11.8",
     "rc-tree": "^5.8.7",
     "react": "^18",

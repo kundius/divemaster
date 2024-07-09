@@ -4,7 +4,7 @@ import { ProductCard } from '@/components/site/ProductCard'
 import { getFileUrl } from '@/lib/utils'
 import { useProductsQuery } from '../ProductsQuery'
 
-export function CategoryProducts() {
+export function Products() {
   const { data, listRef } = useProductsQuery()
 
   return (

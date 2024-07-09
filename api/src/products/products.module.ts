@@ -15,7 +15,7 @@ import { BrandsService } from './services/brands.service'
 import { CategoriesService } from './services/categories.service'
 import { OptionsService } from './services/options.service'
 import { ProductsService } from './services/products.service'
-import { FiltersService } from './services/filters.service'
+import { ProductsFilterService } from './services/products-filter.service'
 
 @Module({
   imports: [
@@ -23,6 +23,6 @@ import { FiltersService } from './services/filters.service'
     StorageModule
   ],
   controllers: [ProductsController, CategoriesController, BrandsController, OptionsController],
-  providers: [ProductsService, CategoriesService, BrandsService, OptionsService, FiltersService]
+  providers: [ProductsService, CategoriesService, BrandsService, OptionsService, ProductsFilterService]
 })
 export class ProductsModule {}

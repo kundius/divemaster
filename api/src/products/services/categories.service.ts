@@ -13,6 +13,7 @@ import { StorageService } from '@/storage/services/storage.service'
 import {
   CreateCategoryDto,
   FindAllCategoryQueryDto,
+  FindOneCategoryQueryDto,
   UpdateCategoryDto
 } from '../dto/categories.dto'
 
@@ -30,7 +31,7 @@ export class CategoriesService {
     this.categoriesRepository.assign(category, fillable)
 
     if (typeof parentId !== 'undefined') {
-      category.parent = parentId ? await this.findOne(parentId) : null
+      category.parent = parentId ? await this.categoriesRepository.findOneOrFail(parentId) : null
     }
     if (typeof imageId !== 'undefined') {
       category.image = imageId ? await this.storageService.findOne(imageId) : null
@@ -43,7 +44,10 @@ export class CategoriesService {
 
   async findAll(dto: FindAllCategoryQueryDto) {
     let exclude: 'description'[] = []
-    let populate: Populate<Category, 'children' | 'children.children'> = []
+    let populate: Populate<
+      Category,
+      'children' | 'children.children' | 'parent' | 'parent.parent'
+    > = []
     let filters: FilterOptions = []
     let populateOrderBy: OrderDefinition<Category> = {}
     let populateWhere: ObjectQuery<Category> = {}
@@ -56,6 +60,11 @@ export class CategoriesService {
       if (dto.active) {
         populateWhere = { ...populateWhere, children: { active: true } }
       }
+    }
+
+    if (dto.withParent) {
+      // HIERARCHY_DEPTH_LIMIT
+      populate = [...populate, 'parent', 'parent.parent']
     }
 
     if (!dto.withContent) {
@@ -88,12 +97,92 @@ export class CategoriesService {
     return { rows, total }
   }
 
-  async findOne(id: number) {
-    return this.categoriesRepository.findOneOrFail({ id })
+  async findOne(id: number, dto?: FindOneCategoryQueryDto) {
+    let exclude: 'description'[] = []
+    let populate: Populate<
+      Category,
+      'children' | 'children.children' | 'parent' | 'parent.parent'
+    > = []
+    let filters: FilterOptions = []
+    let populateOrderBy: OrderDefinition<Category> = {}
+    let populateWhere: ObjectQuery<Category> = {}
+
+    if (dto?.withChildren) {
+      // HIERARCHY_DEPTH_LIMIT
+      populate = [...populate, 'children', 'children.children']
+      populateOrderBy = { ...populateOrderBy, children: { id: QueryOrder.ASC } }
+      if (dto?.active) {
+        populateWhere = { ...populateWhere, children: { active: true } }
+      }
+    }
+
+    if (dto?.withParent) {
+      // HIERARCHY_DEPTH_LIMIT
+      populate = [...populate, 'parent', 'parent.parent']
+    }
+
+    if (!dto?.withContent) {
+      exclude = [...exclude, 'description']
+    }
+
+    if (dto?.active) {
+      filters = [...filters, 'active']
+    }
+
+    return this.categoriesRepository.findOneOrFail(
+      { id },
+      {
+        filters,
+        exclude,
+        populate,
+        populateOrderBy,
+        populateWhere
+      }
+    )
   }
 
-  async findOneByAlias(alias: string) {
-    return this.categoriesRepository.findOne({ alias })
+  async findOneByAlias(alias: string, dto?: FindOneCategoryQueryDto) {
+    let exclude: 'description'[] = []
+    let populate: Populate<
+      Category,
+      'children' | 'children.children' | 'parent' | 'parent.parent'
+    > = []
+    let filters: FilterOptions = []
+    let populateOrderBy: OrderDefinition<Category> = {}
+    let populateWhere: ObjectQuery<Category> = {}
+
+    if (dto?.withChildren) {
+      // HIERARCHY_DEPTH_LIMIT
+      populate = [...populate, 'children', 'children.children']
+      populateOrderBy = { ...populateOrderBy, children: { id: QueryOrder.ASC } }
+      if (dto?.active) {
+        populateWhere = { ...populateWhere, children: { active: true } }
+      }
+    }
+
+    if (dto?.withParent) {
+      // HIERARCHY_DEPTH_LIMIT
+      populate = [...populate, 'parent', 'parent.parent']
+    }
+
+    if (!dto?.withContent) {
+      exclude = [...exclude, 'description']
+    }
+
+    if (dto?.active) {
+      filters = [...filters, 'active']
+    }
+
+    return this.categoriesRepository.findOne(
+      { alias },
+      {
+        filters,
+        exclude,
+        populate,
+        populateOrderBy,
+        populateWhere
+      }
+    )
   }
 
   async update(id: number, { parentId, imageId, ...fillable }: UpdateCategoryDto) {
@@ -102,7 +191,7 @@ export class CategoriesService {
     this.categoriesRepository.assign(category, fillable)
 
     if (typeof parentId !== 'undefined') {
-      category.parent = parentId ? await this.findOne(parentId) : null
+      category.parent = parentId ? await this.categoriesRepository.findOneOrFail(parentId) : null
     }
     if (typeof imageId !== 'undefined') {
       category.image = imageId ? await this.storageService.findOne(imageId) : null

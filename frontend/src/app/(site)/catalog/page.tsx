@@ -3,14 +3,11 @@ import {
   BenefitsSideSliderDiscount
 } from '@/components/site/BenefitsSideSlider'
 import { Breadcrumbs, BreadcrumbsProps } from '@/components/site/Breadcrumbs'
-import { CategoryPagination } from '@/components/site/CategoryPagination'
-import { CategoryProducts } from '@/components/site/CategoryProducts'
 import { ConsultationWidget } from '@/components/site/ConsultationWidget'
 import { Container } from '@/components/site/Container'
-import { Resorces, ResorcesProps } from '@/lib/Resources'
-import { ResorcesSyncParams } from '@/lib/Resources/SyncSearchParams'
-import { ProductEntity } from '@/types'
-import { Suspense } from 'react'
+import { Pagination } from './_components/Pagination'
+import { Products } from './_components/Products'
+import { ProductsQuery } from './_components/ProductsQuery'
 
 export default async function Page() {
   const crumbs: BreadcrumbsProps['items'] = [
@@ -19,19 +16,10 @@ export default async function Page() {
       href: '/'
     }
   ]
-  const params: ResorcesProps<ProductEntity>['defaultParams'] = {
-    limit: 24,
-    populate: ['images', 'brand'],
-    filters: ['active', 'favorite']
-  }
 
   return (
-    <Resorces<ProductEntity> url="products" defaultParams={params}>
+    <ProductsQuery>
       <Container>
-        <Suspense fallback="loading">
-          <ResorcesSyncParams />
-        </Suspense>
-
         <div className="pb-3 pt-6 border-b border-neutral-100">
           <Breadcrumbs items={crumbs} />
           <div className="mt-2 text-4xl font-sans-narrow uppercase font-bold">Каталог</div>
@@ -61,11 +49,11 @@ export default async function Page() {
             <div className="mb-6 text-xl font-sans-narrow uppercase font-bold">
               Популярные товары
             </div>
-            <CategoryProducts />
-            <CategoryPagination />
+            <Products />
+            <Pagination />
           </div>
         </div>
       </Container>
-    </Resorces>
+    </ProductsQuery>
   )
 }

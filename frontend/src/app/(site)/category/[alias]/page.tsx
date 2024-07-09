@@ -6,17 +6,15 @@ import { Breadcrumbs, BreadcrumbsProps } from '@/components/site/Breadcrumbs'
 import { ConsultationWidget } from '@/components/site/ConsultationWidget'
 import { Container } from '@/components/site/Container'
 import { ApiTableData } from '@/lib/ApiTable/types'
-import { Resorces, ResorcesProps } from '@/lib/Resources'
-import { ResorcesSyncParams } from '@/lib/Resources/SyncSearchParams'
 import { apiGet } from '@/lib/api'
 import { getFileUrl } from '@/lib/utils'
-import { CategoryEntity, ProductEntity } from '@/types'
-import { Suspense } from 'react'
+import { CategoryEntity } from '@/types'
 import { CategoryCard } from './_components/CategoryCard'
 import { CategoryContent } from './_components/CategoryContent'
 import { CategoryPagination } from './_components/CategoryPagination'
 import { CategoryProducts } from './_components/CategoryProducts'
 import { Filter } from './_components/Filter'
+import { ProductsQuery } from './_components/ProductsQuery'
 
 export async function generateStaticParams() {
   const categories = await apiGet<ApiTableData<CategoryEntity>>(`categories`, {
@@ -32,8 +30,9 @@ export default async function Page({ params: { alias } }: { params: { alias: str
   const category = await apiGet<CategoryEntity>(
     `categories/alias:${alias}`,
     {
-      populate: ['children', 'parent', 'parent.parent'],
-      filters: ['active']
+      withParent: true,
+      withChildren: true,
+      active: true
     },
     {
       next: {
@@ -65,22 +64,11 @@ export default async function Page({ params: { alias } }: { params: { alias: str
 
   addParents(category)
 
-  const isParent = category.children && category.children.length > 0
-
-  const params: ResorcesProps<ProductEntity>['defaultParams'] = {
-    limit: 24,
-    category: category.id,
-    populate: ['images', 'brand'],
-    filters: ['active', isParent ? 'favorite' : '']
-  }
+  const isParent = category.children ? category.children.length > 0 : false
 
   return (
-    <Resorces<ProductEntity> url="products" defaultParams={params}>
+    <ProductsQuery categoryId={category.id} isParent={isParent}>
       <Container>
-        <Suspense fallback="loading">
-          <ResorcesSyncParams />
-        </Suspense>
-
         <div className="pb-3 pt-6 border-b border-neutral-100">
           <Breadcrumbs items={crumbs} />
           <div className="mt-2 text-4xl font-sans-narrow uppercase font-bold">{category.title}</div>
@@ -101,9 +89,11 @@ export default async function Page({ params: { alias } }: { params: { alias: str
 
         <div className="flex gap-x-5 mb-40 mt-14">
           <div className="w-1/5 space-y-5 max-2xl:w-1/4">
-            <div className='mb-80'>
-              <Filter />
-            </div>
+            {!isParent && (
+              <div className="mb-80">
+                <Filter />
+              </div>
+            )}
             <ConsultationWidget />
             <BenefitsSideSlider
               items={[
@@ -137,6 +127,6 @@ export default async function Page({ params: { alias } }: { params: { alias: str
           content={category.description || undefined}
         />
       </Container>
-    </Resorces>
+    </ProductsQuery>
   )
 }

@@ -8,7 +8,7 @@ export default {
   entities: ['./dist/**/entities/*.entity.js'],
   entitiesTs: ['./src/**/entities/*.entity.ts'],
   driver: MariaDbDriver,
-  debug: false,
+  debug: true,
   autoLoadEntities: false,
   host: process.env['DATABASE_HOST'],
   dbName: process.env['DATABASE_NAME'],

@@ -1,9 +1,10 @@
+import { PaginationQueryDto } from '@/lib/pagination-query.dto'
+import { ParseBooleanString } from '@/lib/parse-boolean-string'
+import { QueryOrder } from '@mikro-orm/core'
 import { PartialType } from '@nestjs/mapped-types'
 import { Type } from 'class-transformer'
 import { IsArray, IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
 import { Product } from '../entities/product.entity'
-import { QueryOrder } from '@mikro-orm/core'
-import { PaginationQueryDto } from '@/lib/pagination-query.dto'
 
 export class UpdateProductImageDto {
   @Type(() => Boolean)
@@ -22,27 +23,27 @@ export class SortProductImageDto {
 }
 
 export class FindOneProductDto {
-  @Type(() => Boolean)
+  @ParseBooleanString()
   @IsBoolean()
   active: boolean = false
 
-  @Type(() => Boolean)
+  @ParseBooleanString()
   @IsBoolean()
   withImages: boolean = false
 
-  @Type(() => Boolean)
+  @ParseBooleanString()
   @IsBoolean()
   withContent: boolean = false
 
-  @Type(() => Boolean)
+  @ParseBooleanString()
   @IsBoolean()
   withOptions: boolean = false
 
-  @Type(() => Boolean)
+  @ParseBooleanString()
   @IsBoolean()
   withBrand: boolean = false
 
-  @Type(() => Boolean)
+  @ParseBooleanString()
   @IsBoolean()
   withCategories: boolean = false
 }
@@ -53,32 +54,37 @@ export class FindAllProductDto extends PaginationQueryDto {
   @IsOptional()
   query?: string
 
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  filter?: string
+
   @Type(() => Number)
   @IsNumber()
   @IsOptional()
   category?: number
 
-  @Type(() => Boolean)
+  @ParseBooleanString()
   @IsBoolean()
   active: boolean = false
 
-  @Type(() => Boolean)
+  @ParseBooleanString()
   @IsBoolean()
   favorite: boolean = false
 
-  @Type(() => Boolean)
+  @ParseBooleanString()
   @IsBoolean()
   recent: boolean = false
 
-  @Type(() => Boolean)
+  @ParseBooleanString()
   @IsBoolean()
   withImages: boolean = false
 
-  @Type(() => Boolean)
+  @ParseBooleanString()
   @IsBoolean()
   withContent: boolean = false
 
-  @Type(() => Boolean)
+  @ParseBooleanString()
   @IsBoolean()
   withOptions: boolean = false
 
@@ -86,7 +92,7 @@ export class FindAllProductDto extends PaginationQueryDto {
   @IsBoolean()
   withBrand: boolean = false
 
-  @Type(() => Boolean)
+  @ParseBooleanString()
   @IsBoolean()
   withCategories: boolean = false
 

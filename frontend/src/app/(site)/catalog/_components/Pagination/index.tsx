@@ -1,10 +1,10 @@
 'use client'
 
 import { Pagination as SitePagination } from '@/components/site/Pagination'
-import { parseAsInteger, parseAsString, useQueryState, useQueryStates } from 'nuqs'
+import { parseAsInteger, useQueryStates } from 'nuqs'
 import { useProductsQuery } from '../ProductsQuery'
 
-export function CategoryPagination() {
+export function Pagination() {
   const [params, setParams] = useQueryStates({
     limit: parseAsInteger.withDefault(24),
     page: parseAsInteger.withDefault(1)

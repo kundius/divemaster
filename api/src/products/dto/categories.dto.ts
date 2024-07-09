@@ -57,6 +57,10 @@ export class FindAllCategoryQueryDto extends PaginationQueryDto {
 
   @Type(() => Boolean)
   @IsBoolean()
+  withParent: boolean = false
+
+  @Type(() => Boolean)
+  @IsBoolean()
   withContent: boolean = false
 
   @Type(() => String)
@@ -69,4 +73,20 @@ export class FindAllCategoryQueryDto extends PaginationQueryDto {
   dir: QueryOrder = QueryOrder.ASC
 }
 
-export class FindOneCategoryQueryDto {}
+export class FindOneCategoryQueryDto {
+  @Type(() => Boolean)
+  @IsBoolean()
+  active: boolean = false
+
+  @Type(() => Boolean)
+  @IsBoolean()
+  withChildren: boolean = false
+
+  @Type(() => Boolean)
+  @IsBoolean()
+  withParent: boolean = false
+
+  @Type(() => Boolean)
+  @IsBoolean()
+  withContent: boolean = false
+}

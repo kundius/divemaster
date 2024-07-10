@@ -37,7 +37,6 @@ export function Filter(props: FilterProps) {
     <div className={styles.container}>
       {data.filters.map((item) => {
         if (item.type === 'range') {
-          console.log(parsedFilter?.[item.name])
           return (
             <FilterRange
               filter={item}

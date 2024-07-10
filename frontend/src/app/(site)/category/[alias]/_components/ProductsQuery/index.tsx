@@ -1,8 +1,8 @@
 'use client'
 
 import { useQuery } from '@/lib/useQuery'
-import { OptionEntity, ProductEntity } from '@/types'
-import { parseAsInteger, parseAsJson, parseAsString, useQueryStates } from 'nuqs'
+import { ProductEntity } from '@/types'
+import { parseAsInteger, parseAsString, useQueryStates } from 'nuqs'
 import { createContext, MutableRefObject, PropsWithChildren, useContext, useRef } from 'react'
 
 export interface ProductsBaseFilter {

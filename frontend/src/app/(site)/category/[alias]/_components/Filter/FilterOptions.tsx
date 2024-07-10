@@ -28,10 +28,14 @@ export function FilterOptions({ filter, onSelect, selected = [] }: FilterOptions
     onSelect?.(Array.from(set))
   }
 
+  const resetHandler = () => {
+    onSelect?.([])
+  }
+
   const renderColor = (value: string) => {
     const color = colors.find((color) => color.name === value)
     if (color) {
-      return <span className={styles.color} style={{ backgroundColor: color.color }}></span>
+      return <span className={styles.optionColor} style={{ backgroundColor: color.color }}></span>
     }
     return null
   }
@@ -50,21 +54,26 @@ export function FilterOptions({ filter, onSelect, selected = [] }: FilterOptions
         <div className={styles.content} ref={refContent}>
           <div className={styles.options}>
             {filter.options.map((option) => (
-              <label key={option.value} className={styles.option}>
+              <label key={option.value} className={cn(styles.option, {
+                [styles.optionDisabled]: option.amount === 0
+              })}>
                 <input
                   type="checkbox"
                   value={option.value}
-                  className={styles.input}
-                  onChange={changeHandler}
+                  className={styles.optionInput}
+                  onChange={option.amount > 0 ? changeHandler : () => {}}
                   checked={selected.includes(option.value)}
                 />
-                <span className={styles.checkbox}></span>
+                <span className={styles.optionCheckbox}></span>
                 {filter.variant === 'colors' && renderColor(option.value)}
-                {option.value} <span className={styles.amount}>{option.amount}</span>
+                <span className={styles.optionValue}>{option.value}</span>
+                <span className={styles.optionAmount}>{option.amount}</span>
               </label>
             ))}
           </div>
-          <button className={styles.reset}>Сбросить</button>
+          {selected.length > 0 && (
+            <button className={styles.reset} onClick={resetHandler}>Сбросить</button>
+          )}
         </div>
       </div>
     </div>

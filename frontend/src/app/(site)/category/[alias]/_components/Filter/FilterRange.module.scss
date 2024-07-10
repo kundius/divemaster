@@ -4,8 +4,28 @@
 .headline {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
+  height: 48px;
+  cursor: pointer;
+  position: relative;
+  padding-right: 24px;
+}
+
+.headline::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  margin-top: -4px;
+  border-right: 2px solid rgb(34, 34, 34);
+  border-bottom: 2px solid rgb(34, 34, 34);
+  transform: rotate(45deg);
+  transition: .3s ease;
+}
+
+.boxOpened .headline::after {
+  transform: rotate(-135deg);
 }
 
 .title {
@@ -15,11 +35,24 @@
   line-height: 1.2;
 }
 
+.body {
+  overflow: hidden;
+  transition: .3s ease;
+}
+
+.content {
+  border-top: 1px solid var(--neutral200);
+  border-bottom: 1px solid var(--neutral200);
+  padding-bottom: 16px;
+  padding-top: 16px;
+}
+
 .reset {
   font-size: 14px;
   color: rgb(172, 172, 188);
   line-height: 1.2;
-  text-align: right;
+  margin-top: 16px;
+  display: inline-block;
 }
 
 .reset:hover {
@@ -28,6 +61,7 @@
 
 .control {
   margin-bottom: 20px;
+  margin-top: 8px;
 }
 
 .label {

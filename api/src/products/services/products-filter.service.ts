@@ -86,10 +86,19 @@ export class ProductsFilterService {
 
       for (const variant of product.optionVariants) {
         const field = record[variant.option.key]
-        if (isArray(field)) {
-          field.push(variant.value)
-        } else {
-          record[variant.option.key] = [variant.value]
+        switch (variant.option.type) {
+          case OptionType.BOOLEAN:
+            if (typeof field === 'undefined') {
+              record[variant.option.key] = variant.value === '1'
+            }
+            break
+          default:
+            if (isArray(field)) {
+              field.push(variant.value)
+            } else {
+              record[variant.option.key] = [variant.value]
+            }
+            break
         }
       }
 
@@ -147,6 +156,7 @@ export class ProductsFilterService {
   }
 
   async search(selected: SelectedRecord): Promise<number[]> {
+    console.log(selected, this.data)
     // отфильтровать товары и наполнить фильтры опциями
     const selectedProducts = this.data.filter((row) => {
       // фильтрация с учетом типов фильтров

@@ -1,0 +1,27 @@
+.filter {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.filterTitle {
+  text-transform: uppercase;
+  color: var(--neutral400);
+  font-size: 12px;
+}
+
+.filterCount {
+  width: 16px;
+  height: 16px;
+  background: hsl(var(--primary));
+  border-radius: 50%;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.filterIcon {}

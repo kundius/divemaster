@@ -114,7 +114,11 @@ export class ProductsFilterService {
     if (categoryId) {
       where = { ...where, categories: { $in: [categoryId] } }
     }
-    const options = await this.optionsRepository.find(where)
+    const options = await this.optionsRepository.find(where, {
+      orderBy: {
+        rank: 'ASC'
+      }
+    })
     const filters: Filter[] = []
     filters.push({
       type: 'toggle',
@@ -156,7 +160,6 @@ export class ProductsFilterService {
   }
 
   async search(selected: SelectedRecord): Promise<number[]> {
-    console.log(selected, this.data)
     // отфильтровать товары и наполнить фильтры опциями
     const selectedProducts = this.data.filter((row) => {
       // фильтрация с учетом типов фильтров

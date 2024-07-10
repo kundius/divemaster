@@ -57,10 +57,12 @@ export function ProductsQuery({
   isParent: boolean
 }>) {
   const listRef = useRef<HTMLDivElement | null>(null)
-  const [{ page, limit, filter }] = useQueryStates({
+  const [{ page, limit, filter, sort, dir }] = useQueryStates({
     limit: parseAsInteger.withDefault(24),
     page: parseAsInteger.withDefault(1),
-    filter: parseAsString.withDefault('{}')
+    filter: parseAsString.withDefault('{}'),
+    sort: parseAsString.withDefault('id'),
+    dir: parseAsString.withDefault('ASC')
   })
   const { data, loading, refetch } = useQuery<ProductsQueryContextValue['data']>('products', {
     page,
@@ -70,7 +72,9 @@ export function ProductsQuery({
     withImages: true,
     withBrand: true,
     active: true,
-    favorite: isParent
+    favorite: isParent,
+    sort,
+    dir
   })
   return (
     <ProductsQueryContext.Provider

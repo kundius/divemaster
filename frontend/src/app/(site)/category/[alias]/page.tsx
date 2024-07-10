@@ -15,6 +15,7 @@ import { CategoryPagination } from './_components/CategoryPagination'
 import { CategoryProducts } from './_components/CategoryProducts'
 import { Filter } from './_components/Filter'
 import { ProductsQuery } from './_components/ProductsQuery'
+import { ProductsSorting } from './_components/ProductsSorting'
 
 export async function generateStaticParams() {
   const categories = await apiGet<ApiTableData<CategoryEntity>>(`categories`, {
@@ -25,8 +26,6 @@ export async function generateStaticParams() {
 }
 
 export default async function Page({ params: { alias } }: { params: { alias: string } }) {
-  // TODO: HIERARCHY_DEPTH_LIMIT
-  // в populate указана необходимая вложенность родителей
   const category = await apiGet<CategoryEntity>(
     `categories/alias:${alias}`,
     {
@@ -113,10 +112,12 @@ export default async function Page({ params: { alias } }: { params: { alias: str
             />
           </div>
           <div className="w-4/5 max-2xl:w-3/4">
-            {isParent && (
+            {isParent ? (
               <div className="mb-6 text-xl font-sans-narrow uppercase font-bold">
                 Популярные товары
               </div>
+            ) : (
+              <ProductsSorting />
             )}
             <CategoryProducts />
             <CategoryPagination />

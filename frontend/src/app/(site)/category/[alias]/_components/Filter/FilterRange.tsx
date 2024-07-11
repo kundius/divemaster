@@ -1,7 +1,7 @@
 import { Slider } from '@/components/ui/slider'
 import styles from './FilterRange.module.scss'
 import { ProductsRangeFilter } from '../ProductsQuery'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useElementSize, useToggle } from '@reactuses/core'
 import { cn } from '@/lib/utils'
 
@@ -25,6 +25,13 @@ export function FilterRange({ filter, value, onChange }: FilterRangeProps) {
     setFrom(String(filter.range[0]))
     setTo(String(filter.range[1]))
   }
+
+  useEffect(() => {
+    if (!!value) return
+    setFrom(String(filter.range[0]))
+    setTo(String(filter.range[1]))
+    onControlledChange(filter.range)
+  }, filter.range)
 
   return (
     <div

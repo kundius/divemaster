@@ -123,3 +123,21 @@ export type PageProps<
   params: TParams
   searchParams: TSearchParams
 }
+
+export interface CartEntity {
+  uuid: string
+  user: UserEntity | UserEntity['id'] | null
+  products: CartProductEntity[]
+  createdAt: string
+  updatedAt: string
+}
+
+export interface CartProductEntity {
+  cart: CartEntity | CartEntity['uuid']
+  product: ProductEntity
+  productKey: string
+  amount: number
+  options: Record<string, string> | null
+  createdAt: string
+  updatedAt: string
+}

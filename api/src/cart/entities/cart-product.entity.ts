@@ -11,8 +11,7 @@ export class CartProduct {
 
   [PrimaryKeyProp]?: ['cart', 'productKey']
 
-  @PrimaryKey()
-  @ManyToOne(() => Cart, { deleteRule: 'cascade' })
+  @ManyToOne(() => Cart, { deleteRule: 'cascade', primary: true })
   cart!: Cart
 
   @ManyToOne(() => Product, { deleteRule: 'cascade' })

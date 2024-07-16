@@ -6,6 +6,8 @@ import '@/styles/globals.scss'
 import type { Metadata } from 'next'
 import { Roboto as FontSans, Roboto_Condensed as FontSansAlt, Montserrat } from 'next/font/google'
 
+import { CartStoreProvider } from '@/providers/cart-store-provider'
+
 const fontSans = FontSans({
   weight: ['400', '500', '700'],
   subsets: ['latin', 'cyrillic'],
@@ -51,7 +53,9 @@ export default async function RootLayout({
         )}
       >
         <SWRGlobalProvider>
-          <AuthServerProvider>{children}</AuthServerProvider>
+          <CartStoreProvider>
+            <AuthServerProvider>{children}</AuthServerProvider>
+          </CartStoreProvider>
         </SWRGlobalProvider>
         <Toaster richColors />
       </body>

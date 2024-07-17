@@ -9,58 +9,44 @@ export type CartState = {
 }
 
 export type CartActions = {
-  getCartId: (create?: boolean) => Promise<CartState['cartId']>
-  loadCart: () => Promise<void>
-  addToCart: (item: { id: number; amount?: number; options?: string | null }) => Promise<void>
-  removeFromCart: (product: CartProductEntity) => Promise<void>
-  changeAmount: (product: CartProductEntity) => Promise<void>
-  deleteCart: () => Promise<void>
-  saveCartId: (cartId: string | null) => void
+  // getCartId: (create?: boolean) => Promise<CartState['cartId']>
+  loadCart(): Promise<void>
+  addToCart(item: { id: number; amount?: number; options?: string | null }): Promise<void>
+  removeFromCart(product: CartProductEntity): Promise<void>
+  changeAmount(product: CartProductEntity): Promise<void>
+  deleteCart(): Promise<void>
+  saveCartId(cartId: string | null): void
+  createCart(): Promise<string | null>
 }
 
 export type CartStore = CartState & CartActions
 
 export const defaultInitState: CartState = { cartId: null, cartProducts: [] }
 
-export const initCartStore = (): CartState => {
-  return defaultInitState
-}
-
 export const createCartStore = (initState: CartState = defaultInitState) => {
   return createStore<CartStore>()((set, get) => ({
     ...initState,
 
-    // Получение id корзины
-    async getCartId(create = true) {
-      // Если id нет в state
-      let cartId = get().cartId
-      if (!cartId) {
-        // Пробуем получить старый id из localStorage
-        cartId = localStorage.getItem('cartId')
-        if (cartId) {
-          set({ cartId })
-        } else if (create) {
-          // Если не указано иное - соаздём новую корзину
-          try {
-            const data = await apiPut<CartEntity>('cart', {}, withClientAuth())
-            cartId = data.uuid
-            set({ cartId })
-            get().saveCartId(cartId)
-          } catch (e) {}
-        }
-      }
+    async createCart() {
+      let cartId = null
+      try {
+        const data = await apiPut<CartEntity>('cart', {}, withClientAuth())
+        cartId = data.uuid
+        set({ cartId })
+        get().saveCartId(cartId)
+      } catch (e) {}
       return cartId
     },
 
     // Загрузка товаров корзины
     async loadCart() {
-      // Здесь и далее id корзины получается через общий action
-      // В этом случае отключено автосоздание корзины (параметр false)
-      const cartId = await get().getCartId(false)
-      // запрос на сервер делается только при наличии сохранённого id
+      const cartId = get().cartId
+
+      let cartProducts: CartProductEntity[] = []
+
       if (cartId) {
         try {
-          const cartProducts = await apiGet<CartProductEntity[]>(
+          cartProducts = await apiGet<CartProductEntity[]>(
             `cart/${cartId}/products`,
             {},
             withClientAuth()
@@ -68,12 +54,16 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
           set({ cartProducts })
         } catch (e) {}
       }
+
+      set({ cartProducts })
     },
 
     // Добавление товара в корзину
     async addToCart(item) {
-      // Здесь уже корзина будет создана, если её нет
-      const cartId = await get().getCartId()
+      let cartId = get().cartId
+      // корзина будет создана, если её нет
+      if (!cartId) cartId = await get().createCart()
+      if (!cartId) return
       try {
         const params = { id: item.id, amount: item.amount || 1, options: item.options || null }
         const cartProducts = await apiPut<CartProductEntity[]>(
@@ -87,7 +77,10 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
 
     // Удаление товара из корзины
     async removeFromCart(product) {
-      const cartId = await get().getCartId()
+      const cartId = get().cartId
+
+      if (!cartId) return
+
       try {
         const cartProducts = await apiDelete<CartProductEntity[]>(
           `cart/${cartId}/products/${product.productKey}`,
@@ -100,11 +93,15 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
 
     // Изменение количества товара
     async changeAmount(product) {
-      const cartId = await get().getCartId()
+      const cartId = get().cartId
+
+      if (!cartId) return
+
       // Если количество <= 0, то удаляем товар
       if (product.amount <= 0) {
         return get().removeFromCart(product)
       }
+
       try {
         const params = { amount: product.amount }
         const cartProducts = await apiPost<CartProductEntity[]>(
@@ -118,10 +115,10 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
 
     // Удаление корзины
     async deleteCart() {
-      const cartId = await get().getCartId(false)
-      if (!cartId) {
-        return
-      }
+      const cartId = get().cartId
+
+      if (!cartId) return
+
       try {
         await apiDelete<CartProductEntity[]>(`cart/${cartId}`, {}, withClientAuth())
         // Удаление товаров и id корзины

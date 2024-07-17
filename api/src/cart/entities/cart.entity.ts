@@ -4,6 +4,7 @@ import {
   Entity,
   ManyToOne,
   OneToMany,
+  OneToOne,
   Opt,
   PrimaryKey,
   Property
@@ -16,7 +17,7 @@ export class Cart {
   @PrimaryKey({ type: 'uuid' })
   uuid = v4()
 
-  @ManyToOne(() => User, { nullable: true, deleteRule: 'set null' })
+  @OneToOne(() => User, { nullable: true, deleteRule: 'set null' })
   user: User | null = null
 
   @OneToMany(() => CartProduct, (cartProduct) => cartProduct.cart)

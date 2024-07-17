@@ -54,7 +54,7 @@ export class UsersService {
   }
 
   async findOne(id: number) {
-    return this.usersRepository.findOneOrFail({ id }, { populate: ['role'] })
+    return this.usersRepository.findOneOrFail({ id }, { populate: ['role', 'cart'] })
   }
 
   async update(id: number, { roleId, password, ...fillable }: UpdateUserDto) {

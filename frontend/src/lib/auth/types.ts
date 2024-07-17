@@ -1,3 +1,5 @@
+import { CartEntity } from "@/types"
+
 export type UserRole = {
   id: number
   title: string
@@ -10,6 +12,7 @@ export interface User {
   email: string
   active: boolean
   role: UserRole
+  cart: CartEntity | null
 }
 
 export interface AuthContextType {

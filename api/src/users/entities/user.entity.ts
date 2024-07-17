@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, PrimaryKey, Property } from '@mikro-orm/core'
+import { Entity, ManyToOne, OneToOne, PrimaryKey, Property } from '@mikro-orm/core'
 import { Role } from './role.entity'
 import { Cart } from '@/cart/entities/cart.entity'
 
@@ -13,7 +13,7 @@ export class User {
   @Property()
   name: string
 
-  @Property()
+  @Property({ hidden: true })
   password: string
 
   @Property({ default: true })
@@ -22,6 +22,6 @@ export class User {
   @ManyToOne(() => Role)
   role: Role
 
-  @ManyToOne(() => Cart)
-  cart: Cart
+  @OneToOne(() => Cart, (cart) => cart.user, { nullable: true })
+  cart: Cart | null
 }

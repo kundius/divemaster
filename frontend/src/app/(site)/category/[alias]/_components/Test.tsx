@@ -5,12 +5,9 @@ import { useCartStore } from '@/providers/cart-store-provider'
 import { useEffect } from 'react'
 
 export function Test() {
-  const { cartId, cartProducts, loadCart, addToCart, removeFromCart, deleteCart, changeAmount } = useCartStore((state) => state)
+  const { cartId, cartProducts, addToCart, removeFromCart, deleteCart, changeAmount } = useCartStore((state) => state)
 
-  useEffect(() => {
-    loadCart()
-  }, [])
-
+  console.log('render test')
   return (
     <div>
       <Button onClick={() => deleteCart()}>Очистить</Button>

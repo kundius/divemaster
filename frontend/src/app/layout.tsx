@@ -53,9 +53,9 @@ export default async function RootLayout({
         )}
       >
         <SWRGlobalProvider>
-          <CartStoreProvider>
-            <AuthServerProvider>{children}</AuthServerProvider>
-          </CartStoreProvider>
+          <AuthServerProvider>
+            <CartStoreProvider>{children}</CartStoreProvider>
+          </AuthServerProvider>
         </SWRGlobalProvider>
         <Toaster richColors />
       </body>

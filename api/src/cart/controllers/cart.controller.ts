@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put
+} from '@nestjs/common'
 import { CartService } from '../services/cart.service'
 import { User } from '@/users/entities/user.entity'
 import { CurrentUser } from '@/auth/decorators/current-user.decorator'
@@ -13,6 +22,14 @@ export class CartController {
     return this.cartService.createCart(user)
   }
 
+  @Post(':cartId')
+  async authorizeCart(@Param('cartId') cartId: string, @CurrentUser() user?: User) {
+    if (!user) {
+      throw new BadRequestException()
+    }
+    return this.cartService.authorizeCart(cartId, user)
+  }
+
   @Delete(':cartId')
   async deleteCart(@Param('cartId') cartId: string) {
     return this.cartService.deleteCart(cartId)
@@ -24,17 +41,14 @@ export class CartController {
   }
 
   @Put(':cartId/products')
-  async addProduct(
-    @Param('cartId') cartId: string,
-    @Body() dto: AddProductDto,
-    @CurrentUser() user?: User
-  ) {
-    return this.cartService.addProduct(cartId, dto, user)
+  async addProduct(@Param('cartId') cartId: string, @Body() dto: AddProductDto) {
+    return this.cartService.addProduct(cartId, dto)
   }
 
   @Post(':cartId/products/:productKey')
   async updateProduct(
-    @Param('cartId') cartId: string, @Param('productKey') productKey: string,
+    @Param('cartId') cartId: string,
+    @Param('productKey') productKey: string,
     @Body() dto: UpdateProductDto,
     @CurrentUser() user?: User
   ) {

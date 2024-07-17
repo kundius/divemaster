@@ -34,6 +34,15 @@ export class CartService {
     return cart
   }
 
+  async authorizeCart(cartId: string, user: User) {
+    const cart = await this.cartRepository.findOneOrFail(cartId)
+
+    if (!cart.user) {
+      cart.user = user
+      await this.cartRepository.getEntityManager().persistAndFlush(cart)
+    }
+  }
+
   async deleteCart(cartId: string) {
     const cart = await this.cartRepository.findOneOrFail(cartId)
     await this.cartRepository.getEntityManager().removeAndFlush(cart)
@@ -53,14 +62,8 @@ export class CartService {
     )
   }
 
-  async addProduct(cartId: string, dto: AddProductDto, user?: User) {
+  async addProduct(cartId: string, dto: AddProductDto) {
     const cart = await this.cartRepository.findOneOrFail(cartId)
-
-    if (!cart.user && user) {
-      cart.user = user
-      await this.cartRepository.getEntityManager().persistAndFlush(cart)
-    }
-
     const product = await this.productRepository.findOneOrFail(dto.id)
     const productKey = this.generateKey(product, {})
     const cartProduct = await this.cartProductRepository.findOne({

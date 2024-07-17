@@ -1,8 +1,9 @@
+import React from 'react'
+
 import { AccessDeniedPage } from '@/components/admin/AccessDeniedPage'
-import { HasScope } from '@/lib/HasScope'
 import { PrivateLayout } from '@/components/admin/PrivateLayout'
-import { enableAuthPreload } from '@/lib/auth/auth-preload'
-import React from "react";
+import { HasScope } from '@/lib/HasScope'
+import { enableAuthPreload } from '@/providers/auth-server-provider'
 
 export default async function Layout({
   children

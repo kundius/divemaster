@@ -3,7 +3,7 @@ import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import slugifyFn from 'slugify'
 import { getCookie } from 'cookies-next'
-import { TOKEN_NAME } from './auth/constants'
+import { TOKEN_NAME } from '../constants'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))

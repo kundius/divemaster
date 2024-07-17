@@ -1,6 +1,7 @@
-import { TOKEN_NAME } from '@/lib/auth/constants'
-import { getApiUrl, getClientUrl } from '@/lib/utils'
 import { getCookie } from 'cookies-next'
+
+import { TOKEN_NAME } from '@/constants'
+import { getApiUrl, getClientUrl } from '@/lib/utils'
 
 export class UploadAdapter {
   constructor(loader) {

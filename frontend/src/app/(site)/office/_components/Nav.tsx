@@ -3,10 +3,10 @@
 import Link from 'next/link'
 import styles from './Nav.module.scss'
 import { cn } from '@/lib/utils'
-import { useAuth } from '@/lib/auth/use-auth'
+import { useAuthStore } from '@/providers/auth-store-provider'
 
 export function Nav() {
-  const { logout, user } = useAuth()
+  const { logout, user } = useAuthStore((state) => state)
   return (
     <ul className={styles.items}>
       <li>

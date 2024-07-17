@@ -5,8 +5,8 @@ import { useStore } from 'zustand'
 
 import { apiPost } from '@/lib/api'
 import { withClientAuth } from '@/lib/api/with-client-auth'
-import { useAuth } from '@/lib/auth/use-auth'
 import { type CartStore, createCartStore } from '@/stores/cart-store'
+import { useAuthStore } from './auth-store-provider'
 
 export type CartStoreApi = ReturnType<typeof createCartStore>
 
@@ -17,7 +17,7 @@ export interface CartStoreProviderProps {
 }
 
 export const CartStoreProvider = ({ children }: CartStoreProviderProps) => {
-  const auth = useAuth()
+  const auth = useAuthStore((state) => state)
 
   const storeRef = useRef<CartStoreApi>()
   if (!storeRef.current) {

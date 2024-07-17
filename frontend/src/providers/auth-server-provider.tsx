@@ -1,18 +1,29 @@
-import { cookies } from 'next/headers'
-import { getUser } from './actions'
-import { AuthClientProvider } from './client-provider'
-import { TOKEN_NAME } from './constants'
-import { authPreloadEnabled } from './auth-preload'
+'use server'
+
+import { cache } from 'react'
+
+import { apiGet } from '@/lib/api'
+import { withServerAuth } from '@/lib/api/with-server-auth'
+import type { UserEntity } from '@/types'
+import { AuthStoreProvider } from './auth-store-provider'
+
+const preloadEnabled = cache<() => { current: boolean }>(() => ({ current: false }))
+
+export const authPreloadEnabled = () => {
+  return preloadEnabled().current
+}
+
+export const enableAuthPreload = () => {
+  preloadEnabled().current = true
+}
 
 export async function AuthServerProvider({ children }: React.PropsWithChildren) {
-  let authUser = undefined
+  let authUser: UserEntity | undefined = undefined
 
   // загружать пользователя только если на странице был вызван `enableAuthPreload`
   if (authPreloadEnabled()) {
-    const authToken = cookies().get(TOKEN_NAME)?.value
-    if (authToken) {
-      authUser = await getUser(authToken)
-    }
+    const data = await apiGet<{ user?: UserEntity }>('auth/profile', {}, withServerAuth())
+    authUser = data.user
   }
 
   // let authToken = undefined
@@ -32,9 +43,5 @@ export async function AuthServerProvider({ children }: React.PropsWithChildren) 
   //   authUser = authToken ? await getUser(authToken) : undefined
   // }
 
-  return (
-    <AuthClientProvider initialUser={authUser}>
-      {children}
-    </AuthClientProvider>
-  )
+  return <AuthStoreProvider initialUser={authUser}>{children}</AuthStoreProvider>
 }

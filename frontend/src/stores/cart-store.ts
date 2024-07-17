@@ -10,7 +10,6 @@ export type CartState = {
 }
 
 export type CartActions = {
-  // getCartId: (create?: boolean) => Promise<CartState['cartId']>
   loadCart(): Promise<void>
   addToCart(item: { id: number; amount?: number; options?: string | null }): Promise<void>
   removeFromCart(product: CartProductEntity): Promise<void>

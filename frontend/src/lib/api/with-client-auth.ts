@@ -1,5 +1,6 @@
-import { TOKEN_NAME } from '@/lib/auth/constants'
 import { getCookie } from 'cookies-next'
+
+import { TOKEN_NAME } from '@/constants'
 
 export function withClientAuth(init: RequestInit = {}) {
   const headers = new Headers(init.headers)

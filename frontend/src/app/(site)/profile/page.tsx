@@ -1,9 +1,9 @@
 'use client'
 
-import { useAuth } from '@/lib/auth/use-auth'
+import { useAuthStore } from "@/providers/auth-store-provider"
 
 export default function Page() {
-  const auth = useAuth()
+  const auth = useAuthStore((state) => state)
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">

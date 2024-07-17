@@ -9,7 +9,6 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useAuth } from '@/lib/auth/use-auth'
 import { apiPatch } from '@/lib/api'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
@@ -18,6 +17,7 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 import { PageHeader, PageHeaderProps } from '../PageHeader'
 import { withClientAuth } from '@/lib/api/with-client-auth'
+import { useAuthStore } from '@/providers/auth-store-provider'
 
 const formSchema = z.object({
   name: z.string(),
@@ -28,7 +28,7 @@ const formSchema = z.object({
 type FormFields = z.infer<typeof formSchema>
 
 export function ProfilePage() {
-  const { user } = useAuth()
+  const { user } = useAuthStore((state) => state)
   const [isLoading, setIsLoading] = useState(false)
 
   const onSubmit = async (values: FormFields) => {

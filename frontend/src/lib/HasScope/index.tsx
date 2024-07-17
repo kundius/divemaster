@@ -1,6 +1,6 @@
 'use client'
 
-import { useAuth } from '@/lib/auth/use-auth'
+import { useAuthStore } from '@/providers/auth-store-provider'
 import type { PropsWithChildren, ReactElement, ReactNode } from 'react'
 
 export interface HasScopeProps {
@@ -9,7 +9,7 @@ export interface HasScopeProps {
 }
 
 export function HasScope({ children, fallback, scopes }: PropsWithChildren<HasScopeProps>) {
-  const { hasScope } = useAuth()
+  const { hasScope } = useAuthStore((state) => state)
 
   if (!hasScope(scopes)) {
     return fallback

@@ -4,11 +4,11 @@ import { cn } from '@/lib/utils'
 import styles from './Toolbar.module.scss'
 import Link from 'next/link'
 import { useMobileNavigation } from './MobileNavigation'
-import { useAuth } from '@/lib/auth/use-auth'
+import { useAuthStore } from '@/providers/auth-store-provider'
 
 export function Toolbar() {
   const mobileNavigation = useMobileNavigation()
-  const auth = useAuth()
+  const auth = useAuthStore((state) => state)
 
   const handleClick = () => {
     if (mobileNavigation.opened.includes('catalog')) {

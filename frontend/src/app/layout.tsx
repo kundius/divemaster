@@ -1,12 +1,12 @@
-import { Toaster } from '@/components/ui/sonner'
-import { SWRGlobalProvider } from '@/lib/api/swr-global-provider'
-import { AuthServerProvider } from '@/lib/auth/server-provider'
-import { cn } from '@/lib/utils'
-import '@/styles/globals.scss'
 import type { Metadata } from 'next'
 import { Roboto as FontSans, Roboto_Condensed as FontSansAlt, Montserrat } from 'next/font/google'
 
+import { Toaster } from '@/components/ui/sonner'
+import { SWRGlobalProvider } from '@/lib/api/swr-global-provider'
+import { cn } from '@/lib/utils'
+import { AuthServerProvider } from '@/providers/auth-server-provider'
 import { CartStoreProvider } from '@/providers/cart-store-provider'
+import '@/styles/globals.scss'
 
 const fontSans = FontSans({
   weight: ['400', '500', '700'],

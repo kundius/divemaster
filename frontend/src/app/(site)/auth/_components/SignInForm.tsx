@@ -10,8 +10,8 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useAuth } from '@/lib/auth/use-auth'
 import { apiPost } from '@/lib/api'
+import { useAuthStore } from '@/providers/auth-store-provider'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -35,7 +35,7 @@ type SignInFormResult = {
 
 export function SignInForm() {
   const router = useRouter()
-  const auth = useAuth()
+  const auth = useAuthStore((state) => state)
   const [isLoading, setIsLoading] = useState(false)
 
   const onSubmit = async (values: SignInFormFields) => {

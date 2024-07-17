@@ -1,4 +1,4 @@
-import { TOKEN_NAME } from '@/lib/auth/constants'
+import { TOKEN_NAME } from '@/constants'
 import { cookies } from 'next/headers'
 
 export function withServerAuth(init: RequestInit = {}) {

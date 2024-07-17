@@ -8,11 +8,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { useAuth } from '@/lib/auth/use-auth'
+import { useAuthStore } from '@/providers/auth-store-provider'
 import Link from 'next/link'
 
 export function User() {
-  const { user, logout } = useAuth()
+  const { user, logout } = useAuthStore((state) => state)
 
   return (
     <DropdownMenu>

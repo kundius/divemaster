@@ -2,15 +2,23 @@
 
 import { deleteCookie, getCookie, setCookie } from 'cookies-next'
 import { useEffect, useState } from 'react'
+
 import { getUser } from './actions'
 import { MAX_AGE, TOKEN_NAME } from './constants'
 import { AuthContext } from './context'
-import { AuthContextType, User } from './types'
+import { UserEntity } from '@/types'
+
+export interface AuthContextType {
+  user?: UserEntity
+  hasScope: (scopes: string | string[]) => boolean
+  logout: () => Promise<void>
+  login: (token: string) => Promise<void>
+}
 
 export function AuthClientProvider({
   children,
   initialUser
-}: React.PropsWithChildren<{ initialToken?: string; initialUser?: User }>) {
+}: React.PropsWithChildren<{ initialToken?: string; initialUser?: UserEntity }>) {
   const [user, setUser] = useState(initialUser)
 
   useEffect(() => {
@@ -34,6 +42,7 @@ export function AuthClientProvider({
     const { role } = user
 
     const check = (scope: string) => {
+      if (!role.scope) return false
       if (scope.includes('/')) {
         return role.scope.includes(scope) || role.scope.includes(scope.replace(/\/.*/, ''))
       }

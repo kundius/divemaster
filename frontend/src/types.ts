@@ -4,6 +4,7 @@ export interface UserEntity {
   email: string
   active: boolean
   role: UserRoleEntity
+  cart: CartEntity | null
 }
 
 export interface UserRoleEntity {

@@ -1,7 +1,7 @@
 import { getApiUrl } from '@/lib/utils'
-import type { User } from './types'
+import { UserEntity } from '@/types'
 
-export async function getUser(token: string): Promise<User | undefined> {
+export async function getUser(token: string): Promise<UserEntity | undefined> {
   try {
     const response = await fetch(`${getApiUrl()}auth/profile`, {
       method: 'GET',
@@ -9,7 +9,7 @@ export async function getUser(token: string): Promise<User | undefined> {
         Authorization: `Bearer ${token}`
       }
     })
-    const { user } = (await response.json()) as { user: User | undefined }
+    const { user } = (await response.json()) as { user: UserEntity | undefined }
     return user
   } catch {
     return undefined

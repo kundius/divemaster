@@ -1,7 +1,8 @@
+import { createStore } from 'zustand/vanilla'
+
 import { apiDelete, apiGet, apiPost, apiPut } from '@/lib/api'
 import { withClientAuth } from '@/lib/api/with-client-auth'
-import { CartEntity, CartProductEntity } from '@/types'
-import { createStore } from 'zustand/vanilla'
+import type { CartEntity, CartProductEntity } from '@/types'
 
 export type CartState = {
   cartId: string | null

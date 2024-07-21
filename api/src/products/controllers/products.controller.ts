@@ -21,7 +21,8 @@ import {
   SortProductImageDto,
   UpdateProductCategoryDto,
   UpdateProductDto,
-  UpdateProductImageDto
+  UpdateProductImageDto,
+  UpdateProductOptions
 } from '../dto/products.dto'
 import { ProductsService } from '../services/products.service'
 
@@ -69,10 +70,7 @@ export class ProductsController {
   }
 
   @Patch(':productId/options')
-  updateOptions(
-    @Param('productId') productId: string,
-    @Body() dto: Record<string, number | boolean | string | string[] | undefined>
-  ) {
+  updateOptions(@Param('productId') productId: string, @Body() dto: UpdateProductOptions) {
     return this.productsService.updateOptions(+productId, dto)
   }
 

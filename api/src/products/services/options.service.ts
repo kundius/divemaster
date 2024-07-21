@@ -11,15 +11,15 @@ import {
 } from '../dto/options.dto'
 import { Option } from '../entities/option.entity'
 import { Category } from '../entities/category.entity'
-import { OptionVariant } from '../entities/option-variant.entity'
+import { OptionValue } from '../entities/option-value.entity'
 
 @Injectable()
 export class OptionsService {
   constructor(
     @InjectRepository(Option)
     private optionsRepository: EntityRepository<Option>,
-    @InjectRepository(OptionVariant)
-    private optionVariantsRepository: EntityRepository<OptionVariant>,
+    @InjectRepository(OptionValue)
+    private optionValuesRepository: EntityRepository<OptionValue>,
     @InjectRepository(Category)
     private categoryRepository: EntityRepository<Category>
   ) {}
@@ -72,7 +72,7 @@ export class OptionsService {
 
   async updateCategories(optionId: number, { categories }: UpdateOptionCategoriesDto) {
     const option = await this.optionsRepository.findOneOrFail({ id: optionId })
-    await option.categories.removeAll()
+    option.categories.removeAll()
     for (const categoryId of categories) {
       const category = await this.categoryRepository.findOneOrFail({ id: +categoryId })
       option.categories.add(category)
@@ -82,14 +82,14 @@ export class OptionsService {
 
   async findAllValues(optionId: number) {
     const option = await this.optionsRepository.findOneOrFail({ id: optionId })
-    const optionVariants = await this.optionVariantsRepository.find(
+    const optionValues = await this.optionValuesRepository.find(
       {
         option
       },
       {
-        groupBy: 'value'
+        groupBy: 'content'
       }
     )
-    return optionVariants.map((item) => item.value)
+    return optionValues.map((item) => item.content)
   }
 }

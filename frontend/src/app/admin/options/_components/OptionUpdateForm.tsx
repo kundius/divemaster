@@ -16,7 +16,6 @@ export function OptionUpdateForm({ initialData }: OptionUpdateFormProps) {
     method: 'PATCH',
     schema: OptionFormSchema,
     defaultValues: {
-      inCart: initialData.inCart,
       inFilter: initialData.inFilter,
       key: initialData.key,
       caption: initialData.caption,

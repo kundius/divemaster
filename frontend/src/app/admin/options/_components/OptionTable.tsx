@@ -46,15 +46,10 @@ export function OptionTable({ initialData }: OptionTableProps) {
       }
     },
     {
-      key: 'inCart',
-      label: 'Корзина',
+      key: 'type',
+      label: 'Тип',
       headProps: {
-        className: 'w-1/12'
-      },
-      formatter: (active) => {
-        const Icon = active ? CheckCircleIcon : XCircleIcon
-        const color = active ? 'text-green-500' : 'text-amber-500'
-        return <Icon className={`w-6 h-6 ${color}`} />
+        className: 'w-5/12'
       }
     },
     {

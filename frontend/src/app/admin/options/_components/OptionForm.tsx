@@ -11,11 +11,6 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Switch } from '@/components/ui/switch'
-import { OptionType } from '@/types'
-import Link from 'next/link'
-import { UseFormReturn } from 'react-hook-form'
-import { z } from 'zod'
 import {
   Select,
   SelectContent,
@@ -23,14 +18,18 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
+import { Switch } from '@/components/ui/switch'
+import { OptionType } from '@/types'
+import Link from 'next/link'
+import { UseFormReturn } from 'react-hook-form'
+import { z } from 'zod'
 
 export const OptionFormSchema = z.object({
   key: z.string().trim().min(1),
   rank: z.coerce.number(),
   caption: z.string().trim().min(1),
   inFilter: z.boolean(),
-  inCart: z.boolean(),
-  type: z.nativeEnum(OptionType).default(OptionType.VARIANT)
+  type: z.nativeEnum(OptionType).default(OptionType.TEXTFIELD)
 })
 
 export type OptionFormFields = z.infer<typeof OptionFormSchema>
@@ -91,12 +90,13 @@ export function OptionForm({ form, onSubmit }: OptionFormProps) {
                           <SelectValue placeholder="Выберите тип" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value={OptionType.VARIANT}>Список с автодополнением</SelectItem>
-                          <SelectItem value={OptionType.COLOR}>Цвет</SelectItem>
-                          <SelectItem value={OptionType.SIZE}>Размер</SelectItem>
-                          <SelectItem value={OptionType.TEXT}>Текстовое поле</SelectItem>
-                          <SelectItem value={OptionType.NUMBER}>Числовое поле</SelectItem>
-                          <SelectItem value={OptionType.BOOLEAN}>Да/Нет</SelectItem>
+                          <SelectItem value={OptionType.COMBOBOOLEAN}>Да/Нет</SelectItem>
+                          <SelectItem value={OptionType.COMBOCOLORS}>Список с цветами</SelectItem>
+                          <SelectItem value={OptionType.COMBOOPTIONS}>
+                            Список с автодополнением
+                          </SelectItem>
+                          <SelectItem value={OptionType.NUMBERFIELD}>Числовое поле</SelectItem>
+                          <SelectItem value={OptionType.TEXTFIELD}>Текстовое поле</SelectItem>
                         </SelectContent>
                       </Select>
                     </FormControl>
@@ -122,24 +122,6 @@ export function OptionForm({ form, onSubmit }: OptionFormProps) {
             </div>
           </div>
           <div className="flex gap-6">
-            <div className="w-1/2">
-              <FormField
-                control={form.control}
-                name="inCart"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Корзина</FormLabel>
-                    <FormControl>
-                      <div className="w-full">
-                        <Switch checked={field.value} onCheckedChange={field.onChange} />
-                      </div>
-                    </FormControl>
-                    <FormDescription>Показывать при добавлении в корзину</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
             <div className="w-1/2">
               <FormField
                 control={form.control}

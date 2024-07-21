@@ -167,3 +167,5 @@ export class CreateProductDto {
 }
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {}
+
+export type UpdateProductOptions = Record<string, number | boolean | string | string[] | undefined>

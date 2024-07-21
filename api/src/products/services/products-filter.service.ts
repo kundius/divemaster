@@ -66,7 +66,7 @@ export class ProductsFilterService {
       where = { ...where, categories: { $in: [categoryId] } }
     }
     const products = await this.productsRepository.find(where, {
-      populate: ['brand', 'optionVariants', 'optionVariants.option']
+      populate: ['brand', 'optionValues', 'optionValues.option']
     })
 
     const data: DataRecord[] = []
@@ -84,19 +84,26 @@ export class ProductsFilterService {
         record.brand = [product.brand.title]
       }
 
-      for (const variant of product.optionVariants) {
-        const field = record[variant.option.key]
-        switch (variant.option.type) {
-          case OptionType.BOOLEAN:
-            if (typeof field === 'undefined') {
-              record[variant.option.key] = variant.value === '1'
-            }
+      for (const value of product.optionValues) {
+        switch (value.option.type) {
+          case OptionType.TEXTFIELD:
+            // case OptionType.TEXTAREA:
+            // case OptionType.COMBOBOX:
+            record[value.option.key] = value.content
             break
-          default:
-            if (isArray(field)) {
-              field.push(variant.value)
+          case OptionType.COMBOBOOLEAN:
+            record[value.option.key] = value.content === '1'
+            break
+          case OptionType.NUMBERFIELD:
+            record[value.option.key] = Number(value.content)
+            break
+          case OptionType.COMBOCOLORS:
+          case OptionType.COMBOOPTIONS:
+            const field = record[value.option.key]
+            if (isArray(field, isString)) {
+              field.push(value.content)
             } else {
-              record[variant.option.key] = [variant.value]
+              record[value.option.key] = [value.content]
             }
             break
         }
@@ -142,16 +149,33 @@ export class ProductsFilterService {
     for (const option of options) {
       const base = { title: option.caption, name: option.key, option }
       switch (option.type) {
-        case OptionType.BOOLEAN:
-          filters.push({ ...base, type: 'toggle' })
-          break
-        default:
+        // case OptionType.TEXTAREA:
+        //   // не фильтруется
+        //   break
+        case OptionType.TEXTFIELD:
+          // case OptionType.COMBOBOX:
           filters.push({
             ...base,
             type: 'options',
             conjunction: false,
             options: [],
-            variant: option.type === OptionType.COLOR ? 'colors' : 'default'
+            variant: 'default'
+          })
+          break
+        case OptionType.COMBOBOOLEAN:
+          filters.push({ ...base, type: 'toggle' })
+          break
+        case OptionType.NUMBERFIELD:
+          filters.push({ ...base, type: 'range', range: [undefined, undefined] })
+          break
+        case OptionType.COMBOCOLORS:
+        case OptionType.COMBOOPTIONS:
+          filters.push({
+            ...base,
+            type: 'options',
+            conjunction: false,
+            options: [],
+            variant: option.type === OptionType.COMBOCOLORS ? 'colors' : 'default'
           })
           break
       }
@@ -173,19 +197,26 @@ export class ProductsFilterService {
           continue
         }
 
-        if (filter.type === 'range' && isNumber(field) && isArray(value, isNumber)) {
+        if (filter.type === 'range' && isArray(value, isNumber) && isNumber(field)) {
           matches[key] = field >= value[0] && field <= value[1]
           continue
         }
 
-        if (filter.type === 'options' && isArray(field, isString) && isArray(value, isString)) {
+        if (filter.type === 'options' && isArray(value, isString) && isString(field)) {
+          matches[key] = value[filter.conjunction ? 'every' : 'some'](
+            (str) => field && field === str
+          )
+          continue
+        }
+
+        if (filter.type === 'options' && isArray(value, isString) && isArray(field, isString)) {
           matches[key] = value[filter.conjunction ? 'every' : 'some'](
             (str) => field && field.includes(str)
           )
           continue
         }
 
-        if (filter.type === 'toggle' && isBoolean(field) && isBoolean(value)) {
+        if (filter.type === 'toggle' && isBoolean(value) && isBoolean(field)) {
           matches[key] = !value || value === field
           continue
         }
@@ -202,32 +233,36 @@ export class ProductsFilterService {
 
         if (!filter) continue
 
-        // подсчет мин. и мак. значения для range фильтра
-        // поле должно быть числом
+        // подсчет мин. и макс. значения для range фильтра
+        // поле должно быть числом или массивом чисел
         // товар должен удовлетворять условиям фильтра
-        if (filter.type === 'range' && isNumber(field)) {
+        if (filter.type === 'range' && (isNumber(field) || isArray(field, isNumber))) {
           const matchedForToggle = Object.keys(matches)
             .filter((matchKey) => matchKey !== key)
             .map((matchKey) => matches[matchKey])
             .every((match) => match === true)
           if (matchedForToggle) {
-            if (isUndefined(filter.range[0]) || field < filter.range[0]) {
-              filter.range[0] = field
-            }
-            if (isUndefined(filter.range[1]) || field > filter.range[1]) {
-              filter.range[1] = field
+            const fieldNumbers = isNumber(field) ? [field] : field
+            for (const fieldNumber of fieldNumbers) {
+              if (isUndefined(filter.range[0]) || fieldNumber < filter.range[0]) {
+                filter.range[0] = fieldNumber
+              }
+              if (isUndefined(filter.range[1]) || fieldNumber > filter.range[1]) {
+                filter.range[1] = fieldNumber
+              }
             }
           }
         }
 
         // подбор вариантов для options фильтра
         // подсчет количество товаров для каждого варианта, удовлетворяющих условия фильтра
-        if (filter.type === 'options' && isArray(field, isString)) {
+        if (filter.type === 'options' && (isString(field) || isArray(field, isString))) {
           const matchedForOptions = Object.keys(matches)
             .filter((matchKey) => matchKey !== key || filter.conjunction)
             .map((matchKey) => matches[matchKey])
             .every((match) => match === true)
-          for (const fieldOption of field) {
+          const fieldOptions = isString(field) ? [field] : field
+          for (const fieldOption of fieldOptions) {
             const filterOption = filter.options.find((item) => item.value === fieldOption)
             if (!filterOption) {
               filter.options.push({

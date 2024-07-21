@@ -12,11 +12,10 @@ export function OptionCreateForm() {
     method: 'POST',
     schema: OptionFormSchema,
     defaultValues: {
-      inCart: false,
       inFilter: false,
       key: '',
       caption: '',
-      type: OptionType.VARIANT,
+      type: OptionType.TEXTFIELD,
       rank: 0
     },
     onSuccess() {

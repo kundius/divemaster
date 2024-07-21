@@ -21,10 +21,6 @@ export class CreateOptionDto {
   @IsBoolean()
   inFilter: boolean
 
-  @Type(() => Boolean)
-  @IsBoolean()
-  inCart: boolean
-
   @Type(() => Number)
   @IsNumber()
   @IsOptional()

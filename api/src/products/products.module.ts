@@ -7,7 +7,7 @@ import { OptionsController } from './controllers/options.controller'
 import { ProductsController } from './controllers/products.controller'
 import { Brand } from './entities/brand.entity'
 import { Category } from './entities/category.entity'
-import { OptionVariant } from './entities/option-variant.entity'
+import { OptionValue } from './entities/option-value.entity'
 import { Option } from './entities/option.entity'
 import { ProductImage } from './entities/product-image.entity'
 import { Product } from './entities/product.entity'
@@ -19,10 +19,16 @@ import { ProductsFilterService } from './services/products-filter.service'
 
 @Module({
   imports: [
-    MikroOrmModule.forFeature([Category, Product, ProductImage, Brand, Option, OptionVariant]),
+    MikroOrmModule.forFeature([Category, Product, ProductImage, Brand, Option, OptionValue]),
     StorageModule
   ],
   controllers: [ProductsController, CategoriesController, BrandsController, OptionsController],
-  providers: [ProductsService, CategoriesService, BrandsService, OptionsService, ProductsFilterService]
+  providers: [
+    ProductsService,
+    CategoriesService,
+    BrandsService,
+    OptionsService,
+    ProductsFilterService
+  ]
 })
 export class ProductsModule {}

@@ -19,15 +19,17 @@ import {
   SortProductImageDto,
   UpdateProductCategoryDto,
   UpdateProductDto,
-  UpdateProductImageDto
+  UpdateProductImageDto,
+  UpdateProductOptions
 } from '../dto/products.dto'
 import { Brand } from '../entities/brand.entity'
 import { Category } from '../entities/category.entity'
 import { ProductImage } from '../entities/product-image.entity'
 import { Product } from '../entities/product.entity'
 import { Option, OptionType } from '../entities/option.entity'
-import { OptionVariant } from '../entities/option-variant.entity'
+import { OptionValue } from '../entities/option-value.entity'
 import { ProductsFilterService } from './products-filter.service'
+import { isArray, isBoolean, isNull, isNumber, isString, isUndefined } from '@modyqyw/utils'
 
 @Injectable()
 export class ProductsService {
@@ -40,8 +42,8 @@ export class ProductsService {
     private readonly categoryRepository: EntityRepository<Category>,
     @InjectRepository(Option)
     private readonly optionRepository: EntityRepository<Option>,
-    @InjectRepository(OptionVariant)
-    private readonly optionVariantRepository: EntityRepository<OptionVariant>,
+    @InjectRepository(OptionValue)
+    private readonly optionValueRepository: EntityRepository<OptionValue>,
     @InjectRepository(Brand)
     private readonly brandRepository: EntityRepository<Brand>,
     private readonly storageService: StorageService,
@@ -310,7 +312,7 @@ export class ProductsService {
         file
       })
       productImage.rank = files[fileId]
-      await this.productImageRepository.getEntityManager().persist(productImage)
+      this.productImageRepository.getEntityManager().persist(productImage)
     }
     await this.productImageRepository.getEntityManager().flush()
   }
@@ -335,7 +337,7 @@ export class ProductsService {
 
   async updateCategory(productId: number, { categories }: UpdateProductCategoryDto) {
     const product = await this.productsRepository.findOneOrFail({ id: productId })
-    await product.categories.removeAll()
+    product.categories.removeAll()
     for (const categoryId of categories) {
       const category = await this.categoryRepository.findOneOrFail({ id: +categoryId })
       product.categories.add(category)
@@ -360,7 +362,7 @@ export class ProductsService {
     )
 
     for (const option of options) {
-      const optionVariants = await this.optionVariantRepository.find(
+      const optionValues = await this.optionValueRepository.find(
         {
           option,
           product: productId
@@ -372,29 +374,25 @@ export class ProductsService {
         }
       )
 
-      let value: number | boolean | string | string[] | undefined
+      let value: Option['value']
 
-      if (optionVariants.length === 0) continue
+      if (optionValues.length === 0) continue
 
       switch (option.type) {
-        case OptionType.SIZE:
-        case OptionType.COLOR:
-        case OptionType.VARIANT:
-          value = optionVariants.map((optionVariant) => optionVariant.value)
+        case OptionType.TEXTFIELD:
+          // case OptionType.TEXTAREA:
+          // case OptionType.COMBOBOX:
+          value = optionValues[0].content
           break
-        case OptionType.BOOLEAN:
-          value =
-            optionVariants[0].value === '1'
-              ? true
-              : optionVariants[0].value === '0'
-                ? false
-                : undefined
+        case OptionType.COMBOBOOLEAN:
+          value = optionValues[0].content === '1'
           break
-        case OptionType.TEXT:
-          value = String(optionVariants[0].value)
+        case OptionType.NUMBERFIELD:
+          value = Number(optionValues[0].content)
           break
-        case OptionType.NUMBER:
-          value = Number(optionVariants[0].value)
+        case OptionType.COMBOCOLORS:
+        case OptionType.COMBOOPTIONS:
+          value = optionValues.map((optionValue) => optionValue.content)
           break
       }
 
@@ -404,32 +402,29 @@ export class ProductsService {
     return options
   }
 
-  async updateOptions(
-    productId: number,
-    values: Record<string, number | boolean | string | string[] | undefined>
-  ) {
+  async updateOptions(productId: number, values: UpdateProductOptions) {
     const product = await this.findOne(productId)
     const options = await this.findAllOptions(productId)
-    const em = this.optionVariantRepository.getEntityManager()
+    const em = this.optionValueRepository.getEntityManager()
 
-    const findVariants = async (option: Option) => {
-      return this.optionVariantRepository.find(
+    const findOptionValues = async (option: Option) => {
+      return this.optionValueRepository.find(
         { option, product },
         { orderBy: { rank: QueryOrder.ASC } }
       )
     }
 
-    const findOrCreateVariant = async (option: Option) => {
-      const variant = await this.optionVariantRepository.findOne(
+    const findOrCreateOptionValue = async (option: Option) => {
+      const variant = await this.optionValueRepository.findOne(
         { option, product },
         { orderBy: { rank: QueryOrder.ASC } }
       )
 
       if (!variant) {
-        return this.optionVariantRepository.create({
+        return this.optionValueRepository.create({
           option,
           product,
-          value: '',
+          content: '',
           rank: 0
         })
       }
@@ -437,34 +432,35 @@ export class ProductsService {
       return variant
     }
 
-    const variantUpdater = async (option: Option) => {
+    const multipleUpdater = async (option: Option) => {
       const value = values[option.key]
-      const variants = await findVariants(option)
 
-      if (typeof value === 'undefined') {
-        for (const variant of variants) {
-          em.remove(variant)
+      const optionValues = await findOptionValues(option)
+
+      if (isUndefined(value)) {
+        for (const optionValue of optionValues) {
+          em.remove(optionValue)
         }
         return
       }
 
-      if (Array.isArray(value)) {
-        // удаляем лишние вариаты и меняем ранги для остальных
-        for (const variant of variants) {
-          const index = value.indexOf(variant.value)
+      if (isArray(value, isString)) {
+        // удаляем лишние варианты и меняем ранги для остальных
+        for (const optionValue of optionValues) {
+          const index = value.indexOf(optionValue.content)
           if (index === -1) {
-            em.remove(variant)
+            em.remove(optionValue)
             continue
           }
-          variant.rank = index
+          optionValue.rank = index
           delete value[index]
         }
         // добавляем новые варианты
         for (const key in value) {
-          this.optionVariantRepository.create({
+          this.optionValueRepository.create({
             option,
             product,
-            value: value[key],
+            content: value[key],
             rank: Number(key)
           })
         }
@@ -474,51 +470,28 @@ export class ProductsService {
       throw new Error('Invalid value type')
     }
 
-    const booleanUpdater = async (option: Option) => {
+    const singleUpdater = async (option: Option) => {
       const value = values[option.key]
-      const variant = await findOrCreateVariant(option)
 
-      if (typeof value === 'undefined') {
-        em.remove(variant)
+      const optionValue = await findOrCreateOptionValue(option)
+
+      if (isUndefined(value)) {
+        em.remove(optionValue)
         return
       }
 
-      if (typeof value === 'boolean') {
-        variant.value = value ? '1' : '0'
+      if (isNumber(value)) {
+        optionValue.content = String(value)
         return
       }
 
-      throw new Error('Invalid value type')
-    }
-
-    const textUpdater = async (option: Option) => {
-      const value = values[option.key]
-      const variant = await findOrCreateVariant(option)
-
-      if (typeof value === 'undefined') {
-        em.remove(variant)
+      if (isBoolean(value)) {
+        optionValue.content = value ? '1' : '0'
         return
       }
 
-      if (typeof value === 'string') {
-        variant.value = value
-        return
-      }
-
-      throw new Error('Invalid value type')
-    }
-
-    const numberUpdater = async (option: Option) => {
-      const value = values[option.key]
-      const variant = await findOrCreateVariant(option)
-
-      if (typeof value === 'undefined') {
-        em.remove(variant)
-        return
-      }
-
-      if (typeof value === 'number') {
-        variant.value = String(value)
+      if (isString(value)) {
+        optionValue.content = value
         return
       }
 
@@ -526,12 +499,13 @@ export class ProductsService {
     }
 
     const updaters = {
-      [OptionType.SIZE]: variantUpdater,
-      [OptionType.COLOR]: variantUpdater,
-      [OptionType.VARIANT]: variantUpdater,
-      [OptionType.BOOLEAN]: booleanUpdater,
-      [OptionType.TEXT]: textUpdater,
-      [OptionType.NUMBER]: numberUpdater
+      [OptionType.COMBOBOOLEAN]: singleUpdater,
+      // [OptionType.COMBOBOX]: singleUpdater,
+      [OptionType.COMBOCOLORS]: multipleUpdater,
+      [OptionType.COMBOOPTIONS]: multipleUpdater,
+      [OptionType.NUMBERFIELD]: singleUpdater,
+      // [OptionType.TEXTAREA]: singleUpdater,
+      [OptionType.TEXTFIELD]: singleUpdater
     }
 
     for (const option of options) {

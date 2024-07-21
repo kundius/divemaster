@@ -3,12 +3,12 @@ import { Product } from './product.entity'
 import { Option } from './option.entity'
 
 @Entity()
-export class OptionVariant {
+export class OptionValue {
   @PrimaryKey()
   id!: number
 
   @Property()
-  value!: string
+  content!: string
 
   @ManyToOne(() => Option)
   option: Option

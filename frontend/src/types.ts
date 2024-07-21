@@ -92,11 +92,10 @@ export interface OptionEntity {
   key: string
   caption: string
   inFilter: boolean
-  inCart: boolean
   type: OptionType
   rank: number
   categories?: CategoryEntity[]
-  value?: number | boolean | string | string[] | undefined
+  value?: number | number[] | boolean | boolean[] | string | string[] | undefined
 }
 
 export interface OptionValueEntity {
@@ -109,12 +108,16 @@ export interface OptionValueEntity {
 }
 
 export enum OptionType {
-  TEXT = 'text',
-  NUMBER = 'number',
-  BOOLEAN = 'boolean',
-  COLOR = 'color',
-  SIZE = 'size',
-  VARIANT = 'variant'
+  // CHECKBOX = 'checkbox',
+  // COMBOMULTIPLE = 'combo-multiple',
+  COMBOBOOLEAN = 'combo-boolean',
+  COMBOCOLORS = 'combo-colors',
+  COMBOOPTIONS = 'combo-options',
+  // COMBOBOX = 'combobox',
+  // DATEFIELD = 'datefield',
+  NUMBERFIELD = 'numberfield',
+  TEXTFIELD = 'textfield'
+  // TEXTAREA = 'textarea'
 }
 
 export type PageProps<

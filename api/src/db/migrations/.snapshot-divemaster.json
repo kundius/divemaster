@@ -323,33 +323,29 @@
         },
         "type": {
           "name": "type",
-          "type": "enum('text','number','boolean','color','size','variant')",
+          "type": "enum('string','number','boolean','color','size','combo-boolean','combo-colors','combo-options','combobox','numberfield','textfield','textarea')",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
           "enumItems": [
-            "text",
+            "string",
             "number",
             "boolean",
             "color",
             "size",
-            "variant"
+            "combo-boolean",
+            "combo-colors",
+            "combo-options",
+            "combobox",
+            "numberfield",
+            "textfield",
+            "textarea"
           ],
           "mappedType": "enum"
         },
         "in_filter": {
           "name": "in_filter",
-          "type": "tinyint(1)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "default": "false",
-          "mappedType": "boolean"
-        },
-        "in_cart": {
-          "name": "in_cart",
           "type": "tinyint(1)",
           "unsigned": false,
           "autoincrement": false,
@@ -686,8 +682,8 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "value": {
-          "name": "value",
+        "content": {
+          "name": "content",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
@@ -733,14 +729,14 @@
           "mappedType": "json"
         }
       },
-      "name": "option_variant",
+      "name": "option_value",
       "indexes": [
         {
           "columnNames": [
             "option_id"
           ],
           "composite": false,
-          "keyName": "option_variant_option_id_index",
+          "keyName": "option_value_option_id_index",
           "constraint": false,
           "primary": false,
           "unique": false
@@ -750,7 +746,7 @@
             "product_id"
           ],
           "composite": false,
-          "keyName": "option_variant_product_id_index",
+          "keyName": "option_value_product_id_index",
           "constraint": false,
           "primary": false,
           "unique": false
@@ -768,24 +764,24 @@
       ],
       "checks": [],
       "foreignKeys": {
-        "option_variant_option_id_foreign": {
-          "constraintName": "option_variant_option_id_foreign",
+        "option_value_option_id_foreign": {
+          "constraintName": "option_value_option_id_foreign",
           "columnNames": [
             "option_id"
           ],
-          "localTableName": "option_variant",
+          "localTableName": "option_value",
           "referencedColumnNames": [
             "id"
           ],
           "referencedTableName": "option",
           "updateRule": "cascade"
         },
-        "option_variant_product_id_foreign": {
-          "constraintName": "option_variant_product_id_foreign",
+        "option_value_product_id_foreign": {
+          "constraintName": "option_value_product_id_foreign",
           "columnNames": [
             "product_id"
           ],
-          "localTableName": "option_variant",
+          "localTableName": "option_value",
           "referencedColumnNames": [
             "id"
           ],
@@ -1285,10 +1281,10 @@
             "user_id"
           ],
           "composite": false,
-          "keyName": "cart_user_id_index",
-          "constraint": false,
+          "keyName": "cart_user_id_unique",
+          "constraint": true,
           "primary": false,
-          "unique": false
+          "unique": true
         },
         {
           "keyName": "PRIMARY",

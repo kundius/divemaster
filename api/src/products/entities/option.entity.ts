@@ -8,15 +8,25 @@ import {
   Property
 } from '@mikro-orm/core'
 import { Category } from './category.entity'
-import { OptionVariant } from './option-variant.entity'
+import { OptionValue } from './option-value.entity'
 
 export enum OptionType {
-  TEXT = 'text',
-  NUMBER = 'number',
-  BOOLEAN = 'boolean',
-  COLOR = 'color',
-  SIZE = 'size',
-  VARIANT = 'variant'
+  // STRING = 'string',
+  // NUMBER = 'number',
+  // BOOLEAN = 'boolean',
+  // COLOR = 'color',
+  // SIZE = 'size',
+
+  // CHECKBOX = 'checkbox',
+  // COMBOMULTIPLE = 'combo-multiple',
+  COMBOBOOLEAN = 'combo-boolean',
+  COMBOCOLORS = 'combo-colors',
+  COMBOOPTIONS = 'combo-options',
+  // COMBOBOX = 'combobox',
+  // DATEFIELD = 'datefield',
+  NUMBERFIELD = 'numberfield',
+  TEXTFIELD = 'textfield'
+  // TEXTAREA = 'textarea'
 }
 
 @Entity()
@@ -36,18 +46,16 @@ export class Option {
   @Property({ default: false })
   inFilter: boolean = false
 
-  @Property({ default: false })
-  inCart: boolean = false
-
   @Property({ default: 0 })
   rank: number = 0
 
   @ManyToMany(() => Category, (category) => category.options)
   categories = new Collection<Category>(this)
 
-  @OneToMany(() => OptionVariant, (variant) => variant.option)
-  variants = new Collection<OptionVariant>(this)
+  @OneToMany(() => OptionValue, (value) => value.option)
+  values = new Collection<OptionValue>(this)
 
+  // при ручной выборке опций товаров также вручную добавляются значения опций
   @Property({ persist: false })
   value?: number | boolean | string | string[] | undefined
 }

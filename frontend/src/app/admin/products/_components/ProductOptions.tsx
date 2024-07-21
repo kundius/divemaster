@@ -1,9 +1,19 @@
 'use client'
 
+import { diving } from '@/components/site/Header/menu'
 import { Button } from '@/components/ui/button'
 import { CreateablePicker, CreateablePickerItem } from '@/components/ui/createable-picker'
 import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
+import { Textarea } from '@/components/ui/textarea'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { apiPatch } from '@/lib/api'
 import { withClientAuth } from '@/lib/api/with-client-auth'
 import { colors } from '@/lib/colors'
@@ -32,7 +42,9 @@ function OptionsControl({ optionId, value, onChange }: OptionsControlProps) {
   )
 }
 
-export type ValuesType = Record<string, number | boolean | string | string[] | undefined>
+export type ValueType = number | number[] | boolean | boolean[] | string | string[] | undefined
+
+export type ValuesType = Record<string, ValueType>
 
 export interface ProductOptionsProps {
   productId: number
@@ -45,70 +57,102 @@ export function ProductOptions({ productId, initialOptions, initialValues }: Pro
   const [pending, pendingToggle] = useToggle(false)
 
   const renderControl = (item: OptionEntity) => {
-    const onChange = (value: number | boolean | string | string[] | undefined) => {
+    const onChange = (value: ValueType) => {
       setValues((prev) => ({ ...prev, [item.key]: value }))
     }
-    if (item.type === OptionType.BOOLEAN) {
-      const value = values[item.key] as boolean | undefined
-      return <Switch checked={value || false} onCheckedChange={onChange} name="test" />
-    }
-    if (item.type === OptionType.TEXT) {
-      const value = values[item.key] as string | undefined
-      return <Input value={value || ''} onChange={(e) => onChange(e.target.value)} />
-    }
-    if (item.type === OptionType.NUMBER) {
-      const value = values[item.key] as number | undefined
-      return (
-        <Input
-          type="number"
-          value={value || ''}
-          onChange={(e) => onChange(e.target.value ? Number(e.target.value) : undefined)}
-        />
-      )
-    }
-    if (item.type === OptionType.COLOR) {
-      const value = values[item.key] as string[] | undefined
-      return (
-        <CreateablePicker
-          options={colors.map((item) => ({
-            label: (
-              <div className="flex gap-2 items-center">
-                <div
-                  className="w-3 h-3 rounded shadow-sm"
-                  style={{ backgroundColor: item.color }}
-                />
-                <div>{item.name}</div>
-              </div>
-            ),
-            value: item.name
-          }))}
-          value={
-            value?.map((item) => ({
-              value: item,
+
+    const value = values[item.key]
+
+    switch (item.type) {
+      case OptionType.COMBOBOOLEAN:
+        return (
+          <Switch
+            checked={(value as boolean | undefined) || false}
+            onCheckedChange={onChange}
+            name="test"
+          />
+        )
+
+      // case OptionType.COMBOBOX:
+      //   return (
+      //     <Input
+      //       value={(value as string | undefined) || ''}
+      //       onChange={(e) => onChange(e.target.value)}
+      //     />
+      //   )
+
+      case OptionType.COMBOCOLORS:
+        return (
+          <CreateablePicker
+            options={colors.map((item) => ({
               label: (
                 <div className="flex gap-2 items-center">
                   <div
-                    className="w-2 h-2 rounded-full shadow-sm"
-                    style={{ background: colors.find((color) => color.name === item)?.color || 'linear-gradient(53deg, rgb(169, 0, 131) 0%, rgb(160, 45, 250) 100%)' }}
+                    className="w-3 h-3 rounded shadow-sm"
+                    style={{ backgroundColor: item.color }}
                   />
-                  <div>{item}</div>
+                  <div>{item.name}</div>
                 </div>
-              )
-            })) || []
-          }
-          onChange={(selectedItems) => onChange(selectedItems.map((item) => item.value))}
-        />
-      )
-    }
-    if (item.type === OptionType.VARIANT || item.type === OptionType.SIZE) {
-      const value = values[item.key] as string[] | undefined
-      return (
-        <OptionsControl
-          optionId={item.id}
-          value={value?.map((item) => ({ value: item, label: item })) || []}
-          onChange={(selectedItems) => onChange(selectedItems.map((item) => item.value))}
-        />
-      )
+              ),
+              value: item.name
+            }))}
+            value={
+              (value as string[] | undefined)?.map((item) => ({
+                value: item,
+                label: (
+                  <div className="flex gap-2 items-center">
+                    <div
+                      className="w-2 h-2 rounded-full shadow-sm"
+                      style={{
+                        background:
+                          colors.find((color) => color.name === item)?.color ||
+                          'linear-gradient(53deg, rgb(169, 0, 131) 0%, rgb(160, 45, 250) 100%)'
+                      }}
+                    />
+                    <div>{item}</div>
+                  </div>
+                )
+              })) || []
+            }
+            onChange={(selectedItems) => onChange(selectedItems.map((item) => item.value))}
+          />
+        )
+
+      case OptionType.COMBOOPTIONS:
+        return (
+          <OptionsControl
+            optionId={item.id}
+            value={
+              (value as string[] | undefined)?.map((item) => ({ value: item, label: item })) || []
+            }
+            onChange={(selectedItems) => onChange(selectedItems.map((item) => item.value))}
+          />
+        )
+
+      case OptionType.NUMBERFIELD:
+        return (
+          <Input
+            type="number"
+            value={(value as number | undefined) || ''}
+            onChange={(e) => onChange(e.target.value ? Number(e.target.value) : undefined)}
+          />
+        )
+
+      // case OptionType.TEXTAREA:
+      //   return (
+      //     <Textarea
+      //       value={(value as string | undefined) || ''}
+      //       onChange={(e) => onChange(e.target.value)}
+      //     />
+      //   )
+
+      case OptionType.TEXTFIELD:
+        return (
+          <Input
+            value={(value as string | undefined) || ''}
+            onChange={(e) => onChange(e.target.value)}
+          />
+        )
     }
   }
 

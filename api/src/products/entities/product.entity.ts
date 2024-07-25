@@ -13,6 +13,7 @@ import { Category } from './category.entity'
 import { Option } from './option.entity'
 import { ProductImage } from './product-image.entity'
 import { OptionValue } from './option-value.entity'
+import { Offer } from './offer.entity'
 
 @Entity()
 @Filter({ name: 'active', cond: { active: { $eq: true } } })
@@ -70,6 +71,9 @@ export class Product {
 
   @OneToMany(() => OptionValue, (optionValue) => optionValue.product)
   optionValues = new Collection<OptionValue>(this)
+
+  @OneToMany(() => Offer, (offer) => offer.product)
+  offers = new Collection<Offer>(this)
 
   @ManyToOne(() => Brand, { nullable: true })
   brand: Brand | null = null

@@ -18,6 +18,14 @@ export interface BrandEntity {
   title: string
 }
 
+export interface OfferEntity {
+  id: number
+  title: string | null
+  price: number
+  product: ProductEntity
+  optionValues: OptionValueEntity[]
+}
+
 export interface CategoryEntity {
   id: number
   parent: number | CategoryEntity | null
@@ -51,6 +59,7 @@ export interface ProductEntity {
   categories?: CategoryEntity[]
   descriptions?: ProductDescription[]
   options?: OptionEntity[]
+  offers?: OfferEntity[]
 }
 
 export interface ProductDescription {

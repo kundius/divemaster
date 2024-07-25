@@ -323,24 +323,17 @@
         },
         "type": {
           "name": "type",
-          "type": "enum('string','number','boolean','color','size','combo-boolean','combo-colors','combo-options','combobox','numberfield','textfield','textarea')",
+          "type": "enum('combo-boolean','combo-colors','combo-options','numberfield','textfield')",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
           "enumItems": [
-            "string",
-            "number",
-            "boolean",
-            "color",
-            "size",
             "combo-boolean",
             "combo-colors",
             "combo-options",
-            "combobox",
             "numberfield",
-            "textfield",
-            "textarea"
+            "textfield"
           ],
           "mappedType": "enum"
         },
@@ -786,6 +779,181 @@
             "id"
           ],
           "referencedTableName": "product",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
+        "price": {
+          "name": "price",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "rank": {
+          "name": "rank",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "0",
+          "mappedType": "integer"
+        },
+        "product_id": {
+          "name": "product_id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        }
+      },
+      "name": "offer",
+      "indexes": [
+        {
+          "columnNames": [
+            "product_id"
+          ],
+          "composite": false,
+          "keyName": "offer_product_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "PRIMARY",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "offer_product_id_foreign": {
+          "constraintName": "offer_product_id_foreign",
+          "columnNames": [
+            "product_id"
+          ],
+          "localTableName": "offer",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "product",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "offer_id": {
+          "name": "offer_id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "option_value_id": {
+          "name": "option_value_id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        }
+      },
+      "name": "offer_option_values",
+      "indexes": [
+        {
+          "columnNames": [
+            "offer_id"
+          ],
+          "composite": false,
+          "keyName": "offer_option_values_offer_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "option_value_id"
+          ],
+          "composite": false,
+          "keyName": "offer_option_values_option_value_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "PRIMARY",
+          "columnNames": [
+            "offer_id",
+            "option_value_id"
+          ],
+          "composite": true,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "offer_option_values_offer_id_foreign": {
+          "constraintName": "offer_option_values_offer_id_foreign",
+          "columnNames": [
+            "offer_id"
+          ],
+          "localTableName": "offer_option_values",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "offer",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "offer_option_values_option_value_id_foreign": {
+          "constraintName": "offer_option_values_option_value_id_foreign",
+          "columnNames": [
+            "option_value_id"
+          ],
+          "localTableName": "offer_option_values",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "option_value",
+          "deleteRule": "cascade",
           "updateRule": "cascade"
         }
       },

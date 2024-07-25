@@ -10,6 +10,7 @@ import {
   wrap
 } from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
+import { isArray, isBoolean, isNumber, isString, isUndefined } from '@modyqyw/utils'
 import { Injectable } from '@nestjs/common'
 import { join } from 'path'
 import {
@@ -24,12 +25,12 @@ import {
 } from '../dto/products.dto'
 import { Brand } from '../entities/brand.entity'
 import { Category } from '../entities/category.entity'
+import { Offer } from '../entities/offer.entity'
+import { OptionValue } from '../entities/option-value.entity'
+import { Option, OptionType } from '../entities/option.entity'
 import { ProductImage } from '../entities/product-image.entity'
 import { Product } from '../entities/product.entity'
-import { Option, OptionType } from '../entities/option.entity'
-import { OptionValue } from '../entities/option-value.entity'
 import { ProductsFilterService } from './products-filter.service'
-import { isArray, isBoolean, isNull, isNumber, isString, isUndefined } from '@modyqyw/utils'
 
 @Injectable()
 export class ProductsService {
@@ -46,6 +47,8 @@ export class ProductsService {
     private readonly optionValueRepository: EntityRepository<OptionValue>,
     @InjectRepository(Brand)
     private readonly brandRepository: EntityRepository<Brand>,
+    @InjectRepository(Offer)
+    private readonly offerRepository: EntityRepository<Offer>,
     private readonly storageService: StorageService,
     private readonly productsFilterService: ProductsFilterService
   ) {}
@@ -513,5 +516,17 @@ export class ProductsService {
     }
 
     await em.flush()
+  }
+
+  async findAllOffers(productId: number) {
+    const product = await this.productsRepository.findOneOrFail({ id: productId })
+    return this.offerRepository.find(
+      { product },
+      {
+        orderBy: {
+          rank: QueryOrder.ASC
+        }
+      }
+    )
   }
 }

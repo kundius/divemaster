@@ -32,13 +32,17 @@ export default function Layout({
       title: 'Параметры',
       href: `/admin/products/${params.id}/options`
     },
+    // {
+    //   title: 'Отзывы',
+    //   href: `/admin/products/${params.id}/reviews`
+    // },
+    // {
+    //   title: 'Связи',
+    //   href: `/admin/products/${params.id}/links`
+    // },
     {
-      title: 'Отзывы',
-      href: `/admin/products/${params.id}/reviews`
-    },
-    {
-      title: 'Связи',
-      href: `/admin/products/${params.id}/links`
+      title: 'Торговые предложения',
+      href: `/admin/products/${params.id}/offers`
     }
   ]
   return (

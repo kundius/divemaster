@@ -116,4 +116,9 @@ export class ProductsController {
   async removeProductImage(@Param('productId') productId: string, @Param('fileId') fileId: string) {
     return this.productsService.removeProductImage(+productId, +fileId)
   }
+
+  @Get(':productId/offers')
+  findAllOffers(@Param('productId') productId: string) {
+    return this.productsService.findAllOffers(+productId)
+  }
 }

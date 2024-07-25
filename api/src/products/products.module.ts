@@ -16,10 +16,11 @@ import { CategoriesService } from './services/categories.service'
 import { OptionsService } from './services/options.service'
 import { ProductsService } from './services/products.service'
 import { ProductsFilterService } from './services/products-filter.service'
+import { Offer } from './entities/offer.entity'
 
 @Module({
   imports: [
-    MikroOrmModule.forFeature([Category, Product, ProductImage, Brand, Option, OptionValue]),
+    MikroOrmModule.forFeature([Category, Product, ProductImage, Brand, Option, OptionValue, Offer]),
     StorageModule
   ],
   controllers: [ProductsController, CategoriesController, BrandsController, OptionsController],

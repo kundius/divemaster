@@ -1,0 +1,132 @@
+'use client'
+
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import { OptionEntity } from '@/types'
+import { XMarkIcon } from '@heroicons/react/24/outline'
+import { FormEvent, PropsWithChildren, useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { Separator } from '@/components/ui/separator'
+
+export interface ProductOffersCreateDialogProps {
+  productId: number
+  options: OptionEntity[]
+}
+
+export function ProductOffersCreateDialog({
+  productId,
+  options,
+  children
+}: PropsWithChildren<ProductOffersCreateDialogProps>) {
+  const form = useForm()
+
+  const onSubmit: SubmitHandler<Record<string, string | undefined>> = async (data) => {
+    console.log(data)
+  }
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent className="sm:max-w-[480px]">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <DialogHeader>
+              <DialogTitle>Добавить вариант</DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem className="grid grid-cols-4 items-center gap-4 space-y-0">
+                    <FormLabel className="text-right">Название</FormLabel>
+                    <FormControl className="col-span-3">
+                      <Input {...field} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                rules={{ required: 'Укажите цену' }}
+                name="price"
+                render={({ field }) => (
+                  <div>
+                    <FormItem className="grid grid-cols-4 items-center gap-4 space-y-0">
+                      <FormLabel className="text-right">Цена</FormLabel>
+                      <FormControl className="col-span-3">
+                        <Input type="number" {...field} />
+                      </FormControl>
+                    </FormItem>
+                    <div className="grid grid-cols-4 gap-4 mt-2">
+                      <div />
+                      <div className="col-span-3">
+                        <FormMessage />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              />
+              {options.map((option) => (
+                <FormField
+                  key={option.id}
+                  control={form.control}
+                  name={option.key}
+                  render={({ field: { value, onChange, ref, ...field } }) => (
+                    <FormItem className="grid grid-cols-4 items-center gap-4 space-y-0">
+                      <FormLabel className="text-right">{option.caption}</FormLabel>
+                      <FormControl className="col-span-3">
+                        <Select onValueChange={onChange} value={value} {...field}>
+                          <SelectTrigger className="col-span-3">
+                            <SelectValue />
+                          </SelectTrigger>
+                          {option.values && (
+                            <SelectContent>
+                              {option.values.map((value) => (
+                                <SelectItem key={value.id} value={String(value.id)}>
+                                  {value.content}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          )}
+                        </Select>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              ))}
+            </div>
+            <DialogFooter>
+              <Button type="submit">Сохранить</Button>
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  )
+}

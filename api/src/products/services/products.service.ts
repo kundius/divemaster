@@ -354,13 +354,11 @@ export class ProductsService {
     })
     const categoryIds = categories.map((category) => category.id) || []
     const options = await this.optionRepository.find(
+      { categories: { $in: categoryIds } },
       {
-        categories: { $in: categoryIds }
-      },
-      {
-        orderBy: {
-          rank: QueryOrder.ASC
-        }
+        orderBy: { rank: QueryOrder.ASC },
+        populate: ['values'],
+        populateWhere: { values: { product: productId } }
       }
     )
 

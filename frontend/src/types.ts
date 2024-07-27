@@ -104,12 +104,13 @@ export interface OptionEntity {
   type: OptionType
   rank: number
   categories?: CategoryEntity[]
+  values?: OptionValueEntity[]
   value?: number | number[] | boolean | boolean[] | string | string[] | undefined
 }
 
 export interface OptionValueEntity {
   id: number
-  value: string
+  content: string
   option: number | OptionEntity
   product: number | ProductEntity
   rank: number

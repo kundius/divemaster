@@ -18,6 +18,7 @@ import {
   CreateProductDto,
   FindAllProductDto,
   FindOneProductDto,
+  CreateOfferDto,
   SortProductImageDto,
   UpdateProductCategoryDto,
   UpdateProductDto,
@@ -118,7 +119,12 @@ export class ProductsController {
   }
 
   @Get(':productId/offers')
-  findAllOffers(@Param('productId') productId: string) {
+  offersFindAll(@Param('productId') productId: string) {
     return this.productsService.findAllOffers(+productId)
+  }
+
+  @Post(':productId/offers')
+  createOffer(@Param('productId') productId: string, @Body() dto: CreateOfferDto) {
+    return this.productsService.createOffer(+productId, dto)
   }
 }

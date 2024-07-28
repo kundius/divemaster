@@ -169,3 +169,18 @@ export class CreateProductDto {
 export class UpdateProductDto extends PartialType(CreateProductDto) {}
 
 export type UpdateProductOptions = Record<string, number | boolean | string | string[] | undefined>
+
+export class CreateOfferDto {
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  title: string
+
+  @Type(() => Number)
+  @IsNumber()
+  price: number
+
+  @Type(() => Array)
+  @IsArray()
+  optionValues: number[]
+}

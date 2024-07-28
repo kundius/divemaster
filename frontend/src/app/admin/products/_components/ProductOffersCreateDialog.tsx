@@ -32,25 +32,67 @@ import { XMarkIcon } from '@heroicons/react/24/outline'
 import { FormEvent, PropsWithChildren, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Separator } from '@/components/ui/separator'
+import { apiPost } from '@/lib/api'
+import { withClientAuth } from '@/lib/api/with-client-auth'
+import { toast } from 'sonner'
+import { useToggle } from '@reactuses/core'
 
 export interface ProductOffersCreateDialogProps {
   productId: number
   options: OptionEntity[]
+  onSuccess?: () => void
+}
+
+interface Fields {
+  price: string
+  title: string
+  options: Record<string, string | undefined>
 }
 
 export function ProductOffersCreateDialog({
   productId,
   options,
-  children
+  children,
+  onSuccess
 }: PropsWithChildren<ProductOffersCreateDialogProps>) {
-  const form = useForm()
+  const [show, toggleShow] = useToggle(false)
+  const [loading, toggleLoading] = useToggle(false)
+  const form = useForm<Fields>({
+    defaultValues: {
+      title: '',
+      price: '',
+      options: {}
+    }
+  })
 
-  const onSubmit: SubmitHandler<Record<string, string | undefined>> = async (data) => {
-    console.log(data)
+  const onSubmit: SubmitHandler<Fields> = async (data) => {
+    toggleLoading()
+
+    try {
+      const response = await apiPost(
+        `products/${productId}/offers`,
+        {
+          title: data.title,
+          price: Number(data.price),
+          optionValues: Object.values(data.options)
+            .filter((id) => !!id)
+            .map((id) => Number(id))
+        },
+        withClientAuth()
+      )
+      toast.success('Сохранено')
+      form.reset()
+      onSuccess?.()
+      toggleShow(false)
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Unknown error')
+    } finally {
+      toggleLoading()
+    }
   }
 
   return (
-    <Dialog>
+    <Dialog open={show} onOpenChange={toggleShow}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[480px]">
         <Form {...form}>
@@ -96,12 +138,12 @@ export function ProductOffersCreateDialog({
                 <FormField
                   key={option.id}
                   control={form.control}
-                  name={option.key}
+                  name={`options.${option.key}`}
                   render={({ field: { value, onChange, ref, ...field } }) => (
                     <FormItem className="grid grid-cols-4 items-center gap-4 space-y-0">
                       <FormLabel className="text-right">{option.caption}</FormLabel>
                       <FormControl className="col-span-3">
-                        <Select onValueChange={onChange} value={value} {...field}>
+                        <Select onValueChange={onChange} value={value || ''} {...field}>
                           <SelectTrigger className="col-span-3">
                             <SelectValue />
                           </SelectTrigger>
@@ -122,7 +164,9 @@ export function ProductOffersCreateDialog({
               ))}
             </div>
             <DialogFooter>
-              <Button type="submit">Сохранить</Button>
+              <Button loading={loading} type="submit">
+                Сохранить
+              </Button>
             </DialogFooter>
           </form>
         </Form>

@@ -23,27 +23,33 @@ import { ApiRemoveDialog } from '@/lib/ApiRemoveDialog'
 import { OfferEntity, OptionEntity, OptionValueEntity } from '@/types'
 import { PencilIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { ProductOffersCreateDialog } from './ProductOffersCreateDialog'
+import useSWR from 'swr'
+import { withClientAuth } from '@/lib/api/with-client-auth'
+import { useQuery } from '@/lib/useQuery'
 
 export interface ProductOffersProps {
   productId: number
-  initialOffers: OfferEntity[]
-  initialOptions: OptionEntity[]
+  options: OptionEntity[]
 }
 
-export function ProductOffers({ productId, initialOffers, initialOptions }: ProductOffersProps) {
-  console.log(initialOptions)
+export function ProductOffers({ productId, options }: ProductOffersProps) {
+  const offersQuery = useQuery<OfferEntity[]>(`products/${productId}/offers`)
   return (
     <div className="space-y-6">
       <div className="p-5 rounded-md flex items-center justify-end gap-4 bg-neutral-50">
-        <ProductOffersCreateDialog productId={productId} options={initialOptions}>
+        <ProductOffersCreateDialog
+          productId={productId}
+          options={options}
+          onSuccess={offersQuery.refetch}
+        >
           <Button>Добавить вариант</Button>
         </ProductOffersCreateDialog>
       </div>
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">Название</TableHead>
-            {initialOptions.map((option) => (
+            {/* <TableHead>Название</TableHead> */}
+            {options.map((option) => (
               <TableHead key={option.id}>{option.caption}</TableHead>
             ))}
             <TableHead>Цена</TableHead>
@@ -51,55 +57,29 @@ export function ProductOffers({ productId, initialOffers, initialOptions }: Prod
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow>
-            <TableCell className="font-medium">INV001</TableCell>
-            {initialOptions.map((option) => (
-              <TableCell key={option.id}>{option.caption}</TableCell>
-            ))}
-            <TableCell>$250.00</TableCell>
-            <TableCell className="w-0">
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm-icon">
-                  <PencilIcon className="w-4 h-4" />
-                </Button>
-                <Button variant="destructive-outline" size="sm-icon">
-                  <TrashIcon className="w-4 h-4" />
-                </Button>
-              </div>
-            </TableCell>
-          </TableRow>
+          {offersQuery.data?.map((offer) => (
+            <TableRow key={offer.id}>
+              {/* <TableCell className="font-medium">{offer.title}</TableCell> */}
+              {options.map((option) => (
+                <TableCell key={option.id}>
+                  {offer.optionValues.find((item) => item.option === option.id)?.content || '-'}
+                </TableCell>
+              ))}
+              <TableCell>{offer.price}</TableCell>
+              <TableCell className="w-0">
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm-icon">
+                    <PencilIcon className="w-4 h-4" />
+                  </Button>
+                  <Button variant="destructive-outline" size="sm-icon">
+                    <TrashIcon className="w-4 h-4" />
+                  </Button>
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
-
-      {/* <div className="rounded-xl border bg-card text-card-foreground p-4 flex flex-col gap-4">
-        <div className="flex gap-2 items-center">
-          <Input placeholder="Название" />
-          <Input placeholder="Цена" />
-          <Button>Сохранить</Button>
-        </div>
-        <div className="flex gap-2 items-center">
-          <Select>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Theme" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="light">Light</SelectItem>
-              <SelectItem value="dark">Dark</SelectItem>
-              <SelectItem value="system">System</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Theme" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="light">Light</SelectItem>
-              <SelectItem value="dark">Dark</SelectItem>
-              <SelectItem value="system">System</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div> */}
     </div>
   )
 }

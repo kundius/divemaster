@@ -17,6 +17,7 @@ import {
   CreateProductDto,
   FindAllProductDto,
   FindOneProductDto,
+  CreateOfferDto,
   SortProductImageDto,
   UpdateProductCategoryDto,
   UpdateProductDto,
@@ -523,8 +524,26 @@ export class ProductsService {
       {
         orderBy: {
           rank: QueryOrder.ASC
-        }
+        },
+        populate: ['optionValues']
       }
     )
+  }
+
+  async createOffer(productId: number, dto: CreateOfferDto) {
+    const product = await this.productsRepository.findOneOrFail({ id: productId })
+
+    const offer = new Offer()
+
+    this.offerRepository.assign(offer, {
+      product,
+      price: dto.price,
+      title: dto.title,
+      optionValues: dto.optionValues
+    })
+
+    await this.offerRepository.getEntityManager().persistAndFlush(offer)
+
+    return offer
   }
 }

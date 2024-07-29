@@ -121,3 +121,8 @@ export function shallowEqual(object1: Record<string, any>, object2: Record<strin
 
   return true
 }
+
+export function pluck<T, V extends keyof T>(typeFrom: T[], properties: V) {
+  return typeFrom.map((prop) => prop[properties])
+}
+

@@ -23,7 +23,8 @@ import {
   UpdateProductCategoryDto,
   UpdateProductDto,
   UpdateProductImageDto,
-  UpdateProductOptions
+  UpdateProductOptions,
+  UpdateOfferDto
 } from '../dto/products.dto'
 import { ProductsService } from '../services/products.service'
 
@@ -126,5 +127,15 @@ export class ProductsController {
   @Post(':productId/offers')
   createOffer(@Param('productId') productId: string, @Body() dto: CreateOfferDto) {
     return this.productsService.createOffer(+productId, dto)
+  }
+
+  @Delete(':productId/offers/:offerId')
+  removeOffer(@Param('offerId') offerId: string) {
+    return this.productsService.removeOffer(+offerId)
+  }
+
+  @Patch(':productId/offers/:offerId')
+  updateOffer(@Param('offerId') offerId: string, @Body() dto: UpdateOfferDto) {
+    return this.productsService.updateOffer(+offerId, dto)
   }
 }

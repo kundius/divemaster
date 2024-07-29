@@ -184,3 +184,18 @@ export class CreateOfferDto {
   @IsArray()
   optionValues: number[]
 }
+
+export class UpdateOfferDto {
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  title: string
+
+  @Type(() => Number)
+  @IsNumber()
+  price: number
+
+  @Type(() => Array)
+  @IsArray()
+  optionValues: number[]
+}

@@ -1,4 +1,4 @@
-import { nanoid } from '@/lib/utils'
+import { nanoid, pluck } from '@/lib/utils'
 import { StorageService } from '@/storage/services/storage.service'
 import {
   EntityRepository,
@@ -11,7 +11,7 @@ import {
 } from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { isArray, isBoolean, isNumber, isString, isUndefined } from '@modyqyw/utils'
-import { Injectable } from '@nestjs/common'
+import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common'
 import { join } from 'path'
 import {
   CreateProductDto,
@@ -22,7 +22,8 @@ import {
   UpdateProductCategoryDto,
   UpdateProductDto,
   UpdateProductImageDto,
-  UpdateProductOptions
+  UpdateProductOptions,
+  UpdateOfferDto
 } from '../dto/products.dto'
 import { Brand } from '../entities/brand.entity'
 import { Category } from '../entities/category.entity'
@@ -533,6 +534,19 @@ export class ProductsService {
   async createOffer(productId: number, dto: CreateOfferDto) {
     const product = await this.productsRepository.findOneOrFail({ id: productId })
 
+    const currentOffers = await this.offerRepository.find(
+      { product },
+      { populate: ['optionValues'] }
+    )
+    const existOffer = currentOffers.find(
+      (currentOffer) =>
+        JSON.stringify(pluck(currentOffer.optionValues.getItems(), 'id').sort()) ===
+        JSON.stringify(dto.optionValues.sort())
+    )
+    if (existOffer) {
+      throw new BadRequestException('Торговое предложение с указанными опциями уже сущесивует')
+    }
+
     const offer = new Offer()
 
     this.offerRepository.assign(offer, {
@@ -545,5 +559,35 @@ export class ProductsService {
     await this.offerRepository.getEntityManager().persistAndFlush(offer)
 
     return offer
+  }
+
+  async removeOffer(id: number) {
+    const offer = await this.offerRepository.findOneOrFail({ id })
+    await this.offerRepository.getEntityManager().removeAndFlush(offer)
+  }
+
+  async updateOffer(id: number, dto: UpdateOfferDto) {
+    const offer = await this.offerRepository.findOneOrFail({ id })
+
+    const currentOffers = await this.offerRepository.find(
+      { product: offer.product, id: { $ne: offer.id } },
+      { populate: ['optionValues'] }
+    )
+    const existOffer = currentOffers.find(
+      (currentOffer) =>
+        JSON.stringify(pluck(currentOffer.optionValues.getItems(), 'id').sort()) ===
+        JSON.stringify(dto.optionValues.sort())
+    )
+    if (existOffer) {
+      throw new BadRequestException('Торговое предложение с указанными опциями уже сущесивует')
+    }
+
+    this.offerRepository.assign(offer, {
+      price: dto.price,
+      title: dto.title,
+      optionValues: dto.optionValues
+    })
+
+    await this.offerRepository.getEntityManager().persistAndFlush(offer)
   }
 }

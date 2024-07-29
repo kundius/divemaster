@@ -6,3 +6,7 @@ export function slugify(value: string) {
 }
 
 export const nanoid = customAlphabet('1234567890abcdef', 10)
+
+export function pluck<T, V extends keyof T>(typeFrom: T[], properties: V) {
+  return typeFrom.map((prop) => prop[properties])
+}

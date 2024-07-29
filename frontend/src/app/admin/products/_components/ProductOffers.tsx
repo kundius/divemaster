@@ -26,6 +26,8 @@ import { ProductOffersCreateDialog } from './ProductOffersCreateDialog'
 import useSWR from 'swr'
 import { withClientAuth } from '@/lib/api/with-client-auth'
 import { useQuery } from '@/lib/useQuery'
+import { ProductOffersUpdateDialog } from './ProductOffersUpdateDialog'
+import { string } from 'zod'
 
 export interface ProductOffersProps {
   productId: number
@@ -68,12 +70,37 @@ export function ProductOffers({ productId, options }: ProductOffersProps) {
               <TableCell>{offer.price}</TableCell>
               <TableCell className="w-0">
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm-icon">
-                    <PencilIcon className="w-4 h-4" />
-                  </Button>
-                  <Button variant="destructive-outline" size="sm-icon">
-                    <TrashIcon className="w-4 h-4" />
-                  </Button>
+                  <ProductOffersUpdateDialog
+                    offerId={offer.id}
+                    productId={productId}
+                    options={options}
+                    onSuccess={offersQuery.refetch}
+                    defaultValues={{
+                      price: String(offer.price),
+                      title: offer.title || '',
+                      options: options.reduce((previousValue, currentValue) => {
+                        const foundValue = offer.optionValues.find(
+                          (item) => item.option === currentValue.id
+                        )
+                        return {
+                          ...previousValue,
+                          [currentValue.key]: foundValue ? String(foundValue.id) : undefined
+                        }
+                      }, {})
+                    }}
+                  >
+                    <Button variant="outline" size="sm-icon">
+                      <PencilIcon className="w-4 h-4" />
+                    </Button>
+                  </ProductOffersUpdateDialog>
+                  <ApiRemoveDialog
+                    url={`products/${productId}/offers/${offer.id}`}
+                    onSuccess={offersQuery.refetch}
+                  >
+                    <Button variant="destructive-outline" size="sm-icon">
+                      <TrashIcon className="w-4 h-4" />
+                    </Button>
+                  </ApiRemoveDialog>
                 </div>
               </TableCell>
             </TableRow>

@@ -25,7 +25,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { apiPost } from '@/lib/api'
+import { apiPatch, apiPost } from '@/lib/api'
 import { withClientAuth } from '@/lib/api/with-client-auth'
 import { OfferEntity, OptionEntity } from '@/types'
 import { useToggle } from '@reactuses/core'
@@ -33,10 +33,12 @@ import { PropsWithChildren } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
-export interface ProductOffersCreateDialogProps {
+export interface ProductOffersUpdateDialogProps {
   productId: number
+  offerId: number
   options: OptionEntity[]
   onSuccess?: () => void
+  defaultValues?: Fields
 }
 
 interface Fields {
@@ -45,28 +47,26 @@ interface Fields {
   options: Record<string, string | undefined>
 }
 
-export function ProductOffersCreateDialog({
+export function ProductOffersUpdateDialog({
   productId,
+  offerId,
   options,
   children,
-  onSuccess
-}: PropsWithChildren<ProductOffersCreateDialogProps>) {
+  onSuccess,
+  defaultValues
+}: PropsWithChildren<ProductOffersUpdateDialogProps>) {
   const [show, toggleShow] = useToggle(false)
   const [loading, toggleLoading] = useToggle(false)
   const form = useForm<Fields>({
-    defaultValues: {
-      title: '',
-      price: '',
-      options: {}
-    }
+    defaultValues
   })
 
   const onSubmit: SubmitHandler<Fields> = async (data) => {
     toggleLoading()
 
     try {
-      await apiPost(
-        `products/${productId}/offers`,
+      await apiPatch(
+        `products/${productId}/offers/${offerId}`,
         {
           title: data.title,
           price: Number(data.price),

@@ -18,10 +18,10 @@ export function Products() {
           id={item.id}
           title={item.title}
           href={`/product/${item.alias}`}
-          price={item.price}
+          price={0}
           favorite={item.favorite}
           recent={item.recent}
-          oldPrice={item.oldPrice || undefined}
+          oldPrice={item.priceDecrease || undefined}
           images={item.images ? item.images.map((item) => getFileUrl(item.file)) : []}
           brand={
             item.brand !== null && typeof item.brand === 'object' ? item.brand.title : undefined

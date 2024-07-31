@@ -36,11 +36,8 @@ export class Product {
   @Property({ nullable: true, type: 'varchar' })
   sku?: string | null = null
 
-  @Property()
-  price: number
-
   @Property({ nullable: true, type: 'int' })
-  oldPrice: number | null = null
+  priceDecrease: number | null = null
 
   @Property({ nullable: true, type: 'text' })
   description: string | null = null

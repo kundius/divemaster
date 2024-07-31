@@ -22,8 +22,7 @@ export const ProductFormSchema = z.object({
   description: z.string().trim().nullable(),
   specifications: z.string().trim().nullable(),
   exploitation: z.string().trim().nullable(),
-  price: z.number(),
-  oldPrice: z.number().nullable(),
+  priceDecrease: z.number().nullable(),
   brandId: z.number().nullable(),
   active: z.boolean(),
   recent: z.boolean(),
@@ -123,26 +122,7 @@ export function ProductForm({ form, onSubmit }: ProductFormProps) {
           <div className="w-1/2">
             <FormField
               control={form.control}
-              name="price"
-              render={({ field: { onChange, ...field } }) => (
-                <FormItem>
-                  <FormLabel>Цена</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      onChange={(e) => onChange(Number(e.target.value))}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="w-1/2">
-            <FormField
-              control={form.control}
-              name="oldPrice"
+              name="priceDecrease"
               render={({ field: { onChange, value, ...field } }) => (
                 <FormItem>
                   <FormLabel>Старая цена</FormLabel>

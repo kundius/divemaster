@@ -17,12 +17,8 @@ export function ProductUpdate({ initialData }: ProductUpdateProps) {
     defaultValues: {
       title: initialData.title,
       alias: initialData.alias,
-      price: initialData.price,
-      oldPrice: initialData.oldPrice,
+      priceDecrease: initialData.priceDecrease,
       longTitle: initialData.longTitle,
-      description: initialData.description,
-      specifications: initialData.specifications,
-      exploitation: initialData.exploitation,
       sku: initialData.sku,
       brandId:
         typeof initialData.brand === 'number' ? initialData.brand : initialData.brand?.id || null,

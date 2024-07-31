@@ -31,6 +31,7 @@ export default async function Page({ params: { alias } }: { params: { alias: str
         withContent: true,
         withBrand: true,
         withOptions: true,
+        withOffers: true,
         withImages: true,
         withCategories: true
       },
@@ -94,12 +95,7 @@ export default async function Page({ params: { alias } }: { params: { alias: str
             {product.specifications && <SpecButton />}
           </div>
           <div className="mt-3">
-            <AddToCart
-              productId={product.id}
-              options={product.options}
-              price={product.price}
-              oldPrice={product.oldPrice}
-            />
+            <AddToCart product={product} />
           </div>
           <div className="mt-10">
             <DeliveryInfo />

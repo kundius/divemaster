@@ -63,14 +63,14 @@ export function ProductsPage({ initialData }: ProductsPageProps) {
     //     )
     //   }
     // },
-    {
-      key: 'price',
-      label: 'Цена',
-      sortable: true,
-      headProps: {
-        className: 'w-5/12'
-      }
-    },
+    // {
+    //   key: 'price',
+    //   label: 'Цена',
+    //   sortable: true,
+    //   headProps: {
+    //     className: 'w-5/12'
+    //   }
+    // },
     {
       key: 'active',
       label: 'Активен',

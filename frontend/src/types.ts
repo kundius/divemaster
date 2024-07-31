@@ -23,7 +23,7 @@ export interface OfferEntity {
   title: string | null
   price: number
   product: ProductEntity
-  optionValues: OptionValueEntity[]
+  optionValues?: OptionValueEntity[]
 }
 
 export interface CategoryEntity {
@@ -40,8 +40,7 @@ export interface CategoryEntity {
 
 export interface ProductEntity {
   id: number
-  price: number
-  oldPrice: number | null
+  priceDecrease: number | null
   brand: number | BrandEntity | null
   title: string
   longTitle: string | null

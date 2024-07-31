@@ -71,7 +71,10 @@ export class ProductsService {
 
   async findAll(dto: FindAllProductDto) {
     let exclude: ('description' | 'specifications' | 'exploitation')[] = []
-    let populate: Populate<Product, 'images' | 'brand' | 'categories'> = []
+    let populate: Populate<
+      Product,
+      'images' | 'brand' | 'categories' | 'offers' | 'offers.optionValues'
+    > = []
     let filters: FilterOptions = []
     let populateOrderBy: OrderDefinition<Product> = {}
     let populateWhere: ObjectQuery<Product> = {}
@@ -81,6 +84,10 @@ export class ProductsService {
       populate = [...populate, 'images']
       populateOrderBy = { ...populateOrderBy, images: { rank: QueryOrder.ASC } }
       populateWhere = { ...populateWhere, images: { active: true } }
+    }
+
+    if (dto?.withOffers) {
+      populate = [...populate, 'offers', 'offers.optionValues']
     }
 
     if (dto?.withBrand) {
@@ -149,10 +156,17 @@ export class ProductsService {
 
   async findOne(id: number, dto?: FindOneProductDto) {
     let exclude: ('description' | 'specifications' | 'exploitation')[] = []
-    let populate: Populate<Product, 'images' | 'brand' | 'categories'> = []
+    let populate: Populate<
+      Product,
+      'images' | 'brand' | 'categories' | 'offers' | 'offers.optionValues'
+    > = []
     let filters: FilterOptions = []
     let populateOrderBy: OrderDefinition<Product> = {}
     let populateWhere: ObjectQuery<Product> = {}
+
+    if (dto?.withOffers) {
+      populate = [...populate, 'offers', 'offers.optionValues']
+    }
 
     if (dto?.withImages) {
       populate = [...populate, 'images']
@@ -196,10 +210,17 @@ export class ProductsService {
 
   async findOneByAlias(alias: string, dto?: FindOneProductDto) {
     let exclude: ('description' | 'specifications' | 'exploitation')[] = []
-    let populate: Populate<Product, 'images' | 'brand' | 'categories'> = []
+    let populate: Populate<
+      Product,
+      'images' | 'brand' | 'categories' | 'offers' | 'offers.optionValues'
+    > = []
     let filters: FilterOptions = []
     let populateOrderBy: OrderDefinition<Product> = {}
     let populateWhere: ObjectQuery<Product> = {}
+
+    if (dto?.withOffers) {
+      populate = [...populate, 'offers', 'offers.optionValues']
+    }
 
     if (dto?.withImages) {
       populate = [...populate, 'images']

@@ -9,8 +9,8 @@ export class ProductFactory extends Factory<Product> {
   definition(): Partial<Product> {
     const title = faker.lorem.sentence()
     const alias = slugify(title)
-    const price = faker.number.int({ min: 1000, max: 1000000 })
+    // const price = faker.number.int({ min: 1000, max: 1000000 })
     const active = faker.number.float() < 0.9
-    return { title, alias, price, active }
+    return { title, alias, active }
   }
 }

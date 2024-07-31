@@ -518,17 +518,8 @@
           "nullable": true,
           "mappedType": "string"
         },
-        "price": {
-          "name": "price",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "integer"
-        },
-        "old_price": {
-          "name": "old_price",
+        "price_decrease": {
+          "name": "price_decrease",
           "type": "int",
           "unsigned": false,
           "autoincrement": false,

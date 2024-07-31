@@ -35,7 +35,7 @@ import { toast } from 'sonner'
 
 export interface ProductOffersUpdateDialogProps {
   productId: number
-  offerId: number
+  offer: OfferEntity
   options: OptionEntity[]
   onSuccess?: () => void
   defaultValues?: Fields
@@ -49,7 +49,7 @@ interface Fields {
 
 export function ProductOffersUpdateDialog({
   productId,
-  offerId,
+  offer,
   options,
   children,
   onSuccess,
@@ -58,7 +58,17 @@ export function ProductOffersUpdateDialog({
   const [show, toggleShow] = useToggle(false)
   const [loading, toggleLoading] = useToggle(false)
   const form = useForm<Fields>({
-    defaultValues
+    defaultValues: {
+      price: String(offer.price),
+      title: offer.title || '',
+      options: options.reduce((previousValue, currentValue) => {
+        const foundValue = offer.optionValues.find((item) => item.option === currentValue.id)
+        return {
+          ...previousValue,
+          [currentValue.key]: foundValue ? String(foundValue.id) : undefined
+        }
+      }, {})
+    }
   })
 
   const onSubmit: SubmitHandler<Fields> = async (data) => {
@@ -66,7 +76,7 @@ export function ProductOffersUpdateDialog({
 
     try {
       await apiPatch(
-        `products/${productId}/offers/${offerId}`,
+        `products/${productId}/offers/${offer.id}`,
         {
           title: data.title,
           price: Number(data.price),
@@ -94,7 +104,7 @@ export function ProductOffersUpdateDialog({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <DialogHeader>
-              <DialogTitle>Добавить вариант</DialogTitle>
+              <DialogTitle>Редактировать вариант</DialogTitle>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <FormField

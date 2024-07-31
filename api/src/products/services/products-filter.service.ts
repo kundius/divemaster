@@ -74,7 +74,7 @@ export class ProductsFilterService {
       const record: DataRecord = {
         id: product.id,
         title: product.title,
-        price: product.price,
+        price: 0, // определение цены товара
         inStock: product.inStock,
         recent: product.recent,
         favorite: product.favorite

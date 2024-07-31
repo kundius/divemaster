@@ -1,37 +1,42 @@
 'use client'
 
-import { cn, displayPrice } from '@/lib/utils'
+import { cn, displayPrice, productPrice } from '@/lib/utils'
 import styles from './AddToCart.module.scss'
-import { OptionEntity, OptionType } from '@/types'
+import { OptionEntity, OptionType, ProductEntity } from '@/types'
 import { useElementSize } from '@reactuses/core'
 import { useLayoutEffect, useRef, useState } from 'react'
 import { OptionsVariant } from './OptionsVariant'
 import { OptionsColor } from './OptionsColor'
 
 export interface AddToCartProps {
-  options?: OptionEntity[]
-  productId: number
-  oldPrice: number | null
-  price: number
+  // options?: OptionEntity[]
+  // productId: number
+  // oldPrice: number | null
+  product: ProductEntity
 }
 
-export function AddToCart({ options, productId, oldPrice, price }: AddToCartProps) {
-  const discount = oldPrice ? Math.round(((oldPrice - price) / price) * 100) : 0
+export function AddToCart({ product }: AddToCartProps) {
+  console.log(product)
+  const [formatPrice, rawPrice] = productPrice(product)
 
   const [params, setParams] = useState<Record<string, string>>({})
 
   const addHandler = () => {
-    console.log(productId, params)
+    console.log(product, params)
   }
 
   return (
     <div className="space-y-12">
       <div>
-        {discount > 0 && <div className={styles.discount}>-{discount}%</div>}
-        {oldPrice && <div className={styles.oldPrice}>{displayPrice(oldPrice)}</div>}
-        <div className={styles.realPrice}>{displayPrice(price)}</div>
+        {product.priceDecrease && <div className={styles.discount}>-{product.priceDecrease}%</div>}
+        {product.priceDecrease && rawPrice && (
+          <div className={styles.oldPrice}>
+            {displayPrice(rawPrice + rawPrice * (product.priceDecrease / 100))}
+          </div>
+        )}
+        <div className={styles.realPrice}>{formatPrice}</div>
       </div>
-      {options && options.length > 0 && (
+      {/* {options && options.length > 0 && (
         <div className={styles.options}>
           {options.map((option) => {
             if (!option.inCart || typeof option.value === 'undefined') return null
@@ -75,7 +80,7 @@ export function AddToCart({ options, productId, oldPrice, price }: AddToCartProp
             return null
           })}
         </div>
-      )}
+      )} */}
       <div className={styles.actions}>
         <button className={cn(styles.action, styles.actionCart)} onClick={addHandler}>
           <svg viewBox="0 0 19 17" width="19" height="17">

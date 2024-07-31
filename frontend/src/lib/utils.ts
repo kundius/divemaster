@@ -1,4 +1,4 @@
-import { FileEntity, FileEntityOptions } from '@/types'
+import { FileEntity, FileEntityOptions, ProductEntity } from '@/types'
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import slugifyFn from 'slugify'
@@ -126,3 +126,18 @@ export function pluck<T, V extends keyof T>(typeFrom: T[], properties: V) {
   return typeFrom.map((prop) => prop[properties])
 }
 
+export function productPrice(product: ProductEntity): [string, number | undefined] {
+  if (!product.offers || product.offers.length === 0) {
+    return ['Цена по запросу', undefined]
+  }
+
+  const baseOffer = product.offers.find((o) => o.optionValues && o.optionValues.length === 0)
+
+  if (baseOffer && product.offers.length === 1) {
+    return [displayPrice(baseOffer.price), baseOffer.price]
+  }
+
+  const min = Math.min(...product.offers.map((o) => o.price))
+
+  return [`от ${displayPrice(min)}`, min]
+}

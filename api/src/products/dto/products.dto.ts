@@ -29,6 +29,10 @@ export class FindOneProductDto {
 
   @ParseBooleanString()
   @IsBoolean()
+  withOffers: boolean = false
+
+  @ParseBooleanString()
+  @IsBoolean()
   withImages: boolean = false
 
   @ParseBooleanString()
@@ -88,6 +92,10 @@ export class FindAllProductDto extends PaginationQueryDto {
   @IsBoolean()
   withOptions: boolean = false
 
+  @ParseBooleanString()
+  @IsBoolean()
+  withOffers: boolean = false
+
   @Type(() => Boolean)
   @IsBoolean()
   withBrand: boolean = false
@@ -122,12 +130,8 @@ export class CreateProductDto {
 
   @Type(() => Number)
   @IsNumber()
-  price: number
-
-  @Type(() => Number)
-  @IsNumber()
   @IsOptional()
-  oldPrice: number
+  priceDecrease: number
 
   @Type(() => String)
   @IsString()

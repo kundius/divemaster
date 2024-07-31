@@ -18,8 +18,7 @@ export function ProductsCreatePage() {
     defaultValues: {
       title: '',
       alias: '',
-      price: 0,
-      oldPrice: null,
+      priceDecrease: null,
       longTitle: null,
       description: null,
       specifications: null,

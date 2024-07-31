@@ -71,23 +71,10 @@ export function ProductOffers({ productId, options }: ProductOffersProps) {
               <TableCell className="w-0">
                 <div className="flex gap-2">
                   <ProductOffersUpdateDialog
-                    offerId={offer.id}
+                    offer={offer}
                     productId={productId}
                     options={options}
                     onSuccess={offersQuery.refetch}
-                    defaultValues={{
-                      price: String(offer.price),
-                      title: offer.title || '',
-                      options: options.reduce((previousValue, currentValue) => {
-                        const foundValue = offer.optionValues.find(
-                          (item) => item.option === currentValue.id
-                        )
-                        return {
-                          ...previousValue,
-                          [currentValue.key]: foundValue ? String(foundValue.id) : undefined
-                        }
-                      }, {})
-                    }}
                   >
                     <Button variant="outline" size="sm-icon">
                       <PencilIcon className="w-4 h-4" />

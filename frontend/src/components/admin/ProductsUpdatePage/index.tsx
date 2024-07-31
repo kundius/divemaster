@@ -21,8 +21,7 @@ export function ProductsUpdatePage({ initialData }: ProductsUpdatePageProps) {
     defaultValues: {
       title: initialData.title,
       alias: initialData.alias,
-      price: initialData.price,
-      oldPrice: initialData.oldPrice,
+      priceDecrease: initialData.priceDecrease,
       longTitle: initialData.longTitle,
       description: initialData.description,
       specifications: initialData.specifications,

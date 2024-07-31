@@ -15,12 +15,8 @@ export function ProductCreate() {
     defaultValues: {
       title: '',
       alias: '',
-      price: 0,
-      oldPrice: null,
+      priceDecrease: null,
       longTitle: null,
-      description: null,
-      specifications: null,
-      exploitation: null,
       sku: null,
       brandId: null,
       active: true,

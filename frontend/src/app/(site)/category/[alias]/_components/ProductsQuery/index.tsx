@@ -71,6 +71,7 @@ export function ProductsQuery({
     category: categoryId,
     withImages: true,
     withBrand: true,
+    withOffers: true,
     active: true,
     favorite: isParent,
     sort,

@@ -9,12 +9,13 @@ export interface ProductCardProps {
   id: number
   title: string
   href: string
-  price: number
+  price: string
   images: string[]
 
   favorite?: boolean
   recent?: boolean
   oldPrice?: number
+  discount?: number
   brand?: string
   colors?: string[]
   sizes?: string[]
@@ -29,6 +30,7 @@ export function ProductCard({
   images,
   price,
   oldPrice,
+  discount,
   colors,
   sizes,
   brand
@@ -61,11 +63,6 @@ export function ProductCard({
     }, 1200)
   }
 
-  const getDiscount = () => {
-    if (!oldPrice) return 0
-    return Math.round((oldPrice - price) / price * 100)
-  }
-
   if (images.length === 0) {
     images.push('/noimage.png')
   }
@@ -75,7 +72,7 @@ export function ProductCard({
       <div className={styles.meta}>
         {favorite && <div className={styles.hit}>Хит</div>}
         {recent && <div className={styles.new}>New!</div>}
-        {oldPrice && <div className={styles.discount}>-{getDiscount()}%</div>}
+        {oldPrice && <div className={styles.discount}>-{discount}%</div>}
       </div>
       <div className={styles.media}>
         <div className={styles.mediaContainer}>
@@ -97,7 +94,7 @@ export function ProductCard({
         </div>
       </div>
       <div className={styles.prices}>
-        <div className={styles.realPrice}>{displayPrice(price)}</div>
+        <div className={styles.realPrice}>{price}</div>
         {oldPrice && <div className={styles.oldPrice}>{displayPrice(oldPrice)}</div>}
       </div>
       <Link href={href} className={styles.title}>

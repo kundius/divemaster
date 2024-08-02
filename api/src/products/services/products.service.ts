@@ -384,45 +384,6 @@ export class ProductsService {
         populateWhere: { values: { product: productId } }
       }
     )
-
-    for (const option of options) {
-      const optionValues = await this.optionValueRepository.find(
-        {
-          option,
-          product: productId
-        },
-        {
-          orderBy: {
-            rank: QueryOrder.ASC
-          }
-        }
-      )
-
-      let value: Option['value']
-
-      if (optionValues.length === 0) continue
-
-      switch (option.type) {
-        case OptionType.TEXTFIELD:
-          // case OptionType.TEXTAREA:
-          // case OptionType.COMBOBOX:
-          value = optionValues[0].content
-          break
-        case OptionType.COMBOBOOLEAN:
-          value = optionValues[0].content === '1'
-          break
-        case OptionType.NUMBERFIELD:
-          value = Number(optionValues[0].content)
-          break
-        case OptionType.COMBOCOLORS:
-        case OptionType.COMBOOPTIONS:
-          value = optionValues.map((optionValue) => optionValue.content)
-          break
-      }
-
-      wrap(option).assign({ value })
-    }
-
     return options
   }
 

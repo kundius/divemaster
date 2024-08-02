@@ -1,6 +1,6 @@
 import { apiGet } from '@/lib/api'
 import { withServerAuth } from '@/lib/api/with-server-auth'
-import { OfferEntity, OptionEntity } from '@/types'
+import { OfferEntity, OptionEntity, OptionType } from '@/types'
 import { ProductOffers } from '../../_components/ProductOffers'
 
 export default async function Page({ params }: { params: { id: number } }) {
@@ -10,5 +10,9 @@ export default async function Page({ params }: { params: { id: number } }) {
     withServerAuth()
   )
 
-  return <ProductOffers productId={params.id} options={options} />
+  const comboOptions = options.filter((option) =>
+    [OptionType.COMBOCOLORS, OptionType.COMBOOPTIONS].includes(option.type)
+  )
+
+  return <ProductOffers productId={params.id} options={comboOptions} />
 }

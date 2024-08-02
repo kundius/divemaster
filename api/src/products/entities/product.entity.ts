@@ -75,7 +75,7 @@ export class Product {
   @ManyToOne(() => Brand, { nullable: true })
   brand: Brand | null = null
 
-  // ручная выборка опций товаров
+  // для ручной подготовки опций товаров
   @Property({ persist: false })
   options?: Option[]
 }

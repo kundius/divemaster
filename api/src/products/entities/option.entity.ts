@@ -54,8 +54,4 @@ export class Option {
 
   @OneToMany(() => OptionValue, (value) => value.option)
   values = new Collection<OptionValue>(this)
-
-  // при ручной выборке опций товаров также вручную добавляются значения опций
-  @Property({ persist: false })
-  value?: number | boolean | string | string[] | undefined
 }

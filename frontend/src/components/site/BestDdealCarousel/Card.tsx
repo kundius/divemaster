@@ -1,4 +1,4 @@
-import { cn, displayPrice } from '@/lib/utils'
+import { cn, formatPrice } from '@/lib/utils'
 import styles from './Card.module.scss'
 import Image from 'next/image'
 
@@ -27,8 +27,8 @@ export function Card(props: CardProps) {
         </div>
       </div>
       <div className={styles.prices}>
-        <div className={styles.realPrice}>{displayPrice(props.price)}</div>
-        {props.oldPrice && <div className={styles.oldPrice}>{displayPrice(props.oldPrice)}</div>}
+        <div className={styles.realPrice}>{formatPrice(props.price)}</div>
+        {props.oldPrice && <div className={styles.oldPrice}>{formatPrice(props.oldPrice)}</div>}
       </div>
       <a href="#" className={styles.title}>
         {props.title}

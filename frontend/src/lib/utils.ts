@@ -58,7 +58,7 @@ export function enableScroll() {
   styleSheet?.parentNode?.removeChild(styleSheet)
 }
 
-export function displayPrice(value: number) {
+export function formatPrice(value: number) {
   return new Intl.NumberFormat('ru-RU', {
     style: 'currency',
     currency: 'RUB',
@@ -134,10 +134,10 @@ export function productPrice(product: ProductEntity): [string, number | undefine
   const baseOffer = product.offers.find((o) => o.optionValues && o.optionValues.length === 0)
 
   if (baseOffer && product.offers.length === 1) {
-    return [displayPrice(baseOffer.price), baseOffer.price]
+    return [formatPrice(baseOffer.price), baseOffer.price]
   }
 
   const min = Math.min(...product.offers.map((o) => o.price))
 
-  return [`от ${displayPrice(min)}`, min]
+  return [`от ${formatPrice(min)}`, min]
 }

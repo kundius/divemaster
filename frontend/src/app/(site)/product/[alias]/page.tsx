@@ -13,6 +13,8 @@ import { ReviewsShort } from './_components/ReviewsShort'
 import { SpecButton } from './_components/SpecButton'
 import { Warranty } from './_components/Warranty'
 import styles from './_components/page.module.scss'
+import { ProductStoreProvider } from '@/providers/product-store-provider'
+import { Title } from './_components/Title'
 
 export async function generateStaticParams() {
   const products = await apiGet<ApiTableData<ProductEntity>>(`products`, {
@@ -72,48 +74,52 @@ export default async function Page({ params: { alias } }: { params: { alias: str
   }
 
   return (
-    <Container>
-      <div className="pb-6 pt-6">
-        <Breadcrumbs items={crumbs} />
-      </div>
-      <div className={cn(styles.layout, 'mb-40')}>
-        <div className={styles.layoutGallery}>
-          <Gallery items={product.images?.map((item) => getFileUrl(item.file)) || []} />
+    <ProductStoreProvider product={product}>
+      <Container>
+        <div className="pb-6 pt-6">
+          <Breadcrumbs items={crumbs} />
         </div>
-        <div className={styles.layoutInfo}>
-          <div className="flex items-center justify-between mb-2">
-            {!!product.brand && typeof product.brand === 'object' && (
-              <div className={styles.brand}>{product.brand.title}</div>
+        <div className={cn(styles.layout, 'mb-40')}>
+          <div className={styles.layoutGallery}>
+            <Gallery items={product.images?.map((item) => getFileUrl(item.file)) || []} />
+          </div>
+          <div className={styles.layoutInfo}>
+            <div className="flex items-center justify-between mb-2">
+              {!!product.brand && typeof product.brand === 'object' && (
+                <div className={styles.brand}>{product.brand.title}</div>
+              )}
+              <div />
+              <ListActions />
+            </div>
+            <div className={styles.title}>
+              <Title />
+            </div>
+            {!!product.sku && <div className={styles.sku}>{product.sku}</div>}
+            <div className="flex justify-between items-center gap-8 max-w-96 mt-3">
+              <ReviewsShort count={0} rating={4} />
+              {product.specifications && <SpecButton />}
+            </div>
+            <div className="mt-3">
+              <AddToCart />
+            </div>
+            <div className="mt-10">
+              <DeliveryInfo />
+            </div>
+          </div>
+          <div className={styles.layoutWarranty}>
+            <Warranty />
+          </div>
+          <div className={cn(styles.layoutContent, 'space-y-24')}>
+            {product.description && <Description title="Описание" content={product.description} />}
+            {product.specifications && (
+              <Description title="Характеристики" content={product.specifications} />
             )}
-            <div />
-            <ListActions />
-          </div>
-          <h1 className={styles.title}>{product.longTitle || product.title}</h1>
-          {!!product.sku && <div className={styles.sku}>{product.sku}</div>}
-          <div className="flex justify-between items-center gap-8 max-w-96 mt-3">
-            <ReviewsShort count={0} rating={4} />
-            {product.specifications && <SpecButton />}
-          </div>
-          <div className="mt-3">
-            <AddToCart product={product} />
-          </div>
-          <div className="mt-10">
-            <DeliveryInfo />
+            {product.exploitation && (
+              <Description title="Правила эксплуатации" content={product.exploitation} />
+            )}
           </div>
         </div>
-        <div className={styles.layoutWarranty}>
-          <Warranty />
-        </div>
-        <div className={cn(styles.layoutContent, 'space-y-24')}>
-          {product.description && <Description title="Описание" content={product.description} />}
-          {product.specifications && (
-            <Description title="Характеристики" content={product.specifications} />
-          )}
-          {product.exploitation && (
-            <Description title="Правила эксплуатации" content={product.exploitation} />
-          )}
-        </div>
-      </div>
-    </Container>
+      </Container>
+    </ProductStoreProvider>
   )
 }

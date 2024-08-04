@@ -1,4 +1,4 @@
-import { cn, displayPrice } from '@/lib/utils'
+import { cn, formatPrice } from '@/lib/utils'
 import styles from './index.module.scss'
 import Image from 'next/image'
 

@@ -5694,7 +5694,12 @@ zod@^3.22.4:
   resolved "https://registry.npmjs.org/zod/-/zod-3.22.4.tgz"
   integrity sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==
 
-zustand@^4.5.4:
+zustand-computed@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.npmjs.org/zustand-computed/-/zustand-computed-1.4.1.tgz"
+  integrity sha512-yP9Bz1kvb18cGMgSiEzVF04o/A+7NM1EUUv7oeNshnjXEJkAK8wDjSVA1zK6ZsKRgCZoKW/fvBbWuNAJusB/qQ==
+
+zustand@^4.3.8, zustand@^4.5.4:
   version "4.5.4"
   resolved "https://registry.npmjs.org/zustand/-/zustand-4.5.4.tgz"
   integrity sha512-/BPMyLKJPtFEvVL0E9E9BTUM63MNyhPGlvxk1XjrfWTUlV+BR8jufjsovHzrtR6YNcBEcL7cMHovL1n9xHawEg==

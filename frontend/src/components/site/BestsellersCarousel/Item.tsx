@@ -1,6 +1,6 @@
 'use client'
 
-import { cn, displayPrice } from '@/lib/utils'
+import { cn, formatPrice } from '@/lib/utils'
 import styles from './Item.module.scss'
 import Image from 'next/image'
 import { Gallery } from './Gallery'
@@ -83,8 +83,8 @@ export function Item(props: ItemProps) {
       </a>
       <div className={styles.brand}>{props.brand}</div>
       <div className={styles.prices}>
-        {props.oldPrice && <div className={styles.oldPrice}>{displayPrice(props.oldPrice)}</div>}
-        <div className={styles.realPrice}>{displayPrice(props.price)}</div>
+        {props.oldPrice && <div className={styles.oldPrice}>{formatPrice(props.oldPrice)}</div>}
+        <div className={styles.realPrice}>{formatPrice(props.price)}</div>
       </div>
       <div className={styles.purchaseActions}>
         <button className={cn(styles.purchaseAction, styles.purchaseActionCart)}>В корзину</button>

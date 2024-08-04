@@ -1,45 +1,31 @@
-import { cn, displayPrice } from '@/lib/utils'
-import { useRef, useState } from 'react'
-import { Gallery } from './Gallery'
-import styles from './index.module.scss'
+import { cn, getFileUrl } from '@/lib/utils'
+import { useProductStore } from '@/providers/product-store-provider'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useMemo, useRef, useState } from 'react'
+import { Gallery } from './Gallery'
+import styles from './index.module.scss'
 
-export interface ProductCardProps {
-  id: number
-  title: string
-  href: string
-  price: string
-  images: string[]
-
-  favorite?: boolean
-  recent?: boolean
-  oldPrice?: number
-  discount?: number
-  brand?: string
-  colors?: string[]
-  sizes?: string[]
-}
-
-export function ProductCard({
-  id,
-  title,
-  href,
-  favorite = false,
-  recent = false,
-  images,
-  price,
-  oldPrice,
-  discount,
-  colors,
-  sizes,
-  brand
-}: ProductCardProps) {
+export function ProductCard() {
+  const { product, displayOldPrice, displayPrice, selectedOffer } = useProductStore(
+    (state) => state
+  )
   const [showGallery, setShowGallery] = useState(false)
   const [galleryShowNav, setGalleryShowNav] = useState(false)
   const [thumbIndex, setThumbIndex] = useState(0)
   const [startIndex, setStartIndex] = useState(0)
   const showGalleryTimer = useRef<ReturnType<typeof setTimeout>>()
+
+  const images = useMemo(() => {
+    if (!product.images || product.images.length === 0) {
+      return ['/noimage.png']
+    }
+    return product.images.map((item) => getFileUrl(item.file))
+  }, [product])
+
+  const title = selectedOffer?.title ? selectedOffer.title : product.title
+  const brand =
+    product.brand !== null && typeof product.brand === 'object' ? product.brand.title : undefined
 
   const handleMouseEnter = () => {
     if (showGalleryTimer.current) {
@@ -63,16 +49,12 @@ export function ProductCard({
     }, 1200)
   }
 
-  if (images.length === 0) {
-    images.push('/noimage.png')
-  }
-
   return (
     <div className={styles.root} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <div className={styles.meta}>
-        {favorite && <div className={styles.hit}>Хит</div>}
-        {recent && <div className={styles.new}>New!</div>}
-        {oldPrice && <div className={styles.discount}>-{discount}%</div>}
+        {product.favorite && <div className={styles.hit}>Хит</div>}
+        {product.recent && <div className={styles.new}>New!</div>}
+        {product.priceDecrease && <div className={styles.discount}>-{product.priceDecrease}%</div>}
       </div>
       <div className={styles.media}>
         <div className={styles.mediaContainer}>
@@ -94,14 +76,14 @@ export function ProductCard({
         </div>
       </div>
       <div className={styles.prices}>
-        <div className={styles.realPrice}>{price}</div>
-        {oldPrice && <div className={styles.oldPrice}>{displayPrice(oldPrice)}</div>}
+        <div className={styles.realPrice}>{displayPrice}</div>
+        {displayOldPrice && <div className={styles.oldPrice}>{displayOldPrice}</div>}
       </div>
-      <Link href={href} className={styles.title}>
+      <Link href={`/product/${product.alias}`} className={styles.title}>
         {title}
       </Link>
       {brand && <div className={styles.brand}>{brand}</div>}
-      {sizes && (
+      {/* {sizes && (
         <div className={styles.sizes}>
           {sizes.map((item, i) => (
             <div className={styles.size} key={i}>
@@ -112,18 +94,18 @@ export function ProductCard({
             </div>
           ))}
         </div>
-      )}
+      )} */}
       <div className={styles.actions}>
         <button type="button" className={cn(styles.action, styles['action-favorite'])}></button>
         <button type="button" className={cn(styles.action, styles['action-compare'])}></button>
       </div>
-      {colors && (
+      {/* {colors && (
         <div className={styles.colors}>
           {colors.map((color) => (
             <div className={styles.color} key={color} style={{ backgroundColor: color }} />
           ))}
         </div>
-      )}
+      )} */}
       <div className={styles.purchaseActions}>
         <button className={cn(styles.purchaseAction, styles.purchaseActionCart)}>
           <span className={styles.purchaseActionInner}>

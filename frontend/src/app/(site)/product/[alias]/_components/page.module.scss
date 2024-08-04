@@ -7,19 +7,9 @@
 }
 
 .title {
-  font-size: 36px;
-  font-family: var(--font-sans-narrow);
-  color: rgb(0, 0, 0);
-  text-transform: uppercase;
-  line-height: 1.2;
-  margin: 0;
-  font-weight: bold;
   id-template-rows: [gellery-start] auto [gellery-end] 80px [warranty-start] auto [warranty-end] 30px [content-start] auto [content-end];
-
-  @include --max-xl {
-    font-size: 32px;
-  }
 }
+
 
 .sku {
   font-size: 12px;

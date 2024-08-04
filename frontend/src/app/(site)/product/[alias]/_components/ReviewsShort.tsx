@@ -1,4 +1,4 @@
-import { cn, declOfNum, displayPrice } from '@/lib/utils'
+import { cn, declOfNum, formatPrice } from '@/lib/utils'
 import styles from './ReviewsShort.module.scss'
 
 export interface ReviewsShortProps {

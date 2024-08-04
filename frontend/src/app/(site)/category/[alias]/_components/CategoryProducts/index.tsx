@@ -1,7 +1,8 @@
 'use client'
 
-import { ProductCard, ProductCardProps } from '@/components/site/ProductCard'
-import { getFileUrl, productPrice } from '@/lib/utils'
+import { ProductCard } from '@/components/site/ProductCard'
+import { ProductStoreProvider } from '@/providers/product-store-provider'
+
 import { useProductsQuery } from '../ProductsQuery'
 
 export function CategoryProducts() {
@@ -12,27 +13,10 @@ export function CategoryProducts() {
       ref={listRef}
     >
       {data.rows.map((item) => {
-        const [priceLabel, price] = productPrice(item)
-        let oldPrice: ProductCardProps['oldPrice'] = undefined
-        if (item.priceDecrease && price) {
-          oldPrice = price * (item.priceDecrease/100) + price
-        }
         return (
-          <ProductCard
-            key={item.id}
-            id={item.id}
-            title={item.title}
-            href={`/product/${item.alias}`}
-            price={priceLabel}
-            favorite={item.favorite}
-            recent={item.recent}
-            discount={item.priceDecrease || undefined}
-            oldPrice={oldPrice}
-            images={item.images ? item.images.map((item) => getFileUrl(item.file)) : []}
-            brand={
-              item.brand !== null && typeof item.brand === 'object' ? item.brand.title : undefined
-            }
-          />
+          <ProductStoreProvider key={item.id} product={item}>
+            <ProductCard />
+          </ProductStoreProvider>
         )
       })}
     </div>

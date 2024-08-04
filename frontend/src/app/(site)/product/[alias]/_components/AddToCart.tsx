@@ -1,17 +1,11 @@
 'use client'
 
-import { cn, displayPrice, pluck, productPrice } from '@/lib/utils'
-import { parseAsInteger, parseAsString, useQueryState } from 'nuqs'
-import { OfferEntity, OptionEntity, OptionType, OptionValueEntity, ProductEntity } from '@/types'
-import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
+import { cn } from '@/lib/utils'
+import { useProductStore } from '@/providers/product-store-provider'
+import { OptionType } from '@/types'
 import styles from './AddToCart.module.scss'
 import { SelectColor } from './SelectColor'
 import { SelectOption } from './SelectOption'
-import { useMountedState } from '@reactuses/core'
-
-export interface AddToCartProps {
-  product: ProductEntity
-}
 
 const OptionComponents = {
   [OptionType.COMBOCOLORS]: SelectColor,
@@ -21,64 +15,31 @@ const OptionComponents = {
   [OptionType.TEXTFIELD]: undefined
 }
 
-export function AddToCart({ product }: AddToCartProps) {
-  const [formatPrice, rawPrice] = productPrice(product)
-
-  const [selectedValues, setSelectedValues] = useState<Record<string, OptionValueEntity>>({})
-
-  const createSelectValueHandler = (option: OptionEntity) => (value: OptionValueEntity) => {
-    setSelectedValues((prev) => ({ ...prev, [option.key]: value }))
-  }
+export function AddToCart() {
+  const {
+    product,
+    selectOptionValue,
+    selectedOffer,
+    displayOldPrice,
+    displayPrice,
+    selectableOptions,
+    selectedOptionValues
+  } = useProductStore((state) => state)
 
   const addHandler = () => {
-    console.log(product, selectedValues)
+    console.log(product, selectedOptionValues)
   }
-
-  const options = useMemo(() => {
-    return product.options?.filter((o) => !!OptionComponents[o.type]) || []
-  }, [product])
-
-  const sortedOffers = useMemo(() => {
-    return (
-      product.offers
-        ?.sort((a, b) => {
-          if (!a.optionValues || !b.optionValues) return 0
-          if (a.optionValues.length < b.optionValues.length) return -1
-          if (a.optionValues.length > b.optionValues.length) return 1
-          return 0
-        })
-        .reverse() || []
-    )
-  }, [product])
-
-  const selectedOffer = useMemo(() => {
-    return sortedOffers.find((offer) => {
-      if (!offer.optionValues) return false
-      if (offer.optionValues.length === 0 && Object.values(selectedValues).length === 0) return true
-      return pluck(offer.optionValues, 'id').every((id) =>
-        pluck(Object.values(selectedValues), 'id').includes(id)
-      )
-    })
-  }, [selectedValues])
-
-  const oldPrice = selectedOffer?.price || rawPrice
 
   return (
     <div className="space-y-12">
       <div>
         {product.priceDecrease && <div className={styles.discount}>-{product.priceDecrease}%</div>}
-        {product.priceDecrease && oldPrice && (
-          <div className={styles.oldPrice}>
-            {displayPrice(oldPrice + oldPrice * (product.priceDecrease / 100))}
-          </div>
-        )}
-        <div className={styles.realPrice}>
-          {selectedOffer ? displayPrice(selectedOffer.price) : formatPrice}
-        </div>
+        {displayOldPrice && <div className={styles.oldPrice}>{displayOldPrice}</div>}
+        <div className={styles.realPrice}>{displayPrice}</div>
       </div>
-      {options && options.length > 0 && (
+      {selectableOptions.length > 0 && (
         <div className={styles.options}>
-          {options.map((option) => {
+          {selectableOptions.map((option) => {
             if (!option.values || option.values.length === 0) return null
 
             const Component = OptionComponents[option.type]
@@ -90,8 +51,8 @@ export function AddToCart({ product }: AddToCartProps) {
                 key={option.id}
                 caption={option.caption}
                 values={option.values}
-                onSelect={createSelectValueHandler(option)}
-                selected={selectedValues[option.key]}
+                onSelect={(value) => selectOptionValue(option, value)}
+                selected={selectedOptionValues[option.key]}
               />
             )
           })}

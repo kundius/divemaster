@@ -1,15 +1,22 @@
 import { Product } from '@/products/entities/product.entity'
-import { Entity, ManyToOne, Opt, PrimaryKey, PrimaryKeyProp, Property } from '@mikro-orm/core'
+import {
+  Collection,
+  Entity,
+  ManyToMany,
+  ManyToOne,
+  Opt,
+  PrimaryKey,
+  PrimaryKeyProp,
+  Property
+} from '@mikro-orm/core'
 import { Cart } from './cart.entity'
+import { v4 } from 'uuid'
+import { OptionValue } from '@/products/entities/option-value.entity'
 
 @Entity()
 export class CartProduct {
-  constructor(cart: Cart, productKey: string) {
-    this.cart = cart
-    this.productKey = productKey
-  }
-
-  [PrimaryKeyProp]?: ['cart', 'productKey']
+  @PrimaryKey({ type: 'uuid' })
+  id = v4()
 
   @ManyToOne(() => Cart, { deleteRule: 'cascade', primary: true })
   cart!: Cart
@@ -17,15 +24,11 @@ export class CartProduct {
   @ManyToOne(() => Product, { deleteRule: 'cascade' })
   product!: Product
 
-  @PrimaryKey()
-  @Property()
-  productKey: string
-
   @Property({ default: 1, unsigned: true })
   amount: number = 1
 
-  @Property({ type: 'json', nullable: true })
-  options: Record<string, string> | null = null
+  @ManyToMany(() => OptionValue)
+  optionValues = new Collection<OptionValue>(this)
 
   @Property()
   createdAt: Date & Opt = new Date()

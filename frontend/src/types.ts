@@ -137,7 +137,7 @@ export type PageProps<
 }
 
 export interface CartEntity {
-  uuid: string
+  id: string
   user: UserEntity | UserEntity['id'] | null
   products: CartProductEntity[]
   createdAt: string
@@ -145,11 +145,11 @@ export interface CartEntity {
 }
 
 export interface CartProductEntity {
-  cart: CartEntity | CartEntity['uuid']
+  id: string
+  cart: CartEntity | CartEntity['id']
   product: ProductEntity
-  productKey: string
   amount: number
-  options: Record<string, string> | null
   createdAt: string
   updatedAt: string
+  optionValues?: OptionValueEntity[]
 }

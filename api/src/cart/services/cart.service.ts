@@ -19,7 +19,7 @@ export class CartService {
     private cartProductRepository: EntityRepository<CartProduct>,
     @InjectRepository(Product)
     private productRepository: EntityRepository<Product>
-  ) {}
+  ) { }
 
   async createCart(user?: User) {
     if (user && user.cart) {
@@ -45,6 +45,7 @@ export class CartService {
 
   async deleteCart(cartId: string) {
     const cart = await this.cartRepository.findOneOrFail(cartId)
+
     await this.cartRepository.getEntityManager().removeAndFlush(cart)
   }
 
@@ -65,32 +66,38 @@ export class CartService {
   async addProduct(cartId: string, dto: AddProductDto) {
     const cart = await this.cartRepository.findOneOrFail(cartId)
     const product = await this.productRepository.findOneOrFail(dto.id)
-    const productKey = this.generateKey(product, {})
+    console.log(dto.optionValues)
     const cartProduct = await this.cartProductRepository.findOne({
       cart,
-      productKey
+      product,
+      optionValues: {
+        $every: {
+          id: {
+            $in: dto.optionValues
+          }
+        }
+      }
     })
 
     if (cartProduct) {
       cartProduct.amount += 1
       await this.cartProductRepository.getEntityManager().persistAndFlush(cartProduct)
     } else {
-      const cartProduct = new CartProduct(cart, productKey)
-      cartProduct.product = product
-      cartProduct.amount = dto.amount || 1
-      cartProduct.options = dto.options || null
+      const cartProduct = new CartProduct()
+      this.cartProductRepository.assign(cartProduct, {
+        product,
+        cart,
+        amount: dto.amount || 1,
+        optionValues: dto.optionValues || []
+      })
       await this.cartProductRepository.getEntityManager().persistAndFlush(cartProduct)
     }
 
     return this.findProducts(cartId)
   }
 
-  async updateProduct(cartId: string, productKey: string, dto: UpdateProductDto) {
-    const cart = await this.cartRepository.findOneOrFail(cartId)
-    const cartProduct = await this.cartProductRepository.findOneOrFail({
-      cart,
-      productKey
-    })
+  async updateProduct(cartId: string, productId: string, dto: UpdateProductDto) {
+    const cartProduct = await this.cartProductRepository.findOneOrFail(productId)
 
     if (dto.amount) {
       cartProduct.amount = dto.amount
@@ -101,22 +108,19 @@ export class CartService {
     return this.findProducts(cartId)
   }
 
-  async deleteProduct(cartId: string, productKey: string) {
-    const cart = await this.cartRepository.findOneOrFail(cartId)
-    const cartProduct = await this.cartProductRepository.findOneOrFail({
-      cart,
-      productKey
-    })
+  async deleteProduct(cartId: string, productId: string) {
+    const cartProduct = await this.cartProductRepository.findOneOrFail(productId)
+
     await this.cartProductRepository.getEntityManager().removeAndFlush(cartProduct)
 
     return this.findProducts(cartId)
   }
 
-  generateKey(product: Product, options: Record<string, string>): string {
-    let key = String(product.id)
-    if (options) {
-      key += JSON.stringify(options)
-    }
-    return uuidv5(key, this.configService.get('JWT_SECRET_KEY'))
-  }
+  // generateKey(product: Product, options: Record<string, string>): string {
+  //   let key = String(product.id)
+  //   if (options) {
+  //     key += JSON.stringify(options)
+  //   }
+  //   return uuidv5(key, this.configService.get('JWT_SECRET_KEY'))
+  // }
 }

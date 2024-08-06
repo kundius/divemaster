@@ -1393,8 +1393,8 @@
     },
     {
       "columns": {
-        "uuid": {
-          "name": "uuid",
+        "id": {
+          "name": "id",
           "type": "varchar(36)",
           "unsigned": false,
           "autoincrement": false,
@@ -1448,7 +1448,7 @@
         {
           "keyName": "PRIMARY",
           "columnNames": [
-            "uuid"
+            "id"
           ],
           "composite": false,
           "constraint": true,
@@ -1476,8 +1476,8 @@
     },
     {
       "columns": {
-        "cart_uuid": {
-          "name": "cart_uuid",
+        "id": {
+          "name": "id",
           "type": "varchar(36)",
           "unsigned": false,
           "autoincrement": false,
@@ -1486,13 +1486,14 @@
           "length": 36,
           "mappedType": "string"
         },
-        "product_key": {
-          "name": "product_key",
-          "type": "varchar(255)",
+        "cart_id": {
+          "name": "cart_id",
+          "type": "varchar(36)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
+          "length": 36,
           "mappedType": "string"
         },
         "product_id": {
@@ -1513,15 +1514,6 @@
           "nullable": false,
           "default": "1",
           "mappedType": "integer"
-        },
-        "options": {
-          "name": "options",
-          "type": "json",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "json"
         },
         "created_at": {
           "name": "created_at",
@@ -1548,10 +1540,10 @@
       "indexes": [
         {
           "columnNames": [
-            "cart_uuid"
+            "cart_id"
           ],
           "composite": false,
-          "keyName": "cart_product_cart_uuid_index",
+          "keyName": "cart_product_cart_id_index",
           "constraint": false,
           "primary": false,
           "unique": false
@@ -1569,8 +1561,8 @@
         {
           "keyName": "PRIMARY",
           "columnNames": [
-            "cart_uuid",
-            "product_key"
+            "id",
+            "cart_id"
           ],
           "composite": true,
           "constraint": true,
@@ -1580,14 +1572,14 @@
       ],
       "checks": [],
       "foreignKeys": {
-        "cart_product_cart_uuid_foreign": {
-          "constraintName": "cart_product_cart_uuid_foreign",
+        "cart_product_cart_id_foreign": {
+          "constraintName": "cart_product_cart_id_foreign",
           "columnNames": [
-            "cart_uuid"
+            "cart_id"
           ],
           "localTableName": "cart_product",
           "referencedColumnNames": [
-            "uuid"
+            "id"
           ],
           "referencedTableName": "cart",
           "deleteRule": "cascade",
@@ -1603,6 +1595,107 @@
             "id"
           ],
           "referencedTableName": "product",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "cart_product_id": {
+          "name": "cart_product_id",
+          "type": "varchar(36)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 36,
+          "mappedType": "string"
+        },
+        "cart_product_cart_id": {
+          "name": "cart_product_cart_id",
+          "type": "varchar(36)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 36,
+          "mappedType": "string"
+        },
+        "option_value_id": {
+          "name": "option_value_id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        }
+      },
+      "name": "cart_product_option_values",
+      "indexes": [
+        {
+          "columnNames": [
+            "option_value_id"
+          ],
+          "composite": false,
+          "keyName": "cart_product_option_values_option_value_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "cart_product_option_values_cart_product_id_cart_pro_336d4_index",
+          "columnNames": [
+            "cart_product_id",
+            "cart_product_cart_id"
+          ],
+          "composite": true,
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "PRIMARY",
+          "columnNames": [
+            "cart_product_id",
+            "cart_product_cart_id",
+            "option_value_id"
+          ],
+          "composite": true,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "cart_product_option_values_cart_product_id_cart_p_3e721_foreign": {
+          "constraintName": "cart_product_option_values_cart_product_id_cart_p_3e721_foreign",
+          "columnNames": [
+            "cart_product_id",
+            "cart_product_cart_id"
+          ],
+          "localTableName": "cart_product_option_values",
+          "referencedColumnNames": [
+            "id",
+            "cart_id"
+          ],
+          "referencedTableName": "cart_product",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "cart_product_option_values_option_value_id_foreign": {
+          "constraintName": "cart_product_option_values_option_value_id_foreign",
+          "columnNames": [
+            "option_value_id"
+          ],
+          "localTableName": "cart_product_option_values",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "option_value",
           "deleteRule": "cascade",
           "updateRule": "cascade"
         }

@@ -45,18 +45,18 @@ export class CartController {
     return this.cartService.addProduct(cartId, dto)
   }
 
-  @Post(':cartId/products/:productKey')
+  @Post(':cartId/products/:productId')
   async updateProduct(
     @Param('cartId') cartId: string,
-    @Param('productKey') productKey: string,
+    @Param('productId') productId: string,
     @Body() dto: UpdateProductDto,
     @CurrentUser() user?: User
   ) {
-    return this.cartService.updateProduct(cartId, productKey, dto)
+    return this.cartService.updateProduct(cartId, productId, dto)
   }
 
-  @Delete(':cartId/products/:productKey')
-  async deleteProduct(@Param('cartId') cartId: string, @Param('productKey') productKey: string) {
-    return this.cartService.deleteProduct(cartId, productKey)
+  @Delete(':cartId/products/:productId')
+  async deleteProduct(@Param('cartId') cartId: string, @Param('productId') productId: string) {
+    return this.cartService.deleteProduct(cartId, productId)
   }
 }

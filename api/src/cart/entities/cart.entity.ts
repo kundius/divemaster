@@ -7,6 +7,7 @@ import {
   OneToOne,
   Opt,
   PrimaryKey,
+  PrimaryKeyProp,
   Property
 } from '@mikro-orm/core'
 import { CartProduct } from './cart-product.entity'
@@ -15,7 +16,7 @@ import { v4 } from 'uuid'
 @Entity()
 export class Cart {
   @PrimaryKey({ type: 'uuid' })
-  uuid = v4()
+  id = v4()
 
   @OneToOne(() => User, { nullable: true, deleteRule: 'set null' })
   user: User | null = null

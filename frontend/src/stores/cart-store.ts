@@ -11,7 +11,7 @@ export type CartState = {
 
 export type CartActions = {
   loadCart(): Promise<void>
-  addToCart(item: { id: number; amount?: number; options?: string | null }): Promise<void>
+  addToCart(item: { id: number; amount?: number; optionValues?: number[] }): Promise<void>
   removeFromCart(product: CartProductEntity): Promise<void>
   changeAmount(product: CartProductEntity): Promise<void>
   deleteCart(): Promise<void>
@@ -31,7 +31,7 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
       let cartId = null
       try {
         const data = await apiPut<CartEntity>('cart', {}, withClientAuth())
-        cartId = data.uuid
+        cartId = data.id
         set({ cartId })
         get().saveCartId(cartId)
       } catch (e) {}
@@ -65,7 +65,7 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
       if (!cartId) cartId = await get().createCart()
       if (!cartId) return
       try {
-        const params = { id: item.id, amount: item.amount || 1, options: item.options || null }
+        const params = { id: item.id, amount: item.amount || 1, optionValues: item.optionValues || [] }
         const cartProducts = await apiPut<CartProductEntity[]>(
           `cart/${cartId}/products`,
           params,
@@ -83,7 +83,7 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
 
       try {
         const cartProducts = await apiDelete<CartProductEntity[]>(
-          `cart/${cartId}/products/${product.productKey}`,
+          `cart/${cartId}/products/${product.id}`,
           {},
           withClientAuth()
         )
@@ -105,7 +105,7 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
       try {
         const params = { amount: product.amount }
         const cartProducts = await apiPost<CartProductEntity[]>(
-          `cart/${cartId}/products/${product.productKey}`,
+          `cart/${cartId}/products/${product.id}`,
           params,
           withClientAuth()
         )

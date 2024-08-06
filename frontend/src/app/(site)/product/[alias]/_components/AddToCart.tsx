@@ -6,6 +6,8 @@ import { OptionType } from '@/types'
 import styles from './AddToCart.module.scss'
 import { SelectColor } from './SelectColor'
 import { SelectOption } from './SelectOption'
+import { useCartStore } from '@/providers/cart-store-provider'
+import { Button } from '@/components/ui/button'
 
 const OptionComponents = {
   [OptionType.COMBOCOLORS]: SelectColor,
@@ -16,6 +18,7 @@ const OptionComponents = {
 }
 
 export function AddToCart() {
+  const { cartId, cartProducts, addToCart, removeFromCart, deleteCart, changeAmount } = useCartStore((state) => state)
   const {
     product,
     selectOptionValue,
@@ -27,6 +30,10 @@ export function AddToCart() {
   } = useProductStore((state) => state)
 
   const addHandler = () => {
+    addToCart({
+      id: product.id,
+      optionValues: Object.values(selectedOptionValues).map(item => item.id)
+    })
     console.log(product, selectedOptionValues)
   }
 
@@ -58,6 +65,25 @@ export function AddToCart() {
           })}
         </div>
       )}
+      <div>
+        <Button onClick={() => deleteCart()}>Очистить</Button>
+        <br />
+        Cart ID: {cartId}
+        <div className='flex gap-2 flex-col mt-4'>
+          {cartProducts.map((item) => (
+            <div key={item.id} className='flex justify-between items-center gap-2'>
+              <div>{item.product.title}: {item.amount}</div>
+              <Button
+                onClick={() =>
+                  removeFromCart(item)
+                }
+              >
+                remove
+              </Button>
+            </div>
+          ))}
+        </div>
+      </div>
       <div className={styles.actions}>
         <button className={cn(styles.action, styles.actionCart)} onClick={addHandler}>
           <svg viewBox="0 0 19 17" width="19" height="17">

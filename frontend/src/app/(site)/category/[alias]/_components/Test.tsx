@@ -15,7 +15,7 @@ export function Test() {
       Cart ID: {cartId}
       <div className='flex gap-2 flex-col mt-4'>
         {cartProducts.map((item) => (
-          <div key={item.productKey} className='flex justify-between items-center gap-2'>
+          <div key={item.uuid} className='flex justify-between items-center gap-2'>
             <div>{item.product.title}: {item.amount}</div>
             <Button
               onClick={() =>

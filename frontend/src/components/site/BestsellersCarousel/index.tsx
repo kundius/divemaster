@@ -6,6 +6,7 @@ import useEmblaCarousel from 'embla-carousel-react'
 import styles from './index.module.scss'
 import { ProductEntity } from '@/types'
 import { getFileUrl } from '@/lib/utils'
+import { ProductStoreProvider } from '@/providers/product-store-provider'
 
 export interface BestsellersCarouselProps {
   items: ProductEntity[]
@@ -31,22 +32,9 @@ export function BestsellersCarousel({ items }: BestsellersCarouselProps) {
           <div className={styles.container}>
             {items.map((item, i) => (
               <div className={styles.slide} key={i}>
-                <ProductCard
-                  key={item.id}
-                  id={item.id}
-                  title={item.title}
-                  href={`/product/${item.alias}`}
-                  price={item.price}
-                  favorite={item.favorite}
-                  recent={item.recent}
-                  oldPrice={item.oldPrice || undefined}
-                  images={item.images ? item.images.map((item) => getFileUrl(item.file)) : []}
-                  brand={
-                    item.brand !== null && typeof item.brand === 'object'
-                      ? item.brand.title
-                      : undefined
-                  }
-                />
+                <ProductStoreProvider product={item}>
+                  <ProductCard />
+                </ProductStoreProvider>
               </div>
             ))}
           </div>

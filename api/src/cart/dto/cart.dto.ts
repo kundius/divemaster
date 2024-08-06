@@ -1,23 +1,24 @@
 import { Type } from 'class-transformer'
-import { IsNumber, IsOptional } from 'class-validator'
+import { IsArray, IsNumber, IsOptional } from 'class-validator'
 
 export class AddProductDto {
   @Type(() => Number)
   @IsNumber()
-  readonly id: number
+  id: number
 
   @Type(() => Number)
   @IsNumber()
   @IsOptional()
-  readonly amount?: number
+  amount?: number
 
-  @IsOptional()
-  readonly options?: Record<string, string>
+  @Type(() => Array)
+  @IsArray()
+  optionValues?: number[]
 }
 
 export class UpdateProductDto {
   @Type(() => Number)
   @IsNumber()
   @IsOptional()
-  readonly amount?: number
+  amount?: number
 }

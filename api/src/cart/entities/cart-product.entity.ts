@@ -6,7 +6,6 @@ import {
   ManyToOne,
   Opt,
   PrimaryKey,
-  PrimaryKeyProp,
   Property
 } from '@mikro-orm/core'
 import { Cart } from './cart.entity'
@@ -18,7 +17,7 @@ export class CartProduct {
   @PrimaryKey({ type: 'uuid' })
   id = v4()
 
-  @ManyToOne(() => Cart, { deleteRule: 'cascade', primary: true })
+  @ManyToOne(() => Cart, { deleteRule: 'cascade' })
   cart!: Cart
 
   @ManyToOne(() => Product, { deleteRule: 'cascade' })
@@ -35,4 +34,13 @@ export class CartProduct {
 
   @Property({ onUpdate: () => new Date() })
   updatedAt: Date & Opt = new Date()
+
+  @Property({ persist: false })
+  oldPrice?: number | undefined
+
+  @Property({ persist: false })
+  price?: number
+
+  @Property({ persist: false })
+  active?: boolean
 }

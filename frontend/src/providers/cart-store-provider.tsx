@@ -33,7 +33,7 @@ export const CartStoreProvider = ({ children }: CartStoreProviderProps) => {
     let cartId: string | null = localStorage.getItem('cartId')
 
     if (auth.user && auth.user.cart) {
-      cartId = auth.user.cart.uuid
+      cartId = auth.user.cart.id
     }
 
     if (auth.user && !auth.user.cart && cartId) {

@@ -5,8 +5,12 @@ import styles from './Toolbar.module.scss'
 import Link from 'next/link'
 import { useMobileNavigation } from './MobileNavigation'
 import { useAuthStore } from '@/providers/auth-store-provider'
+import { useCartStore } from '@/providers/cart-store-provider'
 
 export function Toolbar() {
+  const { cartId, cartProducts, addToCart, removeFromCart, deleteCart, changeAmount } =
+    useCartStore((state) => state)
+
   const mobileNavigation = useMobileNavigation()
   const auth = useAuthStore((state) => state)
 
@@ -34,10 +38,10 @@ export function Toolbar() {
         <span className={cn(styles.icon, styles['icon-catalog'])}></span>
         <span className={styles.title}>Каталог</span>
       </button>
-      <Link href="#" className={cn(styles.button, 'block')}>
+      <Link href="/cart" className={cn(styles.button, 'block')}>
         <span className={cn(styles.icon, styles['icon-cart'])}></span>
         <span className={styles.title}>Корзина</span>
-        <span className={styles.badge}>0</span>
+        {cartProducts.length > 0 && <span className={styles.badge}>{cartProducts.length}</span>}
       </Link>
       <Link href="#" className={cn(styles.button, 'block')}>
         <span className={cn(styles.icon, styles['icon-favorites'])}></span>

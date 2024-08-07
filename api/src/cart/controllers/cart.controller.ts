@@ -49,8 +49,7 @@ export class CartController {
   async updateProduct(
     @Param('cartId') cartId: string,
     @Param('productId') productId: string,
-    @Body() dto: UpdateProductDto,
-    @CurrentUser() user?: User
+    @Body() dto: UpdateProductDto
   ) {
     return this.cartService.updateProduct(cartId, productId, dto)
   }

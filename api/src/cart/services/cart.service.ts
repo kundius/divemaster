@@ -1,11 +1,10 @@
-import { EntityRepository } from '@mikro-orm/mariadb'
+import { EntityRepository, ObjectQuery, wrap } from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { Injectable } from '@nestjs/common'
 import { CartProduct } from '../entities/cart-product.entity'
 import { Cart } from '../entities/cart.entity'
 import { User } from '@/users/entities/user.entity'
 import { Product } from '@/products/entities/product.entity'
-import { v5 as uuidv5 } from 'uuid'
 import { ConfigService } from '@nestjs/config'
 import { AddProductDto, UpdateProductDto } from '../dto/cart.dto'
 
@@ -19,7 +18,7 @@ export class CartService {
     private cartProductRepository: EntityRepository<CartProduct>,
     @InjectRepository(Product)
     private productRepository: EntityRepository<Product>
-  ) { }
+  ) {}
 
   async createCart(user?: User) {
     if (user && user.cart) {
@@ -49,38 +48,75 @@ export class CartService {
     await this.cartRepository.getEntityManager().removeAndFlush(cart)
   }
 
+  async calcProduct(cartProduct: CartProduct) {
+    const cartProductIds = cartProduct.optionValues.getIdentifiers()
+    await cartProduct.product.offers.init({
+      populate: ['optionValues']
+    })
+    const offer = cartProduct.product.offers.find((offer) => {
+      const offerIds = offer.optionValues.getIdentifiers()
+      if (offerIds.length !== cartProductIds.length) return false
+      return offerIds.every((id) => cartProductIds.includes(id))
+    })
+
+    // если торговое предложение не найдено, то позиция в корзине считается неактивной
+    this.cartProductRepository.assign(cartProduct, {
+      active: !!offer
+    })
+
+    // если торговое предложение найдено, то считаем стоимость позиции с учетом скидок
+    if (offer) {
+      // расчет скидок выполнить здесь
+      this.cartProductRepository.assign(cartProduct, {
+        price: offer.price
+      })
+    }
+
+    // тут пока так, но с добавлением скидок нужно объеденить в старую цену и скидки и статичное снижение стоимости
+    if (offer && cartProduct.product.priceDecrease) {
+      this.cartProductRepository.assign(cartProduct, {
+        oldPrice: offer.price * (cartProduct.product.priceDecrease / 100) + offer.price
+      })
+    }
+  }
+
   async findProducts(cartId: string) {
-    return this.cartProductRepository.find(
+    const products = await this.cartProductRepository.find(
       {
         cart: cartId
       },
       {
-        populate: ['product'],
+        populate: ['product', 'optionValues'],
         orderBy: {
           createdAt: 'DESC'
         }
       }
     )
+
+    await Promise.all(products.map(this.calcProduct.bind(this)))
+
+    return products
   }
 
   async addProduct(cartId: string, dto: AddProductDto) {
     const cart = await this.cartRepository.findOneOrFail(cartId)
     const product = await this.productRepository.findOneOrFail(dto.id)
-    console.log(dto.optionValues)
-    const cartProduct = await this.cartProductRepository.findOne({
-      cart,
-      product,
-      optionValues: {
-        $every: {
-          id: {
-            $in: dto.optionValues
-          }
-        }
+    const cartProducts = await this.cartProductRepository.find(
+      { cart, product },
+      {
+        populate: ['optionValues']
       }
+    )
+    const cartProduct = cartProducts.find((cartProduct) => {
+      if (dto.optionValues && dto.optionValues.length) {
+        const identifiers = cartProduct.optionValues.getIdentifiers()
+        return dto.optionValues.every((id) => identifiers.includes(id))
+      }
+      return cartProduct.optionValues.isEmpty()
     })
 
     if (cartProduct) {
-      cartProduct.amount += 1
+      cartProduct.amount += dto.amount || 1
       await this.cartProductRepository.getEntityManager().persistAndFlush(cartProduct)
     } else {
       const cartProduct = new CartProduct()

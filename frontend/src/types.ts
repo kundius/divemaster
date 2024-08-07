@@ -152,4 +152,7 @@ export interface CartProductEntity {
   createdAt: string
   updatedAt: string
   optionValues?: OptionValueEntity[]
+  oldPrice?: number
+  price?: number
+  active?: boolean
 }

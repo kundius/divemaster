@@ -79,30 +79,26 @@ const computeState = (state: ProductStore): ComputedStore => {
 const SELECTABLE_OPTION_TYPES = [OptionType.COMBOCOLORS, OptionType.COMBOOPTIONS]
 
 export const createProductStore = (product: ProductEntity) => {
-  const getSelectableOptions = () => {
-    if (!product.options) return []
-    return product.options.filter(({ type }) => SELECTABLE_OPTION_TYPES.includes(type))
-  }
+  const selectableOptions = (product.options || []).filter((option) => {
+    return SELECTABLE_OPTION_TYPES.includes(option.type)
+  })
 
-  const getSortedOffers = () => {
-    if (!product.offers) return []
-    return product.offers
-      .sort((a, b) => {
-        if (!a.optionValues || !b.optionValues) return 0
-        if (a.optionValues.length < b.optionValues.length) return -1
-        if (a.optionValues.length > b.optionValues.length) return 1
-        return 0
-      })
-      .reverse()
-  }
+  const sortedOffers = (product.offers || [])
+    .sort((a, b) => {
+      if (!a.optionValues || !b.optionValues) return 0
+      if (a.optionValues.length < b.optionValues.length) return -1
+      if (a.optionValues.length > b.optionValues.length) return 1
+      return 0
+    })
+    .reverse()
 
   return createStore<ProductStore>()(
     computed(
       (set, get) => ({
         product,
+        selectableOptions,
+        sortedOffers,
         selectedOptionValues: {},
-        selectableOptions: getSelectableOptions(),
-        sortedOffers: getSortedOffers(),
         selectedOffer: undefined,
 
         selectOptionValue(option, value) {

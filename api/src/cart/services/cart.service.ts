@@ -1,4 +1,4 @@
-import { EntityRepository, ObjectQuery, wrap } from '@mikro-orm/mariadb'
+import { EntityRepository, ObjectQuery, QueryOrder, wrap } from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { Injectable } from '@nestjs/common'
 import { CartProduct } from '../entities/cart-product.entity'
@@ -6,16 +6,25 @@ import { Cart } from '../entities/cart.entity'
 import { User } from '@/users/entities/user.entity'
 import { Product } from '@/products/entities/product.entity'
 import { ConfigService } from '@nestjs/config'
-import { AddProductDto, UpdateProductDto } from '../dto/cart.dto'
+import { AddProductDto, TemporaryCreateOrderDto, UpdateProductDto } from '../dto/cart.dto'
+import { Order } from '@/order/entities/order.entity'
+import { OrderProduct } from '@/order/entities/order-product.entity'
+import { LetterService } from '@/notifications/services/letter.service'
+import { content as letterNewToManager } from '@/notifications/templates/order/new-to-manager'
 
 @Injectable()
 export class CartService {
   constructor(
+    private letterService: LetterService,
     private configService: ConfigService,
     @InjectRepository(Cart)
     private cartRepository: EntityRepository<Cart>,
     @InjectRepository(CartProduct)
     private cartProductRepository: EntityRepository<CartProduct>,
+    @InjectRepository(Order)
+    private orderRepository: EntityRepository<Order>,
+    @InjectRepository(OrderProduct)
+    private orderProductRepository: EntityRepository<OrderProduct>,
     @InjectRepository(Product)
     private productRepository: EntityRepository<Product>
   ) {}
@@ -53,9 +62,26 @@ export class CartService {
     await cartProduct.product.offers.init({
       populate: ['optionValues']
     })
-    const offer = cartProduct.product.offers.find((offer) => {
+    // const baseOffer = cartProduct.product.offers.find((offer) => offer.optionValues.isEmpty())
+    // const additionalOffer = cartProduct.product.offers.find((offer) => {
+    //   if (offer.optionValues.isEmpty()) {
+    //     return false
+    //   }
+    //   const offerIds = offer.optionValues.getIdentifiers()
+    //   return offerIds.every((id) => cartProductIds.includes(id))
+    // })
+    // const offer = additionalOffer || baseOffer
+    const offers = cartProduct.product.offers
+      .getItems()
+      .sort((a, b) => {
+        if (a.optionValues.length < b.optionValues.length) return -1
+        if (a.optionValues.length > b.optionValues.length) return 1
+        return 0
+      })
+      .reverse()
+    const offer = offers.find((offer) => {
       const offerIds = offer.optionValues.getIdentifiers()
-      if (offerIds.length !== cartProductIds.length) return false
+      if (offerIds.length === 0 && cartProductIds.length === 0) return true
       return offerIds.every((id) => cartProductIds.includes(id))
     })
 
@@ -86,10 +112,10 @@ export class CartService {
         cart: cartId
       },
       {
-        populate: ['product', 'optionValues'],
-        orderBy: {
-          createdAt: 'DESC'
-        }
+        populate: ['product', 'product.images', 'optionValues', 'optionValues.option'],
+        populateOrderBy: { product: { images: { rank: QueryOrder.ASC } } },
+        populateWhere: { product: { images: { active: true } } },
+        orderBy: { createdAt: 'DESC' }
       }
     )
 
@@ -159,4 +185,51 @@ export class CartService {
   //   }
   //   return uuidv5(key, this.configService.get('JWT_SECRET_KEY'))
   // }
+
+  async temporaryCreateOrder(cartId: string, dto: TemporaryCreateOrderDto, user?: User) {
+    const products = await this.findProducts(cartId)
+
+    const order = new Order()
+    this.orderRepository.assign(order, {
+      cost: 0,
+      customerEmail: dto.customerEmail,
+      customerName: dto.customerName,
+      customerPhone: dto.customerPhone
+    })
+
+    if (user) {
+      order.user = user
+    }
+
+    this.orderRepository.getEntityManager().persist(order)
+
+    for (const cartProduct of products) {
+      if (typeof cartProduct.price === 'undefined') continue
+
+      order.cost += cartProduct.price * cartProduct.amount
+
+      const orderProduct = new OrderProduct()
+      this.orderProductRepository.assign(orderProduct, {
+        amount: cartProduct.amount,
+        price: cartProduct.price,
+        optionValues: cartProduct.optionValues,
+        product: cartProduct.product
+      })
+      this.orderProductRepository.getEntityManager().persist(orderProduct)
+
+      order.products.add(orderProduct)
+    }
+
+    await this.orderRepository.getEntityManager().flush()
+
+    await this.letterService.sendLetter({
+      to: 'kundius.ruslan@gmail.com',
+      subject: `Новый заказ №${order.id}`,
+      html: letterNewToManager({
+        fullName: order.customerName || order.user?.name || 'Гость'
+      })
+    })
+
+    return order
+  }
 }

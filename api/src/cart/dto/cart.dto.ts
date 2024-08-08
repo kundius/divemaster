@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer'
-import { IsArray, IsNumber, IsOptional } from 'class-validator'
+import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator'
 
 export class AddProductDto {
   @Type(() => Number)
@@ -21,4 +21,21 @@ export class UpdateProductDto {
   @IsNumber()
   @IsOptional()
   amount?: number
+}
+
+export class TemporaryCreateOrderDto {
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  customerPhone?: string
+
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  customerEmail?: string
+
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  customerName?: string
 }

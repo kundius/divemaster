@@ -8,10 +8,10 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <div className="pb-40">
+    <div className="pt-12 pb-40">
       <Container>
-        <div className="pb-3 pt-6 border-b border-neutral-100 mb-6">
-          <div className="mt-2 text-4xl font-sans-narrow uppercase font-bold">Вход</div>
+        <div className="pb-3 border-b border-neutral-100 mb-6">
+          <div className="text-4xl font-sans-narrow uppercase font-bold">Вход</div>
         </div>
         <SignInForm />
       </Container>

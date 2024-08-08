@@ -4,9 +4,23 @@ import styles from './styles.module.scss'
 
 export function Container({
   children,
-  className
+  className,
+  small = false
 }: PropsWithChildren<{
   className?: string
+  small?: boolean
 }>) {
-  return <div className={cn(styles.container, className)}>{children}</div>
+  return (
+    <div
+      className={cn(
+        styles.container,
+        {
+          [styles.small]: small
+        },
+        className
+      )}
+    >
+      {children}
+    </div>
+  )
 }

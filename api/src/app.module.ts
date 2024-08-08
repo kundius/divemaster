@@ -10,6 +10,8 @@ import mikroOrmConfig from './db/mikro-orm.config' // your ORM config
 import { ProductsModule } from './products/products.module'
 import { StorageModule } from './storage/storage.module'
 import { UsersModule } from './users/users.module'
+import { OrderModule } from './order/order.module'
+import { NotificationsModule } from './notifications/notifications.module'
 
 @Module({
   imports: [
@@ -19,7 +21,9 @@ import { UsersModule } from './users/users.module'
     AuthModule,
     ProductsModule,
     StorageModule,
-    CartModule
+    CartModule,
+    OrderModule,
+    NotificationsModule
   ],
   controllers: [AppController],
   providers: [AppService]

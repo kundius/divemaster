@@ -16,7 +16,6 @@ import { CategoryProducts } from './_components/CategoryProducts'
 import { Filter } from './_components/Filter'
 import { ProductsQuery } from './_components/ProductsQuery'
 import { ProductsSorting } from './_components/ProductsSorting'
-import { Test } from './_components/Test'
 
 export async function generateStaticParams() {
   const categories = await apiGet<ApiTableData<CategoryEntity>>(`categories`, {
@@ -73,8 +72,6 @@ export default async function Page({ params: { alias } }: { params: { alias: str
           <Breadcrumbs items={crumbs} />
           <div className="mt-2 text-4xl font-sans-narrow uppercase font-bold">{category.title}</div>
         </div>
-
-        <Test />
 
         {isParent && (
           <div className="grid grid-cols-5 gap-x-5 mt-10 gap-y-16 pb-10 border-b mb-14 border-neutral-100 max-2xl:grid-cols-4">

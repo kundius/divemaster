@@ -11,7 +11,7 @@ import {
 import { CartService } from '../services/cart.service'
 import { User } from '@/users/entities/user.entity'
 import { CurrentUser } from '@/auth/decorators/current-user.decorator'
-import { AddProductDto, UpdateProductDto } from '../dto/cart.dto'
+import { AddProductDto, TemporaryCreateOrderDto, UpdateProductDto } from '../dto/cart.dto'
 
 @Controller('cart')
 export class CartController {
@@ -57,5 +57,14 @@ export class CartController {
   @Delete(':cartId/products/:productId')
   async deleteProduct(@Param('cartId') cartId: string, @Param('productId') productId: string) {
     return this.cartService.deleteProduct(cartId, productId)
+  }
+
+  @Put(':cartId')
+  async temporaryCreateOrder(
+    @Param('cartId') cartId: string,
+    @Body() dto: TemporaryCreateOrderDto,
+    @CurrentUser() user?: User
+  ) {
+    return this.cartService.temporaryCreateOrder(cartId, dto, user)
   }
 }

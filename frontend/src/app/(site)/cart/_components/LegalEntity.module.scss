@@ -1,0 +1,18 @@
+.wrap {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 12px 24px;
+}
+
+.label {
+  font-size: 16px;
+  line-height: 1.15;
+  font-weight: bold;
+  color: #000;
+  font-family: var(--font-sans-narrow);
+}
+
+.control {
+  display: flex;
+}

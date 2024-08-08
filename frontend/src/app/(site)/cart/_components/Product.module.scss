@@ -1,0 +1,257 @@
+.layout {
+  display: grid;
+  grid-template-columns: [image-start] 120px [image-end] 40px [info-start] auto [info-end] 40px [actions-start] auto [actions-end] 20px [amount-start] auto [amount-end] 40px [price-start] auto [price-end];
+  grid-template-rows: [info-start] auto [info-end] 20px [options-start] auto [options-end];
+}
+
+.layoutImage {
+  grid-column: image-start / image-end;
+  grid-row: info-start / options-end;
+}
+
+.layoutInfo {
+  grid-column: info-start / info-end;
+  grid-row: info-start / info-end;
+}
+
+.layoutActions {
+  grid-column: actions-start / actions-end;
+  grid-row: info-start / info-end;
+}
+
+.layoutAmount {
+  grid-column: amount-start / amount-end;
+  grid-row: info-start / info-end;
+}
+
+.layoutPrice {
+  grid-column: price-start / price-end;
+  grid-row: info-start / info-end;
+}
+
+.layouOptions {
+  grid-column: info-start / price-end;
+  grid-row: options-start / options-end;
+}
+
+.wrap + .wrap {
+  padding-top: 40px;
+  margin-top: 40px;
+  border-top: 1px solid #f3f3f3;
+}
+
+.figure {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #e3e3e3;
+  width: 100%;
+  height: 100%;
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+}
+
+.discount {
+  font-family: var(--font-sans-narrow);
+  color: #fff;
+  font-size: 10px;
+  padding: 0 4px;
+  line-height: 16px;
+  background: #ff0001;
+  font-weight: bold;
+  align-self: flex-start;
+  margin-bottom: 10px;
+}
+
+.title {
+  font-size: 18px;
+  color: #000;
+  font-weight: bold;
+  font-family: var(--font-sans-narrow);
+  line-height: 1.15;
+}
+
+.sku {
+  font-size: 11px;
+  color: #acacbc;
+  line-height: 1;
+  margin-top: 8px;
+}
+
+.actions {
+  display: flex;
+}
+
+.action {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #bebebe;
+  flex-shrink: 0;
+
+  svg {
+    fill: currentColor;
+  }
+
+  &:hover {
+    background: var(--neutral100);
+  }
+}
+
+.amount {
+  display: flex;
+}
+
+.amountMinus,
+.amountPlus {
+  width: 32px;
+  height: 32px;
+  background: #f4f4f4;
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  &:hover {
+    background: #f0f0f0;
+  }
+}
+
+.amountMinus::before {
+  content: '';
+  width: 10px;
+  height: 2px;
+  background: #9c9c9c;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-top: -1px;
+  margin-left: -5px;
+}
+
+.amountPlus::before {
+  content: '';
+  width: 10px;
+  height: 2px;
+  background: #9c9c9c;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-top: -1px;
+  margin-left: -5px;
+}
+
+.amountPlus::after {
+  content: '';
+  width: 2px;
+  height: 10px;
+  background: #9c9c9c;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-top: -5px;
+  margin-left: -1px;
+}
+
+.amountInput {
+  width: 48px;
+  height: 32px;
+  font-weight: bold;
+  font-size: 14px;
+  text-align: center;
+  background: transparent;
+  flex-shrink: 0;
+
+  -moz-appearance: textfield;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+  }
+}
+
+.prices {
+  text-align: right;
+}
+
+.price {
+  font-size: 16px;
+  font-weight: bold;
+  color: #b6359d;
+  line-height: 32px;
+  font-family: var(--font-sans-wide);
+}
+
+.oldPrice {
+  font-size: 12px;
+  line-height: 1;
+  text-decoration: line-through;
+  color: #9c9c9c;
+  font-family: var(--font-sans-wide);
+  margin-top: 2px;
+}
+
+.profit {
+  font-size: 11px;
+  line-height: 1;
+  color: #acacbc;
+  margin-top: 11px;
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+
+.option::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 16px);
+  width: 1px;
+  height: 12px;
+  margin-top: -6px;
+  background: #d2d2d2;
+}
+
+.option:last-child::after {
+  display: none;
+}
+
+.optionLabel {
+  font-size: 12px;
+  color: #9e9e9e;
+  line-height: 1;
+}
+
+.optionColor {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: block;
+}
+
+.optionValue {
+  font-size: 12px;
+  line-height: 1;
+  color: #343434;
+  font-weight: bold;
+}

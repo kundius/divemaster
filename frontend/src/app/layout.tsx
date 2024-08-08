@@ -57,7 +57,7 @@ export default async function RootLayout({
             <CartStoreProvider>{children}</CartStoreProvider>
           </AuthServerProvider>
         </SWRGlobalProvider>
-        <Toaster richColors />
+        <Toaster richColors position="top-center" />
       </body>
     </html>
   )

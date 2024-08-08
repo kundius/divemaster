@@ -1,0 +1,64 @@
+.wrap {
+  border: 1px solid #e3e3e3;
+  border-radius: 12px;
+  padding: 32px 24px;
+}
+
+.title {
+  font-size: 18px;
+  text-transform: uppercase;
+  line-height: 1;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.prices {
+}
+
+.price {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.price + .price {
+  margin-top: 8px;
+}
+
+.priceLabel {
+  font-size: 14px;
+  line-height: 1;
+  color: #3a3a3a;
+}
+
+.priceValue {
+  font-size: 16px;
+  font-weight: bold;
+  color: #000;
+}
+
+.priceValueNegative {
+  font-size: 14px;
+  color: #ff0001;
+}
+
+.total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+}
+
+.totalLabel {
+  font-size: 18px;
+  line-height: 1;
+  color: #3a3a3a;
+  font-weight: bold;
+}
+
+.totalValue {
+  font-size: 16px;
+  line-height: 1;
+  color: #b6359d;
+  font-weight: bold;
+}

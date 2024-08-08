@@ -8,11 +8,9 @@ import { useAuthStore } from '@/providers/auth-store-provider'
 import { useCartStore } from '@/providers/cart-store-provider'
 
 export function Toolbar() {
-  const { cartId, cartProducts, addToCart, removeFromCart, deleteCart, changeAmount } =
-    useCartStore((state) => state)
-
+  const cartTotal = useCartStore((state) => state.total)
+  const authUser = useAuthStore((state) => state.user)
   const mobileNavigation = useMobileNavigation()
-  const auth = useAuthStore((state) => state)
 
   const handleClick = () => {
     if (mobileNavigation.opened.includes('catalog')) {
@@ -41,14 +39,14 @@ export function Toolbar() {
       <Link href="/cart" className={cn(styles.button, 'block')}>
         <span className={cn(styles.icon, styles['icon-cart'])}></span>
         <span className={styles.title}>Корзина</span>
-        {cartProducts.length > 0 && <span className={styles.badge}>{cartProducts.length}</span>}
+        {cartTotal.count > 0 && <span className={styles.badge}>{cartTotal.count}</span>}
       </Link>
       <Link href="#" className={cn(styles.button, 'block')}>
         <span className={cn(styles.icon, styles['icon-favorites'])}></span>
         <span className={styles.title}>Избранное</span>
         <span className={styles.badge}>0</span>
       </Link>
-      <Link href={auth.user ? '/office' : '/auth/signin'} className={cn(styles.button, 'block')}>
+      <Link href={authUser ? '/office' : '/auth/signin'} className={cn(styles.button, 'block')}>
         <span className={cn(styles.icon, styles['icon-profile'])}></span>
         <span className={styles.title}>Профиль</span>
       </Link>

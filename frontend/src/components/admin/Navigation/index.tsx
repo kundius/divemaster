@@ -60,6 +60,10 @@ const nav: Nav = [
             title: 'Параметры',
             route: '/admin/options'
           }
+          // {
+          //   title: 'Импорт',
+          //   route: '/admin/import'
+          // }
         ]
       },
       {

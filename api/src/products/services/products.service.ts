@@ -1,4 +1,4 @@
-import { nanoid, pluck } from '@/lib/utils'
+import { nanoid, pluck, slugify } from '@/lib/utils'
 import { StorageService } from '@/storage/services/storage.service'
 import {
   EntityRepository,
@@ -13,6 +13,7 @@ import { InjectRepository } from '@mikro-orm/nestjs'
 import { isArray, isBoolean, isNumber, isString, isUndefined } from '@modyqyw/utils'
 import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common'
 import { join } from 'path'
+import zlib from 'node:zlib'
 import {
   CreateProductDto,
   FindAllProductDto,
@@ -571,5 +572,486 @@ export class ProductsService {
     })
 
     await this.offerRepository.getEntityManager().persistAndFlush(offer)
+  }
+
+  async import(upload: Express.Multer.File) {
+    function getKeyByValue(object, value) {
+      return Object.keys(object).find((key) => object[key] === value)
+    }
+
+    function swap(json) {
+      var ret = {}
+      for (var key in json) {
+        ret[json[key]] = key
+      }
+      return ret
+    }
+
+    // const file = await this.storageService.upload(
+    //   upload,
+    //   join(`${nanoid()}-${upload.originalname}`)
+    // )
+    const decompress = require('decompress')
+    const { XMLParser, XMLBuilder, XMLValidator } = require('fast-xml-parser')
+
+    const parser = new XMLParser()
+
+    try {
+      const files = await decompress(upload.path)
+      const productsFile = files.find((file) => file.path === 'import.xml')
+      const offersFile = files.find((file) => file.path === 'offers.xml')
+      const imageFiles = files.filter((file) => !['offers.xml', 'import.xml'].includes(file.path))
+      const productsParsed = parser.parse(productsFile.data)
+      const offersParsed = parser.parse(offersFile.data)
+
+      const getUniqueProductAlias = async (alias: string, n: number = 0) => {
+        const product = await this.productsRepository.findOne({ alias })
+        if (!product) {
+          return alias
+        } else {
+          return getUniqueProductAlias(`${alias}-${n}`, n + 1)
+        }
+      }
+
+      const parseCategories = async (): Promise<Record<string, Category>> => {
+        const rqs = async (data: any, parent: Category | null) => {
+          let output = {}
+          for (const group of data) {
+            let localCategory = await this.categoryRepository.findOne({
+              remoteId: group['Ид']
+            })
+            if (!localCategory) {
+              localCategory = new Category()
+              localCategory.remoteId = group['Ид']
+            }
+            localCategory.title = group['Наименование']
+            localCategory.alias = slugify(group['Наименование'])
+            localCategory.active = true
+            if (parent) {
+              localCategory.parent = parent
+              localCategory.alias = `${parent.alias}-${localCategory.alias}`
+            }
+            await this.categoryRepository.getEntityManager().persistAndFlush(localCategory)
+
+            output[group['Ид']] = localCategory
+
+            if (Array.isArray(group?.['Группы']?.['Группа'])) {
+              output = {
+                ...output,
+                ...(await rqs(group['Группы']['Группа'], localCategory))
+              }
+            }
+          }
+          return output
+        }
+        return await rqs(
+          productsParsed['КоммерческаяИнформация']['Классификатор']['Группы']['Группа'],
+          null
+        )
+      }
+
+      const parseProperties = async () => {
+        const data =
+          productsParsed['КоммерческаяИнформация']['Классификатор']['Свойства']['Свойство']
+        let output = {}
+        for (const item of data) {
+          output[item['Ид']] = item['Наименование']
+        }
+        return output
+      }
+
+      const parsePropertyValues = async () => {
+        const data =
+          productsParsed['КоммерческаяИнформация']['Классификатор']['Свойства']['Свойство']
+        let output = {}
+        for (const item of data) {
+          if (!item['ВариантыЗначений']) continue
+          if (!item['ВариантыЗначений']['Справочник']) continue
+
+          let values = item['ВариантыЗначений']['Справочник']
+          if (typeof values === 'string') {
+            values = [values]
+          }
+          for (const value of values) {
+            output[value['ИдЗначения']] = value['Значение']
+          }
+        }
+        return output
+      }
+
+      const parseBrands = async () => {
+        const data =
+          productsParsed['КоммерческаяИнформация']['Классификатор']['Свойства']['Свойство']
+        let output = {}
+        for (const itemProperty of data) {
+          if (itemProperty['Наименование'] !== 'Бренд') continue
+
+          for (const itemBrand of itemProperty['ВариантыЗначений']['Справочник']) {
+            let brand = await this.brandRepository.findOne({
+              remoteId: itemBrand['ИдЗначения']
+            })
+            if (!brand) {
+              brand = new Brand()
+              brand.remoteId = itemBrand['ИдЗначения']
+            }
+            brand.title = itemBrand['Значение']
+            await this.brandRepository.getEntityManager().persistAndFlush(brand)
+
+            output[itemBrand['ИдЗначения']] = brand
+          }
+        }
+        return output
+      }
+
+      const createOptionsFromOffers = async (productOffers, product: Product) => {
+        const output: Record<string, Option> = {}
+        const tmp: Record<string, string[]> = {}
+        for (const productOffer of productOffers) {
+          if (productOffer['ХарактеристикиТовара']) {
+            let rawProperties = productOffer['ХарактеристикиТовара']['ХарактеристикаТовара']
+            if (!Array.isArray(rawProperties)) {
+              rawProperties = [rawProperties]
+            }
+            for (const rawProperty of rawProperties) {
+              if (!tmp[rawProperty['Наименование']]) {
+                tmp[rawProperty['Наименование']] = []
+              }
+              tmp[rawProperty['Наименование']].push(rawProperty['Значение'])
+            }
+          }
+        }
+
+        // добавляем значения опций, присутствующие в выгрузке
+        for (const [caption, strValues] of Object.entries(tmp)) {
+          let option = await this.optionRepository.findOne({
+            caption
+          })
+          if (!option) {
+            option = new Option()
+            option.caption = caption
+            option.key = slugify(caption)
+            option.rank = 2
+            option.inFilter = true
+            option.type = OptionType.COMBOOPTIONS
+            await this.optionRepository.getEntityManager().persistAndFlush(option)
+          }
+
+          output[caption] = option
+
+          // добавляем категории товара в категории опции
+          await option.categories.init()
+          for (const category of product.categories) {
+            if (!option.categories.contains(category)) {
+              option.categories.add(category)
+            }
+          }
+
+          await option.values.init()
+          for (const strValue of strValues) {
+            // создаем значения опции товара, присутствующие в выгрузке
+            let optionValue = await this.optionValueRepository.findOne({
+              option,
+              product,
+              content: strValue
+            })
+            if (!optionValue) {
+              optionValue = new OptionValue()
+              optionValue.option = option
+              optionValue.product = product
+              optionValue.content = strValue
+              await this.optionValueRepository.getEntityManager().persistAndFlush(optionValue)
+            }
+          }
+        }
+
+        // удаляем значения опций, отсутствующие в выгрузке
+        for (const [caption, strValues] of Object.entries(tmp)) {
+          const option = await this.optionRepository.findOne({ caption })
+
+          if (!option) continue
+
+          const optionValues = await this.optionValueRepository.find({
+            option,
+            product,
+            content: {
+              $nin: strValues
+            }
+          })
+          await this.optionValueRepository.getEntityManager().removeAndFlush(optionValues)
+        }
+
+        return output
+      }
+
+      const parseProducts = async (limit: number) => {
+        const data = productsParsed['КоммерческаяИнформация']['Каталог']['Товары']['Товар']
+        let output = {}
+        let i = 0
+        for (const itemProduct of data) {
+          if (i === limit) break
+
+          i++
+
+          let product = await this.productsRepository.findOne({
+            remoteId: itemProduct['Ид']
+          })
+
+          if (!product) {
+            product = new Product()
+            product.remoteId = itemProduct['Ид']
+          }
+
+          product.sku = itemProduct['Артикул']
+          const alias = slugify(itemProduct['Наименование'])
+          product.alias = alias === product.alias ? alias : await getUniqueProductAlias(alias)
+          product.title = itemProduct['Наименование']
+          product.description = itemProduct['Описание']
+
+          await this.productsRepository.getEntityManager().persistAndFlush(product)
+
+          // отвязываем все категории и привязываем новые
+          product.categories.removeAll()
+          if (itemProduct['Группы']) {
+            let itemProductGroups = itemProduct['Группы']['Ид']
+            if (typeof itemProductGroups === 'string') {
+              itemProductGroups = [itemProductGroups]
+            }
+            for (const rawCatId of itemProductGroups) {
+              product.categories.add(categories[rawCatId])
+            }
+          }
+
+          // удаляем все файлы, загружаем новые
+          await product.images.init({ populate: ['file'] })
+          for (const productImage of product.images) {
+            await this.productImageRepository.getEntityManager().removeAndFlush(productImage)
+            await this.storageService.remove(productImage.file.id)
+          }
+          if (itemProduct['Картинки']) {
+            let itemProductImages = itemProduct['Картинки']['Картинка']
+            if (typeof itemProductImages === 'string') {
+              itemProductImages = [itemProductImages]
+            }
+            for (const rawImagePath of itemProductImages) {
+              if (!images[rawImagePath]) continue
+
+              const file = await this.storageService.createFromBuffer(
+                images[rawImagePath],
+                join(String(product.id), rawImagePath)
+              )
+              const productImage = new ProductImage()
+              productImage.file = file
+              productImage.product = product
+              productImage.rank = product.images.length
+              this.productImageRepository.getEntityManager().persist(productImage)
+            }
+          }
+
+          if (itemProduct['ЗначенияСвойств']) {
+            for (const rawProperty of itemProduct['ЗначенияСвойств']['ЗначенияСвойства']) {
+              if (rawProperty['Ид'] === propertiesByName['Бренд']) {
+                product.brand = brands[rawProperty['Значение']]
+              }
+              if (rawProperty['Ид'] === propertiesByName['Новинки']) {
+                product.recent = rawProperty['Значение'] === true
+              }
+              if (rawProperty['Ид'] === propertiesByName['ХитПродаж']) {
+                product.favorite = rawProperty['Значение'] === true
+              }
+              if (rawProperty['Ид'] === propertiesByName['Цвет']) {
+                let option = await this.optionRepository.findOne({ caption: 'Цвет' })
+                if (!option) {
+                  option = new Option()
+                  option.caption = 'Цвет'
+                  option.key = 'color'
+                  option.rank = 0
+                  option.inFilter = true
+                  option.type = OptionType.COMBOCOLORS
+                  await this.optionRepository.getEntityManager().persistAndFlush(option)
+                }
+
+                // добавляем категории товара в категории опции
+                await option.categories.init()
+                for (const category of product.categories) {
+                  if (!option.categories.contains(category)) {
+                    option.categories.add(category)
+                  }
+                }
+
+                // добавляем значение опции если такого нет, остальные удаляем
+                const productOptionValues = await this.optionValueRepository.find({
+                  option,
+                  product
+                })
+                if (rawProperty['Значение']) {
+                  const orphanProductOptionValues = productOptionValues.filter(
+                    (item) => item.content !== propertyValues[rawProperty['Значение']]
+                  )
+                  let productOptionValue = productOptionValues.find(
+                    (item) => item.content === propertyValues[rawProperty['Значение']]
+                  )
+                  if (!productOptionValue) {
+                    productOptionValue = new OptionValue()
+                    productOptionValue.option = option
+                    productOptionValue.product = product
+                    productOptionValue.content = propertyValues[rawProperty['Значение']]
+                    await this.optionValueRepository
+                      .getEntityManager()
+                      .persistAndFlush(productOptionValue)
+                  }
+                  await this.optionValueRepository
+                    .getEntityManager()
+                    .removeAndFlush(orphanProductOptionValues)
+                } else {
+                  await this.optionValueRepository
+                    .getEntityManager()
+                    .removeAndFlush(productOptionValues)
+                }
+              }
+              if (rawProperty['Ид'] === propertiesByName['Материал']) {
+                let option = await this.optionRepository.findOne({ caption: 'Материал' })
+                if (!option) {
+                  option = new Option()
+                  option.caption = 'Материал'
+                  option.key = 'material'
+                  option.rank = 1
+                  option.inFilter = true
+                  option.type = OptionType.COMBOOPTIONS
+                  await this.optionRepository.getEntityManager().persistAndFlush(option)
+                }
+
+                // добавляем категории товара в категории опции
+                await option.categories.init()
+                for (const category of product.categories) {
+                  if (!option.categories.contains(category)) {
+                    option.categories.add(category)
+                  }
+                }
+
+                // добавляем значение опции если такого нет, остальные удаляем
+                const productOptionValues = await this.optionValueRepository.find({
+                  option,
+                  product
+                })
+                if (rawProperty['Значение']) {
+                  const orphanProductOptionValues = productOptionValues.filter(
+                    (item) => item.content !== propertyValues[rawProperty['Значение']]
+                  )
+                  let productOptionValue = productOptionValues.find(
+                    (item) => item.content === propertyValues[rawProperty['Значение']]
+                  )
+                  if (!productOptionValue) {
+                    productOptionValue = new OptionValue()
+                    productOptionValue.option = option
+                    productOptionValue.product = product
+                    productOptionValue.content = propertyValues[rawProperty['Значение']]
+                    await this.optionValueRepository
+                      .getEntityManager()
+                      .persistAndFlush(productOptionValue)
+                  }
+                  await this.optionValueRepository
+                    .getEntityManager()
+                    .removeAndFlush(orphanProductOptionValues)
+                } else {
+                  await this.optionValueRepository
+                    .getEntityManager()
+                    .removeAndFlush(productOptionValues)
+                }
+              }
+            }
+          }
+
+          // добавляем или обновляем торговые предложения присутствующие в выгрузке
+          const productOffers = offersParsed['КоммерческаяИнформация']['ПакетПредложений'][
+            'Предложения'
+          ]['Предложение'].filter((item) => {
+            return item['Ид'].split('#')[0] === itemProduct['Ид']
+          })
+          const productOfferIds = productOffers.map((item) => item['Ид'])
+
+          const optionsFromOffers = await createOptionsFromOffers(productOffers, product)
+
+          for (const item of productOffers) {
+            if (!item?.['Цены']?.['Цена']?.['ЦенаЗаЕдиницу']) continue
+
+            let offer = await this.offerRepository.findOne({ remoteId: item['Ид'] })
+            if (!offer) {
+              offer = new Offer()
+              offer.remoteId = item['Ид']
+            }
+            offer.title = item['Наименование']
+            offer.price = item['Цены']['Цена']['ЦенаЗаЕдиницу']
+            offer.product = product
+            await this.offerRepository.getEntityManager().persistAndFlush(offer)
+
+            await offer.optionValues.init()
+            offer.optionValues.removeAll()
+
+            if (item['ХарактеристикиТовара']) {
+              let rawProperties = item['ХарактеристикиТовара']['ХарактеристикаТовара']
+              if (!Array.isArray(rawProperties)) {
+                rawProperties = [rawProperties]
+              }
+              for (const rawProperty of rawProperties) {
+                const option = optionsFromOffers[rawProperty['Наименование']]
+                if (!option) continue
+
+                const optionValue = await this.optionValueRepository.findOne({
+                  product,
+                  option,
+                  content: rawProperty['Значение']
+                })
+                if (!optionValue) continue
+
+                offer.optionValues.add(optionValue)
+              }
+            }
+          }
+
+          // удаляем торговые предложения, отсутствующие в выгрузке
+          const orphanOffers = await this.offerRepository.find({
+            remoteId: { $nin: productOfferIds },
+            product
+          })
+          this.offerRepository.getEntityManager().remove(orphanOffers)
+
+          await this.productsRepository.getEntityManager().flush()
+        }
+        return output
+      }
+
+      const parseImages = () => {
+        const output = {}
+        for (const imageFile of imageFiles) {
+          output[imageFile['path']] = imageFile['data']
+        }
+        return output
+      }
+
+      // Ид: Category
+      const categories = await parseCategories()
+
+      // Ид: Наименование
+      const properties = await parseProperties()
+      const propertiesByName = swap(properties)
+
+      // ИдЗначения: Значение
+      const propertyValues = await parsePropertyValues()
+
+      // Ид: Brand
+      const brands = await parseBrands()
+
+      // Path: Buffer
+      const images = await parseImages()
+
+      // Ид: Product
+      const products = await parseProducts(100)
+
+      console.log('Extraction complete')
+      return true
+    } catch (err) {
+      console.log(err)
+      return err
+    }
   }
 }

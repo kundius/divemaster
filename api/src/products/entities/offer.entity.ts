@@ -8,6 +8,9 @@ export class Offer {
   id: number
 
   @Property({ nullable: true, type: 'varchar' })
+  remoteId?: string | null = null
+
+  @Property({ nullable: true, type: 'varchar' })
   title: string | null = null
 
   @Property()

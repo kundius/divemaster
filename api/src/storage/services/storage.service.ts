@@ -1,12 +1,21 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { createReadStream, createWriteStream, mkdirSync, unlinkSync, existsSync } from 'fs'
+import {
+  createReadStream,
+  createWriteStream,
+  mkdirSync,
+  unlinkSync,
+  existsSync,
+  writeFile
+} from 'fs'
 import { sync as md5FileSync } from 'md5-file'
 import * as stream from 'node:stream'
-import { dirname, join } from 'path'
+import { basename, dirname, join } from 'path'
 import { File } from '../entities/file.entity'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { EntityRepository } from '@mikro-orm/mariadb'
+
+const mime = require('mime-types')
 
 @Injectable()
 export class StorageService {
@@ -58,6 +67,47 @@ export class StorageService {
     await this.fileRepository.getEntityManager().persistAndFlush(file)
 
     return file
+  }
+
+  async createFromBuffer(data: Buffer, path: string): Promise<File> {
+    await this.uploadBuffer(data, path)
+
+    const file = new File()
+    file.file = basename(path)
+    file.path = path
+    file.size = Buffer.byteLength(data)
+    file.type = mime.lookup(path)
+    file.hash = md5FileSync(this.fullPath(path))
+
+    await this.fileRepository.getEntityManager().persistAndFlush(file)
+
+    return file
+  }
+
+  async uploadBuffer(data: Buffer, path: string): Promise<void> {
+    // const rd = createReadStream(data)
+    mkdirSync(dirname(this.fullPath(path)), { recursive: true })
+    // const wr = fs.createWriteStream(this.fullPath(path))
+    // try {
+    //   return await new Promise(function (resolve, reject) {
+    //     rd.on('error', reject)
+    //     wr.on('error', reject)
+    //     wr.on('finish', resolve)
+    //     rd.pipe(wr)
+    //   })
+    // } catch (error) {
+    //   rd.destroy()
+    //   wr.end()
+    //   throw error
+    // }
+    return await new Promise((resolve, reject) => {
+      writeFile(this.fullPath(path), data, (err) => {
+        if (err) {
+          return reject(err)
+        }
+        resolve()
+      })
+    })
   }
 
   async remove(fileId: number) {

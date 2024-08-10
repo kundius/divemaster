@@ -12,9 +12,11 @@ import { StorageModule } from './storage/storage.module'
 import { UsersModule } from './users/users.module'
 import { OrderModule } from './order/order.module'
 import { NotificationsModule } from './notifications/notifications.module'
+import { ScheduleModule } from '@nestjs/schedule'
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     MikroOrmModule.forRoot(mikroOrmConfig),
     ConfigModule.forRoot({ isGlobal: true, load: [configuration] }),
     UsersModule,

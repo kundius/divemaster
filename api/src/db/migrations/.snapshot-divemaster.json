@@ -12,6 +12,15 @@
           "nullable": false,
           "mappedType": "integer"
         },
+        "remote_id": {
+          "name": "remote_id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
         "title": {
           "name": "title",
           "type": "varchar(255)",
@@ -152,6 +161,15 @@
           "primary": true,
           "nullable": false,
           "mappedType": "integer"
+        },
+        "remote_id": {
+          "name": "remote_id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
         },
         "title": {
           "name": "title",
@@ -593,6 +611,15 @@
           "nullable": false,
           "mappedType": "integer"
         },
+        "remote_id": {
+          "name": "remote_id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
         "title": {
           "name": "title",
           "type": "varchar(255)",
@@ -896,6 +923,15 @@
           "primary": true,
           "nullable": false,
           "mappedType": "integer"
+        },
+        "remote_id": {
+          "name": "remote_id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
         },
         "title": {
           "name": "title",

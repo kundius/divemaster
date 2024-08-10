@@ -6,6 +6,9 @@ export class Brand {
   @PrimaryKey()
   id: number
 
+  @Property({ nullable: true, type: 'varchar' })
+  remoteId?: string | null = null
+
   @Property()
   title: string
 

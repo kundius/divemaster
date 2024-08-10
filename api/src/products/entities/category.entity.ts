@@ -18,6 +18,9 @@ export class Category {
   @PrimaryKey()
   id: number
 
+  @Property({ nullable: true, type: 'varchar' })
+  remoteId?: string | null = null
+
   @Property()
   title: string
 

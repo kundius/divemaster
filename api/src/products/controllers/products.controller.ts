@@ -138,4 +138,10 @@ export class ProductsController {
   updateOffer(@Param('offerId') offerId: string, @Body() dto: UpdateOfferDto) {
     return this.productsService.updateOffer(+offerId, dto)
   }
+
+  @Post('import')
+  @UseInterceptors(FileInterceptor('file', { storage: diskStorage({}) }))
+  async import(@UploadedFile() upload: Express.Multer.File) {
+    return this.productsService.import(upload)
+  }
 }

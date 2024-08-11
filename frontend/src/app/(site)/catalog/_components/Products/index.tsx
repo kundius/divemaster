@@ -3,6 +3,7 @@
 import { ProductCard } from '@/components/site/ProductCard'
 import { getFileUrl } from '@/lib/utils'
 import { useProductsQuery } from '../ProductsQuery'
+import { ProductStoreProvider } from '@/providers/product-store-provider'
 
 export function Products() {
   const { data, listRef } = useProductsQuery()
@@ -13,20 +14,9 @@ export function Products() {
       ref={listRef}
     >
       {data.rows.map((item) => (
-        <ProductCard
-          key={item.id}
-          id={item.id}
-          title={item.title}
-          href={`/product/${item.alias}`}
-          price={0}
-          favorite={item.favorite}
-          recent={item.recent}
-          oldPrice={item.priceDecrease || undefined}
-          images={item.images ? item.images.map((item) => getFileUrl(item.file)) : []}
-          brand={
-            item.brand !== null && typeof item.brand === 'object' ? item.brand.title : undefined
-          }
-        />
+        <ProductStoreProvider key={item.id} product={item}>
+          <ProductCard />
+        </ProductStoreProvider>
       ))}
     </div>
   )

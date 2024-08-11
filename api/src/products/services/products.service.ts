@@ -381,7 +381,7 @@ export class ProductsService {
       { categories: { $in: categoryIds } },
       {
         orderBy: { rank: QueryOrder.ASC },
-        populate: ['values'],
+        populate: ['values', 'categories'],
         populateWhere: { values: { product: productId } }
       }
     )
@@ -613,6 +613,13 @@ export class ProductsService {
         }
       }
 
+      const arrayField = (input: any) => {
+        if (!Array.isArray(input)) {
+          return [input]
+        }
+        return input
+      }
+
       const parseCategories = async (): Promise<Record<string, Category>> => {
         const rqs = async (data: any, parent: Category | null) => {
           let output = {}
@@ -785,7 +792,7 @@ export class ProductsService {
 
       const parseProducts = async (limit: number) => {
         const data = productsParsed['КоммерческаяИнформация']['Каталог']['Товары']['Товар']
-        let output = {}
+        let output: Record<string, Product> = {}
         let i = 0
         for (const itemProduct of data) {
           if (i === limit) break
@@ -801,6 +808,8 @@ export class ProductsService {
             product.remoteId = itemProduct['Ид']
           }
 
+          output[itemProduct['Ид']] = product
+
           product.sku = itemProduct['Артикул']
           const alias = slugify(itemProduct['Наименование'])
           product.alias = alias === product.alias ? alias : await getUniqueProductAlias(alias)
@@ -809,18 +818,6 @@ export class ProductsService {
 
           await this.productsRepository.getEntityManager().persistAndFlush(product)
 
-          // отвязываем все категории и привязываем новые
-          product.categories.removeAll()
-          if (itemProduct['Группы']) {
-            let itemProductGroups = itemProduct['Группы']['Ид']
-            if (typeof itemProductGroups === 'string') {
-              itemProductGroups = [itemProductGroups]
-            }
-            for (const rawCatId of itemProductGroups) {
-              product.categories.add(categories[rawCatId])
-            }
-          }
-
           // удаляем все файлы, загружаем новые
           await product.images.init({ populate: ['file'] })
           for (const productImage of product.images) {
@@ -828,10 +825,7 @@ export class ProductsService {
             await this.storageService.remove(productImage.file.id)
           }
           if (itemProduct['Картинки']) {
-            let itemProductImages = itemProduct['Картинки']['Картинка']
-            if (typeof itemProductImages === 'string') {
-              itemProductImages = [itemProductImages]
-            }
+            const itemProductImages = arrayField(itemProduct['Картинки']['Картинка'])
             for (const rawImagePath of itemProductImages) {
               if (!images[rawImagePath]) continue
 
@@ -844,6 +838,15 @@ export class ProductsService {
               productImage.product = product
               productImage.rank = product.images.length
               this.productImageRepository.getEntityManager().persist(productImage)
+            }
+          }
+
+          // отвязываем все категории и привязываем новые
+          product.categories.removeAll()
+          if (itemProduct['Группы']) {
+            const itemProductGroups = arrayField(itemProduct['Группы']['Ид'])
+            for (const rawCatId of itemProductGroups) {
+              product.categories.add(categories[rawCatId])
             }
           }
 
@@ -988,10 +991,7 @@ export class ProductsService {
             offer.optionValues.removeAll()
 
             if (item['ХарактеристикиТовара']) {
-              let rawProperties = item['ХарактеристикиТовара']['ХарактеристикаТовара']
-              if (!Array.isArray(rawProperties)) {
-                rawProperties = [rawProperties]
-              }
+              const rawProperties = arrayField(item['ХарактеристикиТовара']['ХарактеристикаТовара'])
               for (const rawProperty of rawProperties) {
                 const option = optionsFromOffers[rawProperty['Наименование']]
                 if (!option) continue
@@ -1028,11 +1028,60 @@ export class ProductsService {
         return output
       }
 
+      const updateCategoryImage = async () => {
+        for (const category of Object.values(categories)) {
+          const firstProduct = await this.productsRepository.findOne(
+            { categories: { $in: [category.id] } },
+            {
+              populate: ['images']
+            }
+          )
+          if (firstProduct) {
+            const image = firstProduct.images.getItems()[0]
+            if (image) {
+              category.image = image.file
+            }
+          }
+        }
+        await this.categoryRepository.getEntityManager().flush()
+      }
+
+      const updateCategoryActivity = async () => {
+        for (const category of Object.values(categories)) {
+          const productsCount = await this.productsRepository.count({
+            categories: { $in: [category.id] }
+          })
+          if (productsCount === 0) {
+            category.active = false
+          } else if (category.title === 'Архив') {
+            category.active = false
+          } else {
+            category.active = true
+          }
+        }
+        await this.categoryRepository.getEntityManager().flush()
+      }
+
+      const includeParentsToProductCategories = async () => {
+        for (const product of Object.values(products)) {
+          for (const category of product.categories) {
+            let tmp = category
+            while (!!tmp.parent) {
+              tmp = tmp.parent
+              product.categories.add(tmp)
+            }
+          }
+        }
+        await this.productsRepository.getEntityManager().flush()
+      }
+
       // Ид: Category
       const categories = await parseCategories()
 
       // Ид: Наименование
       const properties = await parseProperties()
+
+      // Наименование: Ид
       const propertiesByName = swap(properties)
 
       // ИдЗначения: Значение
@@ -1045,7 +1094,11 @@ export class ProductsService {
       const images = await parseImages()
 
       // Ид: Product
-      const products = await parseProducts(100)
+      const products = await parseProducts(300)
+
+      await updateCategoryImage()
+      await includeParentsToProductCategories()
+      await updateCategoryActivity()
 
       console.log('Extraction complete')
       return true

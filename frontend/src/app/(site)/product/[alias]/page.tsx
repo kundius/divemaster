@@ -15,6 +15,7 @@ import { Warranty } from './_components/Warranty'
 import styles from './_components/page.module.scss'
 import { ProductStoreProvider } from '@/providers/product-store-provider'
 import { Title } from './_components/Title'
+import type { Metadata } from 'next'
 
 export async function generateStaticParams() {
   const products = await apiGet<ApiTableData<ProductEntity>>(`products`, {
@@ -22,6 +23,19 @@ export async function generateStaticParams() {
     filters: ['active']
   })
   return products.rows.map(({ alias }) => ({ alias }))
+}
+
+export async function generateMetadata({
+  params: { alias }
+}: {
+  params: { alias: string }
+}): Metadata {
+  const product = await apiGet<ProductEntity>(`products/alias:${alias}`, {
+    active: true
+  })
+  return {
+    title: product.title
+  }
 }
 
 export default async function Page({ params: { alias } }: { params: { alias: string } }) {

@@ -16,6 +16,7 @@ import { CategoryProducts } from './_components/CategoryProducts'
 import { Filter } from './_components/Filter'
 import { ProductsQuery } from './_components/ProductsQuery'
 import { ProductsSorting } from './_components/ProductsSorting'
+import type { Metadata } from 'next'
 
 export async function generateStaticParams() {
   const categories = await apiGet<ApiTableData<CategoryEntity>>(`categories`, {
@@ -23,6 +24,19 @@ export async function generateStaticParams() {
     filters: ['active']
   })
   return categories.rows.map(({ alias }) => ({ alias }))
+}
+
+export async function generateMetadata({
+  params: { alias }
+}: {
+  params: { alias: string }
+}): Metadata {
+  const category = await apiGet<CategoryEntity>(`categories/alias:${alias}`, {
+    active: true
+  })
+  return {
+    title: category.title
+  }
 }
 
 export default async function Page({ params: { alias } }: { params: { alias: string } }) {

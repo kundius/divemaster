@@ -31,7 +31,7 @@ export interface ToggleFilter extends BaseFilter {
 
 export type Filter = OptionsFilter | RangeFilter | ToggleFilter
 
-export type DataRecord = Record<string, string | number | boolean | string[]>
+export type DataRecord = Record<string, string | number | boolean | string[] | number[]>
 export type SelectedRecord = Record<string, string | number | boolean | string[] | [number, number]>
 
 @Injectable()
@@ -63,10 +63,11 @@ export class ProductsFilterService {
       active: true
     }
     if (categoryId) {
+      // TODO: HIERARCHY_DEPTH_LIMIT
       where = { ...where, categories: { $in: [categoryId] } }
     }
     const products = await this.productsRepository.find(where, {
-      populate: ['brand', 'optionValues', 'optionValues.option']
+      populate: ['brand', 'optionValues', 'optionValues.option', 'offers']
     })
 
     const data: DataRecord[] = []
@@ -74,7 +75,7 @@ export class ProductsFilterService {
       const record: DataRecord = {
         id: product.id,
         title: product.title,
-        price: 0, // определение цены товара
+        price: product.offers.map((offer) => offer.price),
         inStock: product.inStock,
         recent: product.recent,
         favorite: product.favorite
@@ -119,6 +120,7 @@ export class ProductsFilterService {
   async loadFilters(categoryId?: number): Promise<Filter[]> {
     let where: ObjectQuery<Option> = {}
     if (categoryId) {
+      // TODO: HIERARCHY_DEPTH_LIMIT
       where = { ...where, categories: { $in: [categoryId] } }
     }
     const options = await this.optionsRepository.find(where, {
@@ -197,9 +199,15 @@ export class ProductsFilterService {
           continue
         }
 
-        if (filter.type === 'range' && isArray(value, isNumber) && isNumber(field)) {
-          matches[key] = field >= value[0] && field <= value[1]
-          continue
+        if (filter.type === 'range' && isArray(value, isNumber)) {
+          if (isArray(field, isNumber)) {
+            matches[key] = field.some((f) => f >= value[0] && f <= value[1])
+            continue
+          }
+          if (isNumber(field)) {
+            matches[key] = field >= value[0] && field <= value[1]
+            continue
+          }
         }
 
         if (filter.type === 'options' && isArray(value, isString) && isString(field)) {

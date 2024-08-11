@@ -29,7 +29,7 @@ export async function generateMetadata({
   params: { alias }
 }: {
   params: { alias: string }
-}): Metadata {
+}): Promise<Metadata> {
   const product = await apiGet<ProductEntity>(`products/alias:${alias}`, {
     active: true
   })

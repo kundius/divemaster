@@ -30,7 +30,7 @@ export async function generateMetadata({
   params: { alias }
 }: {
   params: { alias: string }
-}): Metadata {
+}): Promise<Metadata> {
   const category = await apiGet<CategoryEntity>(`categories/alias:${alias}`, {
     active: true
   })

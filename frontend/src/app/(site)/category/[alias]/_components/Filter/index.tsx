@@ -1,6 +1,6 @@
 'use client'
 
-import { parseAsString, useQueryState } from 'nuqs'
+import { parseAsInteger, parseAsString, useQueryState, useQueryStates } from 'nuqs'
 import { useMemo } from 'react'
 import { useProductsQuery } from '../ProductsQuery'
 import { FilterOptions } from './FilterOptions'
@@ -11,26 +11,31 @@ import { FilterRange } from './FilterRange'
 export interface FilterProps {}
 
 export function Filter(props: FilterProps) {
-  const [filter, setFilter] = useQueryState('filter', parseAsString.withDefault('{}'))
+  const [params, setParams] = useQueryStates({
+    filter: parseAsString.withDefault('{}'),
+    page: parseAsInteger.withDefault(1)
+  })
+
+  // const [filter, setFilter] = useQueryState('filter', parseAsString.withDefault('{}'))
+  // const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1))
+
   const { data, listRef } = useProductsQuery()
   const parsedFilter = useMemo(() => {
     try {
-      return JSON.parse(filter) as Record<string, any>
+      return JSON.parse(params.filter) as Record<string, any>
     } catch {
       return {}
     }
-  }, [filter])
+  }, [params.filter])
 
   const changeHandler = (key: string, value: any) => {
-    setFilter(
-      JSON.stringify({
+    setParams({
+      filter: JSON.stringify({
         ...parsedFilter,
         [key]: value
-      })
-    )
-    // if (listRef.current) {
-    //   listRef.current.scrollIntoView({ behavior: 'smooth' })
-    // }
+      }),
+      page: 1
+    })
   }
 
   return (

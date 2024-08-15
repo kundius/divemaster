@@ -8,50 +8,54 @@ export type Colors = Color[]
 export const colors: Colors = [
   {
     color: '#828742',
-    name: 'Камуфляж зеленый'
+    name: 'камуфляж зеленый'
   },
   {
     color: '#a5895f',
-    name: 'Камуфляж'
+    name: 'камуфляж'
   },
   {
     color: '#441000',
-    name: 'Коричневый'
+    name: 'коричневый'
   },
   {
     color: '#886d4e',
-    name: 'Камуфляж коричневый'
+    name: 'камуфляж коричневый'
   },
   {
     color: 'white',
-    name: 'Белый'
+    name: 'белый'
   },
   {
     color: 'black',
-    name: 'Черный'
+    name: 'черный'
   },
   {
     color: 'red',
-    name: 'Красный'
+    name: 'красный'
   },
   {
     color: 'orange',
-    name: 'Оранжевый'
+    name: 'оранжевый'
   },
   {
     color: 'yellow',
-    name: 'Желтый'
+    name: 'желтый'
   },
   {
     color: 'green',
-    name: 'Зеленый'
+    name: 'зеленый'
   },
   {
     color: 'blue',
-    name: 'Синий'
+    name: 'синий'
   },
   {
     color: 'pink',
-    name: 'Розовый'
+    name: 'розовый'
+  },
+  {
+    color: '#C0C0C0',
+    name: 'серебристый'
   }
 ]

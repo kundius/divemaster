@@ -36,7 +36,7 @@ export function Upload() {
     setIsPending(true)
     try {
       for (const file of nativeFiles) {
-        if (file.type === 'application/x-zip-compressed') {
+        if (['application/x-zip-compressed', 'application/zip'].includes(file.type)) {
           await asyncLoad(file)
         }
       }

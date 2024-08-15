@@ -79,10 +79,6 @@ const computeState = (state: ProductStore): ComputedStore => {
 const SELECTABLE_OPTION_TYPES = [OptionType.COMBOCOLORS, OptionType.COMBOOPTIONS]
 
 export const createProductStore = (product: ProductEntity) => {
-  const selectableOptions = (product.options || []).filter((option) => {
-    return SELECTABLE_OPTION_TYPES.includes(option.type)
-  })
-
   const sortedOffers = (product.offers || [])
     .sort((a, b) => {
       if (!a.optionValues || !b.optionValues) return 0
@@ -92,6 +88,24 @@ export const createProductStore = (product: ProductEntity) => {
     })
     .reverse()
 
+  const selectableOptions = (product.options || []).filter((option) => {
+      if (!SELECTABLE_OPTION_TYPES.includes(option.type)) return false
+
+      if (option.values.length === 0) return false
+
+      // если значение только одно и оно не принадлежит торг. предл., то выбирать его не нужно
+      if (option.values.length === 1) {
+        return !!sortedOffers.find((offer) => !!offer.optionValues.find((value) => option.values[0].id === value.id))
+      }
+
+      return true
+    })
+
+  // если нет опций для выбора, то по умолчанию выбираем базовое торг. предл.
+  const selectedOffer = selectableOptions.length === 0 ? sortedOffers.find((offer) => {
+    return offer.optionValues.length === 0
+  }) : undefined
+
   return createStore<ProductStore>()(
     computed(
       (set, get) => ({
@@ -99,9 +113,10 @@ export const createProductStore = (product: ProductEntity) => {
         selectableOptions,
         sortedOffers,
         selectedOptionValues: {},
-        selectedOffer: undefined,
+        selectedOffer,
 
         selectOptionValue(option, value) {
+          // TODO: пересмотреть поиск оффера, как минимум не нужно выбирать базовое, как максимум выбирать только точное соответствие
           const selectedOptionValues = { ...get().selectedOptionValues, [option.key]: value }
           const selectedValues = Object.values(selectedOptionValues)
           const selectedOffer = get().sortedOffers.find((offer) => {

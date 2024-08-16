@@ -15,6 +15,8 @@ export type ProductState = {
   selectedOptionValues: Record<string, OptionValueEntity>
   selectableOptions: OptionEntity[]
   sortedOffers: OfferEntity[]
+  basicOffer: OfferEntity | undefined
+  additionalOffers: OfferEntity[]
   selectedOffer: OfferEntity | undefined
 }
 
@@ -27,6 +29,7 @@ export type ComputedStore = {
   displayPrice: string
   rawOldPrice: number | undefined
   displayOldPrice: string | undefined
+  allOptionsSelected: boolean
 }
 
 export type ProductStore = ProductState & ProductActions
@@ -36,6 +39,7 @@ const computeState = (state: ProductStore): ComputedStore => {
   let displayPrice: string = ''
   let rawOldPrice: number | undefined = undefined
   let displayOldPrice: string | undefined = undefined
+  let allOptionsSelected: boolean = false
   let isFrom: boolean = false
 
   if (state.selectedOffer) {
@@ -68,11 +72,17 @@ const computeState = (state: ProductStore): ComputedStore => {
     }
   }
 
+  const selectableKeys = state.selectableOptions.map((item) => item.key)
+  if (selectableKeys.every((key) => !!state.selectedOptionValues[key])) {
+    allOptionsSelected = true
+  }
+
   return {
     rawPrice,
     displayPrice,
     rawOldPrice,
-    displayOldPrice
+    displayOldPrice,
+    allOptionsSelected
   }
 }
 
@@ -88,23 +98,42 @@ export const createProductStore = (product: ProductEntity) => {
     })
     .reverse()
 
+  const basicOffer = sortedOffers.find(
+    (offer) => offer.optionValues && offer.optionValues.length === 0
+  )
+
+  const additionalOffers = sortedOffers.filter(
+    (offer) => offer.optionValues && offer.optionValues.length > 0
+  )
+
   const selectableOptions = (product.options || []).filter((option) => {
-      if (!SELECTABLE_OPTION_TYPES.includes(option.type)) return false
+    if (!SELECTABLE_OPTION_TYPES.includes(option.type)) return false
 
-      if (option.values.length === 0) return false
+    if (!option.values || option.values.length === 0) return false
 
-      // если значение только одно и оно не принадлежит торг. предл., то выбирать его не нужно
-      if (option.values.length === 1) {
-        return !!sortedOffers.find((offer) => !!offer.optionValues.find((value) => option.values[0].id === value.id))
+    // если значение только одно и оно не принадлежит торг. предл., то предлагать его не нужно
+    if (option.values.length === 1) {
+      return !!sortedOffers.find(
+        (offer) => !!offer.optionValues?.find((value) => option?.values?.[0].id === value.id)
+      )
+    }
+
+    return true
+  })
+
+  // Если дополнительных офферов нет, то используем базовый по умолчанию
+  const selectedOffer = additionalOffers.length === 0 ? basicOffer : undefined
+
+  // Одиночные характеристики выбрать по умолчанию
+  const selectedOptionValues: ProductState['selectedOptionValues'] = selectableOptions.reduce(
+    (acc, item) => {
+      if (item.values && item.values.length === 1) {
+        return { ...acc, [item.key]: item.values[0] }
       }
-
-      return true
-    })
-
-  // если нет опций для выбора, то по умолчанию выбираем базовое торг. предл.
-  const selectedOffer = selectableOptions.length === 0 ? sortedOffers.find((offer) => {
-    return offer.optionValues.length === 0
-  }) : undefined
+      return acc
+    },
+    {}
+  )
 
   return createStore<ProductStore>()(
     computed(
@@ -112,20 +141,29 @@ export const createProductStore = (product: ProductEntity) => {
         product,
         selectableOptions,
         sortedOffers,
-        selectedOptionValues: {},
+        basicOffer,
+        additionalOffers,
+        selectedOptionValues,
         selectedOffer,
 
         selectOptionValue(option, value) {
-          // TODO: пересмотреть поиск оффера, как минимум не нужно выбирать базовое, как максимум выбирать только точное соответствие
-          const selectedOptionValues = { ...get().selectedOptionValues, [option.key]: value }
+          const state = get()
+          const selectedOptionValues = { ...state.selectedOptionValues, [option.key]: value }
           const selectedValues = Object.values(selectedOptionValues)
-          const selectedOffer = get().sortedOffers.find((offer) => {
-            if (!offer.optionValues) return false
-            if (offer.optionValues.length === 0 && selectedValues.length === 0) return true
-            return pluck(offer.optionValues, 'id').every((id) => {
-              return pluck(selectedValues, 'id').includes(id)
+
+          // Если дополнительных офферов нет, то выбираем базовый независимо от выбранных опций
+          // Если есть дополнительные офферы, то выбираем среди них соответствующий опциям
+          let selectedOffer: ProductState['selectedOffer'] = undefined
+          if (state.additionalOffers.length === 0) {
+            selectedOffer = state.basicOffer
+          } else {
+            selectedOffer = state.additionalOffers.find((offer) => {
+              if (!offer.optionValues) return false
+              return pluck(offer.optionValues, 'id').every((id) =>
+                pluck(selectedValues, 'id').includes(id)
+              )
             })
-          })
+          }
 
           set({ selectedOffer, selectedOptionValues })
         }

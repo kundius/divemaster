@@ -27,12 +27,13 @@ export function AddToCart() {
     displayOldPrice,
     displayPrice,
     selectableOptions,
-    selectedOptionValues
+    selectedOptionValues,
+    allOptionsSelected
   } = useProductStore((state) => state)
 
   const addHandler = () => {
     if (!selectedOffer) {
-      toast.warning('Выберите опции товара')
+      toast.warning('Выберите характеристики товара')
       return
     }
     addToCart({
@@ -70,23 +71,30 @@ export function AddToCart() {
           })}
         </div>
       )}
-      <div className={styles.actions}>
-        <button className={cn(styles.action, styles.actionCart)} onClick={addHandler}>
-          <svg viewBox="0 0 19 17" width="19" height="17">
-            <use href="/sprite.svg#cart"></use>
-          </svg>
-          <span className={styles.actionInner}>
-            <span className="text-nowrap">В корзину</span>
-          </span>
-        </button>
-        <button className={cn(styles.action, styles.actionOneClick)}>
-          <span className={styles.actionInner}>
+      <div className="flex items-center gap-2">
+        {allOptionsSelected && !selectedOffer ? (
+          <Button className="w-full" size="lg" onClick={addHandler} disabled={!allOptionsSelected}>
+            {/* <svg viewBox="0 0 19 17" width="19" height="17" className="fill-current mr-2">
+              <use href="/sprite.svg#cart"></use>
+            </svg> */}
+            Заказать
+          </Button>
+        ) : (
+          <Button className="w-full" size="lg" onClick={addHandler} disabled={!allOptionsSelected}>
+            <svg viewBox="0 0 19 17" width="19" height="17" className="fill-current mr-2">
+              <use href="/sprite.svg#cart"></use>
+            </svg>
+            В корзину
+          </Button>
+        )}
+        <Button variant="accent-outline" size="lg" className="max-w-40">
+          <span className="w-min whitespace-normal leading-none">
             Купить <span className="text-nowrap">в 1 клик</span>
           </span>
-          <svg viewBox="0 0 18 22" width="18" height="22">
+          <svg viewBox="0 0 18 22" width="18" height="22" className="fill-current ml-2">
             <use href="/sprite.svg#one-click"></use>
           </svg>
-        </button>
+        </Button>
       </div>
     </div>
   )

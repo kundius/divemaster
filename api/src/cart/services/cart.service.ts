@@ -11,6 +11,7 @@ import { Order } from '@/order/entities/order.entity'
 import { OrderProduct } from '@/order/entities/order-product.entity'
 import { LetterService } from '@/notifications/services/letter.service'
 import { content as letterNewToManager } from '@/notifications/templates/order/new-to-manager'
+import { Offer } from '@/products/entities/offer.entity'
 
 @Injectable()
 export class CartService {
@@ -62,16 +63,7 @@ export class CartService {
     await cartProduct.product.offers.init({
       populate: ['optionValues']
     })
-    // const baseOffer = cartProduct.product.offers.find((offer) => offer.optionValues.isEmpty())
-    // const additionalOffer = cartProduct.product.offers.find((offer) => {
-    //   if (offer.optionValues.isEmpty()) {
-    //     return false
-    //   }
-    //   const offerIds = offer.optionValues.getIdentifiers()
-    //   return offerIds.every((id) => cartProductIds.includes(id))
-    // })
-    // const offer = additionalOffer || baseOffer
-    const offers = cartProduct.product.offers
+    const sortedOffers = cartProduct.product.offers
       .getItems()
       .sort((a, b) => {
         if (a.optionValues.length < b.optionValues.length) return -1
@@ -79,29 +71,42 @@ export class CartService {
         return 0
       })
       .reverse()
-    const offer = offers.find((offer) => {
-      const offerIds = offer.optionValues.getIdentifiers()
-      if (offerIds.length === 0 && cartProductIds.length === 0) return true
-      return offerIds.every((id) => cartProductIds.includes(id))
-    })
+    const basicOffer = sortedOffers.find(
+      (offer) => offer.optionValues && offer.optionValues.length === 0
+    )
+    const additionalOffers = sortedOffers.filter(
+      (offer) => offer.optionValues && offer.optionValues.length > 0
+    )
+    // Если дополнительных нет, то выбираем базовый независимо от выбранных опций
+    // Если есть дополнительные, то выбираем среди них соответствующий опциям
+    let selectedOffer: Offer | undefined = undefined
+    if (additionalOffers.length === 0) {
+      selectedOffer = basicOffer
+    } else {
+      selectedOffer = additionalOffers.find((offer) => {
+        const offerIds = offer.optionValues.getIdentifiers()
+        return offerIds.every((id) => cartProductIds.includes(id))
+      })
+    }
 
     // если торговое предложение не найдено, то позиция в корзине считается неактивной
     this.cartProductRepository.assign(cartProduct, {
-      active: !!offer
+      active: !!selectedOffer
     })
 
     // если торговое предложение найдено, то считаем стоимость позиции с учетом скидок
-    if (offer) {
+    if (selectedOffer) {
       // расчет скидок выполнить здесь
       this.cartProductRepository.assign(cartProduct, {
-        price: offer.price
+        price: selectedOffer.price
       })
     }
 
     // тут пока так, но с добавлением скидок нужно объеденить в старую цену и скидки и статичное снижение стоимости
-    if (offer && cartProduct.product.priceDecrease) {
+    if (selectedOffer && cartProduct.product.priceDecrease) {
       this.cartProductRepository.assign(cartProduct, {
-        oldPrice: offer.price * (cartProduct.product.priceDecrease / 100) + offer.price
+        oldPrice:
+          selectedOffer.price * (cartProduct.product.priceDecrease / 100) + selectedOffer.price
       })
     }
   }

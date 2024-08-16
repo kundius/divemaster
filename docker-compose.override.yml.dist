@@ -13,6 +13,6 @@ services:
     restart: no
     command: sh -c 'rm -rf /tmp/* && npm i && npm run start:dev'
 
-  site:
+  frontend:
     restart: no
     command: sh -c 'rm -rf /tmp/* && npm i && npm run dev'

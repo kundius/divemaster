@@ -13,8 +13,8 @@ import { OrderProduct } from './order-product.entity'
 
 @Entity()
 export class Order {
-  @PrimaryKey({ type: 'uuid' })
-  id = v4()
+  @PrimaryKey()
+  id: number
 
   @Property({ unsigned: true })
   cost!: number

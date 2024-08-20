@@ -1542,13 +1542,12 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(36)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
           "nullable": false,
-          "length": 36,
-          "mappedType": "string"
+          "mappedType": "integer"
         },
         "cost": {
           "name": "cost",
@@ -1661,23 +1660,21 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(36)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
           "nullable": false,
-          "length": 36,
-          "mappedType": "string"
+          "mappedType": "integer"
         },
         "order_id": {
           "name": "order_id",
-          "type": "varchar(36)",
-          "unsigned": false,
+          "type": "int",
+          "unsigned": true,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "length": 36,
-          "mappedType": "string"
+          "mappedType": "integer"
         },
         "product_id": {
           "name": "product_id",
@@ -1705,6 +1702,15 @@
           "primary": false,
           "nullable": false,
           "mappedType": "integer"
+        },
+        "options": {
+          "name": "options",
+          "type": "json",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
         }
       },
       "name": "order_product",
@@ -1765,93 +1771,6 @@
             "id"
           ],
           "referencedTableName": "product",
-          "deleteRule": "cascade",
-          "updateRule": "cascade"
-        }
-      },
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
-        "order_product_id": {
-          "name": "order_product_id",
-          "type": "varchar(36)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 36,
-          "mappedType": "string"
-        },
-        "option_value_id": {
-          "name": "option_value_id",
-          "type": "int",
-          "unsigned": true,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "integer"
-        }
-      },
-      "name": "order_product_option_values",
-      "indexes": [
-        {
-          "columnNames": [
-            "order_product_id"
-          ],
-          "composite": false,
-          "keyName": "order_product_option_values_order_product_id_index",
-          "constraint": false,
-          "primary": false,
-          "unique": false
-        },
-        {
-          "columnNames": [
-            "option_value_id"
-          ],
-          "composite": false,
-          "keyName": "order_product_option_values_option_value_id_index",
-          "constraint": false,
-          "primary": false,
-          "unique": false
-        },
-        {
-          "keyName": "PRIMARY",
-          "columnNames": [
-            "order_product_id",
-            "option_value_id"
-          ],
-          "composite": true,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {
-        "order_product_option_values_order_product_id_foreign": {
-          "constraintName": "order_product_option_values_order_product_id_foreign",
-          "columnNames": [
-            "order_product_id"
-          ],
-          "localTableName": "order_product_option_values",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "order_product",
-          "deleteRule": "cascade",
-          "updateRule": "cascade"
-        },
-        "order_product_option_values_option_value_id_foreign": {
-          "constraintName": "order_product_option_values_option_value_id_foreign",
-          "columnNames": [
-            "option_value_id"
-          ],
-          "localTableName": "order_product_option_values",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "option_value",
           "deleteRule": "cascade",
           "updateRule": "cascade"
         }

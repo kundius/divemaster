@@ -5,7 +5,7 @@
   font-size: 12px;
   color: rgb(158, 158, 158);
   line-height: 1.2;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   display: block;
 }
 
@@ -16,15 +16,10 @@
 }
 
 .value {
-  flex: 1 1 0px;
   font-size: 14px;
   color: rgb(34, 34, 34);
-  line-height: 42px;
+  line-height: 34px;
   cursor: pointer;
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  justify-content: center;
   text-align: center;
   font-weight: 500;
   padding: 0 12px;
@@ -45,12 +40,4 @@
   color: rgb(255, 255, 255);
   background-color: #a90083;
   border-color: #a90083;
-}
-
-.color {
-  width: 16px;
-  height: 16px;
-  border-radius: 4px;
-  display: block;
-  flex-shrink: 0;
 }

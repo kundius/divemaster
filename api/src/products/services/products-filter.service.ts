@@ -67,7 +67,8 @@ export class ProductsFilterService {
       where = { ...where, categories: { $in: [categoryId] } }
     }
     const products = await this.productsRepository.find(where, {
-      populate: ['brand', 'optionValues', 'optionValues.option', 'offers']
+      populate: ['brand', 'optionValues', 'optionValues.option', 'offers'],
+      disableIdentityMap: true
     })
 
     const data: DataRecord[] = []

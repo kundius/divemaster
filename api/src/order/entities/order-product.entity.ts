@@ -6,8 +6,8 @@ import { Order } from './order.entity'
 
 @Entity()
 export class OrderProduct {
-  @PrimaryKey({ type: 'uuid' })
-  id = v4()
+  @PrimaryKey()
+  id: number
 
   @ManyToOne(() => Order, { deleteRule: 'cascade' })
   order!: Order
@@ -21,6 +21,6 @@ export class OrderProduct {
   @Property({ unsigned: true })
   price!: number
 
-  @ManyToMany(() => OptionValue)
-  optionValues = new Collection<OptionValue>(this)
+  @Property({ type: 'json', nullable: true })
+  options?: Record<string, string>
 }

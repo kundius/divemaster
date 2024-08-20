@@ -5,6 +5,8 @@ export type Color = {
 
 export type Colors = Color[]
 
+export type ColorsObject = Record<string, string>
+
 export const colors: Colors = [
   {
     color: '#828742',
@@ -59,3 +61,19 @@ export const colors: Colors = [
     name: 'серебристый'
   }
 ]
+
+export const colorsObject: ColorsObject = {
+  'камуфляж зеленый': '#828742',
+  камуфляж: '#a5895f',
+  коричневый: '#441000',
+  'камуфляж коричневый': '#886d4e',
+  белый: 'white',
+  черный: 'black',
+  красный: 'red',
+  оранжевый: 'orange',
+  желтый: 'yellow',
+  зеленый: 'green',
+  синий: 'blue',
+  розовый: 'pink',
+  серебристый: '#C0C0C0'
+}

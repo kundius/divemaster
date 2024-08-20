@@ -68,7 +68,7 @@ export class ProductsController {
 
   @Get(':productId/options')
   findAllOption(@Param('productId') productId: string) {
-    return this.productsService.findAllOptions(+productId)
+    return this.productsService.findProductOptions(+productId)
   }
 
   @Patch(':productId/options')

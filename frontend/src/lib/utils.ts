@@ -141,3 +141,10 @@ export function productPrice(product: ProductEntity): [string, number | undefine
 
   return [`от ${formatPrice(min)}`, min]
 }
+
+export function getEntityId(entity: number | { id: number }) {
+  if (typeof entity === 'number') {
+    return entity
+  }
+  return entity.id
+}

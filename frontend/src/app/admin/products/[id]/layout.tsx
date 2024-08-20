@@ -29,7 +29,7 @@ export default function Layout({
       href: `/admin/products/${params.id}/gallery`
     },
     {
-      title: 'Параметры',
+      title: 'Характеристики',
       href: `/admin/products/${params.id}/options`
     },
     // {

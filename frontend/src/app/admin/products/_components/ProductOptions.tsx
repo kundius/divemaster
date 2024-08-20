@@ -53,7 +53,6 @@ export interface ProductOptionsProps {
 }
 
 export function ProductOptions({ productId, initialOptions, initialValues }: ProductOptionsProps) {
-  console.log(initialValues)
   const [values, setValues] = useState<ValuesType>(initialValues)
   const [pending, pendingToggle] = useToggle(false)
 

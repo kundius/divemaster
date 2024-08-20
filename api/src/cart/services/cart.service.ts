@@ -213,11 +213,16 @@ export class CartService {
 
       order.cost += cartProduct.price * cartProduct.amount
 
+      let options: Record<string, string> = {}
+      for (const optionValue of cartProduct.optionValues) {
+        options[optionValue.option.caption] = optionValue.content
+      }
+
       const orderProduct = new OrderProduct()
       this.orderProductRepository.assign(orderProduct, {
+        options,
         amount: cartProduct.amount,
         price: cartProduct.price,
-        optionValues: cartProduct.optionValues,
         product: cartProduct.product
       })
       this.orderProductRepository.getEntityManager().persist(orderProduct)

@@ -10,7 +10,7 @@ import Link from 'next/link'
 import { OptionTable } from './_components/OptionTable'
 
 export const metadata: Metadata = {
-  title: 'Параметры'
+  title: 'Характеристики'
 }
 
 export default async function Page(props: PageProps) {
@@ -25,7 +25,7 @@ export default async function Page(props: PageProps) {
 
   return (
     <PageLayout
-      title="Параметры"
+      title="Характеристики"
       actions={
         <Link href="/admin/options/create">
           <Button>Добавить параметр</Button>

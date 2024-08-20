@@ -2,16 +2,24 @@
 
 import { cn } from '@/lib/utils'
 import styles from './SelectOption.module.scss'
-import { OptionValueEntity } from '@/types'
+import { OptionType, OptionValueEntity } from '@/types'
+import { colorsObject } from '@/lib/colors'
 
 export interface SelectOptionProps {
+  type: OptionType
   caption: string
-  values: OptionValueEntity[]
+  values?: OptionValueEntity[]
   selected?: OptionValueEntity
   onSelect?: (value: OptionValueEntity) => void
 }
 
-export function SelectOption({ caption, values, selected, onSelect }: SelectOptionProps) {
+export function SelectOption({
+  caption,
+  type,
+  values = [],
+  selected,
+  onSelect
+}: SelectOptionProps) {
   // const listRef = useRef<HTMLDivElement>(null)
   // const [width, setWidth] = useState<number>()
 
@@ -39,6 +47,12 @@ export function SelectOption({ caption, values, selected, onSelect }: SelectOpti
             })}
             onClick={() => onSelect?.(value)}
           >
+            {type === OptionType.COMBOCOLORS && (
+              <span
+                className={styles.color}
+                style={{ backgroundColor: colorsObject[value.content] }}
+              />
+            )}
             {value.content}
           </button>
         ))}

@@ -59,6 +59,7 @@ export interface ProductEntity {
   descriptions?: ProductDescription[]
   options?: OptionEntity[]
   offers?: OfferEntity[]
+  optionValues?: OptionValueEntity[]
 }
 
 export interface ProductDescription {

@@ -57,7 +57,7 @@ const nav: Nav = [
           //   route: '/admin/reviews'
           // },
           {
-            title: 'Параметры',
+            title: 'Характеристики',
             route: '/admin/options'
           }
           // {

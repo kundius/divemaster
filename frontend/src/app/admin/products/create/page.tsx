@@ -14,22 +14,22 @@ export default function Page() {
       href: `/admin/products/create`
     },
     {
-      title: 'Описание',
+      title: 'Описание'
     },
     {
-      title: 'Категории',
+      title: 'Категории'
     },
     {
-      title: 'Галерея',
+      title: 'Галерея'
     },
     {
-      title: 'Параметры',
+      title: 'Характеристики'
     },
     {
-      title: 'Отзывы',
+      title: 'Отзывы'
     },
     {
-      title: 'Связи',
+      title: 'Связи'
     }
   ]
   return (

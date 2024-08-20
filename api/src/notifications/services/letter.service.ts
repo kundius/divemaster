@@ -2,9 +2,10 @@ import { EntityManager } from '@mikro-orm/mariadb'
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron } from '@nestjs/schedule'
 import { ImapFlow } from 'imapflow'
-import nodemailer from 'nodemailer'
 import { Attachment } from 'nodemailer/lib/mailer'
 import { Letter, LetterStatus } from '../entities/letter.entity'
+
+const nodemailer = require('nodemailer')
 
 interface SendLetterArgs {
   to: string
@@ -98,7 +99,8 @@ export class LetterService {
       const info = await transporter.sendMail(message)
       letter.messageId = info.messageId
       await this.em.persistAndFlush(letter)
-    } catch {
+    } catch (e) {
+      console.log(e)
       letter.status = LetterStatus.Fail
       await this.em.persistAndFlush(letter)
     }

@@ -1,7 +1,7 @@
 import computed from 'zustand-computed'
 import { createStore } from 'zustand/vanilla'
 
-import { formatPrice, pluck } from '@/lib/utils'
+import { formatPrice, getEntityId, pluck } from '@/lib/utils'
 import {
   OfferEntity,
   OptionType,
@@ -107,33 +107,41 @@ export const createProductStore = (product: ProductEntity) => {
   )
 
   const selectableOptions = (product.options || []).filter((option) => {
+    if (product.id === 199 && option.key === 'color') console.log(1)
     if (!SELECTABLE_OPTION_TYPES.includes(option.type)) return false
 
+    option.values = (product.optionValues || []).filter(
+      (ov) => getEntityId(ov.option) === option.id
+    )
+    if (product.id === 199 && option.key === 'color') console.log(2)
     if (!option.values || option.values.length === 0) return false
 
+    if (product.id === 199 && option.key === 'color') console.log(3, product)
     // если значение только одно и оно не принадлежит торг. предл., то предлагать его не нужно
     if (option.values.length === 1) {
       return !!sortedOffers.find(
         (offer) => !!offer.optionValues?.find((value) => option?.values?.[0].id === value.id)
       )
     }
-
+    if (product.id === 199 && option.key === 'color') console.log(4)
     return true
   })
 
   // Если дополнительных офферов нет, то используем базовый по умолчанию
   const selectedOffer = additionalOffers.length === 0 ? basicOffer : undefined
 
-  // Одиночные характеристики выбрать по умолчанию
-  const selectedOptionValues: ProductState['selectedOptionValues'] = selectableOptions.reduce(
-    (acc, item) => {
-      if (item.values && item.values.length === 1) {
-        return { ...acc, [item.key]: item.values[0] }
-      }
-      return acc
-    },
-    {}
-  )
+  const selectedOptionValues: ProductState['selectedOptionValues'] = {}
+  // Одиночные характеристики можно бы выбрать по умолчанию,
+  // но тогда нужно и оффер по умолчанию выбирать с учетом этих характеристик
+  // const selectedOptionValues: ProductState['selectedOptionValues'] = selectableOptions.reduce(
+  //   (acc, item) => {
+  //     if (item.values && item.values.length === 1) {
+  //       return { ...acc, [item.key]: item.values[0] }
+  //     }
+  //     return acc
+  //   },
+  //   {}
+  // )
 
   return createStore<ProductStore>()(
     computed(

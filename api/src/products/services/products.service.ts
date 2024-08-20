@@ -74,7 +74,7 @@ export class ProductsService {
     let exclude: ('description' | 'specifications' | 'exploitation')[] = []
     let populate: Populate<
       Product,
-      'images' | 'brand' | 'categories' | 'offers' | 'offers.optionValues'
+      'images' | 'brand' | 'categories' | 'offers' | 'offers.optionValues' | 'optionValues'
     > = []
     let filters: FilterOptions = []
     let populateOrderBy: OrderDefinition<Product> = {}
@@ -89,6 +89,10 @@ export class ProductsService {
 
     if (dto?.withOffers) {
       populate = [...populate, 'offers', 'offers.optionValues']
+    }
+
+    if (dto?.withOptions) {
+      populate = [...populate, 'optionValues']
     }
 
     if (dto?.withBrand) {
@@ -148,7 +152,9 @@ export class ProductsService {
 
     if (dto.withOptions) {
       await Promise.all(
-        rows.map(async (item) => wrap(item).assign({ options: await this.findAllOptions(item.id) }))
+        rows.map(async (item) =>
+          wrap(item).assign({ options: await this.findProductOptions(item.id) })
+        )
       )
     }
 
@@ -159,7 +165,7 @@ export class ProductsService {
     let exclude: ('description' | 'specifications' | 'exploitation')[] = []
     let populate: Populate<
       Product,
-      'images' | 'brand' | 'categories' | 'offers' | 'offers.optionValues'
+      'images' | 'brand' | 'categories' | 'offers' | 'offers.optionValues' | 'optionValues'
     > = []
     let filters: FilterOptions = []
     let populateOrderBy: OrderDefinition<Product> = {}
@@ -167,6 +173,10 @@ export class ProductsService {
 
     if (dto?.withOffers) {
       populate = [...populate, 'offers', 'offers.optionValues']
+    }
+
+    if (dto?.withOptions) {
+      populate = [...populate, 'optionValues']
     }
 
     if (dto?.withImages) {
@@ -203,7 +213,7 @@ export class ProductsService {
     )
 
     if (dto?.withOptions) {
-      wrap(product).assign({ options: await this.findAllOptions(product.id) })
+      wrap(product).assign({ options: await this.findProductOptions(product.id) })
     }
 
     return product
@@ -213,7 +223,7 @@ export class ProductsService {
     let exclude: ('description' | 'specifications' | 'exploitation')[] = []
     let populate: Populate<
       Product,
-      'images' | 'brand' | 'categories' | 'offers' | 'offers.optionValues'
+      'images' | 'brand' | 'categories' | 'offers' | 'offers.optionValues' | 'optionValues'
     > = []
     let filters: FilterOptions = []
     let populateOrderBy: OrderDefinition<Product> = {}
@@ -221,6 +231,10 @@ export class ProductsService {
 
     if (dto?.withOffers) {
       populate = [...populate, 'offers', 'offers.optionValues']
+    }
+
+    if (dto?.withOptions) {
+      populate = [...populate, 'optionValues']
     }
 
     if (dto?.withImages) {
@@ -257,7 +271,7 @@ export class ProductsService {
     )
 
     if (product && dto?.withOptions) {
-      wrap(product).assign({ options: await this.findAllOptions(product.id) })
+      wrap(product).assign({ options: await this.findProductOptions(product.id) })
     }
 
     return product
@@ -372,25 +386,21 @@ export class ProductsService {
     await this.productsRepository.getEntityManager().persistAndFlush(product)
   }
 
-  async findAllOptions(productId: number) {
+  async findProductOptions(productId: number) {
     const categories = await this.categoryRepository.find({
       products: { $in: [productId] }
     })
     const categoryIds = categories.map((category) => category.id) || []
     const options = await this.optionRepository.find(
       { categories: { $in: categoryIds } },
-      {
-        orderBy: { rank: QueryOrder.ASC },
-        populate: ['values', 'categories'],
-        populateWhere: { values: { product: productId } }
-      }
+      { orderBy: { rank: QueryOrder.ASC } }
     )
     return options
   }
 
   async updateOptions(productId: number, values: UpdateProductOptions) {
     const product = await this.findOne(productId)
-    const options = await this.findAllOptions(productId)
+    const options = await this.findProductOptions(productId)
     const em = this.optionValueRepository.getEntityManager()
 
     const findOptionValues = async (option: Option) => {

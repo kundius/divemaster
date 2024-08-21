@@ -21,10 +21,11 @@ export async function AuthServerProvider({ children }: React.PropsWithChildren) 
   let authUser: UserEntity | undefined = undefined
 
   // загружать пользователя только если на странице был вызван `enableAuthPreload`
-  if (authPreloadEnabled()) {
-    const data = await apiGet<{ user?: UserEntity }>('auth/profile', {}, withServerAuth())
-    authUser = data.user
-  }
+  // console.log(authPreloadEnabled())
+  // if (authPreloadEnabled()) {
+  //   const data = await apiGet<{ user?: UserEntity }>('auth/profile', {}, withServerAuth())
+  //   authUser = data.user
+  // }
 
   // let authToken = undefined
   // let authUser = undefined

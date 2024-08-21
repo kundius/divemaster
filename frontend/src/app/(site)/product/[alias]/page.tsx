@@ -19,8 +19,7 @@ import type { Metadata } from 'next'
 
 export async function generateStaticParams() {
   const products = await apiGet<ApiTableData<ProductEntity>>(`products`, {
-    all: true,
-    filters: ['active']
+    limit: 100
   })
   return products.rows.map(({ alias }) => ({ alias }))
 }

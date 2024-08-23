@@ -3,7 +3,14 @@
 import { useQuery } from '@/lib/useQuery'
 import { ProductEntity } from '@/types'
 import { parseAsInteger, parseAsString, useQueryStates } from 'nuqs'
-import { createContext, MutableRefObject, PropsWithChildren, useContext, useRef } from 'react'
+import {
+  createContext,
+  MutableRefObject,
+  PropsWithChildren,
+  Suspense,
+  useContext,
+  useRef
+} from 'react'
 
 export interface ProductsBaseFilter {
   name: string

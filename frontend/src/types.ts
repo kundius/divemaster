@@ -1,3 +1,29 @@
+export interface ProductsBaseFilter {
+  name: string
+  title: string
+}
+
+export interface ProductsOptionsFilter extends ProductsBaseFilter {
+  type: 'options'
+  variant: 'default' | 'colors'
+  conjunction: boolean
+  options: {
+    value: string
+    amount: number
+  }[]
+}
+
+export interface ProductsRangeFilter extends ProductsBaseFilter {
+  type: 'range'
+  range: [number, number]
+}
+
+export interface ProductsToggleFilter extends ProductsBaseFilter {
+  type: 'toggle'
+}
+
+export type ProductsFilter = ProductsOptionsFilter | ProductsRangeFilter | ProductsToggleFilter
+
 export interface UserEntity {
   id: number
   name: string

@@ -100,7 +100,6 @@ export class LetterService {
       letter.messageId = info.messageId
       await this.em.persistAndFlush(letter)
     } catch (e) {
-      console.log(e)
       letter.status = LetterStatus.Fail
       await this.em.persistAndFlush(letter)
     }

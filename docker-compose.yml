@@ -16,6 +16,8 @@ services:
   nginx:
     image: nginx:${NGINX_VERSION:-1.25}
     environment:
+      - NGINX_SVELTE_PORT=${NGINX_SVELTE_PORT:-8070}
+      - NODE_SVELTE_PORT=${NODE_SVELTE_PORT:-5173}
       - NGINX_FRONTEND_PORT=${NGINX_FRONTEND_PORT:-8080}
       - NODE_FRONTEND_PORT=${NODE_FRONTEND_PORT:-3000}
       - NGINX_API_PORT=${NGINX_API_PORT:-8090}
@@ -26,6 +28,7 @@ services:
       - ./api:/divemaster/api
       - ./frontend:/divemaster/frontend
     ports:
+      - ${NGINX_HOST:-127.0.0.1}:${NGINX_SVELTE_PORT:-8070}:${NGINX_SVELTE_PORT:-8070}
       - ${NGINX_HOST:-127.0.0.1}:${NGINX_FRONTEND_PORT:-8080}:${NGINX_FRONTEND_PORT:-8080}
       - ${NGINX_HOST:-127.0.0.1}:${NGINX_API_PORT:-8090}:${NGINX_API_PORT:-8090}
     restart: unless-stopped

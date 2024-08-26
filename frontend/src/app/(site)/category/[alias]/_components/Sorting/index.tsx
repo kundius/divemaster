@@ -1,8 +1,7 @@
 'use client'
 
-import { parseAsString, useQueryState, useQueryStates } from 'nuqs'
 import { useMemo } from 'react'
-import styles from './index.module.scss'
+
 import {
   Select,
   SelectContent,
@@ -10,18 +9,16 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
+import { useProductsStore } from '@/providers/products-store-provider'
 
-export function ProductsSorting() {
-  const [filter, setFilter] = useQueryState('filter', parseAsString.withDefault('{}'))
-  const [params, setParams] = useQueryStates(
-    {
-      sort: parseAsString.withDefault('id'),
-      dir: parseAsString.withDefault('ASC')
-    },
-    {
-      clearOnDefault: true
-    }
-  )
+import styles from './index.module.scss'
+
+export function Sorting() {
+  const filter = useProductsStore((state) => state.filter)
+  const sort = useProductsStore((state) => state.sort)
+  const dir = useProductsStore((state) => state.dir)
+  const onChangeSort = useProductsStore((state) => state.onChangeSort)
+
   const filtersCount = useMemo(() => {
     try {
       return Object.keys(JSON.parse(filter)).length
@@ -34,7 +31,7 @@ export function ProductsSorting() {
     const arr = value.split(':')
     const sort = arr[0] || 'id'
     const dir = arr[1] || 'ASC'
-    setParams({ sort, dir })
+    onChangeSort(sort, dir)
   }
 
   const labels = {
@@ -42,7 +39,7 @@ export function ProductsSorting() {
     'price:ASC': 'Дешевле',
     'price:DESC': 'Дороже'
   }
-  const labelKey = `${params.sort}:${params.dir}` as keyof typeof labels
+  const labelKey = `${sort}:${dir}` as keyof typeof labels
 
   return (
     <div className="flex justify-between items-center mb-8">

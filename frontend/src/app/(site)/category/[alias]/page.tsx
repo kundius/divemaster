@@ -1,3 +1,5 @@
+import type { Metadata } from 'next'
+
 import {
   BenefitsSideSlider,
   BenefitsSideSliderDiscount
@@ -8,16 +10,14 @@ import { Container } from '@/components/site/Container'
 import { ApiTableData } from '@/lib/ApiTable/types'
 import { apiGet } from '@/lib/api'
 import { getFileUrl } from '@/lib/utils'
+import { ProductsStoreProvider } from '@/providers/products-store-provider'
 import { CategoryEntity } from '@/types'
 import { CategoryCard } from './_components/CategoryCard'
-import { CategoryContent } from './_components/CategoryContent'
-import { CategoryPagination } from './_components/CategoryPagination'
-import { CategoryProducts } from './_components/CategoryProducts'
 import { Filter } from './_components/Filter'
-import { ProductsQuery } from './_components/ProductsQuery'
-import { ProductsSorting } from './_components/ProductsSorting'
-import type { Metadata } from 'next'
-import { Suspense } from 'react'
+import { Sorting } from './_components/Sorting'
+import { Products } from './_components/Products'
+import { Pagination } from './_components/Pagination'
+import { Content } from './_components/Content'
 
 export async function generateStaticParams() {
   const categories = await apiGet<ApiTableData<CategoryEntity>>(`categories`, {
@@ -31,9 +31,19 @@ export async function generateMetadata({
 }: {
   params: { alias: string }
 }): Promise<Metadata> {
-  const category = await apiGet<CategoryEntity>(`categories/alias:${alias}`, {
-    active: true
-  })
+  const category = await apiGet<CategoryEntity>(
+    `categories/alias:${alias}`,
+    {
+      withParent: true,
+      withChildren: true,
+      active: true
+    },
+    {
+      next: {
+        revalidate: 60 * 5
+      }
+    }
+  )
   return {
     title: category.title
   }
@@ -80,7 +90,7 @@ export default async function Page({ params: { alias } }: { params: { alias: str
   const isParent = category.children ? category.children.length > 0 : false
 
   return (
-    <ProductsQuery categoryId={category.id} isParent={isParent}>
+    <ProductsStoreProvider categoryId={category.id}>
       <Container>
         <div className="pb-3 pt-6 border-b border-neutral-100">
           <Breadcrumbs items={crumbs} />
@@ -131,17 +141,18 @@ export default async function Page({ params: { alias } }: { params: { alias: str
                 Популярные товары
               </div>
             ) : (
-              <ProductsSorting />
+              <Sorting />
             )}
-            <CategoryProducts />
-            <CategoryPagination />
+            <Products />
+            <Pagination />
           </div>
         </div>
-        <CategoryContent
+
+        <Content
           title={category.longTitle || undefined}
           content={category.description || undefined}
         />
       </Container>
-    </ProductsQuery>
+    </ProductsStoreProvider>
   )
 }

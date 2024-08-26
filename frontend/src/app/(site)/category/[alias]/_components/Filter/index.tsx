@@ -1,46 +1,39 @@
 'use client'
 
-import { parseAsInteger, parseAsString, useQueryState, useQueryStates } from 'nuqs'
+import { useProductsStore } from '@/providers/products-store-provider'
 import { useMemo } from 'react'
-import { useProductsQuery } from '../ProductsQuery'
 import { FilterOptions } from './FilterOptions'
+import { FilterRange } from './FilterRange'
 import { FilterToggle } from './FilterToggle'
 import styles from './index.module.scss'
-import { FilterRange } from './FilterRange'
 
 export interface FilterProps {}
 
 export function Filter(props: FilterProps) {
-  const [params, setParams] = useQueryStates({
-    filter: parseAsString.withDefault('{}'),
-    page: parseAsInteger.withDefault(1)
-  })
+  const filters = useProductsStore((state) => state.data.filters)
+  const filter = useProductsStore((state) => state.filter)
+  const onChangeFilter = useProductsStore((state) => state.onChangeFilter)
 
-  // const [filter, setFilter] = useQueryState('filter', parseAsString.withDefault('{}'))
-  // const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1))
-
-  const { data, listRef } = useProductsQuery()
   const parsedFilter = useMemo(() => {
     try {
-      return JSON.parse(params.filter) as Record<string, any>
+      return JSON.parse(filter) as Record<string, any>
     } catch {
       return {}
     }
-  }, [params.filter])
+  }, [filter])
 
   const changeHandler = (key: string, value: any) => {
-    setParams({
-      filter: JSON.stringify({
+    onChangeFilter(
+      JSON.stringify({
         ...parsedFilter,
         [key]: value
-      }),
-      page: 1
-    })
+      })
+    )
   }
 
   return (
     <div className={styles.container}>
-      {data.filters.map((item) => {
+      {filters.map((item) => {
         if (item.type === 'range') {
           return (
             <FilterRange

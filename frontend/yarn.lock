@@ -4270,10 +4270,10 @@ normalize-range@^0.1.2:
   resolved "https://registry.npmjs.org/normalize-range/-/normalize-range-0.1.2.tgz"
   integrity sha512-bdok/XvKII3nUpklnV6P2hxtMNrCboOjAcyBuQnWEhO665FwrSNRxU+AqpsyvO6LgGYPspN+lu5CLtw4jPRKNA==
 
-nuqs@^1.17.4:
-  version "1.17.4"
-  resolved "https://registry.npmjs.org/nuqs/-/nuqs-1.17.4.tgz"
-  integrity sha512-wraphFfKI+Y/aWIGFsld/Ta7fTFEyeya1LkgEGNPDiMuY+Hwea/eVHBiq1GYlyMqTYSAoxRWvQyjCIo1Dy1u7g==
+nuqs@^1.17.8:
+  version "1.17.8"
+  resolved "https://registry.npmjs.org/nuqs/-/nuqs-1.17.8.tgz"
+  integrity sha512-JqsnzO+hJyjJE7ebuhpHMLA2iGY48e2xr0oJQFhj7kjUmDABL2XOup47rxF5TL/5b9jEsmU2t0lAKin1VdK1/A==
   dependencies:
     mitt "^3.0.1"
 

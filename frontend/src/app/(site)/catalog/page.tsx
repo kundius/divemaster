@@ -19,14 +19,14 @@ export default async function Page() {
   ]
 
   return (
-    <Suspense>
-      <ProductsQuery>
-        <Container>
-          <div className="pb-3 pt-6 border-b border-neutral-100">
-            <Breadcrumbs items={crumbs} />
-            <div className="mt-2 text-4xl font-sans-narrow uppercase font-bold">Каталог</div>
-          </div>
+    <Container>
+      <div className="pb-3 pt-6 border-b border-neutral-100">
+        <Breadcrumbs items={crumbs} />
+        <div className="mt-2 text-4xl font-sans-narrow uppercase font-bold">Каталог</div>
+      </div>
 
+      <Suspense>
+        <ProductsQuery>
           <div className="flex gap-x-5 mb-40 mt-14">
             <div className="w-1/5 space-y-5 max-2xl:w-1/4">
               <ConsultationWidget />
@@ -55,8 +55,8 @@ export default async function Page() {
               <Pagination />
             </div>
           </div>
-        </Container>
-      </ProductsQuery>
-    </Suspense>
+        </ProductsQuery>
+      </Suspense>
+    </Container>
   )
 }

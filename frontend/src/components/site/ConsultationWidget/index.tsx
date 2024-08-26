@@ -36,8 +36,6 @@ export function ConsultationWidget() {
       return
     }
 
-    console.log(values)
-
     setShowSuccess(true)
   }
 
@@ -56,7 +54,9 @@ export function ConsultationWidget() {
               <div className={styles.successTop}>Спасибо!</div>
               <div className={styles.successIcon} />
               <div className={styles.successTitle}>Ваша заявка успешно отправлена.</div>
-              <div className={styles.successDesc}>В ближайшее время с Вами свяжется менеджер и уточнит все детали</div>
+              <div className={styles.successDesc}>
+                В ближайшее время с Вами свяжется менеджер и уточнит все детали
+              </div>
               <div className={styles.successButton}>
                 <PrimaryButton variant="outline" onClick={closeSuccessHandler}>
                   Закрыть <PrimaryButtonArrow />

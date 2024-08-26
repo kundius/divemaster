@@ -31,15 +31,23 @@ export function Gallery({ items, startIndex, onChangeIndex, showNav }: GalleryPr
   }, [emblaApi])
 
   return (
-    <div className={cn(styles.root, {
-      [styles.showNav]: showNav
-    })}>
+    <div
+      className={cn(styles.root, {
+        [styles.showNav]: showNav
+      })}
+    >
       <div className={styles.slider}>
         <div className={styles.viewport} ref={emblaRef}>
           <div className={styles.container}>
             {items.map((item, i) => (
               <div className={styles.slide} key={i}>
-                <Image src={item} alt="" fill className={styles.image} />
+                <Image
+                  src={item}
+                  alt=""
+                  fill
+                  className={styles.image}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
               </div>
             ))}
           </div>

@@ -37,7 +37,6 @@ export interface ProductFormProps {
 }
 
 export function ProductForm({ form, onSubmit }: ProductFormProps) {
-  console.log(form.formState)
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

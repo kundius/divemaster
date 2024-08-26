@@ -88,7 +88,6 @@ export function Content() {
     setSendOpened(false)
     // cartStore.deleteCart()
     toast.success('Ваша заявка успешно оформлена!')
-    console.log(cartStore.cartId, response)
   }
 
   return (

@@ -25,64 +25,76 @@ export type ProductActions = {
 }
 
 export type ComputedStore = {
-  rawPrice: number | undefined
-  displayPrice: string
-  rawOldPrice: number | undefined
-  displayOldPrice: string | undefined
   allOptionsSelected: boolean
+  defaultPrice: string
+  defaultOldPrice?: string
+  selectedPrice: string
+  selectedOldPrice?: string
 }
 
 export type ProductStore = ProductState & ProductActions
 
 const computeState = (state: ProductStore): ComputedStore => {
-  let rawPrice: number | undefined = undefined
-  let displayPrice: string = ''
-  let rawOldPrice: number | undefined = undefined
-  let displayOldPrice: string | undefined = undefined
-  let allOptionsSelected: boolean = false
-  let isFrom: boolean = false
+  function applyDecrease(value: number, decrease: number) {
+    return value * (decrease / 100) + value
+  }
 
-  if (state.selectedOffer) {
-    rawPrice = state.selectedOffer.price
-    displayPrice = formatPrice(rawPrice)
-  } else {
+  function getPrice(selected = true) {
+    if (selected && state.selectedOffer) {
+      return formatPrice(state.selectedOffer.price)
+    }
+
     if (!state.product.offers || state.product.offers.length === 0) {
-      displayPrice = 'Цена по запросу'
-    } else {
-      const baseOffer = state.product.offers.find(
-        (o) => o.optionValues && o.optionValues.length === 0
-      )
-      if (baseOffer && state.product.offers.length === 1) {
-        rawPrice = baseOffer.price
-        displayPrice = formatPrice(rawPrice)
-      } else {
-        rawPrice = Math.min(...state.product.offers.map((o) => o.price))
-        displayPrice = `от ${formatPrice(rawPrice)}`
-        isFrom = true
-      }
+      return 'Цена по запросу'
     }
+
+    const baseOffer = state.product.offers.find(
+      (o) => o.optionValues && o.optionValues.length === 0
+    )
+    if (baseOffer && state.product.offers.length === 1) {
+      return formatPrice(baseOffer.price)
+    }
+
+    const minPrice = Math.min(...state.product.offers.map((o) => o.price))
+    return `от ${formatPrice(minPrice)}`
   }
 
-  if (state.product.priceDecrease && !!rawPrice) {
-    rawOldPrice = rawPrice * (state.product.priceDecrease / 100) + rawPrice
-    if (isFrom) {
-      displayOldPrice = `от ${formatPrice(rawOldPrice)}`
-    } else {
-      displayOldPrice = formatPrice(rawOldPrice)
+  function getOldPrice(selected = true) {
+    if (!state.product.priceDecrease) return undefined
+
+    if (selected && state.selectedOffer) {
+      return formatPrice(applyDecrease(state.selectedOffer.price, state.product.priceDecrease))
     }
+
+    if (!state.product.offers || state.product.offers.length === 0) {
+      return undefined
+    }
+
+    const baseOffer = state.product.offers.find(
+      (o) => o.optionValues && o.optionValues.length === 0
+    )
+    if (baseOffer && state.product.offers.length === 1) {
+      return formatPrice(applyDecrease(baseOffer.price, state.product.priceDecrease))
+    }
+
+    const minPrice = Math.min(...state.product.offers.map((o) => o.price))
+    return `от ${formatPrice(applyDecrease(minPrice, state.product.priceDecrease))}`
   }
 
-  const selectableKeys = state.selectableOptions.map((item) => item.key)
-  if (selectableKeys.every((key) => !!state.selectedOptionValues[key])) {
-    allOptionsSelected = true
+  function isAllOptionsSelected() {
+    const selectableKeys = state.selectableOptions.map((item) => item.key)
+    if (selectableKeys.every((key) => !!state.selectedOptionValues[key])) {
+      return true
+    }
+    return false
   }
 
   return {
-    rawPrice,
-    displayPrice,
-    rawOldPrice,
-    displayOldPrice,
-    allOptionsSelected
+    defaultPrice: getPrice(false),
+    defaultOldPrice: getOldPrice(false),
+    selectedPrice: getPrice(),
+    selectedOldPrice: getOldPrice(),
+    allOptionsSelected: isAllOptionsSelected()
   }
 }
 
@@ -107,23 +119,19 @@ export const createProductStore = (product: ProductEntity) => {
   )
 
   const selectableOptions = (product.options || []).filter((option) => {
-    if (product.id === 199 && option.key === 'color') console.log(1)
     if (!SELECTABLE_OPTION_TYPES.includes(option.type)) return false
 
     option.values = (product.optionValues || []).filter(
       (ov) => getEntityId(ov.option) === option.id
     )
-    if (product.id === 199 && option.key === 'color') console.log(2)
     if (!option.values || option.values.length === 0) return false
 
-    if (product.id === 199 && option.key === 'color') console.log(3, product)
     // если значение только одно и оно не принадлежит торг. предл., то предлагать его не нужно
     if (option.values.length === 1) {
       return !!sortedOffers.find(
         (offer) => !!offer.optionValues?.find((value) => option?.values?.[0].id === value.id)
       )
     }
-    if (product.id === 199 && option.key === 'color') console.log(4)
     return true
   })
 

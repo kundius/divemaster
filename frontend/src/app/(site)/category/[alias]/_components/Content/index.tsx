@@ -1,10 +1,10 @@
-import { Content } from './Content'
+import { Description } from './Description'
 import { Discount } from './Discount'
 import { Guest } from './Guest'
 import { Questions } from './Questions'
 import styles from './index.module.scss'
 
-export interface CategoryContentProps {
+export interface ContentProps {
   title?: string
   content?: string
 }
@@ -17,17 +17,17 @@ const parseContent = (content?: string): string[] => {
   return content.split(pageBreakHtml)
 }
 
-export function CategoryContent({ title, content }: CategoryContentProps) {
+export function Content({ title, content }: ContentProps) {
   const renderContent = () => {
     const parsedContent = parseContent(content)
 
     if (parsedContent.length === 2) {
       return (
         <div className={styles.grid}>
-          <Content content={parsedContent[0]} />
+          <Description content={parsedContent[0]} />
           <Discount />
           <Guest />
-          <Content content={parsedContent[1]} />
+          <Description content={parsedContent[1]} />
         </div>
       )
     }
@@ -35,7 +35,7 @@ export function CategoryContent({ title, content }: CategoryContentProps) {
     if (parsedContent.length === 1) {
       return (
         <div className={styles.grid}>
-          <Content content={parsedContent[0]} />
+          <Description content={parsedContent[0]} />
           <Guest />
         </div>
       )

@@ -12,7 +12,7 @@
   justify-content: center;
   gap: 6px;
   border-radius: 22px;
-  box-shadow: 0 0 5px rgba(0,29,47,0.15);
+  box-shadow: 0 0 5px rgba(0, 29, 47, 0.15);
   background-image: linear-gradient(
     37deg,
     #4957fd 0%,
@@ -65,7 +65,7 @@
   transition: 0.5s ease;
 }
 
-.button:hover {
+.button:not(:disabled):hover {
   background-position: 100% 0;
   .arrow::before {
     width: 12px;
@@ -86,4 +86,15 @@
   color: #393939;
   box-shadow: 0px 0px 9.8px 0.2px rgba(0, 29, 47, 0.14);
   background: #ffffff;
+}
+
+.button:disabled {
+  background-image: linear-gradient(
+    37deg,
+    #737699 0%,
+    #856fb9 33.33%,
+    #a963ac 66.66%,
+    #8b60ac 100%
+  );
+  background-size: 300% 100%;
 }

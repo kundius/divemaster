@@ -3,6 +3,7 @@ import { Slot } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
 import * as React from 'react'
 import styles from './index.module.scss'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 
 const buttonVariants = cva(styles.button, {
   variants: {
@@ -41,4 +42,6 @@ PrimaryButton.displayName = 'PrimaryButton'
 
 const PrimaryButtonArrow = () => <span className={styles.arrow} />
 
-export { PrimaryButton, PrimaryButtonArrow, buttonVariants }
+const PrimaryButtonSpinner = () => <ArrowPathIcon className="-ml-2 h-5 w-5 animate-spin" />
+
+export { PrimaryButton, PrimaryButtonArrow, PrimaryButtonSpinner, buttonVariants }

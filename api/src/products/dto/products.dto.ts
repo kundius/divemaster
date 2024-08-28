@@ -203,3 +203,18 @@ export class UpdateOfferDto {
   @IsArray()
   optionValues: number[]
 }
+
+export class OrderByClickProductDto {
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  name: string
+
+  @Type(() => String)
+  @IsString()
+  phone: string
+
+  @ParseBooleanString()
+  @IsBoolean()
+  approve: boolean = false
+}

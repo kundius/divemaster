@@ -176,15 +176,21 @@ export function ApiInputFile({
 
   return (
     <div className="flex items-center gap-2">
-      <Button
-        type="button"
-        loading={isLoading || isValueWithoutEntity}
-        variant={!!loadingError ? 'destructive-outline' : 'outline'}
-        {...getRootProps()}
-      >
-        <input {...getInputProps()} />
-        {isValueWithoutEntity ? 'Загрузка...' : fileEntity ? fileEntity.file : placeholder}
-      </Button>
+      <div className="flex max-w-[calc(100%-5rem)]">
+        <Button
+          type="button"
+          loading={isLoading || isValueWithoutEntity}
+          variant={!!loadingError ? 'destructive-outline' : 'outline'}
+          {...getRootProps({
+            className: 'max-w-full'
+          })}
+        >
+          <input {...getInputProps()} />
+          <span className="block max-w-full overflow-hidden text-ellipsis">
+            {isValueWithoutEntity ? 'Загрузка...' : fileEntity ? fileEntity.file : placeholder}
+          </span>
+        </Button>
+      </div>
       {renderActions()}
     </div>
   )

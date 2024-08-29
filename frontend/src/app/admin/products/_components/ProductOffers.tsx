@@ -1,33 +1,22 @@
 'use client'
 
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
+import useSWR from 'swr'
+
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
-import { Switch } from '@/components/ui/switch'
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow
 } from '@/components/ui/table'
 import { ApiRemoveDialog } from '@/lib/ApiRemoveDialog'
-import { OfferEntity, OptionEntity, OptionValueEntity } from '@/types'
-import { PencilIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { OfferEntity, OptionEntity } from '@/types'
+
 import { ProductOffersCreateDialog } from './ProductOffersCreateDialog'
-import useSWR from 'swr'
-import { withClientAuth } from '@/lib/api/with-client-auth'
-import { useQuery } from '@/lib/useQuery'
 import { ProductOffersUpdateDialog } from './ProductOffersUpdateDialog'
-import { string } from 'zod'
 
 export interface ProductOffersProps {
   productId: number
@@ -35,15 +24,12 @@ export interface ProductOffersProps {
 }
 
 export function ProductOffers({ productId, options }: ProductOffersProps) {
-  const offersQuery = useQuery<OfferEntity[]>(`products/${productId}/offers`)
+  const swrQuery = useSWR<OfferEntity[]>([`products/${productId}/offers`, {}])
+  const refetch = () => swrQuery.mutate(swrQuery.data, { revalidate: true })
   return (
     <div className="space-y-6">
       <div className="p-5 rounded-md flex items-center justify-end gap-4 bg-neutral-50">
-        <ProductOffersCreateDialog
-          productId={productId}
-          options={options}
-          onSuccess={offersQuery.refetch}
-        >
+        <ProductOffersCreateDialog productId={productId} options={options} onSuccess={refetch}>
           <Button>Добавить вариант</Button>
         </ProductOffersCreateDialog>
       </div>
@@ -59,7 +45,7 @@ export function ProductOffers({ productId, options }: ProductOffersProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {offersQuery.data?.map((offer) => (
+          {swrQuery.data?.map((offer) => (
             <TableRow key={offer.id}>
               {/* <TableCell className="font-medium">{offer.title}</TableCell> */}
               {options.map((option) => (
@@ -74,7 +60,7 @@ export function ProductOffers({ productId, options }: ProductOffersProps) {
                     offer={offer}
                     productId={productId}
                     options={options}
-                    onSuccess={offersQuery.refetch}
+                    onSuccess={refetch}
                   >
                     <Button variant="outline" size="sm-icon">
                       <PencilIcon className="w-4 h-4" />
@@ -82,7 +68,7 @@ export function ProductOffers({ productId, options }: ProductOffersProps) {
                   </ProductOffersUpdateDialog>
                   <ApiRemoveDialog
                     url={`products/${productId}/offers/${offer.id}`}
-                    onSuccess={offersQuery.refetch}
+                    onSuccess={refetch}
                   >
                     <Button variant="destructive-outline" size="sm-icon">
                       <TrashIcon className="w-4 h-4" />

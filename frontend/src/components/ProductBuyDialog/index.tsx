@@ -15,7 +15,7 @@ import assetsRing from './assets/ring.png'
 import assetsS from './assets/s.png'
 import { PrimaryButton, PrimaryButtonArrow, PrimaryButtonSpinner } from '../site/PrimaryButton'
 
-export function BuyInClickDialog({ children }: PropsWithChildren) {
+export function ProductBuyDialog({ children, title }: PropsWithChildren<{ title: string }>) {
   const product = useProductStore((state) => state.product)
   const defaultPrice = useProductStore((state) => state.defaultPrice)
   const [show, toggleShow] = useToggle(false)
@@ -38,7 +38,8 @@ export function BuyInClickDialog({ children }: PropsWithChildren) {
         await apiPost(`products/${product.id}/order-by-click`, {
           name: formData.get('name'),
           phone: formData.get('phone'),
-          approve: formData.get('approve')
+          approve: formData.get('approve'),
+          subject: title
         })
         toggleSuccess(true)
         toggleShow(false)
@@ -95,7 +96,7 @@ export function BuyInClickDialog({ children }: PropsWithChildren) {
               </div>
             </div>
             <div className={css.layoutForm}>
-              <div className={css.title}>Заказать в 1 клик</div>
+              <div className={css.title}>{title}</div>
               <div className={css.desc}>
                 Отправьте заявку, и наши менеджеры свяжутся с Вами в ближайшее время.
               </div>

@@ -10,6 +10,7 @@ export async function CatalogMenu() {
     parent: 0,
     limit: 100,
     active: true,
+    sort: 'rank',
     withChildren: true
   })
 

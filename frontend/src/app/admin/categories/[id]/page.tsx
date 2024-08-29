@@ -10,8 +10,11 @@ export const metadata: Metadata = {
 
 export default async function Page({ params }: { params: { id: number } }) {
   const initialData = await apiGet<CategoryEntity>(
-    `categories/${params.id}?relations=parent,children,test`,
-    {},
+    `categories/${params.id}`,
+    {
+      withContent: true,
+      withParent: true
+    },
     withServerAuth()
   )
   return <CategoriesEditPage initialData={initialData} />

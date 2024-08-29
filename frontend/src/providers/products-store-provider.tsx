@@ -26,13 +26,18 @@ export const ProductStoreContext = createContext<ProductStoreApi | undefined>(un
 
 export interface ProductsStoreProviderProps {
   children: ReactNode
-  categoryId: number
+  categoryId?: number
+  favorite?: boolean
 }
 
-export const ProductsStoreProvider = ({ children, categoryId }: ProductsStoreProviderProps) => {
+export const ProductsStoreProvider = ({
+  children,
+  categoryId,
+  favorite
+}: ProductsStoreProviderProps) => {
   const storeRef = useRef<ProductStoreApi>()
   if (!storeRef.current) {
-    storeRef.current = createProductsStore(categoryId)
+    storeRef.current = createProductsStore({ categoryId, favorite })
   }
 
   return (

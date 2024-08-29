@@ -14,7 +14,6 @@ import {
 import { apiGet } from '@/lib/api'
 
 export type ProductsState = {
-  categoryId: number
   page: number
   limit: number
   filter: string
@@ -53,11 +52,10 @@ export const defaultProductsStore = {
   dir: 'ASC'
 }
 
-export const createProductsStore = (categoryId: number) => {
+export const createProductsStore = (options?: { categoryId?: number; favorite?: boolean }) => {
   return createStore<ProductsStore>()(
     computed(
       (set, get) => ({
-        categoryId,
         page: defaultProductsStore.page,
         limit: defaultProductsStore.limit,
         filter: defaultProductsStore.filter,
@@ -100,20 +98,25 @@ export const createProductsStore = (categoryId: number) => {
         async load() {
           set({ loading: true })
           const store = get()
-          const data = await apiGet<ProductsState['data']>('products', {
+          const params: Record<string, any> = {
             page: store.page,
             limit: store.limit,
             filter: store.filter,
-            category: categoryId,
             withImages: true,
             withBrand: true,
             withOptions: true,
             withOffers: true,
             active: true,
-            // favorite: isParent,
             sort: store.sort,
             dir: store.dir
-          })
+          }
+          if (options?.categoryId) {
+            params.category = options.categoryId
+          }
+          if (options?.favorite) {
+            params.favorite = options.favorite
+          }
+          const data = await apiGet<ProductsState['data']>('products', params)
           set({ data, loading: false })
         }
       }),

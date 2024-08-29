@@ -61,6 +61,7 @@ export interface CategoryEntity {
   alias: string
   description: string | null
   active: boolean
+  rank: number
   children?: CategoryEntity[]
 }
 
@@ -71,6 +72,7 @@ export interface ProductEntity {
   title: string
   longTitle: string | null
   alias: string
+  rank: number
   description: string | null
   specifications: string | null
   exploitation: string | null

@@ -24,6 +24,7 @@ export const CategoryFormSchema = z.object({
   longTitle: z.string().trim().nullable(),
   description: z.string().trim().nullable(),
   parentId: z.number().nullable(),
+  rank: z.number().nullable(),
   imageId: z.number().nullable(),
   active: z.boolean()
 })
@@ -120,6 +121,24 @@ export function CategoryForm({ form, onSubmit }: CategoryFormProps) {
                 <FormLabel>Расширенное название</FormLabel>
                 <FormControl>
                   <Input value={value || ''} {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="rank"
+            render={({ field: { value, onChange, ...field } }) => (
+              <FormItem>
+                <FormLabel>Порядок</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    value={value || ''}
+                    onChange={(e) => onChange(Number(e.target.value))}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

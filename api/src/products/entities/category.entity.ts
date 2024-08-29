@@ -30,6 +30,9 @@ export class Category {
   @Property({ unique: true })
   alias: string
 
+  @Property({ default: 0 })
+  rank: number = 0
+
   @Property({ nullable: true, type: 'text' })
   description: string | null = null
 

@@ -26,6 +26,11 @@ export class CreateCategoryDto {
   @Type(() => Number)
   @IsNumber()
   @IsOptional()
+  rank?: number
+
+  @Type(() => Number)
+  @IsNumber()
+  @IsOptional()
   parentId?: number | null
 
   @Type(() => Number)

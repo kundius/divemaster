@@ -90,7 +90,7 @@ export default async function Page({ params: { alias } }: { params: { alias: str
   const isParent = category.children ? category.children.length > 0 : false
 
   return (
-    <ProductsStoreProvider categoryId={category.id}>
+    <ProductsStoreProvider categoryId={category.id} favorite={isParent}>
       <Container>
         <div className="pb-3 pt-6 border-b border-neutral-100">
           <Breadcrumbs items={crumbs} />

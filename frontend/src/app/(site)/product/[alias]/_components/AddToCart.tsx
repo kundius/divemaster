@@ -11,7 +11,7 @@ import { OptionType } from '@/types'
 import styles from './AddToCart.module.scss'
 import { SelectOption } from './SelectOption'
 import { TooltipPortal } from '@radix-ui/react-tooltip'
-import { BuyInClickDialog } from '@/components/BuyInClickDialog'
+import { ProductBuyDialog } from '@/components/ProductBuyDialog'
 
 export const OptionComponents = {
   [OptionType.COMBOCOLORS]: SelectOption,
@@ -76,9 +76,11 @@ export function AddToCart() {
           <TooltipProvider delayDuration={0}>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button className="w-full leading-none" size="lg" key="not-available">
-                  Заказать
-                </Button>
+                <ProductBuyDialog title="Заказать от 1 дня">
+                  <Button className="w-full leading-none" size="lg" key="not-available">
+                    Заказать
+                  </Button>
+                </ProductBuyDialog>
               </TooltipTrigger>
               <TooltipPortal>
                 <TooltipContent>
@@ -104,7 +106,7 @@ export function AddToCart() {
             В корзину
           </Button>
         )}
-        <BuyInClickDialog>
+        <ProductBuyDialog title="Заказать в 1 клик">
           <Button variant="accent-outline" size="lg" className="max-w-40">
             <span className="w-min whitespace-normal leading-none">
               Купить <span className="text-nowrap">в 1 клик</span>
@@ -113,7 +115,7 @@ export function AddToCart() {
               <use href="/sprite.svg#one-click"></use>
             </svg>
           </Button>
-        </BuyInClickDialog>
+        </ProductBuyDialog>
       </div>
     </div>
   )

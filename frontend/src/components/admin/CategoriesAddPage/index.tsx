@@ -22,6 +22,7 @@ export function CategoriesAddPage() {
       active: true,
       title: '',
       alias: '',
+      rank: 0,
       description: null,
       longTitle: null,
       parentId: null,

@@ -25,6 +25,7 @@ import { useProductStore } from '@/providers/product-store-provider'
 
 import styles from './AddToCart.module.scss'
 import { SelectOption } from './SelectOption'
+import { ProductBuyDialog } from '@/components/ProductBuyDialog'
 
 export function AddToCart() {
   const {
@@ -66,11 +67,15 @@ export function AddToCart() {
       <TooltipProvider delayDuration={0}>
         <Tooltip>
           <TooltipTrigger asChild>
-            <button className={styles['action']}>
-              <span className={styles['action-inner']}>
-                <span className="text-nowrap">Заказать</span>
-              </span>
-            </button>
+            <div className="w-full">
+              <ProductBuyDialog title="Заказать от 1 дня">
+                <button className={styles['action']}>
+                  <span className={styles['action-inner']}>
+                    <span className="text-nowrap">Заказать</span>
+                  </span>
+                </button>
+              </ProductBuyDialog>
+            </div>
           </TooltipTrigger>
           <TooltipPortal>
             <TooltipContent>
@@ -141,9 +146,13 @@ export function AddToCart() {
             <TooltipProvider delayDuration={0}>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button className="w-full leading-none" size="lg">
-                    Заказать
-                  </Button>
+                  <div className="w-full">
+                    <ProductBuyDialog title="Заказать от 1 дня">
+                      <Button className="w-full leading-none" size="lg">
+                        Заказать
+                      </Button>
+                    </ProductBuyDialog>
+                  </div>
                 </TooltipTrigger>
                 <TooltipPortal>
                   <TooltipContent>

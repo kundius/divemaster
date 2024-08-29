@@ -30,6 +30,7 @@ export function CategoriesEditPage({ initialData }: CategoriesEditPageProps) {
       imageId:
         typeof initialData.image === 'number' ? initialData.image : initialData.image?.id || null,
       active: initialData.active,
+      rank: initialData.rank,
       description: initialData.description,
       longTitle: initialData.longTitle,
       title: initialData.title,

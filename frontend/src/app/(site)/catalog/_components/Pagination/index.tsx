@@ -1,37 +1,22 @@
 'use client'
 
 import { Pagination as SitePagination } from '@/components/site/Pagination'
-import { parseAsInteger, useQueryStates } from 'nuqs'
-import { useProductsQuery } from '../ProductsQuery'
+import { useProductsStore } from '@/providers/products-store-provider'
 
 export function Pagination() {
-  const [params, setParams] = useQueryStates({
-    limit: parseAsInteger.withDefault(24),
-    page: parseAsInteger.withDefault(1)
-  })
+  const total = useProductsStore((state) => state.data.total)
+  const page = useProductsStore((state) => state.page)
+  const limit = useProductsStore((state) => state.limit)
+  const onChangePagination = useProductsStore((state) => state.onChangePagination)
 
-  const { data, listRef } = useProductsQuery()
-
-  const onChange = (page: number, limit: number) => {
-    setParams({ page, limit })
-    if (listRef.current) {
-      listRef.current.scrollIntoView({ behavior: 'smooth' })
-    }
-  }
-
-  if (data.total <= params.limit) {
+  if (total <= limit) {
     return null
   }
 
   return (
     <div className="flex justify-between items-center mt-8">
       <div />
-      <SitePagination
-        limit={params.limit}
-        page={params.page}
-        total={data.total}
-        onChange={onChange}
-      />
+      <SitePagination limit={limit} page={page} total={total} onChange={onChangePagination} />
     </div>
   )
 }

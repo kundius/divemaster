@@ -18,6 +18,7 @@ export function ProductCreate() {
       priceDecrease: null,
       longTitle: null,
       sku: null,
+      rank: null,
       brandId: null,
       active: true,
       recent: false,

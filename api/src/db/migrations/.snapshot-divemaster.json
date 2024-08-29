@@ -198,6 +198,16 @@
           "nullable": false,
           "mappedType": "string"
         },
+        "rank": {
+          "name": "rank",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "0",
+          "mappedType": "integer"
+        },
         "description": {
           "name": "description",
           "type": "text",
@@ -655,6 +665,16 @@
           "primary": false,
           "nullable": true,
           "mappedType": "string"
+        },
+        "rank": {
+          "name": "rank",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "0",
+          "mappedType": "integer"
         },
         "price_decrease": {
           "name": "price_decrease",

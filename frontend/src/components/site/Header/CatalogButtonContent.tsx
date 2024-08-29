@@ -21,9 +21,9 @@ export default function CatalogButtonContent() {
     }
   ])
 
-  const spearfishing = query.data?.rows.find((item) => item.id === 1)
-  const diving = query.data?.rows.find((item) => item.id === 34)
-  const swimming = query.data?.rows.find((item) => item.id === 60)
+  const spearfishing = query.data?.rows.find((item) => item.alias === 'vsyo-dlya-podvodnoj-ohoty')
+  const diving = query.data?.rows.find((item) => item.alias === 'vsyo-dlya-dajvinga')
+  const swimming = query.data?.rows.find((item) => item.alias === 'vsyo-dlya-plavaniya')
 
   return (
     <div className={styles.root}>

@@ -23,6 +23,7 @@ export const ProductFormSchema = z.object({
   longTitle: z.string().trim().nullable(),
   priceDecrease: z.number().nullable(),
   brandId: z.number().nullable(),
+  rank: z.number().nullable(),
   active: z.boolean(),
   recent: z.boolean(),
   favorite: z.boolean(),
@@ -116,6 +117,24 @@ export function ProductForm({ form, onSubmit }: ProductFormProps) {
             render={({ field: { onChange, value, ...field } }) => (
               <FormItem>
                 <FormLabel>Снижение цены, %</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    onChange={(e) => onChange(!e.target.value ? null : Number(e.target.value))}
+                    value={value === null ? '' : value}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="rank"
+            render={({ field: { onChange, value, ...field } }) => (
+              <FormItem>
+                <FormLabel>Порядок</FormLabel>
                 <FormControl>
                   <Input
                     type="number"

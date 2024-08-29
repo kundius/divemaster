@@ -123,6 +123,11 @@ export class CreateProductDto {
   @IsString()
   alias: string
 
+  @Type(() => Number)
+  @IsNumber()
+  @IsOptional()
+  rank?: number
+
   @Type(() => String)
   @IsString()
   @IsOptional()
@@ -213,6 +218,10 @@ export class OrderByClickProductDto {
   @Type(() => String)
   @IsString()
   phone: string
+
+  @Type(() => String)
+  @IsString()
+  subject: string
 
   @ParseBooleanString()
   @IsBoolean()

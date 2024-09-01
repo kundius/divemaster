@@ -6,10 +6,12 @@ import Link from 'next/link'
 import { useMobileNavigation } from './MobileNavigation'
 import { useAuthStore } from '@/providers/auth-store-provider'
 import { useCartStore } from '@/providers/cart-store-provider'
+import { SpriteIcon } from '@/components/SpriteIcon'
 
 export function Toolbar() {
   const cartTotal = useCartStore((state) => state.total)
   const authUser = useAuthStore((state) => state.user)
+  const loginDialogToggle = useAuthStore((state) => state.loginDialogToggle)
   const mobileNavigation = useMobileNavigation()
 
   const handleClick = () => {
@@ -33,25 +35,44 @@ export function Toolbar() {
         )}
         onClick={handleClick}
       >
-        <span className={cn(styles.icon, styles['icon-catalog'])}></span>
+        <span className={styles.icon}>
+          <SpriteIcon name="catalog" size={20} />
+        </span>
         <span className={styles.title}>Каталог</span>
       </button>
       <Link href="/cart" className={cn(styles.button, 'block')}>
-        <span className={cn(styles.icon, styles['icon-cart'])}></span>
+        <span className={styles.icon}>
+          <SpriteIcon name="toolbar-cart" size={24} />
+        </span>
         <span className={styles.title}>Корзина</span>
         {cartTotal.count > 0 && <span className={styles.badge}>{cartTotal.count}</span>}
       </Link>
       <Link href="#" className={cn(styles.button, 'block')}>
-        <span className={cn(styles.icon, styles['icon-favorites'])}></span>
+        <span className={styles.icon}>
+          <SpriteIcon name="favorites" size={24} />
+        </span>
         <span className={styles.title}>Избранное</span>
         <span className={styles.badge}>0</span>
       </Link>
-      <Link href={authUser ? '/office' : '/auth/signin'} className={cn(styles.button, 'block')}>
-        <span className={cn(styles.icon, styles['icon-profile'])}></span>
-        <span className={styles.title}>Профиль</span>
-      </Link>
+      {!authUser ? (
+        <button onClick={() => loginDialogToggle(true)} className={cn(styles.button, 'block')}>
+          <span className={styles.icon}>
+            <SpriteIcon name="login" size={24} />
+          </span>
+          <span className={styles.title}>Войти</span>
+        </button>
+      ) : (
+        <Link href="/office" className={cn(styles.button, 'block')}>
+          <span className={styles.icon}>
+            <SpriteIcon name="toolbar-profile" size={24} />
+          </span>
+          <span className={styles.title}>Профиль</span>
+        </Link>
+      )}
       <Link href="#" className={cn(styles.button, 'block')}>
-        <span className={cn(styles.icon, styles['icon-compare'])}></span>
+        <span className={styles.icon}>
+          <SpriteIcon name="comparison" size={24} />
+        </span>
         <span className={styles.title}>Сравнить</span>
         <span className={styles.badge}>0</span>
       </Link>

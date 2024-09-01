@@ -10,6 +10,7 @@
   position: relative;
   z-index: 1;
   flex-grow: 1;
+  min-width: 58px;
 }
 
 .button:last-child {
@@ -27,7 +28,7 @@
   bottom: -2px;
   background: linear-gradient(53deg, rgb(159, 0, 169) 0%, rgb(141, 45, 250) 100%);
   opacity: 0;
-  transition: .3s ease;
+  transition: 0.3s ease;
 }
 
 .button.active::before,
@@ -46,77 +47,20 @@
 }
 
 .icon {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 32px;
   height: 32px;
   background-position: 50% 50%;
   background-repeat: no-repeat;
   margin: 0 auto;
   background-size: 24px auto;
-}
+  color: var(--neutral100);
 
-.icon-cart {
-  background-image: url('/icons/toolbar/cart.svg');
-  background-position: calc(50% + -1px) calc(50% + 4px);
-
-  @include --max-md {
-    background-image: url('/icons/toolbar/cart-gray.svg');
-    .button.active &,
-    .button:hover & {
-      background-image: url('/icons/toolbar/cart.svg');
-    }
-  }
-}
-
-.icon-favorites {
-  background-image: url('/icons/toolbar/favorites.svg');
-  background-position: calc(50% + 2px) calc(50% + 2px);
-
-  @include --max-md {
-    background-image: url('/icons/toolbar/favorites-gray.svg');
-    .button.active &,
-    .button:hover & {
-      background-image: url('/icons/toolbar/favorites.svg');
-    }
-  }
-}
-
-.icon-profile {
-  background-image: url('/icons/toolbar/profile.svg');
-
-  @include --max-md {
-    background-image: url('/icons/toolbar/profile-gray.svg');
-    .button.active &,
-    .button:hover & {
-      background-image: url('/icons/toolbar/profile.svg');
-    }
-  }
-}
-
-.icon-compare {
-  background-image: url('/icons/toolbar/compare.svg');
-  background-position: calc(50% + -4px) calc(50% + 2px);
-
-  @include --max-md {
-    background-image: url('/icons/toolbar/compare-gray.svg');
-    .button.active &,
-    .button:hover & {
-      background-image: url('/icons/toolbar/compare.svg');
-    }
-  }
-}
-
-.icon-catalog {
-  background-image: url('/icons/toolbar/catalog.svg');
-  background-position: calc(50% + 0px) calc(50% + 0px);
-  background-size: 18px auto;
-
-  @include --max-md {
-    background-image: url('/icons/toolbar/catalog-gray.svg');
-    .button.active &,
-    .button:hover & {
-      background-image: url('/icons/toolbar/catalog.svg');
-    }
+  .button.active &,
+  .button:hover & {
+    color: #fff;
   }
 }
 
@@ -125,9 +69,9 @@
   color: rgba(255, 255, 255, 0.702);
   line-height: 12px;
   text-align: center;
-  transition: .3s ease;
+  transition: 0.3s ease;
   display: block;
-  
+
   @include --max-md {
     color: rgb(133, 138, 142);
   }

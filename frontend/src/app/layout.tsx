@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 import { AuthServerProvider } from '@/providers/auth-server-provider'
 import { CartStoreProvider } from '@/providers/cart-store-provider'
 import '@/styles/globals.scss'
+import { LoginDialog } from '@/components/LoginDialog'
 
 const fontSans = FontSans({
   weight: ['400', '500', '700'],

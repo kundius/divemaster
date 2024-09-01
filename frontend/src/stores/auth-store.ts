@@ -8,6 +8,7 @@ import { UserEntity } from '@/types'
 
 export type AuthState = {
   user: UserEntity | null
+  loginDialogOpened: boolean
 }
 
 export type AuthActions = {
@@ -15,11 +16,12 @@ export type AuthActions = {
   login(token: string): Promise<void>
   logout(): Promise<void>
   loadUser(): Promise<void>
+  loginDialogToggle(value?: boolean): void
 }
 
 export type AuthStore = AuthState & AuthActions
 
-export const defaultInitState: AuthState = { user: null }
+export const defaultInitState: AuthState = { user: null, loginDialogOpened: false }
 
 export const createAuthStore = (initState: AuthState = defaultInitState) => {
   return createStore<AuthStore>()((set, get) => ({
@@ -66,6 +68,14 @@ export const createAuthStore = (initState: AuthState = defaultInitState) => {
     async logout() {
       deleteCookie(TOKEN_NAME)
       set({ user: null })
+    },
+
+    loginDialogToggle(loginDialogOpened) {
+      if (typeof loginDialogOpened !== 'undefined') {
+        set({ loginDialogOpened })
+      } else {
+        set((prev) => ({ loginDialogOpened: !prev.loginDialogOpened }))
+      }
     }
   }))
 }

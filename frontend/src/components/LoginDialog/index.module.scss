@@ -1,0 +1,29 @@
+.or {
+  color: rgba(0, 26, 52, 0.4);
+  margin: 16px auto;
+  line-height: 15px;
+  padding: 0 16px;
+  font-size: 14px;
+  position: relative;
+  text-align: center;
+  width: -moz-max-content;
+  width: max-content;
+}
+
+.or:after,
+.or:before {
+  background-color: rgba(0, 26, 52, 0.2);
+  content: '';
+  height: 1px;
+  position: absolute;
+  top: 7px;
+  width: 64px;
+}
+
+.or:before {
+  left: -64px;
+}
+
+.or:after {
+  right: -64px;
+}

@@ -6,6 +6,7 @@ import { apiGet } from '@/lib/api'
 import { withServerAuth } from '@/lib/api/with-server-auth'
 import type { UserEntity } from '@/types'
 import { AuthStoreProvider } from './auth-store-provider'
+import { LoginDialog } from '@/components/LoginDialog'
 
 const preloadEnabled = cache<() => { current: boolean }>(() => ({ current: false }))
 

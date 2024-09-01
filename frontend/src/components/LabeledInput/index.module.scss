@@ -1,0 +1,52 @@
+.input {
+  position: relative;
+  display: block;
+}
+
+.control {
+  display: block;
+  width: 100%;
+  border-radius: 8px;
+  background-color: #ffffff;
+  border: 1px solid #e3e3e3;
+  height: 52px;
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-top: 16px;
+  font-size: 16px;
+  line-height: 24px;
+  color: #202020;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.label {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  left: 12px;
+  top: 12px;
+  line-height: 1;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #999999;
+  font-family: var(--font-sans-narrow);
+  transition: 0.3s ease;
+}
+
+.label::after {
+  content: '*';
+  display: none;
+  color: #ff0000;
+}
+
+.input:has(.control:not(:placeholder-shown)) .label,
+.input:has(.control:focus) .label {
+  font-size: 11px;
+  top: 8px;
+}
+
+.input:has(.control[required]) .label::after {
+  display: block;
+}

@@ -18,7 +18,7 @@ export interface AuthStoreProviderProps {
 export const AuthStoreProvider = ({ children, initialUser }: AuthStoreProviderProps) => {
   const storeRef = useRef<AuthStoreApi>()
   if (!storeRef.current) {
-    storeRef.current = createAuthStore({ user: initialUser || null })
+    storeRef.current = createAuthStore({ user: initialUser || null, loginDialogOpened: false })
   }
 
   useLayoutEffect(() => {

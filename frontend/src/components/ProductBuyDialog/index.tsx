@@ -14,6 +14,7 @@ import assetsMaster from './assets/master.png'
 import assetsRing from './assets/ring.png'
 import assetsS from './assets/s.png'
 import { PrimaryButton, PrimaryButtonArrow, PrimaryButtonSpinner } from '../site/PrimaryButton'
+import { LabeledInput } from '../LabeledInput'
 
 export function ProductBuyDialog({ children, title }: PropsWithChildren<{ title: string }>) {
   const product = useProductStore((state) => state.product)
@@ -102,22 +103,10 @@ export function ProductBuyDialog({ children, title }: PropsWithChildren<{ title:
               </div>
               <form className={css.rows} action={submitHandler}>
                 <div className={css.rowInput}>
-                  <label className={css.input}>
-                    <input type="text" name="name" placeholder=" " className={css.inputControl} />
-                    <span className={css.inputLabel}>Имя</span>
-                  </label>
+                  <LabeledInput type="text" name="name" label="Имя" />
                 </div>
                 <div className={css.rowInput}>
-                  <label className={css.input}>
-                    <input
-                      type="tel"
-                      name="phone"
-                      placeholder=" "
-                      className={css.inputControl}
-                      required
-                    />
-                    <span className={css.inputLabel}>Телефон</span>
-                  </label>
+                  <LabeledInput type="tel" name="phone" label="Телефон" required />
                 </div>
                 <div className={css.rowRules}>
                   <label className={css.rules}>

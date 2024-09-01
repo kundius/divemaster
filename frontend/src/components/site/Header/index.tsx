@@ -13,6 +13,8 @@ import { Sticky } from './Sticky'
 import { Toolbar } from './Toolbar'
 import { TopMenu } from './TopMenu'
 import styles from './index.module.scss'
+import { SecondaryContainer } from './SecondaryContainer'
+import { LoginDialog } from '@/components/LoginDialog'
 
 export function Header() {
   return (
@@ -131,7 +133,7 @@ export function Header() {
             </div>
           </div>
 
-          <div className={styles['secondary-container']} data-header-secondary="">
+          <SecondaryContainer>
             <div className={styles['catalog-menu']}>
               <CatalogMenu />
             </div>
@@ -139,9 +141,10 @@ export function Header() {
             <div className={styles['desktop-contacts']}>
               <DesktopContacts />
             </div>
-          </div>
+          </SecondaryContainer>
         </Container>
       </Sticky>
+      <LoginDialog />
     </MobileNavigation>
   )
 }

@@ -46,7 +46,6 @@
 }
 
 .primary-container {
-  border-bottom: 1px solid rgba(231, 231, 235, 0.34);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -159,6 +158,7 @@
   align-items: center;
   justify-content: space-between;
   position: relative;
+  border-top: 1px solid rgba(231, 231, 235, 0.34);
 
   :global(body:has([data-hero-after-header]):not(:has([data-stuck]))) & {
     border-bottom-color: rgba(231, 231, 235, 0.34);

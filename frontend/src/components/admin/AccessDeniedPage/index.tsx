@@ -1,18 +1,47 @@
-import styles from './styles.module.scss'
-import Link from 'next/link'
+'use client'
+
+import { useTransition } from 'react'
+import { toast } from 'sonner'
+
+import { LabeledInput } from '@/components/LabeledInput'
 import { Button } from '@/components/ui/button'
+import { apiPost } from '@/lib/api'
+import { useAuthStore } from '@/providers/auth-store-provider'
+
 import { AuthLayout } from '../AuthLayout'
 
 export function AccessDeniedPage() {
+  const login = useAuthStore((state) => state.login)
+  const [pending, startTransition] = useTransition()
+
+  const submitHandler = (formData: FormData) => {
+    startTransition(async () => {
+      try {
+        const data = await apiPost<{ token: string }>('auth/login', {
+          email: formData.get('email'),
+          password: formData.get('password')
+        })
+        toast.success('Добро пожаловать!')
+        login(data.token)
+      } catch (e) {
+        toast.error(e instanceof Error ? e.message : 'Unknown error')
+      }
+    })
+  }
+
   return (
     <AuthLayout>
-      <div className={styles.title}>Аутентификация</div>
-      <div className={styles.desc}>У вас нет доступа к данной странице.</div>
-      <Link href="/auth/signin" passHref key="signin">
-        <div className={styles.submit}>
-          <Button>Вход</Button>
-        </div>
-      </Link>
+      <div className="space-y-2">
+        <div className="font-semibold uppercase text-xl tracking-widest">Аутентификация</div>
+        <div className="text-base text-muted-foreground">У вас нет доступа к данной странице.</div>
+      </div>
+      <form className="space-y-4 mt-6" action={submitHandler}>
+        <LabeledInput type="email" name="email" label="E-mail" required />
+        <LabeledInput type="password" name="password" label="Пароль" required />
+        <Button type="submit" className="w-full" size="lg" loading={pending}>
+          Войти
+        </Button>
+      </form>
     </AuthLayout>
   )
 }

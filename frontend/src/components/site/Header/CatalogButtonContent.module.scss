@@ -135,6 +135,8 @@
 .list a {
   text-decoration: none;
   color: inherit;
+  display: inline-block;
+  line-height: 1.25;
 }
 
 .list a:hover {

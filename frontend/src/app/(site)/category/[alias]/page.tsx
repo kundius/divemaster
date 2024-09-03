@@ -18,6 +18,7 @@ import { Sorting } from './_components/Sorting'
 import { Products } from './_components/Products'
 import { Pagination } from './_components/Pagination'
 import { Content } from './_components/Content'
+import { Headline } from '@/components/Headline'
 
 export async function generateStaticParams() {
   const categories = await apiGet<ApiTableData<CategoryEntity>>(`categories`, {
@@ -91,68 +92,67 @@ export default async function Page({ params: { alias } }: { params: { alias: str
 
   return (
     <ProductsStoreProvider categoryId={category.id} favorite={isParent}>
-      <Container>
-        <div className="pb-3 pt-6 border-b border-neutral-100">
-          <Breadcrumbs items={crumbs} />
-          <div className="mt-2 text-4xl font-sans-narrow uppercase font-bold">{category.title}</div>
-        </div>
+      <div className="pt-6 pb-40">
+        <Container>
+          <Headline breadcrumbs={crumbs} separator title={category.title} />
 
-        {isParent && (
-          <div className="grid grid-cols-5 gap-x-5 mt-10 gap-y-16 pb-10 border-b mb-14 border-neutral-100 max-2xl:grid-cols-4">
-            {category.children?.map((item) => (
-              <CategoryCard
-                key={item.id}
-                title={item.title}
-                href={`/category/${item.alias}`}
-                image={!!item.image ? getFileUrl(item.image) : '/noimage.png'}
+          {isParent && (
+            <div className="grid grid-cols-5 gap-x-5 mt-10 gap-y-16 pb-10 border-b mb-14 border-neutral-100 max-2xl:grid-cols-4">
+              {category.children?.map((item) => (
+                <CategoryCard
+                  key={item.id}
+                  title={item.title}
+                  href={`/category/${item.alias}`}
+                  image={!!item.image ? getFileUrl(item.image) : '/noimage.png'}
+                />
+              ))}
+            </div>
+          )}
+
+          <div className="flex gap-x-5 mt-14">
+            <div className="w-1/5 space-y-5 max-2xl:w-1/4">
+              {!isParent && (
+                <div className="mb-80">
+                  <Filter />
+                </div>
+              )}
+              <ConsultationWidget />
+              <BenefitsSideSlider
+                items={[
+                  {
+                    content: <BenefitsSideSliderDiscount />,
+                    name: 'BenefitsSideSliderDiscount1'
+                  },
+                  {
+                    content: <BenefitsSideSliderDiscount />,
+                    name: 'BenefitsSideSliderDiscount2'
+                  },
+                  {
+                    content: <BenefitsSideSliderDiscount />,
+                    name: 'BenefitsSideSliderDiscount3'
+                  }
+                ]}
               />
-            ))}
+            </div>
+            <div className="w-4/5 max-2xl:w-3/4">
+              {isParent ? (
+                <div className="mb-6 text-xl font-sans-narrow uppercase font-bold">
+                  Популярные товары
+                </div>
+              ) : (
+                <Sorting />
+              )}
+              <Products />
+              <Pagination />
+            </div>
           </div>
-        )}
 
-        <div className="flex gap-x-5 mb-40 mt-14">
-          <div className="w-1/5 space-y-5 max-2xl:w-1/4">
-            {!isParent && (
-              <div className="mb-80">
-                <Filter />
-              </div>
-            )}
-            <ConsultationWidget />
-            <BenefitsSideSlider
-              items={[
-                {
-                  content: <BenefitsSideSliderDiscount />,
-                  name: 'BenefitsSideSliderDiscount1'
-                },
-                {
-                  content: <BenefitsSideSliderDiscount />,
-                  name: 'BenefitsSideSliderDiscount2'
-                },
-                {
-                  content: <BenefitsSideSliderDiscount />,
-                  name: 'BenefitsSideSliderDiscount3'
-                }
-              ]}
-            />
-          </div>
-          <div className="w-4/5 max-2xl:w-3/4">
-            {isParent ? (
-              <div className="mb-6 text-xl font-sans-narrow uppercase font-bold">
-                Популярные товары
-              </div>
-            ) : (
-              <Sorting />
-            )}
-            <Products />
-            <Pagination />
-          </div>
-        </div>
-
-        <Content
-          title={category.longTitle || undefined}
-          content={category.description || undefined}
-        />
-      </Container>
+          <Content
+            title={category.longTitle || undefined}
+            content={category.description || undefined}
+          />
+        </Container>
+      </div>
     </ProductsStoreProvider>
   )
 }

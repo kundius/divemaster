@@ -12,9 +12,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
-import styles from './Headline.module.scss'
+import styles from './CartHeadline.module.scss'
 
-export function Headline() {
+export function CartHeadline() {
   const total = useCartStore((state) => state.total)
   const deleteCart = useCartStore((state) => state.deleteCart)
 

@@ -1,6 +1,6 @@
 'use client'
 
-import styles from './Auth.module.scss'
+import styles from './PersonalDiscount.module.scss'
 import { Switch } from '@/components/ui/switch'
 
 export interface PersonalDiscountProps {

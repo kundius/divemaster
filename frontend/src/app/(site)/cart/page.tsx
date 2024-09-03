@@ -2,7 +2,14 @@ import { Metadata } from 'next'
 
 import { Container } from '@/components/site/Container'
 
-import { Content } from './_components/Content'
+import { Headline } from '@/components/Headline'
+import { Button } from '@/components/ui/button'
+import { Authentication } from './_components/Authentication'
+import { CartHeadline } from './_components/CartHeadline'
+import { EmptyFallback } from './_components/EmptyFallback'
+import { LegalEntity } from './_components/LegalEntity'
+import { OrderInfo } from './_components/OrderInfo'
+import { Products } from './_components/Products'
 
 export const metadata: Metadata = {
   title: 'Корзина'
@@ -12,7 +19,25 @@ export default function Page() {
   return (
     <div className="pt-12 pb-40">
       <Container small>
-        <Content />
+        <EmptyFallback>
+          <Headline className="mb-8" title="Корзина" />
+          <div className="flex gap-20">
+            <div className="w-2/3">
+              <CartHeadline />
+              <Products />
+            </div>
+            <div className="w-1/3">
+              <div className="sticky top-32 space-y-4">
+                <OrderInfo />
+                <Authentication />
+                <Button className="w-full uppercase font-sans-narrow" size="lg" type="button">
+                  Оформить заказ
+                </Button>
+                <LegalEntity />
+              </div>
+            </div>
+          </div>
+        </EmptyFallback>
       </Container>
     </div>
   )

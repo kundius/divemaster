@@ -14,32 +14,11 @@ label.wrap:hover {
   background: var(--blue50);
 }
 
-.title {
-  font-size: 16px;
-  line-height: 1.15;
-  color: #000;
-  margin-bottom: 16px;
-  font-weight: bold;
-  display: block;
-}
-
 .desc {
   font-size: 14px;
   line-height: 1.15;
   color: #3a3a3a;
   display: block;
-}
-
-.authorize {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.authorizeButton {
-  font-size: 12px;
-  text-transform: uppercase;
-  color: #a90083;
-  font-weight: bold;
 }
 
 .apply {

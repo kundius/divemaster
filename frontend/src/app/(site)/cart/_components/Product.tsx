@@ -100,11 +100,12 @@ export function Product({ cartProduct }: ProductProps) {
         </div>
         <div className={styles.layoutActions}>
           <div className={styles.actions}>
-            <button className={styles.action}>
+            {/* TODO: ИЗБРАННОЕ */}
+            {/* <button className={styles.action}>
               <svg viewBox="0 0 19 17" width="19" height="17">
                 <use href="/sprite.svg#favorites"></use>
               </svg>
-            </button>
+            </button> */}
             <AlertDialog open={showDeleteDialog} onOpenChange={toggleDeleteDialog}>
               <AlertDialogTrigger asChild>
                 <button className={styles.action}>

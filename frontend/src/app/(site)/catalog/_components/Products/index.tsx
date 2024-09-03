@@ -1,6 +1,6 @@
 'use client'
 
-import { ProductCard } from '@/components/site/ProductCard'
+import { ProductCard } from '@/components/ProductCard'
 import { ProductStoreProvider } from '@/providers/product-store-provider'
 import { useProductsStore } from '@/providers/products-store-provider'
 

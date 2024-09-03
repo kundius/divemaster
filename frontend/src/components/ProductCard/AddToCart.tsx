@@ -101,7 +101,7 @@ export function AddToCart() {
   return (
     <Dialog open={showOptionsDialog} onOpenChange={setShowOptionsDialog}>
       <DialogTrigger className={styles['action']}>В корзину</DialogTrigger>
-      <DialogContent className="sm:max-w-[640px] p-12 gap-8">
+      <DialogContent className="sm:max-w-[640px] p-8 gap-8">
         <DialogHeader>
           <DialogTitle className="uppercase text-xl tracking-widest">
             Выберите параметры

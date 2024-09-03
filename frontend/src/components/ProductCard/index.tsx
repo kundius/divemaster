@@ -275,10 +275,12 @@ export function ProductCard() {
         {product.title}
       </Link>
       {brand && <div className={styles.brand}>{brand}</div>}
-      <div className={styles.actions}>
+      {/* TODO: ИЗБРАННОЕ */}
+      {/* TODO: СРАВНЕНИЕ */}
+      {/* <div className={styles.actions}>
         <button type="button" className={cn(styles.action, styles['action-favorite'])}></button>
         <button type="button" className={cn(styles.action, styles['action-compare'])}></button>
-      </div>
+      </div> */}
       {colors && (
         <div className={styles.colors}>
           {colors.map((color) => (

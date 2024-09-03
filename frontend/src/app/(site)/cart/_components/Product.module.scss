@@ -1,6 +1,11 @@
 .layout {
   display: grid;
-  grid-template-columns: [image-start] 120px [image-end] 40px [info-start] auto [info-end] 40px [actions-start] auto [actions-end] 20px [amount-start] auto [amount-end] 40px [price-start] auto [price-end];
+  grid-template-columns:
+    [image-start] 120px [image-end] 40px [info-start] 1fr [info-end] 40px [actions-start] min-content [actions-end] 20px [amount-start] min-content [amount-end] 40px [price-start] minmax(
+      80px,
+      auto
+    )
+    [price-end];
   grid-template-rows: [info-start] auto [info-end] 20px [options-start] auto [options-end];
 }
 

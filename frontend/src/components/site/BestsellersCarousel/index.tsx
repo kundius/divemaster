@@ -1,7 +1,7 @@
 'use client'
 
 import { usePrevNextButtons } from '@/lib/EmblaCarousel/usePrevNextButtons'
-import { ProductCard } from '@/components/site/ProductCard'
+import { ProductCard } from '@/components/ProductCard'
 import useEmblaCarousel from 'embla-carousel-react'
 import styles from './index.module.scss'
 import { ProductEntity } from '@/types'

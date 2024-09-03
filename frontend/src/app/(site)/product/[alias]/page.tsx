@@ -102,7 +102,9 @@ export default async function Page({ params: { alias } }: { params: { alias: str
                 <div className={styles.brand}>{product.brand.title}</div>
               )}
               <div />
-              <ListActions />
+              {/* TODO: ИЗБРАННОЕ */}
+              {/* TODO: СРАВНЕНИЕ */}
+              {/* <ListActions /> */}
             </div>
             <div className={styles.title}>
               <Title />

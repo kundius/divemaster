@@ -2,8 +2,8 @@ import { colors } from '@/lib/colors'
 import { cn } from '@/lib/utils'
 import { useElementSize, useToggle } from '@reactuses/core'
 import { ChangeEvent, useRef } from 'react'
-import { ProductsOptionsFilter } from '../ProductsQuery'
 import styles from './FilterOptions.module.scss'
+import { ProductsOptionsFilter } from '@/types'
 
 export interface FilterOptionsProps {
   filter: ProductsOptionsFilter
@@ -54,9 +54,12 @@ export function FilterOptions({ filter, onSelect, selected = [] }: FilterOptions
         <div className={styles.content} ref={refContent}>
           <div className={styles.options}>
             {filter.options.map((option) => (
-              <label key={option.value} className={cn(styles.option, {
-                [styles.optionDisabled]: option.amount === 0
-              })}>
+              <label
+                key={option.value}
+                className={cn(styles.option, {
+                  [styles.optionDisabled]: option.amount === 0
+                })}
+              >
                 <input
                   type="checkbox"
                   value={option.value}
@@ -72,7 +75,9 @@ export function FilterOptions({ filter, onSelect, selected = [] }: FilterOptions
             ))}
           </div>
           {selected.length > 0 && (
-            <button className={styles.reset} onClick={resetHandler}>Сбросить</button>
+            <button className={styles.reset} onClick={resetHandler}>
+              Сбросить
+            </button>
           )}
         </div>
       </div>

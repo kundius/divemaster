@@ -1108,7 +1108,7 @@ export class ProductsService {
       const images = await parseImages()
 
       // Ид: Product
-      const products = await parseProducts(500)
+      const products = await parseProducts(2000)
 
       await updateCategoryImage()
       await includeParentsToProductCategories()

@@ -1,9 +1,9 @@
 import { Slider } from '@/components/ui/slider'
 import styles from './FilterRange.module.scss'
-import { ProductsRangeFilter } from '../ProductsQuery'
 import { useEffect, useRef, useState } from 'react'
 import { useElementSize, useToggle } from '@reactuses/core'
 import { cn } from '@/lib/utils'
+import { ProductsRangeFilter } from '@/types'
 
 export interface FilterRangeProps {
   filter: ProductsRangeFilter

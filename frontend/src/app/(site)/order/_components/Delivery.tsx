@@ -11,6 +11,7 @@ import { useOrderStore } from '@/providers/order-store-provider'
 import { cn } from '@/lib/utils'
 import { SelectedAddress } from './SelectedAddress'
 import { SelectedDelivery } from './SelectedDelivery'
+import { DeliveryMethods } from './DeliveryMethods'
 
 const SelectedAddressTitle = {
   [DeliveryMethod.SHIPPING]: 'Доставим курьером',
@@ -30,35 +31,10 @@ export function Delivery() {
           Пожалуйста, обратите внимание. В связи с большим объёмом заказов срок доставки может быть
           увеличен.
         </div>
-        <div className={css.methods}>
-          <button
-            className={css.method}
-            onClick={() => changeDeliveryMethod(DeliveryMethod.PICKUP)}
-          >
-            <span className={css.methodIcon}>
-              <SpriteIcon name="self-pickup" size={40} />
-            </span>
-            <span className={css.methodBody}>
-              <span className={css.methodTitle}>Самовывоз</span>
-              <span className={css.methodDescription}>
-                Из магазина, пункта выдачи или постамата
-              </span>
-            </span>
-          </button>
-          <button
-            className={css.method}
-            onClick={() => changeDeliveryMethod(DeliveryMethod.SHIPPING)}
-          >
-            <span className={css.methodIcon}>
-              <SpriteIcon name="delivery" size={40} />
-            </span>
-            <span className={css.methodBody}>
-              <span className={css.methodTitle}>Доставка</span>
-              <span className={css.methodDescription}>Курьером до вашей двери</span>
-            </span>
-          </button>
+        <DeliveryMethods />
+        <div className="mt-6">
+          <Products />
         </div>
-        <Products className="mt-6" />
       </div>
     )
   }
@@ -84,7 +60,9 @@ export function Delivery() {
           description="Введённый адрес"
         />
       </div>
-      <Products className="mt-6" />
+      <div className="mt-6">
+        <Products />
+      </div>
     </div>
   )
 }

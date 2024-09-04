@@ -1,17 +1,15 @@
 'use client'
 
-import { DetailedHTMLProps, HTMLAttributes } from 'react'
-
 import { useCartStore } from '@/providers/cart-store-provider'
 
 import css from './Products.module.scss'
 import { Product } from './Product'
 
-export function Products(props: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>) {
+export function Products() {
   const items = useCartStore((state) => state.cartProducts)
   const count = useCartStore((state) => state.total.count)
   return (
-    <div {...props}>
+    <div>
       <div className={css.title}>Товары, {count} шт.</div>
       <div className={css.list}>
         {items.map((item) => (

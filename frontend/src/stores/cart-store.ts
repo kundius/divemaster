@@ -29,9 +29,7 @@ export type CartComputed = {
   }
 }
 
-export type CartStore = CartState & CartActions
-
-const computeState = (state: CartStore): CartComputed => {
+const computeState = (state: CartState & CartActions): CartComputed => {
   let count: number = 0
   let price: number = 0
   let discount: number = 0
@@ -55,16 +53,12 @@ const computeState = (state: CartStore): CartComputed => {
   return { total: { count, price, discount, oldPrice } }
 }
 
-export const defaultInitState: CartState = {
-  cartId: null,
-  cartProducts: []
-}
-
-export const createCartStore = (initState: CartState = defaultInitState) => {
-  return createStore<CartStore>()(
+export const createCartStore = () =>
+  createStore<CartState & CartActions>()(
     computed(
       (set, get) => ({
-        ...initState,
+        cartId: null,
+        cartProducts: [],
 
         async createCart() {
           let cartId = null
@@ -181,4 +175,3 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
       computeState
     )
   )
-}

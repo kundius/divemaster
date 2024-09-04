@@ -1,7 +1,7 @@
 'use client'
 
 import { diving } from '@/components/site/Header/menu'
-import { Button } from '@/components/ui/button'
+import { Button, ButtonLoadingIcon } from '@/components/ui/button'
 import { CreateablePicker, CreateablePickerItem } from '@/components/ui/createable-picker'
 import { Input } from '@/components/ui/input'
 import {
@@ -187,7 +187,8 @@ export function ProductOptions({ productId, initialOptions, initialValues }: Pro
             Отмена
           </Button>
         </Link>
-        <Button type="submit" loading={pending}>
+        <Button type="submit" disabled={pending}>
+          {pending && <ButtonLoadingIcon />}
           Сохранить
         </Button>
       </div>

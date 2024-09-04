@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Button, ButtonLoadingIcon } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { apiGet } from '@/lib/api'
 import { getApiUrl, uploadFile } from '@/lib/utils'
@@ -179,12 +179,13 @@ export function ApiInputFile({
       <div className="flex max-w-[calc(100%-5rem)]">
         <Button
           type="button"
-          loading={isLoading || isValueWithoutEntity}
+          disabled={isLoading || isValueWithoutEntity}
           variant={!!loadingError ? 'destructive-outline' : 'outline'}
           {...getRootProps({
             className: 'max-w-full'
           })}
         >
+          {isLoading || (isValueWithoutEntity && <ButtonLoadingIcon />)}
           <input {...getInputProps()} />
           <span className="block max-w-full overflow-hidden text-ellipsis">
             {isValueWithoutEntity ? 'Загрузка...' : fileEntity ? fileEntity.file : placeholder}

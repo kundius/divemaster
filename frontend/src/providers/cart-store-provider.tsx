@@ -5,7 +5,7 @@ import { useStore } from 'zustand'
 
 import { apiPost } from '@/lib/api'
 import { withClientAuth } from '@/lib/api/with-client-auth'
-import { CartComputed, type CartStore, createCartStore } from '@/stores/cart-store'
+import { CartActions, CartComputed, CartState, createCartStore } from '@/stores/cart-store'
 import { useAuthStore } from './auth-store-provider'
 
 export type CartStoreApi = ReturnType<typeof createCartStore>
@@ -50,7 +50,9 @@ export const CartStoreProvider = ({ children }: CartStoreProviderProps) => {
   return <CartStoreContext.Provider value={storeRef.current}>{children}</CartStoreContext.Provider>
 }
 
-export const useCartStore = <T,>(selector: (store: CartStore & CartComputed) => T): T => {
+export const useCartStore = <T,>(
+  selector: (store: CartState & CartActions & CartComputed) => T
+): T => {
   const context = useContext(CartStoreContext)
 
   if (!context) {

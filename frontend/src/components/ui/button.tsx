@@ -42,32 +42,13 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
-  loading?: boolean
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    {
-      className,
-      variant,
-      size,
-      asChild = false,
-      loading = false,
-      disabled = false,
-      children,
-      ...props
-    },
-    ref
-  ) => {
+  ({ className, variant, size, asChild = false, children, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button'
     return (
-      <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
-        disabled={disabled || loading}
-        {...props}
-      >
-        {loading && <ArrowPathIcon className="mr-2 h-4 w-4 animate-spin" />}
+      <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props}>
         {children}
       </Comp>
     )
@@ -75,4 +56,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 )
 Button.displayName = 'Button'
 
-export { Button, buttonVariants }
+const ButtonLoadingIcon = () => {
+  return <ArrowPathIcon className="mr-2 h-4 w-4 animate-spin" />
+}
+
+export { Button, buttonVariants, ButtonLoadingIcon }

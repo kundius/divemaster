@@ -1,5 +1,5 @@
 import { Pagination } from '@/components/admin/Pagination'
-import { Button } from '@/components/ui/button'
+import { Button, ButtonLoadingIcon } from '@/components/ui/button'
 import {
   Command,
   CommandEmpty,
@@ -129,9 +129,10 @@ export function ApiInputComboBox<TRow extends unknown = unknown>(
           role="combobox"
           aria-expanded={open}
           className="w-full"
-          loading={isValueWithoutSelected}
+          disabled={isValueWithoutSelected}
           ref={buttonRef}
         >
+          {isValueWithoutSelected && <ButtonLoadingIcon />}
           {isValueWithoutSelected ? 'Загрузка...' : selected ? renderText(selected) : placeholder}
           <ChevronUpDownIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
         </Button>

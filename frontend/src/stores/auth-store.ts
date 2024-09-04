@@ -21,11 +21,10 @@ export type AuthActions = {
 
 export type AuthStore = AuthState & AuthActions
 
-export const defaultInitState: AuthState = { user: null, loginDialogOpened: false }
-
-export const createAuthStore = (initState: AuthState = defaultInitState) => {
-  return createStore<AuthStore>()((set, get) => ({
-    ...initState,
+export const createAuthStore = (initialUser?: UserEntity) =>
+  createStore<AuthStore>()((set, get) => ({
+    user: initialUser || null,
+    loginDialogOpened: false,
 
     async loadUser() {
       const data = await apiGet<{ user?: UserEntity }>('auth/profile', {}, withClientAuth())
@@ -78,4 +77,3 @@ export const createAuthStore = (initState: AuthState = defaultInitState) => {
       }
     }
   }))
-}

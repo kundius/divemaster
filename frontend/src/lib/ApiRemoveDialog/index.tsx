@@ -8,7 +8,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
+import { Button, ButtonLoadingIcon } from '@/components/ui/button'
 import { apiDelete } from '@/lib/api'
 import { withClientAuth } from '@/lib/api/with-client-auth'
 import { PropsWithChildren, useState } from 'react'
@@ -59,7 +59,8 @@ export function ApiRemoveDialog({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isPending}>Отмена</AlertDialogCancel>
-          <Button loading={isPending} onClick={handleSubmit} variant="destructive">
+          <Button disabled={isPending} onClick={handleSubmit} variant="destructive">
+            {isPending && <ButtonLoadingIcon />}
             Удалить
           </Button>
         </AlertDialogFooter>

@@ -57,7 +57,7 @@ export function ProfilePage() {
   const actions: PageHeaderProps['actions'] = [
     {
       title: 'Сохранить',
-      loading: isLoading,
+      disabled: isLoading,
       type: 'submit'
     }
   ]

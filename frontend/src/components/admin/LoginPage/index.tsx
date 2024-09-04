@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { Button, ButtonLoadingIcon } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -96,7 +96,8 @@ export function LoginPage() {
           />
 
           <div className="flex justify-between items-center">
-            <Button type="submit" loading={isLoading}>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading && <ButtonLoadingIcon />}
               Войти
             </Button>
             <Button variant="link" type="button">

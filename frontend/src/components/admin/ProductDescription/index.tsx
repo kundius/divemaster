@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { Button, ButtonLoadingIcon } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useApiForm } from '@/lib/ApiForm'
@@ -37,7 +37,8 @@ export function ProductDescription({ initialData }: ProductDescriptionProps) {
     <PageLayout
       title="Описание товара"
       actions={
-        <Button loading={form.formState.isSubmitting} onClick={form.handleSubmit(onSubmit)}>
+        <Button disabled={form.formState.isSubmitting} onClick={form.handleSubmit(onSubmit)}>
+          {form.formState.isSubmitting && <ButtonLoadingIcon />}
           Сохранить
         </Button>
       }
@@ -46,12 +47,12 @@ export function ProductDescription({ initialData }: ProductDescriptionProps) {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <Tabs defaultValue="description" className="w-full">
-              <div className='flex justify-center'>
-              <TabsList>
-                <TabsTrigger value="description">Описание</TabsTrigger>
-                <TabsTrigger value="specifications">Характеристики</TabsTrigger>
-                <TabsTrigger value="exploitation">Правила эксплуатации</TabsTrigger>
-              </TabsList>
+              <div className="flex justify-center">
+                <TabsList>
+                  <TabsTrigger value="description">Описание</TabsTrigger>
+                  <TabsTrigger value="specifications">Характеристики</TabsTrigger>
+                  <TabsTrigger value="exploitation">Правила эксплуатации</TabsTrigger>
+                </TabsList>
               </div>
               <TabsContent value="description">
                 <FormField

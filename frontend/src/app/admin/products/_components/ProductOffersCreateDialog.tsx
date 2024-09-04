@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { Button, ButtonLoadingIcon } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -160,7 +160,8 @@ export function ProductOffersCreateDialog({
               ))}
             </div>
             <DialogFooter>
-              <Button loading={loading} type="submit">
+              <Button disabled={loading} type="submit">
+                {loading && <ButtonLoadingIcon />}
                 Сохранить
               </Button>
             </DialogFooter>

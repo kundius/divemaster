@@ -38,7 +38,7 @@ export function Headline({
       {back && (
         <div className={css.back}>
           <Link href={back.href} className={css.backLink}>
-            {back.title}
+            <span>{back.title}</span>
           </Link>
         </div>
       )}

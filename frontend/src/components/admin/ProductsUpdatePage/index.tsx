@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { Button, ButtonLoadingIcon } from '@/components/ui/button'
 import { useApiForm } from '@/lib/ApiForm'
 import { slugify } from '@/lib/utils'
 import { ProductEntity } from '@/types'
@@ -44,7 +44,8 @@ export function ProductsUpdatePage({ initialData }: ProductsUpdatePageProps) {
     <PageLayout
       title="Свойства товара"
       actions={
-        <Button loading={form.formState.isSubmitting} onClick={form.handleSubmit(onSubmit)}>
+        <Button disabled={form.formState.isSubmitting} onClick={form.handleSubmit(onSubmit)}>
+          {form.formState.isSubmitting && <ButtonLoadingIcon />}
           Сохранить
         </Button>
       }

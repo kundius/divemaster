@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { Button, ButtonLoadingIcon } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -46,7 +46,8 @@ export function BrandForm({ form, onSubmit }: BrandFormProps) {
               />
             </div>
           </div>
-          <Button loading={form.formState.isSubmitting} type="submit">
+          <Button disabled={form.formState.isSubmitting} type="submit">
+            {form.formState.isSubmitting && <ButtonLoadingIcon />}
             Сохранить
           </Button>
         </div>

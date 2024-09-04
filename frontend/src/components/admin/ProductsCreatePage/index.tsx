@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import { ProductForm, ProductFormFields, ProductFormSchema } from '../ProductForm'
 import { PageLayout } from '../PageLayout'
 import { ProductLayout } from '../ProductLayout'
-import { Button } from '@/components/ui/button'
+import { Button, ButtonLoadingIcon } from '@/components/ui/button'
 
 export function ProductsCreatePage() {
   const router = useRouter()
@@ -43,7 +43,8 @@ export function ProductsCreatePage() {
     <PageLayout
       title="Добавить товар"
       actions={
-        <Button loading={form.formState.isSubmitting} onClick={form.handleSubmit(onSubmit)}>
+        <Button disabled={form.formState.isSubmitting} onClick={form.handleSubmit(onSubmit)}>
+          {form.formState.isSubmitting && <ButtonLoadingIcon />}
           Сохранить
         </Button>
       }

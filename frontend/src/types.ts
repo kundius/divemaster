@@ -1,3 +1,8 @@
+export enum DeliveryMethod {
+  SHIPPING = 'SHIPPING',
+  PICKUP = 'PICKUP'
+}
+
 export interface ProductsBaseFilter {
   name: string
   title: string

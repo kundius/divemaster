@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { Button, ButtonLoadingIcon } from '@/components/ui/button'
 import { api } from '@/lib/api'
 import { useState } from 'react'
 
@@ -46,7 +46,8 @@ export function Upload() {
   }
 
   return (
-    <Button onClick={onFileSelect} loading={isPending}>
+    <Button onClick={onFileSelect} disabled={isPending}>
+      {isPending && <ButtonLoadingIcon />}
       Загрузить архив
     </Button>
   )

@@ -14,7 +14,7 @@ import {
 import { apiPost } from '@/lib/api'
 import { useAuthStore } from '@/providers/auth-store-provider'
 import { LabeledInput } from '@/components/LabeledInput'
-import { Button } from '@/components/ui/button'
+import { Button, ButtonLoadingIcon } from '@/components/ui/button'
 
 import css from './index.module.scss'
 
@@ -50,7 +50,8 @@ export function LoginDialog() {
         <form className="space-y-4" action={submitHandler}>
           <LabeledInput type="email" name="email" label="E-mail" required />
           <LabeledInput type="password" name="password" label="Пароль" required />
-          <Button type="submit" className="w-full" size="lg" loading={pending}>
+          <Button type="submit" className="w-full" size="lg" disabled={pending}>
+            {pending && <ButtonLoadingIcon />}
             Войти
           </Button>
           {/* <div className={css.or}>или</div>

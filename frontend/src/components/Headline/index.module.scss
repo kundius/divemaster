@@ -28,7 +28,7 @@
 
 .back {
   display: flex;
-  margin-top: 24px;
+  margin-top: 20px;
 }
 
 .backLink {
@@ -36,11 +36,22 @@
   align-items: center;
   gap: 4px;
   font-size: 14px;
+  height: 24px;
   text-transform: uppercase;
   color: #a90083;
   font-weight: bold;
   font-family: var(--font-sans-narrow);
   line-height: 1.25;
+}
+
+.backLink span {
+  display: inline-block;
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+}
+
+.backLink:hover span {
+  border-bottom-color: currentColor;
 }
 
 .backLink::before {
@@ -62,5 +73,5 @@
 }
 
 .back + .separator {
-  margin-top: 24px;
+  margin-top: 20px;
 }

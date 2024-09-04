@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-import { Button } from '@/components/ui/button'
+import { Button, ButtonLoadingIcon } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -29,11 +29,7 @@ export function TmpBuye() {
 
   const submitHandler = async () => {
     setLoading(true)
-    const response = await apiPut(
-      `cart/${cartId}`,
-      { customerPhone, customerEmail, customerName },
-      withClientAuth()
-    )
+    await apiPut(`cart/${cartId}`, { customerPhone, customerEmail, customerName }, withClientAuth())
     setLoading(false)
     setSendOpened(false)
     // cartStore.deleteCart()
@@ -83,7 +79,8 @@ export function TmpBuye() {
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={submitHandler} loading={loading}>
+          <Button type="submit" onClick={submitHandler} disabled={loading}>
+            {loading && <ButtonLoadingIcon />}
             Отправить
           </Button>
         </DialogFooter>

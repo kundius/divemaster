@@ -11,6 +11,7 @@ import { LegalEntity } from './_components/LegalEntity'
 import { OrderInfo } from './_components/OrderInfo'
 import { Products } from './_components/Products'
 import { TmpBuye } from './_components/TmpBuye'
+import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Корзина'
@@ -23,18 +24,23 @@ export default function Page() {
         <EmptyFallback>
           <Headline className="mb-8" title="Корзина" />
           <div className="flex gap-20">
-            <div className="w-2/3">
+            <div className="w-2/3 flex-grow">
               <CartHeadline />
               <Products />
             </div>
-            <div className="w-1/3">
+            <div className="w-1/3 max-w-[360px]">
               <div className="sticky top-32 space-y-4">
                 <OrderInfo />
                 <Authentication />
-                {/* <Button className="w-full uppercase font-sans-narrow" size="lg" type="button">
-                  Перейти к оформлению
-                </Button> */}
-                <TmpBuye />
+                <Button
+                  asChild
+                  className="w-full uppercase font-sans-narrow"
+                  size="lg"
+                  type="button"
+                >
+                  <Link href="/order">Перейти к оформлению</Link>
+                </Button>
+                {/* <TmpBuye /> */}
                 <LegalEntity />
               </div>
             </div>

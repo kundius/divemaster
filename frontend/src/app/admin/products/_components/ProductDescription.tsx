@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { Button, ButtonLoadingIcon } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useApiForm } from '@/lib/ApiForm'
@@ -92,7 +92,8 @@ export function ProductDescription({ initialData }: ProductDescriptionProps) {
               Отмена
             </Button>
           </Link>
-          <Button loading={form.formState.isSubmitting} type="submit">
+          <Button disabled={form.formState.isSubmitting} type="submit">
+            {form.formState.isSubmitting && <ButtonLoadingIcon />}
             Сохранить
           </Button>
         </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { Button, ButtonLoadingIcon } from '@/components/ui/button'
 import { CheckboxTree } from '@/components/ui/checkbox-tree'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ApiTableData } from '@/lib/ApiTable/types'
@@ -107,7 +107,8 @@ export function ProductCategories({ productId }: ProductCategoriesProps) {
     <PageLayout
       title="Категории товара"
       actions={
-        <Button loading={saving} onClick={onSubmit}>
+        <Button disabled={saving} onClick={onSubmit}>
+          {saving && <ButtonLoadingIcon />}
           Сохранить
         </Button>
       }

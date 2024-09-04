@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { Button, ButtonLoadingIcon } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -55,11 +55,7 @@ export function UserForm({ form, onSubmit }: UserFormProps) {
               <FormItem>
                 <FormLabel>Группа</FormLabel>
                 <FormControl>
-                  <ApiInputComboBox
-                    url="roles"
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
+                  <ApiInputComboBox url="roles" value={field.value} onChange={field.onChange} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -106,7 +102,8 @@ export function UserForm({ form, onSubmit }: UserFormProps) {
               </FormItem>
             )}
           />
-          <Button loading={form.formState.isSubmitting} type="submit">
+          <Button disabled={form.formState.isSubmitting} type="submit">
+            {form.formState.isSubmitting && <ButtonLoadingIcon />}
             Сохранить
           </Button>
         </div>

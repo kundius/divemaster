@@ -1,3 +1,18 @@
+export interface PickupPointEntity {
+  id: string
+  region: string
+  address: string
+  phone: string
+  email: string
+  timetable: string
+  note: string
+  isReception: boolean
+  isDressingRoom: boolean
+  allowedCod: boolean
+  haveCash: boolean
+  haveCashless: boolean
+}
+
 export enum DeliveryMethod {
   SHIPPING = 'SHIPPING',
   PICKUP = 'PICKUP'

@@ -1,0 +1,12 @@
+.layout {
+    display: flex;
+    min-height: calc(100vh - 32px - 90px);
+}
+.map {
+    position: absolute;
+    background: teal;
+    right: calc((100vw - var(--container-width)) / 2 * -1);
+    top: 0;
+    bottom: 0;
+    left: 0;
+}

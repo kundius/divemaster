@@ -6,7 +6,8 @@ import {
   PencilSquareIcon,
   ShoppingBagIcon,
   TagIcon,
-  UserIcon
+  UserIcon,
+  WrenchScrewdriverIcon
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -69,7 +70,17 @@ const nav: Nav = [
       {
         title: 'Заказы',
         route: '/admin/orders',
-        icon: ShoppingBagIcon
+        icon: ShoppingBagIcon,
+        menu: [
+          {
+            title: 'Все заказы',
+            route: '/admin/orders'
+          },
+          {
+            title: 'Пункты выдачи',
+            route: '/admin/orders/pickup-points'
+          }
+        ]
       },
       {
         title: 'Клиенты',

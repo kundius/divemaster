@@ -1,5 +1,9 @@
 .wrapper {
   display: flex;
+
+  &.wrapper_lg {
+    width: 100%;
+  }
 }
 
 .item {
@@ -11,6 +15,14 @@
   font-weight: bold;
   font-family: var(--font-sans-narrow);
   padding: 0 12px;
+  flex-grow: 1;
+  text-align: center;
+
+  .wrapper_lg & {
+    font-size: 16px;
+    letter-spacing: 2px;
+    line-height: 42px;
+  }
 }
 
 .item:first-child {

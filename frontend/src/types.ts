@@ -1,6 +1,8 @@
 export interface PickupPointEntity {
   id: string
   region: string
+  lat: string
+  lon: string
   address: string
   phone: string
   email: string

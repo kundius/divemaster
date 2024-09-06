@@ -622,8 +622,58 @@
           "length": 36,
           "mappedType": "string"
         },
-        "region": {
-          "name": "region",
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "''",
+          "mappedType": "string"
+        },
+        "region_code": {
+          "name": "region_code",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "''",
+          "mappedType": "string"
+        },
+        "region_name": {
+          "name": "region_name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "''",
+          "mappedType": "string"
+        },
+        "city_code": {
+          "name": "city_code",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "''",
+          "mappedType": "string"
+        },
+        "city_name": {
+          "name": "city_name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "''",
+          "mappedType": "string"
+        },
+        "full_address": {
+          "name": "full_address",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
@@ -662,8 +712,28 @@
           "default": "''",
           "mappedType": "string"
         },
-        "timetable": {
-          "name": "timetable",
+        "work_time": {
+          "name": "work_time",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "''",
+          "mappedType": "string"
+        },
+        "lat": {
+          "name": "lat",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "''",
+          "mappedType": "string"
+        },
+        "lon": {
+          "name": "lon",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,

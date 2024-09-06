@@ -10,8 +10,8 @@ import { DeliveryMethod } from '@/types'
 import { useOrderStore } from '@/providers/order-store-provider'
 import { cn } from '@/lib/utils'
 import { SelectedAddress } from './SelectedAddress'
-import { SelectedDelivery } from './SelectedDelivery'
 import { DeliveryMethods } from './DeliveryMethods'
+import { TabMarker } from '@/components/TabMarker'
 
 const SelectedAddressTitle = {
   [DeliveryMethod.SHIPPING]: 'Доставим курьером',
@@ -47,12 +47,12 @@ export function Delivery() {
           Изменить
         </button>
       </div>
-      <SelectedDelivery
-        selected={deliveryMethod}
+      <TabMarker
         items={[
-          { title: 'Самовывоз', method: DeliveryMethod.PICKUP },
-          { title: 'Доставка', method: DeliveryMethod.SHIPPING }
+          { title: 'Самовывоз', name: DeliveryMethod.PICKUP },
+          { title: 'Доставка', name: DeliveryMethod.SHIPPING }
         ]}
+        selected={deliveryMethod}
       />
       <div className="mt-4">
         <SelectedAddress

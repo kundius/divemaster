@@ -86,9 +86,11 @@ export class PickupPointService {
   async findAll(dto: FindAllPickupPointQueryDto) {
     let where: ObjectQuery<PickupPoint> = {}
     if (dto.region) {
-      where = { ...where, region: dto.region }
+      where = { ...where, regionName: dto.region }
     }
-    return await this.pickupPointRepository.find(where)
+    return await this.pickupPointRepository.find(where, {
+      groupBy: 'address'
+    })
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
@@ -108,7 +110,6 @@ export class PickupPointService {
 
     this.em.remove(await this.pickupPointRepository.findAll())
 
-    let idx = 0
     const load = async (url: string) => {
       const result = await fetch(url, options)
       const json = (await result.json()) as ServicePointsResult
@@ -116,7 +117,11 @@ export class PickupPointService {
       for (const item of json._embedded.servicePoints) {
         this.em.persist(
           this.pickupPointRepository.create({
-            address: item.rawAddress || '',
+            name: item.raw?.name || '',
+            lat: item.raw?.coordY || '',
+            lon: item.raw?.coordX || '',
+            fullAddress: item.raw?.fullAddress || '',
+            address: item.raw?.address || '',
             email: item.raw?.email || '',
             allowedCod: item.raw?.allowedCod || false,
             haveCash: item.raw?.haveCash || false,
@@ -124,12 +129,14 @@ export class PickupPointService {
             isDressingRoom: item.raw?.isDressingRoom || false,
             isReception: item.raw?.isReception || false,
             note: item.raw?.note || '',
-            phone: item.rawPhone || '',
-            region: item.raw?.regionName || '',
-            timetable: item.rawTimetable || ''
+            phone: item.raw?.phone || '',
+            regionCode: item.raw?.regionCode || '',
+            regionName: item.raw?.regionName || '',
+            cityCode: item.raw?.cityCode || '',
+            cityName: item.raw?.city || '',
+            workTime: item.raw?.workTime || ''
           })
         )
-        idx++
       }
 
       if (json._links.next) {

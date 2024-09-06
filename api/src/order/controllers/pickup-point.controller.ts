@@ -6,6 +6,11 @@ import { FindAllPickupPointQueryDto } from '../dto/pickup-point.dto'
 export class PickupPointController {
   constructor(private readonly pickupPointService: PickupPointService) {}
 
+  @Get('sync')
+  sync() {
+    return this.pickupPointService.syncPickupPoints()
+  }
+
   @Get()
   findAll(@Query() query: FindAllPickupPointQueryDto) {
     return this.pickupPointService.findAll(query)

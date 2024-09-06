@@ -1,8 +1,4 @@
-import {
-  Entity,
-  PrimaryKey,
-  Property
-} from '@mikro-orm/core'
+import { Entity, PrimaryKey, Property } from '@mikro-orm/core'
 import { v4 } from 'uuid'
 
 @Entity()
@@ -10,23 +6,44 @@ export class PickupPoint {
   @PrimaryKey({ type: 'uuid' })
   id = v4()
 
-  @Property()
-  region: string = ''
+  @Property({ default: '' })
+  name: string = ''
 
-  @Property()
+  @Property({ default: '' })
+  regionCode: string = ''
+
+  @Property({ default: '' })
+  regionName: string = ''
+
+  @Property({ default: '' })
+  cityCode: string = ''
+
+  @Property({ default: '' })
+  cityName: string = ''
+
+  @Property({ default: '' })
+  fullAddress: string = ''
+
+  @Property({ default: '' })
   address: string = ''
 
-  @Property()
+  @Property({ default: '' })
   phone: string = ''
 
-  @Property()
+  @Property({ default: '' })
   email: string = ''
 
-  @Property()
-  timetable: string = ''
+  @Property({ default: '' })
+  workTime: string = ''
+
+  @Property({ default: '' })
+  lat: string = ''
+
+  @Property({ default: '' })
+  lon: string = ''
 
   // Примечание по офису
-  @Property()
+  @Property({ default: '' })
   note: string = ''
 
   // Есть ли в офисе приём заказов

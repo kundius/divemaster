@@ -11,6 +11,11 @@ export class PickupPointController {
     return this.pickupPointService.syncPickupPoints()
   }
 
+  @Get('cities')
+  cities() {
+    return this.pickupPointService.cities()
+  }
+
   @Get()
   findAll(@Query() query: FindAllPickupPointQueryDto) {
     return this.pickupPointService.findAll(query)

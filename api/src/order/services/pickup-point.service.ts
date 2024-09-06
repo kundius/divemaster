@@ -5,6 +5,9 @@ import { Cron, CronExpression } from '@nestjs/schedule'
 import fetch from 'node-fetch'
 import { PickupPoint } from '../entities/pickup-point.entity'
 import { FindAllPickupPointQueryDto } from '../dto/pickup-point.dto'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { ConfigService } from '@nestjs/config'
 
 interface ServicePointsResult {
   _links: {
@@ -75,12 +78,23 @@ interface ServicePointsResult {
   }
 }
 
+type CitiesResult = {
+  name: string
+  id: string
+  region: {
+    name: string
+    fullname: string
+    district: string
+  }
+}[]
+
 @Injectable()
 export class PickupPointService {
   constructor(
     private readonly em: EntityManager,
     @InjectRepository(PickupPoint)
-    private pickupPointRepository: EntityRepository<PickupPoint>
+    private pickupPointRepository: EntityRepository<PickupPoint>,
+    private configService: ConfigService
   ) {}
 
   async findAll(dto: FindAllPickupPointQueryDto) {
@@ -93,6 +107,68 @@ export class PickupPointService {
     })
   }
 
+  async cities() {
+    const data = readFileSync(
+      join(this.configService.get('LOCAL_STORAGE_PATH', ''), 'russia-cities.json'),
+      'utf8'
+    )
+    const rows = JSON.parse(data) as CitiesResult
+    const districts = new Map<string, { name: string; id: number }>()
+    const regions = new Map<
+      string,
+      { name: string; fullname: string; id: number; districtId: number }
+    >()
+    const cities = new Map<string, { name: string; id: string; regionId: number }>()
+
+    for (const row of rows) {
+      let district = districts.get(row.region.district)
+      if (!district) {
+        district = {
+          id: districts.size + 1,
+          name: row.region.district
+        }
+        districts.set(row.region.district, district)
+      }
+
+      let region = regions.get(row.region.fullname)
+      if (!region) {
+        region = {
+          id: regions.size + 1,
+          fullname: row.region.fullname,
+          name: row.region.name,
+          districtId: district.id
+        }
+        regions.set(row.region.fullname, region)
+      }
+
+      cities.set(row.name, {
+        id: row.id,
+        name: row.name,
+        regionId: region.id
+      })
+    }
+
+    return {
+      districts: Array.from(districts.values()),
+      regions: Array.from(regions.values()),
+      cities: Array.from(cities.values())
+    }
+    // const rows = JSON.parse(data) as CitiesResult
+    // const output: Record<string, Record<string, string[]>> = {}
+
+    // for (const row of rows) {
+    //   if (!output[row.region.district]) {
+    //     output[row.region.district] = {}
+    //   }
+    //   if (!output[row.region.district][row.region.fullname]) {
+    //     output[row.region.district][row.region.fullname] = []
+    //   }
+    //   output[row.region.district][row.region.fullname].push(row.name)
+    // }
+
+    // return output
+  }
+
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async syncPickupPoints() {
     const baseUrl = 'https://cdek.orderadmin.ru/api/delivery-services/service-points'
@@ -100,18 +176,16 @@ export class PickupPointService {
     const countryFilter = 'filter[2][type]=eq&filter[2][field]=country&filter[2][value]=28' // только по России
     const activeFilter = 'filter[3][type]=eq&filter[3][field]=state&filter[3][value]=active' // только активные
 
-    const options = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      }
-    }
-
     this.em.remove(await this.pickupPointRepository.findAll())
 
     const load = async (url: string) => {
-      const result = await fetch(url, options)
+      const result = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        }
+      })
       const json = (await result.json()) as ServicePointsResult
 
       for (const item of json._embedded.servicePoints) {

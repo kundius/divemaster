@@ -22,7 +22,7 @@
   background: #272f76;
 }
 
-.button:hover::before  {
+.button:hover::before {
   opacity: 1;
 }
 
@@ -52,7 +52,7 @@
   overflow: hidden;
 }
 
-.affix::after {
+/* .affix::after {
   content: '';
   display: block;
   margin-left: 10px;
@@ -65,7 +65,7 @@
   @include --max-md {
     margin-left: 4px;
   }
-}
+} */
 
 .label {
   display: block;

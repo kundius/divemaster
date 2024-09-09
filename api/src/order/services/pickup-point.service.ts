@@ -1,13 +1,19 @@
 import { EntityManager, EntityRepository, ObjectQuery } from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import fetch from 'node-fetch'
-import { PickupPoint } from '../entities/pickup-point.entity'
-import { FindAllPickupPointQueryDto } from '../dto/pickup-point.dto'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { ConfigService } from '@nestjs/config'
+
+import { FindAllPickupPointQueryDto } from '../dto/pickup-point.dto'
+import { PickupPoint } from '../entities/pickup-point.entity'
+
+type DataSubjects = {
+  district: string
+  name: string
+}[]
 
 interface ServicePointsResult {
   _links: {
@@ -74,19 +80,15 @@ interface ServicePointsResult {
         isDressingRoom: boolean
         nearestStation: string
       }
+      _embedded: {
+        locality?: {
+          name: string
+          type: string
+        }
+      }
     }[]
   }
 }
-
-type CitiesResult = {
-  name: string
-  id: string
-  region: {
-    name: string
-    fullname: string
-    district: string
-  }
-}[]
 
 @Injectable()
 export class PickupPointService {
@@ -100,77 +102,21 @@ export class PickupPointService {
   async findAll(dto: FindAllPickupPointQueryDto) {
     let where: ObjectQuery<PickupPoint> = {}
     if (dto.region) {
-      where = { ...where, regionName: dto.region }
+      where = { ...where, subjectName: dto.region }
     }
     return await this.pickupPointRepository.find(where, {
-      groupBy: 'address'
+      groupBy: 'shortAddress'
     })
   }
 
-  async cities() {
-    const data = readFileSync(
-      join(this.configService.get('LOCAL_STORAGE_PATH', ''), 'russia-cities.json'),
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async sync() {
+    const subjectsContent = readFileSync(
+      join(this.configService.get('LOCAL_DATA_PATH', ''), 'subjects.json'),
       'utf8'
     )
-    const rows = JSON.parse(data) as CitiesResult
-    const districts = new Map<string, { name: string; id: number }>()
-    const regions = new Map<
-      string,
-      { name: string; fullname: string; id: number; districtId: number }
-    >()
-    const cities = new Map<string, { name: string; id: string; regionId: number }>()
+    const subjects = JSON.parse(subjectsContent) as DataSubjects
 
-    for (const row of rows) {
-      let district = districts.get(row.region.district)
-      if (!district) {
-        district = {
-          id: districts.size + 1,
-          name: row.region.district
-        }
-        districts.set(row.region.district, district)
-      }
-
-      let region = regions.get(row.region.fullname)
-      if (!region) {
-        region = {
-          id: regions.size + 1,
-          fullname: row.region.fullname,
-          name: row.region.name,
-          districtId: district.id
-        }
-        regions.set(row.region.fullname, region)
-      }
-
-      cities.set(row.name, {
-        id: row.id,
-        name: row.name,
-        regionId: region.id
-      })
-    }
-
-    return {
-      districts: Array.from(districts.values()),
-      regions: Array.from(regions.values()),
-      cities: Array.from(cities.values())
-    }
-    // const rows = JSON.parse(data) as CitiesResult
-    // const output: Record<string, Record<string, string[]>> = {}
-
-    // for (const row of rows) {
-    //   if (!output[row.region.district]) {
-    //     output[row.region.district] = {}
-    //   }
-    //   if (!output[row.region.district][row.region.fullname]) {
-    //     output[row.region.district][row.region.fullname] = []
-    //   }
-    //   output[row.region.district][row.region.fullname].push(row.name)
-    // }
-
-    // return output
-  }
-
-  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
-  async syncPickupPoints() {
     const baseUrl = 'https://cdek.orderadmin.ru/api/delivery-services/service-points'
     const sdekFilter = 'filter[1][type]=eq&filter[1][field]=deliveryService&filter[1][value]=1' // только пункты выдачи сдэк
     const countryFilter = 'filter[2][type]=eq&filter[2][field]=country&filter[2][value]=28' // только по России
@@ -178,48 +124,89 @@ export class PickupPointService {
 
     this.em.remove(await this.pickupPointRepository.findAll())
 
+    let count = 0
+    let repeat = 0
     const load = async (url: string) => {
-      const result = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json'
+      try {
+        const result = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+          }
+        })
+        const json = (await result.json()) as ServicePointsResult
+
+        for (const item of json._embedded.servicePoints) {
+          // если населенный пункт не указан- пропускаем
+          // пытаться получить название из других полей думаю не стоит
+          const locality = item._embedded.locality
+          if (!locality) continue
+
+          // если нет дополнительных данных- пропускаем
+          const raw = item.raw
+          if (!raw) continue
+
+          // если регион не найден- пропускаем
+          const subject = subjects.find((subject) => subject.name === raw.regionName)
+          if (!subject) {
+            console.log('Не найден регион:', raw.regionName)
+            continue
+          }
+
+          this.em.persist(
+            this.pickupPointRepository.create({
+              // регион из базы регионов
+              districtName: subject.district,
+              subjectName: subject.name,
+
+              // поля города
+              cityType: locality.type.toLowerCase(),
+              cityName: locality.name,
+
+              // необязательные поля
+              email: raw.email,
+              note: raw.note,
+              phone: raw.phone,
+
+              // булевые поля
+              allowedCod: raw.allowedCod,
+              haveCash: raw.haveCash,
+              haveCashless: raw.haveCashless,
+              isDressingRoom: raw.isDressingRoom,
+              isReception: raw.isReception,
+
+              // остальное
+              name: raw.name,
+              lat: Number(raw.coordY),
+              lon: Number(raw.coordX),
+              fullAddress: raw.fullAddress,
+              shortAddress: raw.address,
+              workTime: raw.workTime
+            })
+          )
+          count++
         }
-      })
-      const json = (await result.json()) as ServicePointsResult
 
-      for (const item of json._embedded.servicePoints) {
-        this.em.persist(
-          this.pickupPointRepository.create({
-            name: item.raw?.name || '',
-            lat: item.raw?.coordY || '',
-            lon: item.raw?.coordX || '',
-            fullAddress: item.raw?.fullAddress || '',
-            address: item.raw?.address || '',
-            email: item.raw?.email || '',
-            allowedCod: item.raw?.allowedCod || false,
-            haveCash: item.raw?.haveCash || false,
-            haveCashless: item.raw?.haveCashless || false,
-            isDressingRoom: item.raw?.isDressingRoom || false,
-            isReception: item.raw?.isReception || false,
-            note: item.raw?.note || '',
-            phone: item.raw?.phone || '',
-            regionCode: item.raw?.regionCode || '',
-            regionName: item.raw?.regionName || '',
-            cityCode: item.raw?.cityCode || '',
-            cityName: item.raw?.city || '',
-            workTime: item.raw?.workTime || ''
-          })
-        )
-      }
+        repeat = 0
 
-      if (json._links.next) {
-        await load(json._links.next.href)
+        if (json._links.next) {
+          await load(json._links.next.href)
+        }
+      } catch (e) {
+        repeat++
+        if (repeat > 10) {
+          throw e
+        }
+        console.log('Повторное подключение. Попытка:', repeat)
+        await load(url)
       }
     }
 
     await load(`${baseUrl}?${sdekFilter}&${countryFilter}&${activeFilter}`)
 
     await this.em.flush()
+
+    console.log('Добавлено:', count)
   }
 }

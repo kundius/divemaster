@@ -7,10 +7,12 @@ import { useMobileNavigation } from './MobileNavigation'
 import { useAuthStore } from '@/providers/auth-store-provider'
 import { useCartStore } from '@/providers/cart-store-provider'
 import { SpriteIcon } from '@/components/SpriteIcon'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export function Toolbar() {
   const cartTotal = useCartStore((state) => state.total)
   const authUser = useAuthStore((state) => state.user)
+  const authLoaded = useAuthStore((state) => state.loaded)
   const loginDialogToggle = useAuthStore((state) => state.loginDialogToggle)
   const mobileNavigation = useMobileNavigation()
 
@@ -54,20 +56,31 @@ export function Toolbar() {
         <span className={styles.title}>Избранное</span>
         <span className={styles.badge}>0</span>
       </Link>
-      {!authUser ? (
-        <button onClick={() => loginDialogToggle(true)} className={cn(styles.button, 'block')}>
-          <span className={styles.icon}>
-            <SpriteIcon name="login" size={24} />
-          </span>
-          <span className={styles.title}>Войти</span>
-        </button>
+      {authLoaded ? (
+        !authUser ? (
+          <button onClick={() => loginDialogToggle(true)} className={cn(styles.button, 'block')}>
+            <span className={styles.icon}>
+              <SpriteIcon name="login" size={24} />
+            </span>
+            <span className={styles.title}>Войти</span>
+          </button>
+        ) : (
+          <Link href="/office" className={cn(styles.button, 'block')}>
+            <span className={styles.icon}>
+              <SpriteIcon name="toolbar-profile" size={24} />
+            </span>
+            <span className={styles.title}>Профиль</span>
+          </Link>
+        )
       ) : (
-        <Link href="/office" className={cn(styles.button, 'block')}>
+        <div className={cn(styles.button, 'block')}>
           <span className={styles.icon}>
-            <SpriteIcon name="toolbar-profile" size={24} />
+            <Skeleton className="w-[24px] h-[24px] rounded bg-neutral-50/50" />
           </span>
-          <span className={styles.title}>Профиль</span>
-        </Link>
+          <span className={styles.title}>
+            <Skeleton className="w-[47px] h-[12px] rounded bg-neutral-50/50" />
+          </span>
+        </div>
       )}
       <Link href="#" className={cn(styles.button, 'block')}>
         <span className={styles.icon}>

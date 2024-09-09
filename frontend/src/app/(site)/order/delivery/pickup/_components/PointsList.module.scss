@@ -1,18 +1,6 @@
-.layout {
-  min-height: calc(100vh - 32px - 90px);
-}
-
-.map {
-  position: absolute;
-  background: teal;
-  right: calc((100vw - var(--container-width)) / 2 * -1);
-  top: 0;
-  bottom: 0;
-  left: 0;
-}
-
 .scrollable {
   /* тулбар - шапка - отступ колонки сверху - отступ колонки снизу - высота заголовка - высота маркера - отступ от заголовка - отступ от маркера */
   height: calc(100vh - 32px - 90px - 48px - 48px - 84px - 42px - 24px - 24px);
   min-height: 320px;
+  overflow: auto;
 }

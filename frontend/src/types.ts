@@ -1,12 +1,52 @@
+// export interface PickupPointCitiesDistrict {
+//   id: number
+//   name: string
+// }
+
+// export interface PickupPointCitiesRegion {
+//   id: number
+//   districtId: number
+//   name: string
+// }
+
+// export interface PickupPointCitiesCity {
+//   id: string
+//   regionId: number
+//   name: string
+//   lat: number
+//   lon: number
+// }
+
+// export interface PickupPointCities {
+//   districts: PickupPointCitiesDistrict[]
+//   regions: PickupPointCitiesRegion[]
+//   cities: PickupPointCitiesCity[]
+// }
+
+export interface CityEntity {
+  id: string
+  type: string
+  name: string
+  subject: string
+  district: string
+  lat: number
+  lon: number
+}
+
 export interface PickupPointEntity {
   id: string
-  region: string
-  lat: string
-  lon: string
-  address: string
+  name: string
+  districtName: string
+  subjectName: string
+  cityType: string
+  cityName: string
+  fullAddress: string
+  shortAddress: string
   phone: string
   email: string
-  timetable: string
+  workTime: string
+  lat: number
+  lon: number
   note: string
   isReception: boolean
   isDressingRoom: boolean

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <div className="pt-12 pb-40">
+    <div className="pt-12 pb-40 overflow-hidden">
       <Container small>
         <Headline className="mb-8" title="shipping" back={{ href: '/order', title: 'Назад' }} />
       </Container>

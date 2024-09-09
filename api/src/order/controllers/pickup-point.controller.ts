@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Query } from '@nestjs/common'
-import { PickupPointService } from '../services/pickup-point.service'
+import { Controller, Get, Query } from '@nestjs/common'
+
 import { FindAllPickupPointQueryDto } from '../dto/pickup-point.dto'
+import { PickupPointService } from '../services/pickup-point.service'
 
 @Controller('pickup-point')
 export class PickupPointController {
@@ -8,12 +9,7 @@ export class PickupPointController {
 
   @Get('sync')
   sync() {
-    return this.pickupPointService.syncPickupPoints()
-  }
-
-  @Get('cities')
-  cities() {
-    return this.pickupPointService.cities()
+    return this.pickupPointService.sync()
   }
 
   @Get()

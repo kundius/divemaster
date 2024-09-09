@@ -9,6 +9,7 @@ import { UserEntity } from '@/types'
 export type AuthState = {
   user: UserEntity | null
   loginDialogOpened: boolean
+  loaded: boolean
 }
 
 export type AuthActions = {
@@ -19,16 +20,15 @@ export type AuthActions = {
   loginDialogToggle(value?: boolean): void
 }
 
-export type AuthStore = AuthState & AuthActions
-
 export const createAuthStore = (initialUser?: UserEntity) =>
-  createStore<AuthStore>()((set, get) => ({
+  createStore<AuthState & AuthActions>()((set, get) => ({
     user: initialUser || null,
     loginDialogOpened: false,
+    loaded: !!initialUser,
 
     async loadUser() {
       const data = await apiGet<{ user?: UserEntity }>('auth/profile', {}, withClientAuth())
-      set({ user: data.user || null })
+      set({ user: data.user || null, loaded: true })
     },
 
     hasScope(scopes) {

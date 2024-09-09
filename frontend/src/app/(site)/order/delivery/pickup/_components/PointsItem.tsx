@@ -1,24 +1,33 @@
 import { SpriteIcon } from '@/components/SpriteIcon'
+import { PickupPointEntity } from '@/types'
 
 import css from './PointsItem.module.scss'
+import { usePointsQuery } from './PointsQuery'
 
 export interface PointsItemProps {
-  title: string
-  description: string
-  timetable: string
+  entity: PickupPointEntity
 }
 
-export function PointsItem({ description, timetable, title }: PointsItemProps) {
+export function PointsItem({ entity }: PointsItemProps) {
+  const { mapRef, setSelected } = usePointsQuery()
+
+  const selectHandler = async () => {
+    if (mapRef.current) {
+      await mapRef.current.setCenter([entity.lat, entity.lon], 18)
+    }
+    setSelected(entity)
+  }
+
   return (
-    <div className={css.wrap}>
+    <div className={css.wrap} onClick={selectHandler}>
       <div className={css.headline}>
         <div className={css.icon}>
           <SpriteIcon name="logo-marker" size={32} />
         </div>
-        <div className={css.title}>{title}</div>
+        <div className={css.title}>{entity.fullAddress}</div>
       </div>
-      <div className={css.description}>{description}</div>
-      <div className={css.timetable}>{timetable}</div>
+      <div className={css.description}>{entity.note}</div>
+      <div className={css.timetable}>{entity.workTime}</div>
     </div>
   )
 }

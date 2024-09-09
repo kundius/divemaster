@@ -6,45 +6,45 @@ export class PickupPoint {
   @PrimaryKey({ type: 'uuid' })
   id = v4()
 
-  @Property({ default: '' })
-  name: string = ''
+  @Property()
+  name: string
 
-  @Property({ default: '' })
-  regionCode: string = ''
+  @Property()
+  districtName: string
 
-  @Property({ default: '' })
-  regionName: string = ''
+  @Property()
+  subjectName: string
 
-  @Property({ default: '' })
-  cityCode: string = ''
+  @Property()
+  cityType: string
 
-  @Property({ default: '' })
-  cityName: string = ''
+  @Property()
+  cityName: string
 
-  @Property({ default: '' })
-  fullAddress: string = ''
+  @Property()
+  fullAddress: string
 
-  @Property({ default: '' })
-  address: string = ''
+  @Property()
+  shortAddress: string
 
-  @Property({ default: '' })
-  phone: string = ''
+  @Property({ type: 'varchar', nullable: true })
+  phone: string | null = null
 
-  @Property({ default: '' })
-  email: string = ''
+  @Property({ type: 'varchar', nullable: true })
+  email: string | null = null
 
-  @Property({ default: '' })
-  workTime: string = ''
+  @Property()
+  workTime: string
 
-  @Property({ default: '' })
-  lat: string = ''
+  @Property({ type: 'float' })
+  lat: number
 
-  @Property({ default: '' })
-  lon: string = ''
+  @Property({ type: 'float' })
+  lon: number
 
   // Примечание по офису
-  @Property({ default: '' })
-  note: string = ''
+  @Property({ type: 'varchar', nullable: true })
+  note: string | null = null
 
   // Есть ли в офисе приём заказов
   @Property({ default: false })

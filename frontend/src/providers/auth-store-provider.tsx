@@ -3,7 +3,7 @@
 import { type ReactNode, createContext, useContext, useLayoutEffect, useRef } from 'react'
 import { useStore } from 'zustand'
 
-import { type AuthStore, createAuthStore } from '@/stores/auth-store'
+import { AuthActions, AuthState, createAuthStore } from '@/stores/auth-store'
 import { UserEntity } from '@/types'
 
 export type AuthStoreApi = ReturnType<typeof createAuthStore>
@@ -34,7 +34,7 @@ export const AuthStoreProvider = ({ children, initialUser }: AuthStoreProviderPr
   return <AuthStoreContext.Provider value={storeRef.current}>{children}</AuthStoreContext.Provider>
 }
 
-export const useAuthStore = <T,>(selector: (store: AuthStore) => T): T => {
+export const useAuthStore = <T,>(selector: (store: AuthState & AuthActions) => T): T => {
   const context = useContext(AuthStoreContext)
 
   if (!context) {

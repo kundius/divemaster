@@ -3,10 +3,12 @@
 import Script from 'next/script'
 import { useEffect, useRef, useState } from 'react'
 import { usePointsQuery } from './PointsQuery'
+import { useLocationStore } from '@/providers/location-store-provider'
+import { PickupPointEntity } from '@/types'
 
 export function PointsMap() {
-  const { loading, rows } = usePointsQuery()
-  const mapRef = useRef<any>()
+  const locationStore = useLocationStore((state) => state)
+  const { loading, rows, mapRef, setSelected } = usePointsQuery()
   const mapElRef = useRef<HTMLDivElement>(null)
   const points = useRef(new Map())
   const [mapInitialized, setMapInitialized] = useState(false)
@@ -16,16 +18,6 @@ export function PointsMap() {
 
     mapRef.current.geoObjects.removeAll()
     points.current.clear()
-
-    const customBalloonContentLayout = ymaps.templateLayoutFactory.createClass(
-      [
-        '<ul style="padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">',
-        '{% for geoObject in properties.geoObjects %}',
-        '<li><a style="color: #000;" href="#" data-id="{{ geoObject.properties.id }}">{{ geoObject.properties.iconCaption|raw }}</a></li>',
-        '{% endfor %}',
-        '</ul>'
-      ].join('')
-    )
 
     const geoObjects: any = []
 
@@ -39,8 +31,7 @@ export function PointsMap() {
             coordinates: [row.lat, row.lon]
           },
           properties: {
-            iconCaption: row.address,
-            id: row.id
+            iconCaption: row.shortAddress
           }
         },
         {
@@ -48,7 +39,7 @@ export function PointsMap() {
         }
       )
 
-      // point.events.add('click', () => handleClickMap(row.id))
+      point.events.add('click', () => setSelected(row))
 
       points.current.set(row.id, point)
       geoObjects.push(point)
@@ -57,18 +48,24 @@ export function PointsMap() {
     if (geoObjects.length > 0) {
       const clusterer = new ymaps.Clusterer({
         clusterDisableClickZoom: false,
-        clusterBalloonPanelMaxMapArea: 0,
-        clusterBalloonContentLayout: customBalloonContentLayout
+        clusterBalloonPanelMaxMapArea: 0
       })
       clusterer.add(geoObjects)
       mapRef.current.geoObjects.add(clusterer)
-      mapRef.current.setBounds(mapRef.current.geoObjects.getBounds())
+
+      // центрирование и зум по точкам, покажет весь регион в случает отстутствия ПВЗ в городе
+      // mapRef.current.setBounds(mapRef.current.geoObjects.getBounds(), {
+      //   checkZoomRange: true
+      // })
+
+      // центрирование и зум по городу, покажет город даже если там нет ПВЗ
+      mapRef.current.setCenter([locationStore.city.lat, locationStore.city.lon], 13)
     }
   }, [rows, mapInitialized])
 
   const onReadyMapApi = () => {
     mapRef.current = new ymaps.Map(mapElRef.current, {
-      center: [55.76, 37.64],
+      center: [locationStore.city.lat, locationStore.city.lon],
       zoom: 10,
       controls: []
     })

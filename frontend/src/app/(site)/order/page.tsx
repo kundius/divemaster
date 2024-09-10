@@ -1,16 +1,16 @@
 import { Metadata } from 'next'
 
-import { Container } from '@/components/site/Container'
 import { Headline } from '@/components/Headline'
-import { Button } from '@/components/ui/button'
+import { Container } from '@/components/site/Container'
 
-import { Agreement } from './_components/Agreement'
-import { Agreements } from './_components/Agreements'
 import { Authentication } from '../cart/_components/Authentication'
 import { OrderInfo } from '../cart/_components/OrderInfo'
+import { Agreement } from './_components/Agreement'
+import { Agreements } from './_components/Agreements'
 import { Delivery } from './_components/Delivery'
-import { RecipientDetails } from './_components/RecipientDetails'
 import { Payment } from './_components/Payment'
+import { Recipient } from './_components/Recipient'
+import { Submit } from './_components/Submit'
 
 export const metadata: Metadata = {
   title: 'Оформление заказа'
@@ -32,7 +32,7 @@ export default function Page() {
                 <Delivery />
               </div>
               <div className="py-9 px-7">
-                <RecipientDetails />
+                <Recipient />
               </div>
               <div className="py-9 px-7">
                 <Payment />
@@ -44,9 +44,7 @@ export default function Page() {
               <OrderInfo />
               <Authentication />
               <Agreement />
-              <Button className="w-full uppercase font-sans-narrow" size="lg" type="button">
-                Оформить заказ
-              </Button>
+              <Submit />
               <Agreements />
             </div>
           </div>

@@ -1,0 +1,37 @@
+@keyframes wobble {
+  0% {
+    transform: none;
+  }
+
+  15% {
+    transform: translate3d(-1%, 0, 0) rotate3d(0, 0, 1, -1deg);
+  }
+
+  30% {
+    transform: translate3d(1%, 0, 0) rotate3d(0, 0, 1, 1deg);
+  }
+
+  45% {
+    transform: translate3d(-1%, 0, 0) rotate3d(0, 0, 1, -1deg);
+  }
+
+  60% {
+    transform: translate3d(1%, 0, 0) rotate3d(0, 0, 1, 1deg);
+  }
+
+  75% {
+    transform: translate3d(-1%, 0, 0) rotate3d(0, 0, 1, -1deg);
+  }
+
+  100% {
+    transform: none;
+  }
+}
+
+.wobble {
+  animation-name: wobble;
+  animation-duration: 0.6s;
+  animation-iteration-count: 1;
+  animation-timing-function: linear;
+  transform-origin: 50% 50%;
+}

@@ -1,8 +1,14 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
+
+import { SpriteIcon } from '@/components/SpriteIcon'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
+import { useOrderStore } from '@/providers/order-store-provider'
+import { DeliveryMethod } from '@/types'
 
 import { PointsDetails } from './PointsDetails'
 import { PointsItem } from './PointsItem'
@@ -10,7 +16,9 @@ import css from './PointsList.module.scss'
 import { usePointsQuery } from './PointsQuery'
 
 export function PointsList() {
-  const { loading, rows, selected, setSelected } = usePointsQuery()
+  const orderState = useOrderStore((state) => state)
+  const router = useRouter()
+  const { loading, rows, coverage, selected } = usePointsQuery()
 
   if (loading) {
     return (
@@ -40,7 +48,13 @@ export function PointsList() {
         <div className="flex-grow" />
         <div className="mt-6">
           <Button
-            onClick={() => setSelected(null)}
+            onClick={() => {
+              orderState.setDelivery({
+                method: DeliveryMethod.PICKUP,
+                address: selected.fullAddress
+              })
+              router.push('/order')
+            }}
             variant="default"
             size="lg"
             className="w-full uppercase font-sans-narrow"
@@ -53,10 +67,22 @@ export function PointsList() {
   }
 
   return (
-    <div className={cn('flex flex-col', css.scrollable)}>
-      {rows.map((item) => (
-        <PointsItem key={item.id} entity={item} />
-      ))}
+    <div>
+      {coverage === 'subject' && (
+        <Alert variant="default" className={cn('mb-4', css.alert)}>
+          <SpriteIcon name="exclamation-circle" size={14} />
+          <AlertTitle>Внимание!</AlertTitle>
+          <AlertDescription>
+            К сожалению, рядом с вами пока нет пунктов выдачи заказов. Показаны пункты выдачи вашего
+            региона.
+          </AlertDescription>
+        </Alert>
+      )}
+      <div className={cn('flex flex-col', css.scrollable)}>
+        {rows.map((item) => (
+          <PointsItem key={item.id} entity={item} />
+        ))}
+      </div>
     </div>
   )
 }

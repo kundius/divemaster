@@ -1,9 +1,11 @@
 import { Metadata } from 'next'
 
-import { Container } from '@/components/site/Container'
 import { Headline } from '@/components/Headline'
-import { Button } from '@/components/ui/button'
-import { OrderStoreProvider } from '@/providers/order-store-provider'
+import { TabMarker } from '@/components/TabMarker'
+import { DeliveryMethod } from '@/types'
+
+import { Layout, LayoutContent, LayoutMap } from './_components/Layout'
+import { ShippingForm } from './_components/ShippingForm'
 
 export const metadata: Metadata = {
   title: 'Оформление заказа'
@@ -11,10 +13,24 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <div className="pt-12 pb-40 overflow-hidden">
-      <Container small>
-        <Headline className="mb-8" title="shipping" back={{ href: '/order', title: 'Назад' }} />
-      </Container>
-    </div>
+    <Layout>
+      <LayoutContent>
+        <div className="mb-6">
+          <Headline title="Способ получения" back={{ href: '/order', title: 'Назад' }} />
+        </div>
+        <TabMarker
+          items={[
+            { title: 'Самовывоз', name: DeliveryMethod.PICKUP },
+            { title: 'Доставка', name: DeliveryMethod.SHIPPING }
+          ]}
+          size="lg"
+          selected={DeliveryMethod.SHIPPING}
+        />
+        <div className="mt-6 flex-grow">
+          <ShippingForm />
+        </div>
+      </LayoutContent>
+      <LayoutMap></LayoutMap>
+    </Layout>
   )
 }

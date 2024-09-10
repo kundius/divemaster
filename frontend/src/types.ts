@@ -60,6 +60,11 @@ export enum DeliveryMethod {
   PICKUP = 'PICKUP'
 }
 
+export enum PaymentMethod {
+  ONLINE = 'ONLINE',
+  OFFLINE = 'OFFLINE'
+}
+
 export interface ProductsBaseFilter {
   name: string
   title: string

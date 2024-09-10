@@ -1,3 +1,9 @@
+.box {
+  display: flex;
+  min-width: 180px;
+  justify-content: flex-end;
+}
+
 .button {
   display: flex;
   align-items: center;

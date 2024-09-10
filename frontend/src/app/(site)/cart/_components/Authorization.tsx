@@ -1,6 +1,7 @@
 'use client'
 
 import { useAuthStore } from '@/providers/auth-store-provider'
+
 import styles from './Authorization.module.scss'
 
 export function Authorization() {

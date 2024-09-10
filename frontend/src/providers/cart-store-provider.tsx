@@ -36,6 +36,7 @@ export const CartStoreProvider = ({ children }: CartStoreProviderProps) => {
       cartId = auth.user.cart.id
     }
 
+    // если у пользователя корзины нет, но есть гостевая- прикрепить ее к пользователю
     if (auth.user && !auth.user.cart && cartId) {
       apiPost(`cart/${cartId}`, {}, withClientAuth())
       localStorage.removeItem('cartId')

@@ -4,7 +4,8 @@
 
 .map {
   position: absolute;
-  background: #1574b4;
+  background: #1574b4 url('/bg-shipping.jpg') no-repeat 50% 50%;
+  background-size: cover;
   right: calc((100vw - var(--container-width)) / 2 * -1);
   top: 0;
   bottom: 0;

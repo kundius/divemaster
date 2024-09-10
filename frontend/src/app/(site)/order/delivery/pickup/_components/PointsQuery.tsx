@@ -13,10 +13,10 @@ import useSWR from 'swr'
 
 import { PickupPointEntity } from '@/types'
 import { useLocationStore } from '@/providers/location-store-provider'
-import { string } from 'zod'
 
 interface PointsQueryState {
   rows: PickupPointEntity[]
+  coverage: 'subject' | 'city'
   selected: PickupPointEntity | null
   loading: boolean
   mapRef: MutableRefObject<any>
@@ -32,20 +32,20 @@ export function PointsQuery({ children }: PropsWithChildren) {
 
   const { data, isLoading } = useSWR<PickupPointEntity[]>([
     'pickup-point',
-    { region: city.subject }
+    { subject: city.subject }
   ])
 
-  const rows = useMemo(() => {
+  const [rows, coverage] = useMemo<[PickupPointEntity[], 'subject' | 'city']>(() => {
     const cityPoints = data?.filter((item) => item.cityName === city.name) || []
     if (cityPoints.length === 0) {
-      return data || []
+      return [data || [], 'subject']
     }
-    return cityPoints
+    return [cityPoints, 'city']
   }, [data, city])
 
   return (
     <PointsQueryContext.Provider
-      value={{ rows, loading: isLoading, mapRef, selected, setSelected }}
+      value={{ rows, coverage, loading: isLoading, mapRef, selected, setSelected }}
     >
       {children}
     </PointsQueryContext.Provider>

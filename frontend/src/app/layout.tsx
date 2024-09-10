@@ -6,9 +6,9 @@ import { SWRGlobalProvider } from '@/lib/api/swr-global-provider'
 import { cn } from '@/lib/utils'
 import { AuthServerProvider } from '@/providers/auth-server-provider'
 import { CartStoreProvider } from '@/providers/cart-store-provider'
-import '@/styles/globals.scss'
-import { LoginDialog } from '@/components/LoginDialog'
 import { LocationStoreProvider } from '@/providers/location-store-provider'
+import { OrderStoreProvider } from '@/providers/order-store-provider'
+import '@/styles/globals.scss'
 
 const fontSans = FontSans({
   weight: ['400', '500', '700'],
@@ -57,7 +57,9 @@ export default async function RootLayout({
         <SWRGlobalProvider>
           <AuthServerProvider>
             <LocationStoreProvider>
-              <CartStoreProvider>{children}</CartStoreProvider>
+              <CartStoreProvider>
+                <OrderStoreProvider>{children}</OrderStoreProvider>
+              </CartStoreProvider>
             </LocationStoreProvider>
           </AuthServerProvider>
         </SWRGlobalProvider>

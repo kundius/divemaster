@@ -1,39 +1,60 @@
 'use client'
 
+import { MethodCard } from '@/components/MethodCard'
 import { SpriteIcon } from '@/components/SpriteIcon'
-import css from './Delivery.module.scss'
-import { InfoCircledIcon } from '@radix-ui/react-icons'
-import { ExclamationCircleIcon } from '@heroicons/react/24/outline'
-import { Products } from './Products'
-import { useState } from 'react'
-import { DeliveryMethod } from '@/types'
-import { useOrderStore } from '@/providers/order-store-provider'
-import { cn } from '@/lib/utils'
-import { SelectedAddress } from './SelectedAddress'
-import { DeliveryMethods } from './DeliveryMethods'
 import { TabMarker } from '@/components/TabMarker'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { cn } from '@/lib/utils'
+import { useOrderStore } from '@/providers/order-store-provider'
+import { DeliveryMethod } from '@/types'
+
+import css from './Delivery.module.scss'
+import { Errors } from './Errors'
+import { Products } from './Products'
+import { SelectedAddress } from './SelectedAddress'
 
 const SelectedAddressTitle = {
   [DeliveryMethod.SHIPPING]: 'Доставим курьером',
-  [DeliveryMethod.PICKUP]: 'Забрать в магазине'
+  [DeliveryMethod.PICKUP]: 'Забрать самостоятельно'
 }
 
 export function Delivery() {
-  const changeDeliveryMethod = useOrderStore((state) => state.changeDeliveryMethod)
-  const deliveryMethod = useOrderStore((state) => state.deliveryMethod)
+  const orderState = useOrderStore((state) => state)
 
-  if (!deliveryMethod) {
+  if (!orderState.delivery) {
     return (
       <div>
         <div className={cn(css.title, 'mb-4')}>Выберите способ получения</div>
-        <div className={css.warning}>
+        <Alert variant="default">
           <SpriteIcon name="exclamation-circle" size={14} />
-          Пожалуйста, обратите внимание. В связи с большим объёмом заказов срок доставки может быть
-          увеличен.
+          <AlertDescription>
+            Пожалуйста, обратите внимание. В связи с большим объёмом заказов срок доставки может
+            быть увеличен.
+          </AlertDescription>
+        </Alert>
+        <div className="grid grid-cols-2 gap-3 mt-3">
+          <div>
+            <MethodCard
+              title="Самовывоз"
+              description="Из магазина или пункта выдачи"
+              icon={<SpriteIcon name="self-pickup" size={40} />}
+              action="/order/delivery/pickup"
+            />
+          </div>
+          <div>
+            <MethodCard
+              title="Доставка"
+              description="Курьером до вашей двери"
+              icon={<SpriteIcon name="delivery" size={40} />}
+              action="/order/delivery/shipping"
+            />
+          </div>
         </div>
-        <DeliveryMethods />
         <div className="mt-6">
           <Products />
+        </div>
+        <div className="empty:hidden mt-6">
+          <Errors field="delivery" />
         </div>
       </div>
     )
@@ -43,25 +64,30 @@ export function Delivery() {
     <div>
       <div className="flex justify-between items-center mb-4">
         <div className={css.title}>Способ получения</div>
-        <button className={css.change} onClick={() => changeDeliveryMethod(undefined)}>
+        <button className={css.change} onClick={() => orderState.setDelivery(undefined)}>
           Изменить
         </button>
       </div>
-      <TabMarker
-        items={[
-          { title: 'Самовывоз', name: DeliveryMethod.PICKUP },
-          { title: 'Доставка', name: DeliveryMethod.SHIPPING }
-        ]}
-        selected={deliveryMethod}
-      />
+      <div className="flex py-0.5">
+        <TabMarker
+          items={[
+            { title: 'Самовывоз', name: DeliveryMethod.PICKUP },
+            { title: 'Доставка', name: DeliveryMethod.SHIPPING }
+          ]}
+          selected={orderState.delivery.method}
+        />
+      </div>
       <div className="mt-4">
         <SelectedAddress
-          title={SelectedAddressTitle[deliveryMethod]}
-          description="Введённый адрес"
+          title={SelectedAddressTitle[orderState.delivery.method]}
+          description={orderState.delivery.address}
         />
       </div>
       <div className="mt-6">
         <Products />
+      </div>
+      <div className="empty:hidden mt-6">
+        <Errors field="delivery" />
       </div>
     </div>
   )

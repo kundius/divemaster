@@ -13,6 +13,18 @@ export interface CitySelectFormProps {
   initialCity: CityEntity
 }
 
+function sortCityByName(a: CityEntity, b: CityEntity) {
+  const nameA = a.name.toUpperCase()
+  const nameB = b.name.toUpperCase()
+  if (nameA < nameB) {
+    return -1
+  }
+  if (nameA > nameB) {
+    return 1
+  }
+  return 0
+}
+
 export function CitySelectForm({ onChangeLocation, initialCity }: CitySelectFormProps) {
   const [district, setDistrict] = useState<string | undefined>(initialCity.district)
   const [subject, setSubject] = useState<string | undefined>(initialCity.subject)
@@ -26,6 +38,7 @@ export function CitySelectForm({ onChangeLocation, initialCity }: CitySelectForm
     return query.data
       .map((city) => city.district)
       .filter((value, index, array) => array.indexOf(value) === index)
+      .sort()
   }, [query])
 
   const regions = useMemo(() => {
@@ -34,16 +47,19 @@ export function CitySelectForm({ onChangeLocation, initialCity }: CitySelectForm
       .filter((city) => city.district === district)
       .map((city) => city.subject)
       .filter((value, index, array) => array.indexOf(value) === index)
+      .sort()
   }, [district, query])
 
   const cities = useMemo(() => {
     if (!query.data) return []
-    return query.data.filter((city) => city.subject === subject)
+    return query.data.filter((city) => city.subject === subject).sort(sortCityByName)
   }, [subject, query])
 
   const searchCities = useMemo(() => {
     if (!query.data) return []
-    return query.data.filter((item) => item.name.toLowerCase().includes(search.toLowerCase())) || []
+    return query.data
+      .filter((item) => item.name.toLowerCase().startsWith(search.toLowerCase()))
+      .sort(sortCityByName)
   }, [search, query])
 
   const changeDistrict = (name: string) => {
@@ -95,7 +111,7 @@ export function CitySelectForm({ onChangeLocation, initialCity }: CitySelectForm
                   key={item.id}
                   onClick={() => changeSearchCity(item)}
                 >
-                  {item.name}
+                  {item.name} ({item.subject})
                 </Button>
               ))}
             </div>

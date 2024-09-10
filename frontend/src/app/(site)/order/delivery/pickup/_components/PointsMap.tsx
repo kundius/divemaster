@@ -5,6 +5,8 @@ import { useEffect, useRef, useState } from 'react'
 import { usePointsQuery } from './PointsQuery'
 import { useLocationStore } from '@/providers/location-store-provider'
 import { PickupPointEntity } from '@/types'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 
 export function PointsMap() {
   const locationStore = useLocationStore((state) => state)

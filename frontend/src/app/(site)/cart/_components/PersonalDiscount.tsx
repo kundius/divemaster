@@ -1,14 +1,13 @@
 'use client'
 
-import styles from './PersonalDiscount.module.scss'
 import { Switch } from '@/components/ui/switch'
+import { useOrderStore } from '@/providers/order-store-provider'
 
-export interface PersonalDiscountProps {
-  checked?: boolean | undefined
-  onCheckedChange?(checked: boolean): void
-}
+import styles from './PersonalDiscount.module.scss'
 
-export function PersonalDiscount(props: PersonalDiscountProps) {
+export function PersonalDiscount() {
+  const personalDiscountEnabled = useOrderStore((state) => state.personalDiscountEnabled)
+  const personalDiscountToggle = useOrderStore((state) => state.personalDiscountToggle)
   return (
     <label className={styles.wrap}>
       <span className={styles.desc}>
@@ -17,7 +16,7 @@ export function PersonalDiscount(props: PersonalDiscountProps) {
       <span className={styles.apply}>
         <span className={styles.applyLabel}>Применить персональную скидку</span>
         <span className={styles.applyControl}>
-          <Switch checked={props.checked} onCheckedChange={props.onCheckedChange} />
+          <Switch checked={personalDiscountEnabled} onCheckedChange={personalDiscountToggle} />
         </span>
       </span>
     </label>

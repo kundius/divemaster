@@ -101,8 +101,8 @@ export class PickupPointService {
 
   async findAll(dto: FindAllPickupPointQueryDto) {
     let where: ObjectQuery<PickupPoint> = {}
-    if (dto.region) {
-      where = { ...where, subjectName: dto.region }
+    if (dto.subject) {
+      where = { ...where, subjectName: dto.subject }
     }
     return await this.pickupPointRepository.find(where, {
       groupBy: 'shortAddress'

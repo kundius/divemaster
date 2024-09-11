@@ -33,7 +33,7 @@ export function Submit() {
       recipientEmail: orderState.recipient?.email,
       recipientPhone: orderState.recipient?.phone,
       personalDiscountEnabled: orderState.personalDiscountEnabled,
-      isLegalEntity: orderState.legalEntity,
+      legalEntity: orderState.legalEntity,
       agreement: orderState.agreement
     })
   }

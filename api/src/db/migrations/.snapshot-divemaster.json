@@ -1779,6 +1779,16 @@
           "default": "true",
           "mappedType": "boolean"
         },
+        "discount": {
+          "name": "discount",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "0",
+          "mappedType": "integer"
+        },
         "role_id": {
           "name": "role_id",
           "type": "int",
@@ -1850,6 +1860,15 @@
           "nullable": false,
           "mappedType": "integer"
         },
+        "uuid": {
+          "name": "uuid",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
         "cost": {
           "name": "cost",
           "type": "int",
@@ -1859,31 +1878,57 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "customer_phone": {
-          "name": "customer_phone",
+        "delivery": {
+          "name": "delivery",
+          "type": "enum('SHIPPING','PICKUP')",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "enumItems": [
+            "SHIPPING",
+            "PICKUP"
+          ],
+          "mappedType": "enum"
+        },
+        "payment": {
+          "name": "payment",
+          "type": "enum('ONLINE','OFFLINE')",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "enumItems": [
+            "ONLINE",
+            "OFFLINE"
+          ],
+          "mappedType": "enum"
+        },
+        "recipient_name": {
+          "name": "recipient_name",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": true,
+          "nullable": false,
           "mappedType": "string"
         },
-        "customer_email": {
-          "name": "customer_email",
+        "recipient_phone": {
+          "name": "recipient_phone",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": true,
+          "nullable": false,
           "mappedType": "string"
         },
-        "customer_name": {
-          "name": "customer_name",
+        "recipient_email": {
+          "name": "recipient_email",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": true,
+          "nullable": false,
           "mappedType": "string"
         },
         "user_id": {
@@ -1983,7 +2028,7 @@
           "unsigned": true,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "mappedType": "integer"
         },
         "amount": {
@@ -2003,6 +2048,15 @@
           "primary": false,
           "nullable": false,
           "mappedType": "integer"
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
         },
         "options": {
           "name": "options",
@@ -2072,7 +2126,7 @@
             "id"
           ],
           "referencedTableName": "product",
-          "deleteRule": "cascade",
+          "deleteRule": "set null",
           "updateRule": "cascade"
         }
       },

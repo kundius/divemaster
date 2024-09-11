@@ -19,6 +19,9 @@ export class User {
   @Property({ default: true })
   active: boolean
 
+  @Property({ default: 0 })
+  discount: number
+
   @ManyToOne(() => Role)
   role: Role
 

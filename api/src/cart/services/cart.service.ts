@@ -197,9 +197,9 @@ export class CartService {
     const order = new Order()
     this.orderRepository.assign(order, {
       cost: 0,
-      customerEmail: dto.customerEmail,
-      customerName: dto.customerName,
-      customerPhone: dto.customerPhone
+      recipientEmail: dto.customerEmail,
+      recipientName: dto.customerName,
+      recipientPhone: dto.customerPhone
     })
 
     if (user) {
@@ -236,7 +236,7 @@ export class CartService {
       to: 'kundius.ruslan@gmail.com',
       subject: `Новый заказ №${order.id}`,
       html: letterNewToManager({
-        fullName: order.customerName || order.user?.name || 'Гость'
+        fullName: order.recipientName || order.user?.name || 'Гость'
       })
     })
 

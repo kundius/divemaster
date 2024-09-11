@@ -95,6 +95,7 @@ export interface UserEntity {
   id: number
   name: string
   email: string
+  discount: number
   active: boolean
   role: UserRoleEntity
   cart: CartEntity | null

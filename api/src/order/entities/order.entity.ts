@@ -2,6 +2,7 @@ import { User } from '@/users/entities/user.entity'
 import {
   Collection,
   Entity,
+  Enum,
   ManyToOne,
   OneToMany,
   Opt,
@@ -11,22 +12,43 @@ import {
 import { v4 } from 'uuid'
 import { OrderProduct } from './order-product.entity'
 
+export enum DeliveryMethod {
+  SHIPPING = 'SHIPPING',
+  PICKUP = 'PICKUP'
+}
+
+export enum PaymentMethod {
+  ONLINE = 'ONLINE',
+  OFFLINE = 'OFFLINE'
+}
+
+export enum OrderStatus {
+  CREATED = 'CREATED'
+  // OFFLINE = 'OFFLINE'
+}
+
 @Entity()
 export class Order {
   @PrimaryKey()
-  id: number
+  id!: number
+
+  @Property()
+  uuid = v4()
 
   @Property({ unsigned: true })
   cost!: number
 
-  @Property({ type: 'varchar', nullable: true })
-  customerPhone: string | null = null
+  @Enum(() => DeliveryMethod)
+  status!: DeliveryMethod
 
-  @Property({ type: 'varchar', nullable: true })
-  customerEmail: string | null = null
+  @Enum(() => DeliveryMethod)
+  delivery!: DeliveryMethod
 
-  @Property({ type: 'varchar', nullable: true })
-  customerName: string | null = null
+  @Enum(() => PaymentMethod)
+  payment!: PaymentMethod
+
+  @Property({ type: 'json', nullable: true })
+  recipient?: Record<string, string>
 
   @ManyToOne(() => User, { nullable: true, deleteRule: 'set null' })
   user: User | null = null

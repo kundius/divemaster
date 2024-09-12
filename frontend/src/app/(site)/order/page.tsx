@@ -4,13 +4,13 @@ import { Headline } from '@/components/Headline'
 import { Container } from '@/components/site/Container'
 
 import { Authentication } from '../cart/_components/Authentication'
-import { OrderInfo } from '../cart/_components/OrderInfo'
 import { Agreement } from './_components/Agreement'
 import { Agreements } from './_components/Agreements'
 import { Delivery } from './_components/Delivery'
 import { Payment } from './_components/Payment'
 import { Recipient } from './_components/Recipient'
 import { Submit } from './_components/Submit'
+import { OrderInfo } from './_components/OrderInfo'
 
 export const metadata: Metadata = {
   title: 'Оформление заказа'

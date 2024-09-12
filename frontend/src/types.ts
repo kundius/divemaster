@@ -23,6 +23,14 @@
 //   cities: PickupPointCitiesCity[]
 // }
 
+export interface CartGetOrderCost {
+  cost: number
+  composition: {
+    name: string
+    value: number
+  }[]
+}
+
 export interface CityEntity {
   id: string
   type: string

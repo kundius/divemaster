@@ -5,7 +5,7 @@ import type { DeliveryMethod, PaymentMethod } from '@/types'
 
 export type OrderState = {
   agreement: boolean
-  personalDiscountEnabled: boolean
+  personalDiscount: boolean
   legalEntity: boolean
   delivery?: {
     method: DeliveryMethod
@@ -30,7 +30,7 @@ export type OrderActions = {
   setDelivery(delivery: OrderState['delivery']): void
   setRecipient(recipient: OrderState['recipient']): void
   setPayment(payment: OrderState['payment']): void
-  personalDiscountToggle(personalDiscountEnabled: boolean): void
+  personalDiscountToggle(personalDiscount: boolean): void
   legalEntityToggle(legalEntity: boolean): void
   validate(): boolean
 }
@@ -43,7 +43,7 @@ export const createOrderStore = () =>
         delivery: undefined,
         recipient: undefined,
         payment: undefined,
-        personalDiscountEnabled: false,
+        personalDiscount: false,
         legalEntity: false,
         errors: [],
 
@@ -87,8 +87,8 @@ export const createOrderStore = () =>
           return errors.length === 0
         },
 
-        personalDiscountToggle(personalDiscountEnabled) {
-          set({ personalDiscountEnabled })
+        personalDiscountToggle(personalDiscount) {
+          set({ personalDiscount })
         },
 
         agreementToggle: (agreement) => {

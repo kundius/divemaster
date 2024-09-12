@@ -32,7 +32,7 @@ export function Submit() {
       recipientName: orderState.recipient?.name,
       recipientEmail: orderState.recipient?.email,
       recipientPhone: orderState.recipient?.phone,
-      personalDiscountEnabled: orderState.personalDiscountEnabled,
+      personalDiscountEnabled: orderState.personalDiscount,
       legalEntity: orderState.legalEntity,
       agreement: orderState.agreement
     })

@@ -8,7 +8,7 @@ import { PersonalDiscount } from './PersonalDiscount'
 
 export function Authentication() {
   const user = useAuthStore((state) => state.user)
-  const personalDiscountEnabled = useOrderStore((state) => state.personalDiscountEnabled)
+  const personalDiscountEnabled = useOrderStore((state) => state.personalDiscount)
   const personalDiscountToggle = useOrderStore((state) => state.personalDiscountToggle)
 
   if (!user) {

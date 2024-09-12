@@ -1,49 +1,58 @@
 'use client'
 
+import useSWR from 'swr'
+
 import { cn, formatPrice } from '@/lib/utils'
 import { useCartStore } from '@/providers/cart-store-provider'
+import { useOrderStore } from '@/providers/order-store-provider'
+import { CartGetOrderCost } from '@/types'
+
 import styles from './OrderInfo.module.scss'
 
 export function OrderInfo() {
-  const total = useCartStore((state) => state.total)
+  const cartId = useCartStore((state) => state.cartId)
+  const personalDiscount = useOrderStore((state) => state.personalDiscount)
+  const { data, isLoading } = useSWR<CartGetOrderCost>(
+    cartId
+      ? [
+          `cart/${cartId}/get-order-cost`,
+          {
+            personalDiscount
+          }
+        ]
+      : null
+  )
 
-  const getOrderPrices = () => {
-    const prices: {
-      label: string
-      value: number
-      negative?: boolean
-    }[] = []
-
-    prices.push({
-      label: `Товары, ${total.count} шт.`,
-      value: total.oldPrice
-    })
-
-    prices.push({
-      label: `Скидки и акции`,
-      value: total.discount,
-      negative: true
-    })
-
-    return prices
+  if (isLoading) {
+    return <div>loading</div>
   }
+
+  if (!data) {
+    return
+  }
+
+  const { cost, composition } = data
 
   return (
     <div className={styles.wrap}>
       <div className={styles.title}>Ваш заказ</div>
-      <div className={styles.prices}>
-        {getOrderPrices().map((price, i) => (
-          <div key={i} className={styles.price}>
-            <div className={styles.priceLabel}>{price.label}</div>
-            <div className={cn(styles.priceValue, { [styles.priceValueNegative]: price.negative })}>
-              {formatPrice(price.value)}
+      {composition.length > 0 && (
+        <div className={styles.prices}>
+          {composition.map((item, i) => (
+            <div key={`${i}/${item.name}`} className={styles.price}>
+              <div className={styles.priceLabel}>{item.name}</div>
+              <div
+                className={cn(styles.priceValue, { [styles.priceValueNegative]: item.value < 0 })}
+              >
+                {formatPrice(item.value)}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
       <div className={styles.total}>
         <div className={styles.totalLabel}>Итого</div>
-        <div className={styles.totalValue}>{formatPrice(total.price)}</div>
+        <div className={styles.totalValue}>{formatPrice(cost)}</div>
       </div>
     </div>
   )

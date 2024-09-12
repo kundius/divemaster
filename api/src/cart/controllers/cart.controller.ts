@@ -28,11 +28,6 @@ export class CartController {
     return this.cartService.createCart(user)
   }
 
-  // @Get(':cartId')
-  // findOne(@Param('cartId') cartId: string, @Query() dto: FindOneCartDto) {
-  //   return this.cartService.findOne(cartId, dto)
-  // }
-
   @Post(':cartId')
   async authorizeCart(@Param('cartId') cartId: string, @CurrentUser() user?: User) {
     if (!user) {
@@ -70,14 +65,10 @@ export class CartController {
     return this.cartService.deleteProduct(cartId, productId)
   }
 
-  // @Get(':cartId/get-order-cost')
-  // async getOrderCost(
-  //   @Param('cartId') cartId: string,
-  //   @Query() dto?: GetOrderCostDto,
-  //   @CurrentUser() user?: User
-  // ) {
-  //   return this.cartService.getOrderCost(cartId, dto, user)
-  // }
+  @Get(':cartId/get-order-cost')
+  async getOrderCost(@Param('cartId') cartId: string, @Query() dto?: GetOrderCostDto) {
+    return this.cartService.getOrderCost(cartId, dto)
+  }
 
   @Post(':cartId/create-order')
   async createOrder(

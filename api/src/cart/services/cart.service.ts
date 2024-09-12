@@ -188,35 +188,71 @@ export class CartService {
     return this.findProducts(cartId)
   }
 
-  // async getOrderCost(cartId: string, dto?: GetOrderCostDto, user?: User) {
-  //   return {
-  //     totalCount: 19,
-  //     totalCost: 256789,
-  //     startCost: 356789,
-  //     composition: [
-  //       {
-  //         name: 'Скидки и акции',
-  //         value: -6840
-  //       },
-  //       {
-  //         name: 'Персональная скидка 5%',
-  //         value: -1220
-  //       },
-  //       {
-  //         name: 'Купон ХХХХ',
-  //         value: -1500
-  //       },
-  //       {
-  //         name: 'Доставка',
-  //         value: 500
-  //       },
-  //       {
-  //         name: 'Наложенный платеж',
-  //         value: 1500
-  //       }
-  //     ]
-  //   }
-  // }
+  async getOrderCost(cartId: string, dto?: GetOrderCostDto) {
+    const cart = await this.cartRepository.findOne(cartId, {
+      populate: ['user']
+    })
+    const products = await this.cartProductRepository.find(
+      { cart: cartId },
+      { populate: ['product', 'optionValues', 'optionValues.option'] }
+    )
+
+    await Promise.all(products.map(this.calcProduct.bind(this)))
+
+    console.log(products)
+    let composition: {
+      name: string
+      value: number
+    }[] = []
+    let cost = 0
+
+    let totalCount = 0
+    let totalCost = 0
+    for (const product of products) {
+      totalCount += product.amount
+      totalCost += (product.oldPrice || product.price || 0) * product.amount
+    }
+    composition.push({
+      name: `Товары, ${totalCount} шт.`,
+      value: totalCost
+    })
+    cost += totalCost
+
+    return {
+      cost,
+      composition
+    }
+
+    return {
+      cost: 777,
+      composition: [
+        {
+          name: `Товары, ${totalCount} шт.`,
+          value: totalCost
+        },
+        {
+          name: 'Скидки и акции',
+          value: -777
+        },
+        {
+          name: 'Персональная скидка 5%',
+          value: -777
+        },
+        {
+          name: 'Купон ХХХХ',
+          value: -777
+        },
+        {
+          name: 'Доставка',
+          value: 777
+        },
+        {
+          name: 'Наложенный платеж',
+          value: 777
+        }
+      ]
+    }
+  }
 
   async createOrder(cartId: string, dto?: GetOrderCostDto, user?: User) {}
 

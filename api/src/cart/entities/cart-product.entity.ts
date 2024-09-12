@@ -12,6 +12,10 @@ import { Cart } from './cart.entity'
 import { v4 } from 'uuid'
 import { OptionValue } from '@/products/entities/option-value.entity'
 
+/**
+ * Товар в корзине может стать неактивным, если оригинальный товар был удален.
+ * Цена может быть не заполена, если у товара нет торговых предложений.
+ */
 @Entity()
 export class CartProduct {
   @PrimaryKey({ type: 'uuid' })
@@ -36,7 +40,7 @@ export class CartProduct {
   updatedAt: Date & Opt = new Date()
 
   @Property({ persist: false })
-  oldPrice?: number | undefined
+  oldPrice?: number
 
   @Property({ persist: false })
   price?: number

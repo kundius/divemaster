@@ -1,4 +1,4 @@
-import { EntityRepository, ObjectQuery, QueryOrder, wrap } from '@mikro-orm/mariadb'
+import { EntityManager, EntityRepository, ObjectQuery, QueryOrder, wrap } from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { Injectable } from '@nestjs/common'
 import { CartProduct } from '../entities/cart-product.entity'
@@ -17,12 +17,14 @@ import { OrderProduct } from '@/order/entities/order-product.entity'
 import { LetterService } from '@/notifications/services/letter.service'
 import { content as letterNewToManager } from '@/notifications/templates/order/new-to-manager'
 import { Offer } from '@/products/entities/offer.entity'
+import { performance } from 'node:perf_hooks'
 
 @Injectable()
 export class CartService {
   constructor(
     private letterService: LetterService,
     private configService: ConfigService,
+    private em: EntityManager,
     @InjectRepository(Cart)
     private cartRepository: EntityRepository<Cart>,
     @InjectRepository(CartProduct)
@@ -64,10 +66,23 @@ export class CartService {
   }
 
   async calcProduct(cartProduct: CartProduct) {
-    const cartProductIds = cartProduct.optionValues.getIdentifiers()
-    await cartProduct.product.offers.init({
-      populate: ['optionValues']
+    // TODO
+    // инициализированные здесь отношения не попадают в итоговый результат,
+    // то есть в тот массив, откуда пришел cartProduct
+    // непонятно почему так, надо будет разобраться
+    await wrap(cartProduct).init({
+      populate: [
+        'optionValues',
+        'product',
+        'product.offers',
+        'product',
+        'product.offers.optionValues'
+      ]
     })
+
+    const cartProductIds = cartProduct.optionValues.getIdentifiers()
+
+    // сортируем офферы по количеству опций
     const sortedOffers = cartProduct.product.offers
       .getItems()
       .sort((a, b) => {
@@ -82,6 +97,7 @@ export class CartService {
     const additionalOffers = sortedOffers.filter(
       (offer) => offer.optionValues && offer.optionValues.length > 0
     )
+
     // Если дополнительных нет, то выбираем базовый независимо от выбранных опций
     // Если есть дополнительные, то выбираем среди них соответствующий опциям
     let selectedOffer: Offer | undefined = undefined
@@ -94,21 +110,23 @@ export class CartService {
       })
     }
 
-    // если торговое предложение не найдено, то позиция в корзине считается неактивной
-    this.cartProductRepository.assign(cartProduct, {
-      active: !!selectedOffer
-    })
-
-    // если торговое предложение найдено, то считаем стоимость позиции с учетом скидок
-    if (selectedOffer) {
-      // расчет скидок выполнить здесь
+    // если торговое предложение не найдено, то позицию в корзине помечаем неактивной,
+    // дальше считать стоимость нет смысла
+    if (!selectedOffer) {
       this.cartProductRepository.assign(cartProduct, {
-        price: selectedOffer.price
+        active: false
       })
+      return
     }
 
+    // считаем стоимость позиции с учетом скидок
+    // расчет скидок выполнить здесь
+    this.cartProductRepository.assign(cartProduct, {
+      price: selectedOffer.price
+    })
+
     // тут пока так, но с добавлением скидок нужно объеденить в старую цену и скидки и статичное снижение стоимости
-    if (selectedOffer && cartProduct.product.priceDecrease) {
+    if (cartProduct.product.priceDecrease) {
       this.cartProductRepository.assign(cartProduct, {
         oldPrice:
           selectedOffer.price * (cartProduct.product.priceDecrease / 100) + selectedOffer.price
@@ -139,10 +157,10 @@ export class CartService {
     const product = await this.productRepository.findOneOrFail(dto.id)
     const cartProducts = await this.cartProductRepository.find(
       { cart, product },
-      {
-        populate: ['optionValues']
-      }
+      { populate: ['optionValues'] }
     )
+
+    // Найти в корзине товар с такими же опциями
     const cartProduct = cartProducts.find((cartProduct) => {
       if (dto.optionValues && dto.optionValues.length) {
         const identifiers = cartProduct.optionValues.getIdentifiers()
@@ -151,6 +169,7 @@ export class CartService {
       return cartProduct.optionValues.isEmpty()
     })
 
+    // Увеличить количество, если найден, или добавить новый
     if (cartProduct) {
       cartProduct.amount += dto.amount || 1
       await this.cartProductRepository.getEntityManager().persistAndFlush(cartProduct)
@@ -189,69 +208,52 @@ export class CartService {
   }
 
   async getOrderCost(cartId: string, dto?: GetOrderCostDto) {
-    const cart = await this.cartRepository.findOne(cartId, {
-      populate: ['user']
-    })
-    const products = await this.cartProductRepository.find(
-      { cart: cartId },
-      { populate: ['product', 'optionValues', 'optionValues.option'] }
-    )
-
+    const cart = await this.cartRepository.findOneOrFail(cartId, { populate: ['user'] })
+    const products = await this.cartProductRepository.find({ cart: cartId })
     await Promise.all(products.map(this.calcProduct.bind(this)))
 
-    console.log(products)
-    let composition: {
-      name: string
-      value: number
-    }[] = []
-    let cost = 0
+    let composition: { name: string; value: number }[] = []
+    let cost = products.reduce((sum, { price = 0, amount }) => sum + price * amount, 0)
 
-    let totalCount = 0
-    let totalCost = 0
-    for (const product of products) {
-      totalCount += product.amount
-      totalCost += (product.oldPrice || product.price || 0) * product.amount
-    }
+    const cartAmount = products.reduce((sum, { amount }) => sum + amount, 0)
+    const cartCost = products.reduce(
+      (sum, { amount, price = 0, oldPrice = 0 }) => sum + (oldPrice || price) * amount,
+      0
+    )
+
     composition.push({
-      name: `Товары, ${totalCount} шт.`,
-      value: totalCost
+      name: `Товары, ${cartAmount} шт.`,
+      value: cartCost
     })
-    cost += totalCost
 
-    return {
-      cost,
-      composition
+    // Если не равны, есть товары со скидками
+    if (cartCost !== cost) {
+      composition.push({
+        name: `Скидки и акции`,
+        value: cost - cartCost
+      })
     }
 
-    return {
-      cost: 777,
-      composition: [
-        {
-          name: `Товары, ${totalCount} шт.`,
-          value: totalCost
-        },
-        {
-          name: 'Скидки и акции',
-          value: -777
-        },
-        {
-          name: 'Персональная скидка 5%',
-          value: -777
-        },
-        {
-          name: 'Купон ХХХХ',
-          value: -777
-        },
-        {
-          name: 'Доставка',
-          value: 777
-        },
-        {
-          name: 'Наложенный платеж',
-          value: 777
-        }
-      ]
+    // Персональная скидка
+    if (dto?.personalDiscount && cart.user && cart.user.discount > 0) {
+      const discountValue = Math.round(cost * (cart.user.discount / 100)) * -1
+      composition.push({
+        name: `Персональная скидка ${cart.user.discount}%`,
+        value: discountValue
+      })
+      cost += discountValue
     }
+
+    // Стоимость доставки, пока примитивная
+    if (dto?.deliveryMethod && cost < Number(this.configService.get('DELIVERY_FREE_LIMIT', '0'))) {
+      composition.push({
+        name: `Доставка`,
+        value: Number(this.configService.get('DELIVERY_COST', '0'))
+      })
+      cost += Number(this.configService.get('DELIVERY_COST', '0'))
+    }
+
+    return { cost, composition }
   }
 
   async createOrder(cartId: string, dto?: GetOrderCostDto, user?: User) {}
@@ -278,7 +280,7 @@ export class CartService {
     for (const cartProduct of products) {
       if (typeof cartProduct.price === 'undefined') continue
 
-      order.cost += cartProduct.price * cartProduct.amount
+      order.cost += (cartProduct.price || 0) * cartProduct.amount
 
       let options: Record<string, string> = {}
       for (const optionValue of cartProduct.optionValues) {

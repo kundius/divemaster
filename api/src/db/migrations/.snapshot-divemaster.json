@@ -1878,6 +1878,19 @@
           "nullable": false,
           "mappedType": "integer"
         },
+        "status": {
+          "name": "status",
+          "type": "enum('SHIPPING','PICKUP')",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "enumItems": [
+            "SHIPPING",
+            "PICKUP"
+          ],
+          "mappedType": "enum"
+        },
         "delivery": {
           "name": "delivery",
           "type": "enum('SHIPPING','PICKUP')",
@@ -1904,32 +1917,14 @@
           ],
           "mappedType": "enum"
         },
-        "recipient_name": {
-          "name": "recipient_name",
-          "type": "varchar(255)",
+        "recipient": {
+          "name": "recipient",
+          "type": "json",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
-          "mappedType": "string"
-        },
-        "recipient_phone": {
-          "name": "recipient_phone",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "string"
-        },
-        "recipient_email": {
-          "name": "recipient_email",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "string"
+          "nullable": true,
+          "mappedType": "json"
         },
         "user_id": {
           "name": "user_id",

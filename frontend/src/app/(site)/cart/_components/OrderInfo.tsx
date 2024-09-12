@@ -8,11 +8,15 @@ import { useOrderStore } from '@/providers/order-store-provider'
 import { CartGetOrderCost } from '@/types'
 
 import styles from './OrderInfo.module.scss'
+import { useEffect } from 'react'
+import { useFirstMountState, useMountedState } from '@reactuses/core'
 
 export function OrderInfo() {
+  const isFirstMount = useFirstMountState()
   const cartId = useCartStore((state) => state.cartId)
+  const cartProducts = useCartStore((state) => state.cartProducts)
   const personalDiscount = useOrderStore((state) => state.personalDiscount)
-  const { data, isLoading } = useSWR<CartGetOrderCost>(
+  const { data, isLoading, mutate } = useSWR<CartGetOrderCost>(
     cartId
       ? [
           `cart/${cartId}/get-order-cost`,
@@ -22,6 +26,12 @@ export function OrderInfo() {
         ]
       : null
   )
+
+  useEffect(() => {
+    if (isLoading) return
+
+    mutate(data, { revalidate: true })
+  }, [cartProducts])
 
   if (isLoading) {
     return <div>loading</div>

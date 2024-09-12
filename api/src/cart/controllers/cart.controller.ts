@@ -6,12 +6,18 @@ import {
   Get,
   Param,
   Post,
-  Put
+  Put,
+  Query
 } from '@nestjs/common'
 import { CartService } from '../services/cart.service'
 import { User } from '@/users/entities/user.entity'
 import { CurrentUser } from '@/auth/decorators/current-user.decorator'
-import { AddProductDto, TemporaryCreateOrderDto, UpdateProductDto } from '../dto/cart.dto'
+import {
+  AddProductDto,
+  GetOrderCostDto,
+  TemporaryCreateOrderDto,
+  UpdateProductDto
+} from '../dto/cart.dto'
 
 @Controller('cart')
 export class CartController {
@@ -21,6 +27,11 @@ export class CartController {
   async createCart(@CurrentUser() user?: User) {
     return this.cartService.createCart(user)
   }
+
+  // @Get(':cartId')
+  // findOne(@Param('cartId') cartId: string, @Query() dto: FindOneCartDto) {
+  //   return this.cartService.findOne(cartId, dto)
+  // }
 
   @Post(':cartId')
   async authorizeCart(@Param('cartId') cartId: string, @CurrentUser() user?: User) {
@@ -57,6 +68,24 @@ export class CartController {
   @Delete(':cartId/products/:productId')
   async deleteProduct(@Param('cartId') cartId: string, @Param('productId') productId: string) {
     return this.cartService.deleteProduct(cartId, productId)
+  }
+
+  // @Get(':cartId/get-order-cost')
+  // async getOrderCost(
+  //   @Param('cartId') cartId: string,
+  //   @Query() dto?: GetOrderCostDto,
+  //   @CurrentUser() user?: User
+  // ) {
+  //   return this.cartService.getOrderCost(cartId, dto, user)
+  // }
+
+  @Post(':cartId/create-order')
+  async createOrder(
+    @Param('cartId') cartId: string,
+    @Query() dto?: GetOrderCostDto,
+    @CurrentUser() user?: User
+  ) {
+    return this.cartService.createOrder(cartId, dto, user)
   }
 
   @Put(':cartId')

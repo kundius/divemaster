@@ -6,7 +6,12 @@ import { Cart } from '../entities/cart.entity'
 import { User } from '@/users/entities/user.entity'
 import { Product } from '@/products/entities/product.entity'
 import { ConfigService } from '@nestjs/config'
-import { AddProductDto, TemporaryCreateOrderDto, UpdateProductDto } from '../dto/cart.dto'
+import {
+  AddProductDto,
+  GetOrderCostDto,
+  TemporaryCreateOrderDto,
+  UpdateProductDto
+} from '../dto/cart.dto'
 import { Order } from '@/order/entities/order.entity'
 import { OrderProduct } from '@/order/entities/order-product.entity'
 import { LetterService } from '@/notifications/services/letter.service'
@@ -183,13 +188,37 @@ export class CartService {
     return this.findProducts(cartId)
   }
 
-  // generateKey(product: Product, options: Record<string, string>): string {
-  //   let key = String(product.id)
-  //   if (options) {
-  //     key += JSON.stringify(options)
+  // async getOrderCost(cartId: string, dto?: GetOrderCostDto, user?: User) {
+  //   return {
+  //     totalCount: 19,
+  //     totalCost: 256789,
+  //     startCost: 356789,
+  //     composition: [
+  //       {
+  //         name: 'Скидки и акции',
+  //         value: -6840
+  //       },
+  //       {
+  //         name: 'Персональная скидка 5%',
+  //         value: -1220
+  //       },
+  //       {
+  //         name: 'Купон ХХХХ',
+  //         value: -1500
+  //       },
+  //       {
+  //         name: 'Доставка',
+  //         value: 500
+  //       },
+  //       {
+  //         name: 'Наложенный платеж',
+  //         value: 1500
+  //       }
+  //     ]
   //   }
-  //   return uuidv5(key, this.configService.get('JWT_SECRET_KEY'))
   // }
+
+  async createOrder(cartId: string, dto?: GetOrderCostDto, user?: User) {}
 
   async temporaryCreateOrder(cartId: string, dto: TemporaryCreateOrderDto, user?: User) {
     const products = await this.findProducts(cartId)
@@ -197,9 +226,11 @@ export class CartService {
     const order = new Order()
     this.orderRepository.assign(order, {
       cost: 0,
-      recipientEmail: dto.customerEmail,
-      recipientName: dto.customerName,
-      recipientPhone: dto.customerPhone
+      recipient: {
+        email: dto.customerEmail,
+        mame: dto.customerName,
+        phone: dto.customerPhone
+      }
     })
 
     if (user) {
@@ -236,7 +267,7 @@ export class CartService {
       to: 'kundius.ruslan@gmail.com',
       subject: `Новый заказ №${order.id}`,
       html: letterNewToManager({
-        fullName: order.recipientName || order.user?.name || 'Гость'
+        fullName: order.recipient?.name || order.user?.name || 'Гость'
       })
     })
 

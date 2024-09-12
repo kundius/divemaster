@@ -1,5 +1,23 @@
 import { Type } from 'class-transformer'
-import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator'
+import { IsArray, IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
+
+import { ParseBooleanString } from '@/lib/parse-boolean-string'
+import { DeliveryMethod, PaymentMethod } from '@/order/entities/order.entity'
+
+export class GetOrderCostDto {
+  @ParseBooleanString()
+  @IsBoolean()
+  @IsOptional()
+  personalDiscount?: boolean
+
+  @IsEnum(DeliveryMethod)
+  @IsOptional()
+  deliveryMethod?: DeliveryMethod
+
+  @IsEnum(PaymentMethod)
+  @IsOptional()
+  paymentMethod?: PaymentMethod
+}
 
 export class AddProductDto {
   @Type(() => Number)

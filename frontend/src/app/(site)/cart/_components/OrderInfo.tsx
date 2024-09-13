@@ -1,54 +1,23 @@
-'use client'
-
-import useSWR from 'swr'
-
+import { Skeleton } from '@/components/ui/skeleton'
 import { cn, formatPrice } from '@/lib/utils'
-import { useCartStore } from '@/providers/cart-store-provider'
-import { useOrderStore } from '@/providers/order-store-provider'
-import { CartGetOrderCost } from '@/types'
 
 import styles from './OrderInfo.module.scss'
-import { useEffect } from 'react'
-import { useFirstMountState, useMountedState } from '@reactuses/core'
 
-export function OrderInfo() {
-  const isFirstMount = useFirstMountState()
-  const cartId = useCartStore((state) => state.cartId)
-  const cartProducts = useCartStore((state) => state.cartProducts)
-  const personalDiscount = useOrderStore((state) => state.personalDiscount)
-  const { data, isLoading, mutate } = useSWR<CartGetOrderCost>(
-    cartId
-      ? [
-          `cart/${cartId}/get-order-cost`,
-          {
-            personalDiscount
-          }
-        ]
-      : null
-  )
+export interface OrderInfoProps {
+  items?: {
+    name: string
+    value: number
+  }[]
+  cost?: number
+}
 
-  useEffect(() => {
-    if (isLoading) return
-
-    mutate(data, { revalidate: true })
-  }, [cartProducts])
-
-  if (isLoading) {
-    return <div>loading</div>
-  }
-
-  if (!data) {
-    return
-  }
-
-  const { cost, composition } = data
-
+export function OrderInfo({ cost, items = [] }: OrderInfoProps) {
   return (
     <div className={styles.wrap}>
       <div className={styles.title}>Ваш заказ</div>
-      {composition.length > 0 && (
+      {items.length > 0 && (
         <div className={styles.prices}>
-          {composition.map((item, i) => (
+          {items.map((item, i) => (
             <div key={`${i}/${item.name}`} className={styles.price}>
               <div className={styles.priceLabel}>{item.name}</div>
               <div
@@ -60,9 +29,51 @@ export function OrderInfo() {
           ))}
         </div>
       )}
+      {typeof cost !== 'undefined' && (
+        <div className={styles.total}>
+          <div className={styles.totalLabel}>Итого</div>
+          <div className={styles.totalValue}>{formatPrice(cost)}</div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+export function OrderInfoSkeleton() {
+  return (
+    <div className={styles.wrap}>
+      <div className={styles.title}>Ваш заказ</div>
+      <div className={styles.prices}>
+        <div className={styles.price}>
+          <div className={styles.priceLabel}>
+            <Skeleton className="w-44 h-4" />
+          </div>
+          <div className={styles.priceValue}>
+            <Skeleton className="w-20 h-4" />
+          </div>
+        </div>
+        <div className={styles.price}>
+          <div className={styles.priceLabel}>
+            <Skeleton className="w-32 h-4" />
+          </div>
+          <div className={styles.priceValue}>
+            <Skeleton className="w-16 h-4" />
+          </div>
+        </div>
+        <div className={styles.price}>
+          <div className={styles.priceLabel}>
+            <Skeleton className="w-24 h-4" />
+          </div>
+          <div className={styles.priceValue}>
+            <Skeleton className="w-24 h-4" />
+          </div>
+        </div>
+      </div>
       <div className={styles.total}>
         <div className={styles.totalLabel}>Итого</div>
-        <div className={styles.totalValue}>{formatPrice(cost)}</div>
+        <div className={styles.totalValue}>
+          <Skeleton className="w-32 h-4" />
+        </div>
       </div>
     </div>
   )

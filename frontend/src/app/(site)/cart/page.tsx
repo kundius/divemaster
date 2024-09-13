@@ -8,7 +8,7 @@ import { Authentication } from './_components/Authentication'
 import { CartHeadline } from './_components/CartHeadline'
 import { EmptyFallback } from './_components/EmptyFallback'
 import { LegalEntity } from './_components/LegalEntity'
-import { OrderInfo } from './_components/OrderInfo'
+import { OrderInfoContainer } from './_components/OrderInfoContainer'
 import { Products } from './_components/Products'
 import { TmpBuye } from './_components/TmpBuye'
 import Link from 'next/link'
@@ -30,7 +30,7 @@ export default function Page() {
             </div>
             <div className="w-1/3 max-w-[360px]">
               <div className="sticky top-32 space-y-4">
-                <OrderInfo />
+                <OrderInfoContainer />
                 <Authentication />
                 <Button
                   asChild

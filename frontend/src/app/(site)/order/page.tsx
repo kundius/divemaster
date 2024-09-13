@@ -10,7 +10,7 @@ import { Delivery } from './_components/Delivery'
 import { Payment } from './_components/Payment'
 import { Recipient } from './_components/Recipient'
 import { Submit } from './_components/Submit'
-import { OrderInfo } from './_components/OrderInfo'
+import { OrderInfoContainer } from './_components/OrderInfoContainer'
 
 export const metadata: Metadata = {
   title: 'Оформление заказа'
@@ -41,7 +41,7 @@ export default function Page() {
           </div>
           <div className="w-1/3 max-w-[360px]">
             <div className="sticky top-32 space-y-4">
-              <OrderInfo />
+              <OrderInfoContainer />
               <Authentication />
               <Agreement />
               <Submit />

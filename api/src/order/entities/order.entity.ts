@@ -2,53 +2,30 @@ import { User } from '@/users/entities/user.entity'
 import {
   Collection,
   Entity,
-  Enum,
   ManyToOne,
   OneToMany,
+  OneToOne,
   Opt,
   PrimaryKey,
   Property
 } from '@mikro-orm/core'
-import { v4 } from 'uuid'
+import { Delivery } from './delivery.entity'
 import { OrderProduct } from './order-product.entity'
-
-export enum DeliveryMethod {
-  SHIPPING = 'SHIPPING',
-  PICKUP = 'PICKUP'
-}
-
-export enum PaymentMethod {
-  ONLINE = 'ONLINE',
-  OFFLINE = 'OFFLINE'
-}
-
-export enum OrderStatus {
-  CREATED = 'CREATED'
-  // OFFLINE = 'OFFLINE'
-}
+import { Payment } from './payment.entity'
 
 @Entity()
 export class Order {
   @PrimaryKey()
   id!: number
 
-  @Property()
-  uuid = v4()
+  @Property({ unique: true })
+  hash!: string
 
   @Property({ unsigned: true })
   cost!: number
 
-  @Enum(() => DeliveryMethod)
-  status!: DeliveryMethod
-
-  @Enum(() => DeliveryMethod)
-  delivery!: DeliveryMethod
-
-  @Enum(() => PaymentMethod)
-  payment!: PaymentMethod
-
-  @Property({ type: 'json', nullable: true })
-  recipient?: Record<string, string>
+  @Property({ unsigned: true })
+  amount!: number
 
   @ManyToOne(() => User, { nullable: true, deleteRule: 'set null' })
   user: User | null = null
@@ -56,9 +33,12 @@ export class Order {
   @OneToMany(() => OrderProduct, (orderProduct) => orderProduct.order)
   products = new Collection<OrderProduct>(this)
 
+  @OneToOne(() => Payment, (payment) => payment.order, { orphanRemoval: true })
+  payment!: Payment
+
+  @OneToOne(() => Delivery, (delivery) => delivery.order, { orphanRemoval: true })
+  delivery!: Delivery
+
   @Property()
   createdAt: Date & Opt = new Date()
-
-  @Property({ onUpdate: () => new Date() })
-  updatedAt: Date & Opt = new Date()
 }

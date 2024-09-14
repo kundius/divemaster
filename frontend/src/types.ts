@@ -63,14 +63,57 @@ export interface PickupPointEntity {
   haveCashless: boolean
 }
 
-export enum DeliveryMethod {
-  SHIPPING = 'SHIPPING',
-  PICKUP = 'PICKUP'
+export enum DeliveryService {
+  Shipping = 'Shipping',
+  Pickup = 'Pickup'
 }
 
-export enum PaymentMethod {
-  ONLINE = 'ONLINE',
-  OFFLINE = 'OFFLINE'
+export enum PaymentService {
+  Yookassa = 'Yookassa',
+  UponCash = 'UponCash'
+}
+
+export interface OrderProductEntity {
+  id: number
+  order: OrderEntity | number
+  product: ProductEntity | number | null
+  amount: number
+  price: number
+  title: string
+  options?: Record<string, string>
+}
+
+export interface PaymentEntity {
+  id: number
+  service: PaymentService
+  paid: boolean
+  link: string | null
+  order: OrderEntity | number
+  createdAt: Date
+  paidAt: Date
+}
+
+export interface DeliveryEntity {
+  id: number
+  service: PaymentService
+  delivered: boolean
+  address: string
+  recipient?: Record<string, string>
+  order: OrderEntity | number
+  createdAt: Date
+  deliveredAt: Date
+}
+
+export interface OrderEntity {
+  id: number
+  hash: string
+  cost: number
+  amount: number
+  user: UserEntity | null
+  products: OrderProductEntity[]
+  payment: PaymentEntity
+  delivery: DeliveryEntity
+  createdAt: Date
 }
 
 export interface ProductsBaseFilter {

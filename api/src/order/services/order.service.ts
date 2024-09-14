@@ -6,6 +6,9 @@ import { ConfigService } from '@nestjs/config'
 import { OrderProduct } from '../entities/order-product.entity'
 import { Order } from '../entities/order.entity'
 import { PickupPoint } from '../entities/pickup-point.entity'
+import { UponCashService } from './uponcash.service'
+import { YookassaService } from './yookassa.service'
+import { PaymentService, PaymentServiceEnum } from '../entities/payment.entity'
 
 @Injectable()
 export class OrderService {
@@ -19,6 +22,18 @@ export class OrderService {
     @InjectRepository(OrderProduct)
     private orderProductRepository: EntityRepository<OrderProduct>,
     @InjectRepository(Product)
-    private productRepository: EntityRepository<Product>
+    private productRepository: EntityRepository<Product>,
+
+    private UponCashService: UponCashService,
+    private YookassaService: YookassaService
   ) {}
+
+  getPaymentService(service: PaymentServiceEnum): PaymentService {
+    switch (service) {
+      case PaymentServiceEnum.UponCash:
+        return this.UponCashService
+      case PaymentServiceEnum.Yookassa:
+        return this.YookassaService
+    }
+  }
 }

@@ -6,7 +6,7 @@ import { TabMarker } from '@/components/TabMarker'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { cn } from '@/lib/utils'
 import { useOrderStore } from '@/providers/order-store-provider'
-import { DeliveryMethod } from '@/types'
+import { DeliveryService } from '@/types'
 
 import css from './Delivery.module.scss'
 import { Errors } from './Errors'
@@ -14,8 +14,8 @@ import { Products } from './Products'
 import { SelectedAddress } from './SelectedAddress'
 
 const SelectedAddressTitle = {
-  [DeliveryMethod.SHIPPING]: 'Доставим курьером',
-  [DeliveryMethod.PICKUP]: 'Забрать самостоятельно'
+  [DeliveryService.Shipping]: 'Доставим курьером',
+  [DeliveryService.Pickup]: 'Забрать самостоятельно'
 }
 
 export function Delivery() {
@@ -71,8 +71,8 @@ export function Delivery() {
       <div className="flex py-0.5">
         <TabMarker
           items={[
-            { title: 'Самовывоз', name: DeliveryMethod.PICKUP },
-            { title: 'Доставка', name: DeliveryMethod.SHIPPING }
+            { title: 'Самовывоз', name: DeliveryService.Pickup },
+            { title: 'Доставка', name: DeliveryService.Shipping }
           ]}
           selected={orderState.delivery.method}
         />

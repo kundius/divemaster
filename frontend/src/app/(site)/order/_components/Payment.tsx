@@ -3,7 +3,7 @@
 import { MethodCard } from '@/components/MethodCard'
 import { SpriteIcon } from '@/components/SpriteIcon'
 import { useOrderStore } from '@/providers/order-store-provider'
-import { PaymentMethod } from '@/types'
+import { PaymentService } from '@/types'
 
 import { Errors } from './Errors'
 import css from './Payment.module.scss'
@@ -33,15 +33,15 @@ export function Payment() {
           title="Онлайн на сайте"
           description="Быстро и удобно"
           icon={<SpriteIcon name="payment-card" size={40} />}
-          action={() => orderState.setPayment({ method: PaymentMethod.ONLINE })}
-          active={orderState.payment?.method === PaymentMethod.ONLINE}
+          action={() => orderState.setPayment({ method: PaymentService.Yookassa })}
+          active={orderState.payment?.method === PaymentService.Yookassa}
         />
         <MethodCard
           title="При получении"
           description="Наличными или картой"
           icon={<SpriteIcon name="payment-wallet" size={40} />}
-          action={() => orderState.setPayment({ method: PaymentMethod.OFFLINE })}
-          active={orderState.payment?.method === PaymentMethod.OFFLINE}
+          action={() => orderState.setPayment({ method: PaymentService.UponCash })}
+          active={orderState.payment?.method === PaymentService.UponCash}
         />
       </div>
       <div className="empty:hidden mt-6">

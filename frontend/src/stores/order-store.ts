@@ -1,18 +1,18 @@
 import { persist } from 'zustand/middleware'
 import { createStore } from 'zustand/vanilla'
 
-import type { DeliveryMethod, PaymentMethod } from '@/types'
+import type { DeliveryService, PaymentService } from '@/types'
 
 export type OrderState = {
   agreement: boolean
   personalDiscount: boolean
   legalEntity: boolean
   delivery?: {
-    method: DeliveryMethod
+    method: DeliveryService
     address: string
   }
   payment?: {
-    method: PaymentMethod
+    method: PaymentService
   }
   recipient?: {
     name: string

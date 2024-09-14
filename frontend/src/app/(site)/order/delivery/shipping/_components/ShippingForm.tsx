@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { useOrderStore } from '@/providers/order-store-provider'
-import { DeliveryMethod } from '@/types'
+import { DeliveryService } from '@/types'
 
 interface ShippingFormFields {
   city: string
@@ -62,7 +62,7 @@ export function ShippingForm() {
     }
 
     orderState.setDelivery({
-      method: DeliveryMethod.SHIPPING,
+      method: DeliveryService.Shipping,
       address: tmp.join(', ')
     })
     router.push('/order')

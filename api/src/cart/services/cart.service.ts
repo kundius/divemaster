@@ -8,6 +8,7 @@ import { Product } from '@/products/entities/product.entity'
 import { ConfigService } from '@nestjs/config'
 import {
   AddProductDto,
+  CreateOrderDto,
   GetOrderCostDto,
   TemporaryCreateOrderDto,
   UpdateProductDto
@@ -17,11 +18,16 @@ import { OrderProduct } from '@/order/entities/order-product.entity'
 import { LetterService } from '@/notifications/services/letter.service'
 import { content as letterNewToManager } from '@/notifications/templates/order/new-to-manager'
 import { Offer } from '@/products/entities/offer.entity'
-import { performance } from 'node:perf_hooks'
+import { v4 } from 'uuid'
+import { Delivery, DeliveryService } from '@/order/entities/delivery.entity'
+import { Payment, PaymentServiceEnum } from '@/order/entities/payment.entity'
+import { LazyModuleLoader } from '@nestjs/core'
+import { OrderService } from '@/order/services/order.service'
 
 @Injectable()
 export class CartService {
   constructor(
+    private orderService: OrderService,
     private letterService: LetterService,
     private configService: ConfigService,
     private em: EntityManager,
@@ -29,6 +35,10 @@ export class CartService {
     private cartRepository: EntityRepository<Cart>,
     @InjectRepository(CartProduct)
     private cartProductRepository: EntityRepository<CartProduct>,
+    @InjectRepository(Payment)
+    private paymentRepository: EntityRepository<Payment>,
+    @InjectRepository(Delivery)
+    private deliveryRepository: EntityRepository<Delivery>,
     @InjectRepository(Order)
     private orderRepository: EntityRepository<Order>,
     @InjectRepository(OrderProduct)
@@ -65,19 +75,13 @@ export class CartService {
     await this.cartRepository.getEntityManager().removeAndFlush(cart)
   }
 
-  async calcProduct(cartProduct: CartProduct) {
+  async applyProductAssessment(cartProduct: CartProduct) {
     // TODO
     // инициализированные здесь отношения не попадают в итоговый результат,
     // то есть в тот массив, откуда пришел cartProduct
     // непонятно почему так, надо будет разобраться
     await wrap(cartProduct).init({
-      populate: [
-        'optionValues',
-        'product',
-        'product.offers',
-        'product',
-        'product.offers.optionValues'
-      ]
+      populate: ['optionValues', 'product', 'product.offers', 'product.offers.optionValues']
     })
 
     const cartProductIds = cartProduct.optionValues.getIdentifiers()
@@ -147,7 +151,7 @@ export class CartService {
       }
     )
 
-    await Promise.all(products.map(this.calcProduct.bind(this)))
+    await Promise.all(products.map(this.applyProductAssessment.bind(this)))
 
     return products
   }
@@ -208,21 +212,22 @@ export class CartService {
   }
 
   async getOrderCost(cartId: string, dto?: GetOrderCostDto) {
-    const cart = await this.cartRepository.findOneOrFail(cartId, { populate: ['user'] })
-    const products = await this.cartProductRepository.find({ cart: cartId })
-    await Promise.all(products.map(this.calcProduct.bind(this)))
+    const cart = await this.cartRepository.findOneOrFail(cartId, {
+      populate: ['user', 'products']
+    })
+    await Promise.all(cart.products.map(this.applyProductAssessment.bind(this)))
 
-    let composition: { name: string; value: number }[] = []
-    let cost = products.reduce((sum, { price = 0, amount }) => sum + price * amount, 0)
+    const composition: { name: string; value: number }[] = []
+    const amount = cart.products.reduce((sum, { amount }) => sum + amount, 0)
+    let cost = cart.products.reduce((sum, { price = 0, amount }) => sum + price * amount, 0)
 
-    const cartAmount = products.reduce((sum, { amount }) => sum + amount, 0)
-    const cartCost = products.reduce(
+    const cartCost = cart.products.reduce(
       (sum, { amount, price = 0, oldPrice = 0 }) => sum + (oldPrice || price) * amount,
       0
     )
 
     composition.push({
-      name: `Товары, ${cartAmount} шт.`,
+      name: `Товары, ${amount} шт.`,
       value: cartCost
     })
 
@@ -244,71 +249,175 @@ export class CartService {
       cost += discountValue
     }
 
+    // TODO
     // Стоимость доставки, пока примитивная
-    if (dto?.deliveryMethod && cost < Number(this.configService.get('DELIVERY_FREE_LIMIT', '0'))) {
-      composition.push({
-        name: `Доставка`,
-        value: Number(this.configService.get('DELIVERY_COST', '0'))
-      })
-      cost += Number(this.configService.get('DELIVERY_COST', '0'))
+    if (dto?.deliveryService) {
+      switch (dto.deliveryService) {
+        case DeliveryService.Shipping:
+        case DeliveryService.Pickup:
+          if (cost < Number(this.configService.get('DELIVERY_FREE_LIMIT', '0'))) {
+            composition.push({
+              name: `Доставка`,
+              value: Number(this.configService.get('DELIVERY_COST', '0'))
+            })
+            cost += Number(this.configService.get('DELIVERY_COST', '0'))
+          }
+          break
+        default:
+          throw new Error(`Non-existent delivery service: ${dto.deliveryService}`)
+      }
     }
 
-    return { cost, composition }
+    // TODO
+    // Стоимость оплаты, вынести в сервис
+    if (dto?.paymentService) {
+      switch (dto.paymentService) {
+        case PaymentServiceEnum.UponCash:
+        case PaymentServiceEnum.Yookassa:
+          break
+        default:
+          throw new Error(`Non-existent payment service: ${dto.deliveryService}`)
+      }
+    }
+
+    return { amount, cost, composition }
   }
 
-  async createOrder(cartId: string, dto?: GetOrderCostDto, user?: User) {}
-
-  async temporaryCreateOrder(cartId: string, dto: TemporaryCreateOrderDto, user?: User) {
-    const products = await this.findProducts(cartId)
-
-    const order = new Order()
-    this.orderRepository.assign(order, {
-      cost: 0,
-      recipient: {
-        email: dto.customerEmail,
-        mame: dto.customerName,
-        phone: dto.customerPhone
-      }
+  async createOrder(cartId: string, dto: CreateOrderDto) {
+    // получить корзину с необходимыми отношениями
+    const cart = await this.cartRepository.findOneOrFail(cartId, {
+      populate: [
+        'user',
+        'products',
+        'products.optionValues',
+        'products.optionValues.option',
+        'products.product'
+      ]
     })
 
-    if (user) {
-      order.user = user
+    // получить стоимость товаров корзины, понадобится для создания товаров заказа
+    await Promise.all(cart.products.map(this.applyProductAssessment.bind(this)))
+
+    // получить стоимость заказа
+    const orderCost = await this.getOrderCost(cartId)
+
+    // создать оплату
+    const payment = new Payment()
+    payment.service = dto.paymentService
+    payment.link = 'tmp'
+    this.em.persist(payment)
+
+    // создать доставку
+    const delivery = new Delivery()
+    delivery.service = dto.deliveryService
+    delivery.address = dto.deliveryAddress
+    delivery.recipient = {
+      name: dto.recipientName,
+      email: dto.recipientEmail,
+      phone: dto.recipientPhone
     }
+    this.em.persist(delivery)
 
-    this.orderRepository.getEntityManager().persist(order)
+    // создать заказ
+    const order = new Order()
+    order.hash = v4()
+    order.cost = orderCost.cost
+    order.amount = orderCost.amount
+    order.delivery = delivery
+    order.payment = payment
+    order.user = cart.user
+    this.em.persist(order)
 
-    for (const cartProduct of products) {
-      if (typeof cartProduct.price === 'undefined') continue
+    // добавить к заказу товары из корзины
+    for (const cartProduct of cart.products) {
+      if (typeof cartProduct.price === 'undefined' || !cartProduct.active) continue
 
-      order.cost += (cartProduct.price || 0) * cartProduct.amount
-
-      let options: Record<string, string> = {}
-      for (const optionValue of cartProduct.optionValues) {
-        options[optionValue.option.caption] = optionValue.content
-      }
+      const options = cartProduct.optionValues.reduce<Record<string, string>>(
+        (options, optionValue) => {
+          return {
+            ...options,
+            [optionValue.option.caption]: optionValue.content
+          }
+        },
+        {}
+      )
 
       const orderProduct = new OrderProduct()
-      this.orderProductRepository.assign(orderProduct, {
-        options,
-        amount: cartProduct.amount,
-        price: cartProduct.price,
-        product: cartProduct.product
-      })
-      this.orderProductRepository.getEntityManager().persist(orderProduct)
-
-      order.products.add(orderProduct)
+      orderProduct.order = order
+      orderProduct.options = options
+      orderProduct.amount = cartProduct.amount
+      orderProduct.price = cartProduct.price
+      orderProduct.title = cartProduct.product.title
+      orderProduct.product = cartProduct.product
+      this.em.persist(orderProduct)
     }
 
-    await this.orderRepository.getEntityManager().flush()
+    // записать изменения
+    await this.em.flush()
 
-    await this.letterService.sendLetter({
-      to: 'kundius.ruslan@gmail.com',
-      subject: `Новый заказ №${order.id}`,
-      html: letterNewToManager({
-        fullName: order.recipient?.name || order.user?.name || 'Гость'
-      })
+    // сформировать ссылку на оплату
+    const paymentService = this.orderService.getPaymentService(payment.service)
+    payment.link = await paymentService.makePayment(payment)
+    await this.em.flush()
+
+    // отправить письмо
+
+    return wrap(order).serialize({
+      populate: ['payment', 'delivery']
     })
-
-    return order
   }
+
+  // async temporaryCreateOrder(cartId: string, dto: TemporaryCreateOrderDto, user?: User) {
+  //   const products = await this.findProducts(cartId)
+
+  //   const order = new Order()
+  //   this.orderRepository.assign(order, {
+  //     cost: 0,
+  //     recipient: {
+  //       email: dto.customerEmail,
+  //       mame: dto.customerName,
+  //       phone: dto.customerPhone
+  //     }
+  //   })
+
+  //   if (user) {
+  //     order.user = user
+  //   }
+
+  //   this.orderRepository.getEntityManager().persist(order)
+
+  //   for (const cartProduct of products) {
+  //     if (typeof cartProduct.price === 'undefined') continue
+
+  //     order.cost += (cartProduct.price || 0) * cartProduct.amount
+
+  //     let options: Record<string, string> = {}
+  //     for (const optionValue of cartProduct.optionValues) {
+  //       options[optionValue.option.caption] = optionValue.content
+  //     }
+
+  //     const orderProduct = new OrderProduct()
+  //     this.orderProductRepository.assign(orderProduct, {
+  //       options,
+  //       amount: cartProduct.amount,
+  //       price: cartProduct.price,
+  //       product: cartProduct.product
+  //     })
+  //     this.orderProductRepository.getEntityManager().persist(orderProduct)
+
+  //     order.products.add(orderProduct)
+  //   }
+
+  //   await this.orderRepository.getEntityManager().flush()
+
+  //   await this.letterService.sendLetter({
+  //     to: 'kundius.ruslan@gmail.com',
+  //     subject: `Новый заказ №${order.id}`,
+  //     html: letterNewToManager({
+  //       fullName: order.recipient?.name || order.user?.name || 'Гость'
+  //     })
+  //   })
+
+  //   return order
+  // }
 }

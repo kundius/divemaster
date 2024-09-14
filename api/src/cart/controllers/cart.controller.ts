@@ -14,6 +14,7 @@ import { User } from '@/users/entities/user.entity'
 import { CurrentUser } from '@/auth/decorators/current-user.decorator'
 import {
   AddProductDto,
+  CreateOrderDto,
   GetOrderCostDto,
   TemporaryCreateOrderDto,
   UpdateProductDto
@@ -71,20 +72,16 @@ export class CartController {
   }
 
   @Post(':cartId/create-order')
-  async createOrder(
-    @Param('cartId') cartId: string,
-    @Query() dto?: GetOrderCostDto,
-    @CurrentUser() user?: User
-  ) {
-    return this.cartService.createOrder(cartId, dto, user)
+  async createOrder(@Param('cartId') cartId: string, @Body() dto: CreateOrderDto) {
+    return this.cartService.createOrder(cartId, dto)
   }
 
-  @Put(':cartId')
-  async temporaryCreateOrder(
-    @Param('cartId') cartId: string,
-    @Body() dto: TemporaryCreateOrderDto,
-    @CurrentUser() user?: User
-  ) {
-    return this.cartService.temporaryCreateOrder(cartId, dto, user)
-  }
+  // @Put(':cartId')
+  // async temporaryCreateOrder(
+  //   @Param('cartId') cartId: string,
+  //   @Body() dto: TemporaryCreateOrderDto,
+  //   @CurrentUser() user?: User
+  // ) {
+  //   return this.cartService.temporaryCreateOrder(cartId, dto, user)
+  // }
 }

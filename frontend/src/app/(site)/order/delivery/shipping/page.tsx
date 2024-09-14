@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 
 import { Headline } from '@/components/Headline'
 import { TabMarker } from '@/components/TabMarker'
-import { DeliveryMethod } from '@/types'
+import { DeliveryService } from '@/types'
 
 import { Layout, LayoutContent, LayoutMap } from './_components/Layout'
 import { ShippingForm } from './_components/ShippingForm'
@@ -20,11 +20,11 @@ export default function Page() {
         </div>
         <TabMarker
           items={[
-            { title: 'Самовывоз', name: DeliveryMethod.PICKUP },
-            { title: 'Доставка', name: DeliveryMethod.SHIPPING }
+            { title: 'Самовывоз', name: DeliveryService.Pickup },
+            { title: 'Доставка', name: DeliveryService.Shipping }
           ]}
           size="lg"
-          selected={DeliveryMethod.SHIPPING}
+          selected={DeliveryService.Shipping}
         />
         <div className="mt-6 flex-grow">
           <ShippingForm />

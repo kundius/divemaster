@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 import { useOrderStore } from '@/providers/order-store-provider'
-import { DeliveryMethod } from '@/types'
+import { DeliveryService } from '@/types'
 
 import { PointsDetails } from './PointsDetails'
 import { PointsItem } from './PointsItem'
@@ -50,7 +50,7 @@ export function PointsList() {
           <Button
             onClick={() => {
               orderState.setDelivery({
-                method: DeliveryMethod.PICKUP,
+                method: DeliveryService.Pickup,
                 address: selected.fullAddress
               })
               router.push('/order')

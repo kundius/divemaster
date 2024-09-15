@@ -2678,6 +2678,11 @@ data-urls@^2.0.0:
     whatwg-mimetype "^2.3.0"
     whatwg-url "^8.0.0"
 
+date-fns@^4.0.0-beta.1:
+  version "4.0.0-beta.1"
+  resolved "https://registry.npmjs.org/date-fns/-/date-fns-4.0.0-beta.1.tgz"
+  integrity sha512-EjMXEgaR2r/Ff8aLwg8OtPnMq3caEANXuYVDz3F7UnL0f/sjeQW+mwQAS2iwziipMSi7kqc9tdfBmGAefhrY+A==
+
 debug@^3.2.7:
   version "3.2.7"
   resolved "https://registry.npmjs.org/debug/-/debug-3.2.7.tgz"

@@ -74,12 +74,12 @@ export function Delivery() {
             { title: 'Самовывоз', name: DeliveryService.Pickup },
             { title: 'Доставка', name: DeliveryService.Shipping }
           ]}
-          selected={orderState.delivery.method}
+          selected={orderState.delivery.service}
         />
       </div>
       <div className="mt-4">
         <SelectedAddress
-          title={SelectedAddressTitle[orderState.delivery.method]}
+          title={SelectedAddressTitle[orderState.delivery.service]}
           description={orderState.delivery.address}
         />
       </div>

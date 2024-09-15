@@ -8,11 +8,11 @@ export type OrderState = {
   personalDiscount: boolean
   legalEntity: boolean
   delivery?: {
-    method: DeliveryService
+    service: DeliveryService
     address: string
   }
   payment?: {
-    method: PaymentService
+    service: PaymentService
   }
   recipient?: {
     name: string

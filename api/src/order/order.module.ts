@@ -15,9 +15,13 @@ import { OrderService } from './services/order.service'
 import { PickupPointService } from './services/pickup-point.service'
 import { YookassaService } from './services/yookassa.service'
 import { UponCashService } from './services/uponcash.service'
+import { Delivery } from './entities/delivery.entity'
+import { Payment } from './entities/payment.entity'
 
 @Module({
-  imports: [MikroOrmModule.forFeature([Order, OrderProduct, Product, PickupPoint, City])],
+  imports: [
+    MikroOrmModule.forFeature([Order, OrderProduct, Product, PickupPoint, City, Payment, Delivery])
+  ],
   providers: [OrderService, PickupPointService, CityService, YookassaService, UponCashService],
   controllers: [OrderController, PickupPointController, CityController],
   exports: [OrderService, PickupPointService, CityService, YookassaService, UponCashService]

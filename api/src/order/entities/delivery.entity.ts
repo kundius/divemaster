@@ -15,8 +15,8 @@ export class Delivery {
   @Enum(() => DeliveryService)
   service!: DeliveryService
 
-  @Property({ default: false })
-  delivered: boolean = false
+  @Property({ type: 'tinyint', nullable: true, serializer: Boolean })
+  delivered: boolean | null = null
 
   @Property()
   address!: string

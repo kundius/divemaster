@@ -6,6 +6,7 @@ import styles from './OrderInfo.module.scss'
 export interface OrderInfoProps {
   items?: {
     name: string
+    caption: string
     value: number
   }[]
   cost?: number
@@ -18,8 +19,8 @@ export function OrderInfo({ cost, items = [] }: OrderInfoProps) {
       {items.length > 0 && (
         <div className={styles.prices}>
           {items.map((item, i) => (
-            <div key={`${i}/${item.name}`} className={styles.price}>
-              <div className={styles.priceLabel}>{item.name}</div>
+            <div key={item.name} className={styles.price}>
+              <div className={styles.priceLabel}>{item.caption}</div>
               <div
                 className={cn(styles.priceValue, { [styles.priceValueNegative]: item.value < 0 })}
               >

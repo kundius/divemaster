@@ -123,6 +123,10 @@ export class CartService {
       return
     }
 
+    this.cartProductRepository.assign(cartProduct, {
+      active: true
+    })
+
     // считаем стоимость позиции с учетом скидок
     // расчет скидок выполнить здесь
     this.cartProductRepository.assign(cartProduct, {
@@ -217,7 +221,7 @@ export class CartService {
     })
     await Promise.all(cart.products.map(this.applyProductAssessment.bind(this)))
 
-    const composition: { name: string; value: number }[] = []
+    const composition: { caption: string; name: string; value: number }[] = []
     const amount = cart.products.reduce((sum, { amount }) => sum + amount, 0)
     let cost = cart.products.reduce((sum, { price = 0, amount }) => sum + price * amount, 0)
 
@@ -227,14 +231,16 @@ export class CartService {
     )
 
     composition.push({
-      name: `Товары, ${amount} шт.`,
+      name: 'goods',
+      caption: `Товары, ${amount} шт.`,
       value: cartCost
     })
 
     // Если не равны, есть товары со скидками
     if (cartCost !== cost) {
       composition.push({
-        name: `Скидки и акции`,
+        name: 'discounts',
+        caption: `Скидки и акции`,
         value: cost - cartCost
       })
     }
@@ -243,7 +249,8 @@ export class CartService {
     if (dto?.personalDiscount && cart.user && cart.user.discount > 0) {
       const discountValue = Math.round(cost * (cart.user.discount / 100)) * -1
       composition.push({
-        name: `Персональная скидка ${cart.user.discount}%`,
+        name: 'personal',
+        caption: `Персональная скидка ${cart.user.discount}%`,
         value: discountValue
       })
       cost += discountValue
@@ -257,7 +264,8 @@ export class CartService {
         case DeliveryService.Pickup:
           if (cost < Number(this.configService.get('DELIVERY_FREE_LIMIT', '0'))) {
             composition.push({
-              name: `Доставка`,
+              name: 'delivery',
+              caption: `Доставка`,
               value: Number(this.configService.get('DELIVERY_COST', '0'))
             })
             cost += Number(this.configService.get('DELIVERY_COST', '0'))
@@ -299,7 +307,11 @@ export class CartService {
     await Promise.all(cart.products.map(this.applyProductAssessment.bind(this)))
 
     // получить стоимость заказа
-    const orderCost = await this.getOrderCost(cartId)
+    const orderCost = await this.getOrderCost(cartId, {
+      personalDiscount: dto.personalDiscount,
+      deliveryService: dto.deliveryService,
+      paymentService: dto.paymentService
+    })
 
     // создать оплату
     const payment = new Payment()
@@ -323,6 +335,7 @@ export class CartService {
     order.hash = v4()
     order.cost = orderCost.cost
     order.amount = orderCost.amount
+    order.composition = orderCost.composition
     order.delivery = delivery
     order.payment = payment
     order.user = cart.user
@@ -356,7 +369,7 @@ export class CartService {
     await this.em.flush()
 
     // сформировать ссылку на оплату
-    const paymentService = this.orderService.getPaymentService(payment.service)
+    const paymentService = this.orderService.getPaymentService(payment)
     payment.link = await paymentService.makePayment(payment)
     await this.em.flush()
 

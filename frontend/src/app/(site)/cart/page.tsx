@@ -10,7 +10,6 @@ import { EmptyFallback } from './_components/EmptyFallback'
 import { LegalEntity } from './_components/LegalEntity'
 import { OrderInfoContainer } from './_components/OrderInfoContainer'
 import { Products } from './_components/Products'
-import { TmpBuye } from './_components/TmpBuye'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
@@ -40,7 +39,6 @@ export default function Page() {
                 >
                   <Link href="/order">Перейти к оформлению</Link>
                 </Button>
-                {/* <TmpBuye /> */}
                 <LegalEntity />
               </div>
             </div>

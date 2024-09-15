@@ -1887,6 +1887,15 @@
           "nullable": false,
           "mappedType": "integer"
         },
+        "composition": {
+          "name": "composition",
+          "type": "json",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
+        },
         "user_id": {
           "name": "user_id",
           "type": "int",
@@ -1984,13 +1993,12 @@
         },
         "paid": {
           "name": "paid",
-          "type": "tinyint(1)",
+          "type": "tinyint",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
-          "default": "false",
-          "mappedType": "boolean"
+          "nullable": true,
+          "mappedType": "tinyint"
         },
         "link": {
           "name": "link",
@@ -1999,6 +2007,7 @@
           "autoincrement": false,
           "primary": false,
           "nullable": true,
+          "default": "null",
           "mappedType": "string"
         },
         "order_id": {
@@ -2227,13 +2236,12 @@
         },
         "delivered": {
           "name": "delivered",
-          "type": "tinyint(1)",
+          "type": "tinyint",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
-          "default": "false",
-          "mappedType": "boolean"
+          "nullable": true,
+          "mappedType": "tinyint"
         },
         "address": {
           "name": "address",

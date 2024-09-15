@@ -33,15 +33,15 @@ export function Payment() {
           title="Онлайн на сайте"
           description="Быстро и удобно"
           icon={<SpriteIcon name="payment-card" size={40} />}
-          action={() => orderState.setPayment({ method: PaymentService.Yookassa })}
-          active={orderState.payment?.method === PaymentService.Yookassa}
+          action={() => orderState.setPayment({ service: PaymentService.Yookassa })}
+          active={orderState.payment?.service === PaymentService.Yookassa}
         />
         <MethodCard
           title="При получении"
           description="Наличными или картой"
           icon={<SpriteIcon name="payment-wallet" size={40} />}
-          action={() => orderState.setPayment({ method: PaymentService.UponCash })}
-          active={orderState.payment?.method === PaymentService.UponCash}
+          action={() => orderState.setPayment({ service: PaymentService.UponCash })}
+          active={orderState.payment?.service === PaymentService.UponCash}
         />
       </div>
       <div className="empty:hidden mt-6">

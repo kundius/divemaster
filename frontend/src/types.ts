@@ -27,6 +27,7 @@ export interface CartGetOrderCost {
   cost: number
   composition: {
     name: string
+    caption: string
     value: number
   }[]
 }
@@ -86,22 +87,22 @@ export interface OrderProductEntity {
 export interface PaymentEntity {
   id: number
   service: PaymentService
-  paid: boolean
+  paid: boolean | null
   link: string | null
   order: OrderEntity | number
-  createdAt: Date
-  paidAt: Date
+  createdAt: string
+  paidAt: string
 }
 
 export interface DeliveryEntity {
   id: number
-  service: PaymentService
-  delivered: boolean
+  service: DeliveryService
+  delivered: boolean | null
   address: string
   recipient?: Record<string, string>
   order: OrderEntity | number
-  createdAt: Date
-  deliveredAt: Date
+  createdAt: string
+  deliveredAt: string
 }
 
 export interface OrderEntity {
@@ -109,11 +110,12 @@ export interface OrderEntity {
   hash: string
   cost: number
   amount: number
+  composition?: { value: number; caption: number; name: string }[]
   user: UserEntity | null
   products: OrderProductEntity[]
   payment: PaymentEntity
   delivery: DeliveryEntity
-  createdAt: Date
+  createdAt: string
 }
 
 export interface ProductsBaseFilter {

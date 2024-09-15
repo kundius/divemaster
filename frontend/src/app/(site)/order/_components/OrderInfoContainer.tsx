@@ -15,10 +15,10 @@ export function OrderInfoContainer() {
   const delivery = useOrderStore((state) => state.delivery)
   const params: Record<string, any> = { personalDiscount }
   if (payment) {
-    params.paymentMethod = payment.method
+    params.paymentService = payment.service
   }
   if (delivery) {
-    params.deliveryMethod = delivery.method
+    params.deliveryService = delivery.service
   }
   const { data, isLoading } = useSWR<CartGetOrderCost>(
     cartId ? [`cart/${cartId}/get-order-cost`, params] : null

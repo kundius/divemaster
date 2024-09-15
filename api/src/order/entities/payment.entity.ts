@@ -1,8 +1,6 @@
-import { Entity, Enum, ManyToOne, OneToOne, Opt, PrimaryKey, Property } from '@mikro-orm/core'
+import { Entity, Enum, OneToOne, Opt, PrimaryKey, Property } from '@mikro-orm/core'
 
 import { Order } from './order.entity'
-import { Injectable } from '@nestjs/common'
-import { EntityManager } from '@mikro-orm/mariadb'
 
 export enum PaymentServiceEnum {
   Yookassa = 'Yookassa',
@@ -23,10 +21,10 @@ export class Payment {
   @Enum(() => PaymentServiceEnum)
   service!: PaymentServiceEnum
 
-  @Property({ default: false })
-  paid: boolean = false
+  @Property({ type: 'tinyint', nullable: true, serializer: Boolean })
+  paid: boolean | null = null
 
-  @Property({ type: 'varchar', nullable: true })
+  @Property({ type: 'varchar', default: null, nullable: true })
   link: string | null = null
 
   @OneToOne(() => Order, (order) => order.payment, { owner: true })

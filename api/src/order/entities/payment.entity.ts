@@ -9,7 +9,7 @@ export enum PaymentServiceEnum {
 
 export interface PaymentService {
   makePayment(payment: Payment): Promise<string | null>
-  getPaymentStatus(payment: Payment): Promise<boolean>
+  getPaymentStatus(payment: Payment): Promise<boolean | null>
   getSuccessUrl(payment: Payment): Promise<string | null>
 }
 
@@ -26,6 +26,9 @@ export class Payment {
 
   @Property({ type: 'varchar', default: null, nullable: true })
   link: string | null = null
+
+  @Property({ type: 'varchar', default: null, nullable: true })
+  remoteId: string | null = null
 
   @OneToOne(() => Order, (order) => order.payment, { owner: true })
   order!: Order

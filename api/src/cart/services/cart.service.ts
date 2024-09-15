@@ -316,7 +316,7 @@ export class CartService {
     // создать оплату
     const payment = new Payment()
     payment.service = dto.paymentService
-    payment.link = 'tmp'
+    payment.link = await this.orderService.getPaymentLink(payment)
     this.em.persist(payment)
 
     // создать доставку
@@ -366,11 +366,6 @@ export class CartService {
     }
 
     // записать изменения
-    await this.em.flush()
-
-    // сформировать ссылку на оплату
-    const paymentService = this.orderService.getPaymentService(payment)
-    payment.link = await paymentService.makePayment(payment)
     await this.em.flush()
 
     // отправить письмо

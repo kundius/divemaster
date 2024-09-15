@@ -65,6 +65,11 @@ export class OrderService {
     return typeof payment.paid === 'boolean' ? payment.paid : null
   }
 
+  async getPaymentLink(payment: Payment) {
+    const service = this.getPaymentService(payment)
+    return await service.makePayment(payment)
+  }
+
   async findOneByHash(hash: string): Promise<Order | null> {
     return await this.orderRepository.findOne(
       { hash },

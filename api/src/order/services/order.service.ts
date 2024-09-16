@@ -45,7 +45,7 @@ export class OrderService {
     private YookassaService: YookassaService
   ) {}
 
-  contextEntityManager: EntityManager | null = null
+  private contextEntityManager: EntityManager | null = null
 
   getEntityManager() {
     return this.contextEntityManager || this.entityManager

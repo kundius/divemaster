@@ -13,6 +13,9 @@ export default () => ({
     freeLimit: process.env.DELIVERY_FREE_LIMIT || 0,
     cost: process.env.DELIVERY_COST || 0
   },
+  payment: {
+    timeout: process.env.PAYMENT_TIMEOUT ? parseInt(process.env.PAYMENT_TIMEOUT) : 24
+  },
   yookassa: {
     endpoint: process.env.PAYMENT_YOOKASSA_ENDPOINT || '',
     user: process.env.PAYMENT_YOOKASSA_USER || '',

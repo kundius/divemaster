@@ -1,9 +1,16 @@
-import { EntityManager, EntityRepository, wrap } from '@mikro-orm/mariadb'
+import {
+  AbstractSqlConnection,
+  AbstractSqlDriver,
+  AbstractSqlPlatform,
+  EntityManager,
+  EntityRepository,
+  wrap
+} from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { addHours, compareDesc } from 'date-fns'
+import { addHours, compareDesc, subHours } from 'date-fns'
 import * as nunjucks from 'nunjucks'
 
 import { Product } from '@/products/entities/product.entity'
@@ -20,7 +27,7 @@ import { formatPrice } from '@/lib/utils'
 @Injectable()
 export class OrderService {
   constructor(
-    private readonly em: EntityManager,
+    private readonly entityManager: EntityManager,
     private notificationsService: NotificationsService,
     private configService: ConfigService,
     @InjectRepository(Order)
@@ -38,6 +45,12 @@ export class OrderService {
     private YookassaService: YookassaService
   ) {}
 
+  contextEntityManager: EntityManager | null = null
+
+  getEntityManager() {
+    return this.contextEntityManager || this.entityManager
+  }
+
   // Получение сервиса оплаты
   getPaymentService(payment: Payment): PaymentService {
     switch (payment.service) {
@@ -49,12 +62,12 @@ export class OrderService {
   }
 
   // Проверка статуса оплаты
-  async checkPaymentStatus(payment: Payment): Promise<boolean | null> {
+  async checkPaymentStatus(payment: Payment, flush: boolean = false): Promise<boolean | null> {
     await wrap(payment).init({ populate: ['order'] })
 
     // Работает только при неизвестном статусе
     if (payment.paid === null) {
-      const timeout = Number(this.configService.get('PAYMENT_TIMEOUT', '24'))
+      const timeout = this.configService.get('payment.timeout', 24)
       // Получаем сервис
       const service = this.getPaymentService(payment)
       // Спрашиваем у него статус
@@ -63,14 +76,14 @@ export class OrderService {
       if (status === true) {
         payment.paid = true
         payment.paidAt = new Date()
-        await this.em.persistAndFlush(payment)
+        await this.getEntityManager().persistAndFlush(payment)
       } else if (
         status === false ||
         compareDesc(addHours(payment.createdAt, timeout), new Date())
       ) {
         // Это если не оплачено, или просто больше 24 часов с момента заказа
         payment.paid = false
-        await this.em.persistAndFlush(payment)
+        await this.getEntityManager().persistAndFlush(payment)
       }
     }
 
@@ -87,7 +100,7 @@ export class OrderService {
       const link = await service.makePayment(payment)
       if (link) {
         payment.link = link
-        await this.em.flush()
+        await this.getEntityManager().flush()
       }
     }
 
@@ -103,9 +116,28 @@ export class OrderService {
 
   @Cron(CronExpression.EVERY_10_MINUTES)
   async checkOrderStatus() {
-    // TODO
-    // собрать неоплаченные заказы за последние сутки
-    // проверить статус
+    // Using global EntityManager instance methods for context specific actions is disallowed.
+    this.contextEntityManager = this.entityManager.fork()
+
+    const timeout = this.configService.get('payment.timeout', 24)
+    const orders = await this.getEntityManager().find(Order, {
+      payment: {
+        paid: {
+          $eq: null
+        }
+      },
+      createdAt: {
+        $gt: subHours(new Date(), timeout)
+      }
+    })
+
+    for (const order of orders) {
+      await this.checkPaymentStatus(order.payment)
+    }
+
+    await this.getEntityManager().flush()
+
+    this.contextEntityManager = null
   }
 
   async sendEmails(order: Order) {
@@ -127,11 +159,6 @@ export class OrderService {
 
     const emailAdmin = this.configService.get('app.emailAdmin')
     if (emailAdmin) {
-      // $mail = new Mail();
-      // $subject = getenv('EMAIL_SUBJECT_ORDER_NEW_ADMIN_' . strtoupper($lang));
-      // if ($error = $mail->send($emailAdmin, $subject, 'email-order-new-admin', $data)) {
-      //     return $error;
-      // }
       await this.notificationsService.sendMail({
         to: emailAdmin,
         subject: `Новый заказ №${order.id} на сайте divermaster.ru`,
@@ -139,9 +166,13 @@ export class OrderService {
       })
     }
 
-    // $subject = getenv('EMAIL_SUBJECT_ORDER_NEW_USER_' . strtoupper($lang));
-    // if ($error = $this->user->sendEmail($subject, 'email-order-new-user', $data)) {
-    //     return $error;
-    // }
+    const emailUser = data.delivery.recipient?.['email']
+    if (emailUser) {
+      await this.notificationsService.sendMail({
+        to: emailUser,
+        subject: `Вы сделали заказ №${order.id} на сайте divermaster.ru`,
+        html: njk.render('mails/order-new-user.njk', { order: data })
+      })
+    }
   }
 }

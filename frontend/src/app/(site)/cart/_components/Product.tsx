@@ -29,7 +29,7 @@ export interface ProductProps {
 
 export function Product({ cartProduct }: ProductProps) {
   const removeFromCart = useCartStore((state) => state.removeFromCart)
-  const changeAmount = useCartStore((state) => state.changeAmount)
+  const changeQuantity = useCartStore((state) => state.changeQuantity)
 
   const [showDeleteDialog, toggleDeleteDialog] = useToggle(false)
 
@@ -40,26 +40,26 @@ export function Product({ cartProduct }: ProductProps) {
     return cartProduct.product.images.map((item) => getFileUrl(item.file))
   }, [cartProduct.product])
 
-  const amountMinusHandler = () => {
-    const value = cartProduct.amount - 1
+  const quantityMinusHandler = () => {
+    const value = cartProduct.quantity - 1
     if (value <= 0) {
       toggleDeleteDialog(true)
     } else {
-      changeAmount(cartProduct, value)
+      changeQuantity(cartProduct, value)
     }
   }
 
-  const amountPlusHandler = () => {
-    const value = cartProduct.amount + 1
-    changeAmount(cartProduct, value)
+  const quantityPlusHandler = () => {
+    const value = cartProduct.quantity + 1
+    changeQuantity(cartProduct, value)
   }
 
-  const amountChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+  const quantityChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value)
     if (value <= 0) {
       toggleDeleteDialog(true)
     } else {
-      changeAmount(cartProduct, value)
+      changeQuantity(cartProduct, value)
     }
   }
 
@@ -133,16 +133,16 @@ export function Product({ cartProduct }: ProductProps) {
             </AlertDialog>
           </div>
         </div>
-        <div className={styles.layoutAmount}>
-          <div className={styles.amount}>
-            <button className={styles.amountMinus} onClick={amountMinusHandler}></button>
+        <div className={styles.layoutQuantity}>
+          <div className={styles.quantity}>
+            <button className={styles.quantityMinus} onClick={quantityMinusHandler}></button>
             <input
               type="number"
-              className={styles.amountInput}
-              value={cartProduct.amount}
-              onChange={amountChangeHandler}
+              className={styles.quantityInput}
+              value={cartProduct.quantity}
+              onChange={quantityChangeHandler}
             />
-            <button className={styles.amountPlus} onClick={amountPlusHandler}></button>
+            <button className={styles.quantityPlus} onClick={quantityPlusHandler}></button>
           </div>
         </div>
         <div className={styles.layoutPrice}>

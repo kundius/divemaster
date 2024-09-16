@@ -1767,15 +1767,6 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "amount": {
-          "name": "amount",
-          "type": "int",
-          "unsigned": true,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "integer"
-        },
         "composition": {
           "name": "composition",
           "type": "json",
@@ -2008,8 +1999,8 @@
           "nullable": true,
           "mappedType": "integer"
         },
-        "amount": {
-          "name": "amount",
+        "quantity": {
+          "name": "quantity",
           "type": "int",
           "unsigned": true,
           "autoincrement": false,
@@ -2344,8 +2335,8 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "amount": {
-          "name": "amount",
+        "quantity": {
+          "name": "quantity",
           "type": "int",
           "unsigned": true,
           "autoincrement": false,

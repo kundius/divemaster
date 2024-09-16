@@ -28,7 +28,7 @@ export class CartProduct {
   product!: Product
 
   @Property({ default: 1, unsigned: true })
-  amount: number = 1
+  quantity: number = 1
 
   @ManyToMany(() => OptionValue)
   optionValues = new Collection<OptionValue>(this)

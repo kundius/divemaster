@@ -49,12 +49,12 @@
             {% endfor %}
             <span>
               <span>Количество:</span>
-              <strong>{{ orderProduct.amount }} шт.</strong>
+              <strong>{{ orderProduct.quantity }} шт.</strong>
             </span>
           </p>
         </td>
         <td valign="middle" style="text-align: right; padding: 0.75rem; padding-right: 1.5rem; border-bottom: 1px solid rgba(0,0,0,.05);">
-          <span style="color: #000; font-size: 16px;">{{ (orderProduct.price * orderProduct.amount) | formatPrice }}</span>
+          <span style="color: #000; font-size: 16px;">{{ (orderProduct.price * orderProduct.quantity) | formatPrice }}</span>
         </td>
       </tr>
       {% endfor %}
@@ -84,7 +84,7 @@
         </td>
       </tr>
       <tr>
-        <td valign="middle" align="center" style="text-align: left; padding: 2rem 1.5rem; background: #f9f9f9;" colspan="3">
+        <td valign="middle" align="center" style="text-align: left; padding: 2rem 1.5rem; border-top: 1px solid #f2f2f2;" colspan="3">
           <h3 style="margin: 0 0 0.5rem; font-weight: bold; font-size: 16px;">Доставка</h3>
           <p style="margin: 0.5rem 0 0; font-size: 14px;">
             <strong>Способ получения:</strong><br />

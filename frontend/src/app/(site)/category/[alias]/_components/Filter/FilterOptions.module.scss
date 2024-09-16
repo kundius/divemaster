@@ -22,7 +22,7 @@
   border-right: 2px solid rgb(34, 34, 34);
   border-bottom: 2px solid rgb(34, 34, 34);
   transform: rotate(45deg);
-  transition: .3s ease;
+  transition: 0.3s ease;
 }
 
 .boxOpened .headline::after {
@@ -114,14 +114,14 @@
   color: var(--neutral300);
 }
 
-.optionAmount {
+.optionQuantity {
   font-size: 14px;
   line-height: 1;
   color: var(--neutral300);
   padding-top: 2px;
 }
 
-.optionDisabled .optionAmount {
+.optionDisabled .optionQuantity {
   display: none;
 }
 
@@ -138,7 +138,7 @@
 
 .body {
   overflow: hidden;
-  transition: .3s ease;
+  transition: 0.3s ease;
 }
 
 .content {

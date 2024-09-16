@@ -57,20 +57,20 @@ export function FilterOptions({ filter, onSelect, selected = [] }: FilterOptions
               <label
                 key={option.value}
                 className={cn(styles.option, {
-                  [styles.optionDisabled]: option.amount === 0
+                  [styles.optionDisabled]: option.quantity === 0
                 })}
               >
                 <input
                   type="checkbox"
                   value={option.value}
                   className={styles.optionInput}
-                  onChange={option.amount > 0 ? changeHandler : () => {}}
+                  onChange={option.quantity > 0 ? changeHandler : () => {}}
                   checked={selected.includes(option.value)}
                 />
                 <span className={styles.optionCheckbox}></span>
                 {filter.variant === 'colors' && renderColor(option.value)}
                 <span className={styles.optionValue}>{option.value}</span>
-                <span className={styles.optionAmount}>{option.amount}</span>
+                <span className={styles.optionQuantity}>{option.quantity}</span>
               </label>
             ))}
           </div>

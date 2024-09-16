@@ -12,9 +12,9 @@ export type CartState = {
 
 export type CartActions = {
   loadCart(): Promise<void>
-  addToCart(item: { id: number; amount?: number; optionValues?: number[] }): Promise<void>
+  addToCart(item: { id: number; quantity?: number; optionValues?: number[] }): Promise<void>
   removeFromCart(product: CartProductEntity): Promise<void>
-  changeAmount(product: CartProductEntity, amount: number): Promise<void>
+  changeQuantity(product: CartProductEntity, quantity: number): Promise<void>
   deleteCart(): Promise<void>
   saveCartId(cartId: string | null): void
   createCart(): Promise<string | null>
@@ -37,16 +37,16 @@ const computeState = (state: CartState & CartActions): CartComputed => {
 
   if (state.cartProducts.length > 0) {
     count = state.cartProducts.reduce((acc, n) => {
-      return acc + n.amount
+      return acc + n.quantity
     }, 0)
     price = state.cartProducts.reduce((acc, n) => {
-      return acc + (n.price || 0) * n.amount
+      return acc + (n.price || 0) * n.quantity
     }, 0)
     discount = state.cartProducts.reduce((acc, item) => {
-      return acc + ((item.oldPrice || item.price || 0) - (item.price || 0)) * item.amount
+      return acc + ((item.oldPrice || item.price || 0) - (item.price || 0)) * item.quantity
     }, 0)
     oldPrice = state.cartProducts.reduce((acc, item) => {
-      return acc + (item.oldPrice || item.price || 0) * item.amount
+      return acc + (item.oldPrice || item.price || 0) * item.quantity
     }, 0)
   }
 
@@ -99,7 +99,7 @@ export const createCartStore = () =>
           try {
             const params = {
               id: item.id,
-              amount: item.amount || 1,
+              quantity: item.quantity || 1,
               optionValues: item.optionValues || []
             }
             const cartProducts = await apiPut<CartProductEntity[]>(
@@ -128,18 +128,18 @@ export const createCartStore = () =>
         },
 
         // Изменение количества товара
-        async changeAmount(product, amount) {
+        async changeQuantity(product, quantity) {
           const cartId = get().cartId
 
           if (!cartId) return
 
           // Если количество <= 0, то удаляем товар
-          if (amount <= 0) {
+          if (quantity <= 0) {
             return get().removeFromCart(product)
           }
 
           try {
-            const params = { amount }
+            const params = { quantity }
             const cartProducts = await apiPost<CartProductEntity[]>(
               `cart/${cartId}/products/${product.id}`,
               params,

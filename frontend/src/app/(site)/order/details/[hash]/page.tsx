@@ -73,7 +73,7 @@ export default async function Page({ params: { hash } }: { params: { hash: strin
                           <div className="flex gap-4 justify-between items-start">
                             <div className="space-y-1">
                               <div className="text-base text-balance text-neutral-800">
-                                {item.title}, {item.amount} шт.
+                                {item.title}, {item.quantity} шт.
                               </div>
                               {item.options && Object.entries(item.options).length > 0 && (
                                 <div className="flex gap-4">
@@ -87,7 +87,7 @@ export default async function Page({ params: { hash } }: { params: { hash: strin
                               )}
                             </div>
                             <div className="font-bold text-base text-nowrap">
-                              {formatPrice(item.price * item.amount)}
+                              {formatPrice(item.price * item.quantity)}
                             </div>
                           </div>
                         </div>

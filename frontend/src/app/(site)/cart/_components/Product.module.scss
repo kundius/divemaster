@@ -1,7 +1,7 @@
 .layout {
   display: grid;
   grid-template-columns:
-    [image-start] 120px [image-end] 40px [info-start] 1fr [info-end] 40px [actions-start] min-content [actions-end] 20px [amount-start] min-content [amount-end] 40px [price-start] minmax(
+    [image-start] 120px [image-end] 40px [info-start] 1fr [info-end] 40px [actions-start] min-content [actions-end] 20px [quantity-start] min-content [quantity-end] 40px [price-start] minmax(
       80px,
       auto
     )
@@ -24,8 +24,8 @@
   grid-row: info-start / info-end;
 }
 
-.layoutAmount {
-  grid-column: amount-start / amount-end;
+.layoutQuantity {
+  grid-column: quantity-start / quantity-end;
   grid-row: info-start / info-end;
 }
 
@@ -114,12 +114,12 @@
   }
 }
 
-.amount {
+.quantity {
   display: flex;
 }
 
-.amountMinus,
-.amountPlus {
+.quantityMinus,
+.quantityPlus {
   width: 32px;
   height: 32px;
   background: #f4f4f4;
@@ -132,7 +132,7 @@
   }
 }
 
-.amountMinus::before {
+.quantityMinus::before {
   content: '';
   width: 10px;
   height: 2px;
@@ -144,7 +144,7 @@
   margin-left: -5px;
 }
 
-.amountPlus::before {
+.quantityPlus::before {
   content: '';
   width: 10px;
   height: 2px;
@@ -156,7 +156,7 @@
   margin-left: -5px;
 }
 
-.amountPlus::after {
+.quantityPlus::after {
   content: '';
   width: 2px;
   height: 10px;
@@ -168,7 +168,7 @@
   margin-left: -1px;
 }
 
-.amountInput {
+.quantityInput {
   width: 48px;
   height: 32px;
   font-weight: bold;

@@ -64,7 +64,7 @@ export class AddProductDto {
   @Type(() => Number)
   @IsNumber()
   @IsOptional()
-  amount?: number
+  quantity?: number
 
   @Type(() => Array)
   @IsArray()
@@ -75,7 +75,7 @@ export class UpdateProductDto {
   @Type(() => Number)
   @IsNumber()
   @IsOptional()
-  amount?: number
+  quantity?: number
 }
 
 export class TemporaryCreateOrderDto {

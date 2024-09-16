@@ -169,14 +169,14 @@ export class CartService {
 
     // Увеличить количество, если найден, или добавить новый
     if (cartProduct) {
-      cartProduct.amount += dto.amount || 1
+      cartProduct.quantity += dto.quantity || 1
       await this.cartProductRepository.getEntityManager().persistAndFlush(cartProduct)
     } else {
       const cartProduct = new CartProduct()
       this.cartProductRepository.assign(cartProduct, {
         product,
         cart,
-        amount: dto.amount || 1,
+        quantity: dto.quantity || 1,
         optionValues: dto.optionValues || []
       })
       await this.cartProductRepository.getEntityManager().persistAndFlush(cartProduct)
@@ -188,8 +188,8 @@ export class CartService {
   async updateProduct(cartId: string, productId: string, dto: UpdateProductDto) {
     const cartProduct = await this.cartProductRepository.findOneOrFail(productId)
 
-    if (dto.amount) {
-      cartProduct.amount = dto.amount
+    if (dto.quantity) {
+      cartProduct.quantity = dto.quantity
     }
 
     await this.cartProductRepository.getEntityManager().persistAndFlush(cartProduct)
@@ -212,17 +212,17 @@ export class CartService {
     await Promise.all(cart.products.map(this.applyProductAssessment.bind(this)))
 
     const composition: { caption: string; name: string; value: number }[] = []
-    const amount = cart.products.reduce((sum, { amount }) => sum + amount, 0)
-    let cost = cart.products.reduce((sum, { price = 0, amount }) => sum + price * amount, 0)
+    const quantity = cart.products.reduce((sum, { quantity }) => sum + quantity, 0)
+    let cost = cart.products.reduce((sum, { price = 0, quantity }) => sum + price * quantity, 0)
 
     const cartCost = cart.products.reduce(
-      (sum, { amount, price = 0, oldPrice = 0 }) => sum + (oldPrice || price) * amount,
+      (sum, { quantity, price = 0, oldPrice = 0 }) => sum + (oldPrice || price) * quantity,
       0
     )
 
     composition.push({
       name: 'goods',
-      caption: `Товары, ${amount} шт.`,
+      caption: `Товары, ${quantity} шт.`,
       value: cartCost
     })
 
@@ -278,7 +278,7 @@ export class CartService {
       }
     }
 
-    return { amount, cost, composition }
+    return { cost, composition }
   }
 
   async createOrder(cartId: string, dto: CreateOrderDto) {
@@ -323,7 +323,6 @@ export class CartService {
     const order = new Order()
     order.hash = v4()
     order.cost = orderCost.cost
-    order.amount = orderCost.amount
     order.composition = orderCost.composition
     order.delivery = delivery
     order.payment = payment
@@ -347,7 +346,7 @@ export class CartService {
       const orderProduct = new OrderProduct()
       orderProduct.order = order
       orderProduct.options = options
-      orderProduct.amount = cartProduct.amount
+      orderProduct.quantity = cartProduct.quantity
       orderProduct.price = cartProduct.price
       orderProduct.title = cartProduct.product.title
       orderProduct.product = cartProduct.product
@@ -367,58 +366,4 @@ export class CartService {
       populate: ['payment', 'delivery']
     })
   }
-
-  // async temporaryCreateOrder(cartId: string, dto: TemporaryCreateOrderDto, user?: User) {
-  //   const products = await this.findProducts(cartId)
-
-  //   const order = new Order()
-  //   this.orderRepository.assign(order, {
-  //     cost: 0,
-  //     recipient: {
-  //       email: dto.customerEmail,
-  //       mame: dto.customerName,
-  //       phone: dto.customerPhone
-  //     }
-  //   })
-
-  //   if (user) {
-  //     order.user = user
-  //   }
-
-  //   this.orderRepository.getEntityManager().persist(order)
-
-  //   for (const cartProduct of products) {
-  //     if (typeof cartProduct.price === 'undefined') continue
-
-  //     order.cost += (cartProduct.price || 0) * cartProduct.amount
-
-  //     let options: Record<string, string> = {}
-  //     for (const optionValue of cartProduct.optionValues) {
-  //       options[optionValue.option.caption] = optionValue.content
-  //     }
-
-  //     const orderProduct = new OrderProduct()
-  //     this.orderProductRepository.assign(orderProduct, {
-  //       options,
-  //       amount: cartProduct.amount,
-  //       price: cartProduct.price,
-  //       product: cartProduct.product
-  //     })
-  //     this.orderProductRepository.getEntityManager().persist(orderProduct)
-
-  //     order.products.add(orderProduct)
-  //   }
-
-  //   await this.orderRepository.getEntityManager().flush()
-
-  //   await this.letterService.sendLetter({
-  //     to: 'kundius.ruslan@gmail.com',
-  //     subject: `Новый заказ №${order.id}`,
-  //     html: letterNewToManager({
-  //       fullName: order.recipient?.name || order.user?.name || 'Гость'
-  //     })
-  //   })
-
-  //   return order
-  // }
 }

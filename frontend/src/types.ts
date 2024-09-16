@@ -78,7 +78,7 @@ export interface OrderProductEntity {
   id: number
   order: OrderEntity | number
   product: ProductEntity | number | null
-  amount: number
+  quantity: number
   price: number
   title: string
   options?: Record<string, string>
@@ -109,7 +109,6 @@ export interface OrderEntity {
   id: number
   hash: string
   cost: number
-  amount: number
   composition?: { value: number; caption: number; name: string }[]
   user: UserEntity | null
   products: OrderProductEntity[]
@@ -129,7 +128,7 @@ export interface ProductsOptionsFilter extends ProductsBaseFilter {
   conjunction: boolean
   options: {
     value: string
-    amount: number
+    quantity: number
   }[]
 }
 
@@ -298,7 +297,7 @@ export interface CartProductEntity {
   id: string
   cart: CartEntity | CartEntity['id']
   product: ProductEntity
-  amount: number
+  quantity: number
   createdAt: string
   updatedAt: string
   optionValues?: OptionValueEntity[]

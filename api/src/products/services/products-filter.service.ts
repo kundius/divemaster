@@ -16,7 +16,7 @@ export interface OptionsFilter extends BaseFilter {
   conjunction: boolean
   options: {
     value: string
-    amount: number
+    quantity: number
   }[]
 }
 
@@ -276,10 +276,10 @@ export class ProductsFilterService {
             if (!filterOption) {
               filter.options.push({
                 value: fieldOption,
-                amount: Number(matchedForOptions)
+                quantity: Number(matchedForOptions)
               })
             } else {
-              filterOption.amount += Number(matchedForOptions)
+              filterOption.quantity += Number(matchedForOptions)
             }
           }
         }

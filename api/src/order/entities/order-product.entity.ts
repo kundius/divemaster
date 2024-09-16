@@ -15,7 +15,7 @@ export class OrderProduct {
   product: Product | null = null
 
   @Property({ unsigned: true })
-  amount!: number
+  quantity!: number
 
   @Property({ unsigned: true })
   price!: number

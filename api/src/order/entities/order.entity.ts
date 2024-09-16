@@ -24,9 +24,6 @@ export class Order {
   @Property({ unsigned: true })
   cost!: number
 
-  @Property({ unsigned: true })
-  amount!: number
-
   @Property({ type: 'json', nullable: true })
   composition?: Array<{ name: string; value: number }>
 

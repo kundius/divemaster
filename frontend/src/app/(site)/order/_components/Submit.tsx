@@ -12,12 +12,14 @@ import { apiPost } from '@/lib/api'
 import { useCartStore } from '@/providers/cart-store-provider'
 import { useRouter } from 'next/navigation'
 import { OrderEntity } from '@/types'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 
 export function Submit() {
   const router = useRouter()
   const cartId = useCartStore((state) => state.cartId)
   const orderState = useOrderStore((state) => state)
   const [wobble, setWobble] = useState(false)
+  const [peending, setPeending] = useState(false)
 
   const submitHandler = async () => {
     if (!cartId) {
@@ -33,6 +35,8 @@ export function Submit() {
       return
     }
 
+    setPeending(true)
+
     const result = await apiPost<OrderEntity>(`cart/${cartId}/create-order`, {
       deliveryService: orderState.delivery?.service,
       deliveryAddress: orderState.delivery?.address,
@@ -46,6 +50,8 @@ export function Submit() {
     })
 
     router.push(`/order/details/${result.hash}`)
+
+    setPeending(false)
   }
 
   return (
@@ -56,7 +62,9 @@ export function Submit() {
       size="lg"
       type="button"
       onClick={submitHandler}
+      disabled={peending}
     >
+      {peending && <ArrowPathIcon className="w-4 h-4 mr-2 -ml-2 animate-spin" />}
       Оформить заказ
     </Button>
   )

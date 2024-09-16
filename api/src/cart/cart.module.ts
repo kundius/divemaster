@@ -1,4 +1,3 @@
-import { NotificationsModule } from '@/notifications/notifications.module'
 import { Delivery } from '@/order/entities/delivery.entity'
 import { OrderProduct } from '@/order/entities/order-product.entity'
 import { Order } from '@/order/entities/order.entity'
@@ -15,7 +14,6 @@ import { OrderModule } from '@/order/order.module'
 
 @Module({
   imports: [
-    NotificationsModule,
     OrderModule,
     MikroOrmModule.forFeature([Cart, CartProduct, Product, Order, OrderProduct, Delivery, Payment])
   ],

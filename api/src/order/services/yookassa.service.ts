@@ -12,19 +12,17 @@ export class YookassaService implements PaymentService {
 
   getAuthorizationHeader() {
     const arr = [
-      this.configService.get('PAYMENT_YOOKASSA_USER'),
-      this.configService.get('PAYMENT_YOOKASSA_PASSWORD')
+      this.configService.get('yookassa.user'),
+      this.configService.get('yookassa.password')
     ]
     const auth = btoa(arr.join(':'))
     return `Basic ${auth}`
   }
 
   async makePayment(payment: Payment): Promise<string> {
-    await wrap(payment).init({ populate: ['order'] })
-
     const returnUrl = await this.getSuccessUrl(payment)
 
-    const response = await fetch(`${this.configService.get('PAYMENT_YOOKASSA_ENDPOINT')}payments`, {
+    const response = await fetch(`${this.configService.get('yookassa.endpoint')}payments`, {
       method: 'POST',
       headers: {
         'Idempotence-Key': payment.order.hash,
@@ -57,12 +55,10 @@ export class YookassaService implements PaymentService {
   }
 
   async getPaymentStatus(payment: Payment): Promise<boolean | null> {
-    await wrap(payment).init({ populate: ['order'] })
-
     const returnUrl = await this.getSuccessUrl(payment)
 
     const response = await fetch(
-      `${this.configService.get('PAYMENT_YOOKASSA_ENDPOINT')}payments/${payment.remoteId}`,
+      `${this.configService.get('yookassa.endpoint')}payments/${payment.remoteId}`,
       {
         method: 'GET',
         headers: {
@@ -79,6 +75,6 @@ export class YookassaService implements PaymentService {
   async getSuccessUrl(payment: Payment): Promise<string> {
     await wrap(payment).init({ populate: ['order'] })
 
-    return `${this.configService.get('APP_ORIGIN')}/order/details/${payment.order.hash}`
+    return `${this.configService.get('app.url')}/order/details/${payment.order.hash}`
   }
 }

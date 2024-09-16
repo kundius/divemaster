@@ -1,0 +1,117 @@
+{% extends "layouts/mail.njk" %}
+
+{% block body %}
+<!-- BEGIN BODY -->
+<table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: auto;">
+  <tr>
+    <td valign="top" class="bg_white" style="padding: 2.5em 1.5rem 0 1.5rem;">
+      <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+          <td style="text-align: center;" align="center">
+            <img style="display: block; margin: 0 auto;" alt="" src="https://divermaster.ru/logo-dark.png" />
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr><!-- end tr -->
+
+  <tr>
+    <td valign="middle" class="bg_white" style="padding: 2.5em 0 2.5em 0;">
+      <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+          <td style="padding: 0 1.5rem; text-align: left; font-family: sans-serif; font-size: 24px; text-align: center">
+            Новый заказ №{{ order.id }}
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr><!-- end tr -->
+
+  <tr>
+    <table class="bg_white" role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr>
+        <th colspan="2" style="text-align:left; padding: 0 0.75rem; padding-left: 1.5rem; color: #000; padding-bottom: 1rem; font-size: 12px; border-bottom: 1px solid rgba(0,0,0,.05);">Товар</th>
+        <th style="text-align:right; padding: 0 0.75rem; padding-right: 1.5rem; color: #000; padding-bottom: 1rem; font-size: 12px;  border-bottom: 1px solid rgba(0,0,0,.05);">Стоимость</th>
+      </tr>
+      {% for orderProduct in order.products %}
+      <tr>
+        <td width="80px" style="text-align: left; padding: 0.75rem; padding-left: 1.5rem; border-bottom: 1px solid rgba(0,0,0,.05);">
+          <img src="https://divermaster.ru/storage/{{ orderProduct.product.images[0].file }}/read" alt="" style="width: 100%; height: auto; display: block;">
+        </td>
+        <td valign="middle" style="text-align: left; padding: 0.75rem; border-bottom: 1px solid rgba(0,0,0,.05);">
+          <h3 style="margin: 0; font-size: 14px">{{ orderProduct.title }}</h3>
+          <p style="margin: 0.5rem 0 0; font-size: 12px">
+            {% for name, value in orderProduct.options %}
+            <span>
+              <span>{{ name }}:</span>
+              <strong>{{ value }}</strong>
+            </span>
+            {% endfor %}
+            <span>
+              <span>Количество:</span>
+              <strong>{{ orderProduct.amount }} шт.</strong>
+            </span>
+          </p>
+        </td>
+        <td valign="middle" style="text-align: right; padding: 0.75rem; padding-right: 1.5rem; border-bottom: 1px solid rgba(0,0,0,.05);">
+          <span style="color: #000; font-size: 16px;">{{ (orderProduct.price * orderProduct.amount) | formatPrice }}</span>
+        </td>
+      </tr>
+      {% endfor %}
+      {% for row in order.composition %}
+      {% if row.name != 'goods' and row.name != 'discounts' %}
+      <tr>
+        <td colspan="2" valign="middle" width="75%" style="text-align: left; padding: 0.75rem; padding-left: 1.5rem; border-bottom: 1px solid rgba(0,0,0,.05);">
+          <h3 style="margin: 0; font-size: 14px">{{ row.caption }}</h3>
+        </td>
+        <td valign="middle" width="25%" style="text-align: right; padding: 0.75rem; padding-right: 1.5rem; border-bottom: 1px solid rgba(0,0,0,.05);">
+          <span style="color: #000; font-size: 16px;">{{ row.value | formatPrice }}</span>
+        </td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+      <tr>
+        <td colspan="2" valign="middle" width="75%" style="text-align: right; padding: 0.75rem; padding-left: 1.5rem">
+          <h3 style="margin: 0; font-size: 16px">Итого:</h3>
+        </td>
+        <td valign="middle" width="25%" style="text-align: right; padding: 0.75rem; padding-right: 1.5rem">
+          <span style="color: #000; font-size: 20px;">{{ order.cost | formatPrice }}</span>
+        </td>
+      </tr>
+      <tr>
+        <td valign="middle" align="center" style="text-align: center; padding: 1.75rem 1.5rem 2.5rem;" colspan="3">
+          <a href="https://divermaster.ru/order/details/{{ order.hash }}" class="btn-primary">Перейти к заказу</a>
+        </td>
+      </tr>
+      <tr>
+        <td valign="middle" align="center" style="text-align: left; padding: 2rem 1.5rem; background: #f9f9f9;" colspan="3">
+          <h3 style="margin: 0 0 0.5rem; font-weight: bold; font-size: 16px;">Доставка</h3>
+          <p style="margin: 0.5rem 0 0; font-size: 14px;">
+            <strong>Способ получения:</strong><br />
+            {{ order.delivery.service }}
+          </p>
+          <p style="margin: 0.5rem 0 0; font-size: 14px;">
+            <strong>Адрес:</strong><br />
+            {{ order.delivery.address }}
+          </p>
+
+          <h3 style="margin: 1.5em 0 0.5rem; font-weight: bold; font-size: 16px;">Оплата</h3>
+          <p style="margin: 0.5rem 0 0; font-size: 14px;">
+            <strong>Способ оплаты:</strong><br />
+            {{ order.payment.service }}
+          </p>
+
+          <h3 style="margin: 1.5em 0 0.5rem; font-weight: bold; font-size: 16px;">Данные получателя</h3>
+          {% for name, value in order.delivery.recipient %}
+          <p style="margin: 0.5rem 0 0; font-size: 14px;">
+            <strong>{{ name }}:</strong><br />
+            {{ value }}
+          </p>
+          {% endfor %}
+        </td>
+      </tr>
+    </table>
+  </tr><!-- end tr -->
+<!-- 1 Column Text + Button : END -->
+</table>
+{% endblock %}

@@ -406,117 +406,6 @@
     },
     {
       "columns": {
-        "uuid": {
-          "name": "uuid",
-          "type": "varchar(36)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 36,
-          "mappedType": "string"
-        },
-        "to": {
-          "name": "to",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "string"
-        },
-        "from": {
-          "name": "from",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "string"
-        },
-        "message_id": {
-          "name": "message_id",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "string"
-        },
-        "status": {
-          "name": "status",
-          "type": "enum('sent','received','read','fail')",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "enumItems": [
-            "sent",
-            "received",
-            "read",
-            "fail"
-          ],
-          "mappedType": "enum"
-        },
-        "read_count": {
-          "name": "read_count",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "integer"
-        },
-        "status_updated_at": {
-          "name": "status_updated_at",
-          "type": "datetime",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 0,
-          "mappedType": "datetime"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "datetime",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 0,
-          "mappedType": "datetime"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "datetime",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 0,
-          "mappedType": "datetime"
-        }
-      },
-      "name": "letter",
-      "indexes": [
-        {
-          "keyName": "PRIMARY",
-          "columnNames": [
-            "uuid"
-          ],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {},
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
         "id": {
           "name": "id",
           "type": "int",
@@ -2002,6 +1891,16 @@
         },
         "link": {
           "name": "link",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "default": "null",
+          "mappedType": "string"
+        },
+        "remote_id": {
+          "name": "remote_id",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,

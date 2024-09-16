@@ -15,7 +15,6 @@ import {
 } from '../dto/cart.dto'
 import { Order } from '@/order/entities/order.entity'
 import { OrderProduct } from '@/order/entities/order-product.entity'
-import { LetterService } from '@/notifications/services/letter.service'
 import { content as letterNewToManager } from '@/notifications/templates/order/new-to-manager'
 import { Offer } from '@/products/entities/offer.entity'
 import { v4 } from 'uuid'
@@ -28,21 +27,12 @@ import { OrderService } from '@/order/services/order.service'
 export class CartService {
   constructor(
     private orderService: OrderService,
-    private letterService: LetterService,
     private configService: ConfigService,
     private em: EntityManager,
     @InjectRepository(Cart)
     private cartRepository: EntityRepository<Cart>,
     @InjectRepository(CartProduct)
     private cartProductRepository: EntityRepository<CartProduct>,
-    @InjectRepository(Payment)
-    private paymentRepository: EntityRepository<Payment>,
-    @InjectRepository(Delivery)
-    private deliveryRepository: EntityRepository<Delivery>,
-    @InjectRepository(Order)
-    private orderRepository: EntityRepository<Order>,
-    @InjectRepository(OrderProduct)
-    private orderProductRepository: EntityRepository<OrderProduct>,
     @InjectRepository(Product)
     private productRepository: EntityRepository<Product>
   ) {}
@@ -316,7 +306,6 @@ export class CartService {
     // создать оплату
     const payment = new Payment()
     payment.service = dto.paymentService
-    payment.link = await this.orderService.getPaymentLink(payment)
     this.em.persist(payment)
 
     // создать доставку
@@ -368,7 +357,11 @@ export class CartService {
     // записать изменения
     await this.em.flush()
 
+    // получить ссылку на оплату
+    await this.orderService.getPaymentLink(payment)
+
     // отправить письмо
+    await this.orderService.sendEmails(order)
 
     return wrap(order).serialize({
       populate: ['payment', 'delivery']

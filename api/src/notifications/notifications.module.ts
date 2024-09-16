@@ -1,14 +1,9 @@
 import { Module } from '@nestjs/common'
-import { MikroOrmModule } from '@mikro-orm/nestjs'
-import { ScheduleModule } from '@nestjs/schedule'
-import { Letter } from './entities/letter.entity'
-import { LetterController } from './controllers/letter.controller'
-import { LetterService } from './services/letter.service'
+
+import { NotificationsService } from './services/notifications.service'
 
 @Module({
-  imports: [MikroOrmModule.forFeature([Letter]), ScheduleModule.forRoot()],
-  controllers: [LetterController],
-  providers: [LetterService],
-  exports: [LetterService]
+  providers: [NotificationsService],
+  exports: [NotificationsService]
 })
 export class NotificationsModule {}

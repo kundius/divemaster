@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+<html lang="ru" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+    <meta charset="utf-8"> <!-- utf-8 works for most cases -->
+    <meta name="viewport" content="width=device-width"> <!-- Forcing initial-scale shouldn't be necessary -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Use the latest (edge) version of IE rendering engine -->
+    <meta name="x-apple-disable-message-reformatting">  <!-- Disable auto-scale in iOS 10 Mail entirely -->
+    <title></title> <!-- The title tag shows in email notifications, like Android 4.4. -->
+
+<!-- CSS Reset : BEGIN -->
+<style>
+/* What it does: Remove spaces around the email design added by some email clients. */
+/* Beware: It can remove the padding / margin and add a background color to the compose a reply window. */
+html,
+body {
+    margin: 0 auto !important;
+    padding: 0 !important;
+    height: 100% !important;
+    width: 100% !important;
+    background: #f1f1f1;
+}
+
+/* What it does: Stops email clients resizing small text. */
+* {
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+}
+
+/* What it does: Centers email on Android 4.4 */
+div[style*="margin: 16px 0"] {
+    margin: 0 !important;
+}
+
+/* What it does: Stops Outlook from adding extra spacing to tables. */
+table,
+td {
+    mso-table-lspace: 0pt !important;
+    mso-table-rspace: 0pt !important;
+}
+
+/* What it does: Fixes webkit padding issue. */
+table {
+    border-spacing: 0 !important;
+    border-collapse: collapse !important;
+    //table-layout: fixed !important;
+    margin: 0 auto !important;
+}
+
+/* What it does: Uses a better rendering method when resizing images in IE. */
+img {
+    -ms-interpolation-mode:bicubic;
+}
+
+/* What it does: Prevents Windows 10 Mail from underlining links despite inline CSS. Styles for underlined links should be inline. */
+a {
+    text-decoration: none;
+}
+
+/* What it does: A work-around for email clients meddling in triggered links. */
+*[x-apple-data-detectors],  /* iOS */
+.unstyle-auto-detected-links *,
+.aBn {
+    border-bottom: 0 !important;
+    cursor: default !important;
+    color: inherit !important;
+    text-decoration: none !important;
+    font-size: inherit !important;
+    font-family: inherit !important;
+    font-weight: inherit !important;
+    line-height: inherit !important;
+}
+
+/* What it does: Prevents Gmail from displaying a download button on large, non-linked images. */
+.a6S {
+    display: none !important;
+    opacity: 0.01 !important;
+}
+
+/* What it does: Prevents Gmail from changing the text color in conversation threads. */
+.im {
+    color: inherit !important;
+}
+
+/* If the above doesn't work, add a .g-img class to any image in question. */
+img.g-img + div {
+    display: none !important;
+}
+
+/* What it does: Removes right gutter in Gmail iOS app: https://github.com/TedGoas/Cerberus/issues/89  */
+/* Create one of these media queries for each additional viewport size you'd like to fix */
+
+/* iPhone 4, 4S, 5, 5S, 5C, and 5SE */
+@media only screen and (min-device-width: 320px) and (max-device-width: 374px) {
+    u ~ div .email-container {
+        min-width: 320px !important;
+    }
+}
+/* iPhone 6, 6S, 7, 8, and X */
+@media only screen and (min-device-width: 375px) and (max-device-width: 413px) {
+    u ~ div .email-container {
+        min-width: 375px !important;
+    }
+}
+/* iPhone 6+, 7+, and 8+ */
+@media only screen and (min-device-width: 414px) {
+    u ~ div .email-container {
+        min-width: 414px !important;
+    }
+}
+</style>
+<!-- CSS Reset : END -->
+
+<!-- Progressive Enhancements : BEGIN -->
+<style>
+  .bg_white {
+    background: #fff;
+  }
+
+/*BUTTON*/
+.btn-primary {
+  color: #ffffff;
+  background: linear-gradient(37deg, #a90083 0%, #a90083 25%, #a300a9 75%, #9f2df9 100%);
+  background-color: #a90083;
+  text-transform: uppercase;
+  font-size: 14px;
+  border-radius: 12px;
+  padding: 0 2.5rem;
+  line-height: 3rem;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  display: inline-block;
+  text-decoration: none;
+}
+
+a.btn-primary {
+  color: #fff;
+}
+
+/*FOOTER*/
+
+.footer {
+	color: #fff;
+}
+
+.footer .heading {
+	color: #fff;
+	font-size: 18px;
+  margin: 0 0 1rem;
+}
+
+.footer ul {
+	margin: 0;
+	padding: 0;
+}
+
+.footer ul li {
+	list-style: none;
+	margin-bottom: 0.75rem;
+  margin-left: 0;
+}
+
+.footer ul li a {
+	color: #fff;
+}
+
+@media screen and (max-width: 500px) {}
+    </style>
+</head>
+
+<body width="100%" style="margin: 0; padding: 0 !important; mso-line-height-rule: exactly; background-color: rgb(38, 47, 61);">
+	<center style="width: 100%; background-color: rgb(38, 47, 61);">
+    <div style="display: none; font-size: 1px;max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all; font-family: sans-serif;">
+      &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+    </div>
+    <div style="max-width: 600px; margin: 0 auto;" class="email-container">
+      {% block body %}{% endblock %}
+
+      <table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: auto;">
+      	<tr>
+          <td valign="middle" class="footer" style="background-color: #4a4e50; padding: 2rem 1.5rem 1.25rem">
+            <table>
+            	<tr>
+                <td valign="top" width="66.666%">
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tr>
+                      <td style="padding-right: 0.75rem">
+                      	<h3 class="heading">О компании</h3>
+                      	<ul>
+					                <li><span>г. Воронеж, ул. 20 лет Октября 123, ТЦ "Европа", 4 этаж</span></li>
+					                <li><span>info@divermaster.ru</span></a></li>
+					                <li><span>+7 (906) 586-55-55</span></a></li>
+					              </ul>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+                <td valign="top" width="33.333%">
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tr>
+                      <td style="padding-left: 0.75rem">
+                      	<h3 class="heading">Информация</h3>
+                      	<ul>
+					                <li><a href="#">Каталог</a></li>
+					                <li><a href="#">О магазине</a></li>
+					                <li><a href="#">Доставка и оплата</a></li>
+					                <li><a href="#">Возврат и обмен</a></li>
+					              </ul>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr><!-- end: tr -->
+        {# <tr>
+          <td style="text-align: center; background: #252728; color: #fff; padding: 1rem 1.5rem">
+          	No longer want to receive these email? You can <a href="#" style="color: rgba(255,255,255,.8);">Unsubscribe here</a>
+          </td>
+        </tr> #}
+      </table>
+
+    </div>
+  </center>
+</body>
+</html>

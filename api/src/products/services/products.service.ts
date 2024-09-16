@@ -35,8 +35,8 @@ import { Option, OptionType } from '../entities/option.entity'
 import { ProductImage } from '../entities/product-image.entity'
 import { Product } from '../entities/product.entity'
 import { ProductsFilterService } from './products-filter.service'
-import { LetterService } from '@/notifications/services/letter.service'
 import { content as letterByClick } from '@/notifications/templates/order/by-click'
+import { NotificationsService } from '@/notifications/services/notifications.service'
 
 @Injectable()
 export class ProductsService {
@@ -55,7 +55,7 @@ export class ProductsService {
     private readonly brandRepository: EntityRepository<Brand>,
     @InjectRepository(Offer)
     private readonly offerRepository: EntityRepository<Offer>,
-    private readonly letterService: LetterService,
+    private readonly notificationsService: NotificationsService,
     private readonly storageService: StorageService,
     private readonly productsFilterService: ProductsFilterService
   ) {}
@@ -1125,7 +1125,7 @@ export class ProductsService {
   async orderByClick(id: number, dto: OrderByClickProductDto) {
     const product = await this.productsRepository.findOneOrFail(id)
 
-    await this.letterService.sendLetter({
+    await this.notificationsService.sendMail({
       to: 'kundius.ruslan@gmail.com',
       subject: `Заказать в 1 клик "${product.title}"`,
       html: letterByClick({

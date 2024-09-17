@@ -78,7 +78,7 @@ export default async function Page({ params: { hash } }: { params: { hash: strin
                               {item.options && Object.entries(item.options).length > 0 && (
                                 <div className="flex gap-4">
                                   {Object.entries(item.options).map(([name, value]) => (
-                                    <div className="flex gap-1">
+                                    <div className="flex gap-1" key={`${name}:${value}`}>
                                       <div className="text-neutral-500 text-sm">{name}:</div>
                                       <div className="text-neutral-800 text-sm">{value}</div>
                                     </div>

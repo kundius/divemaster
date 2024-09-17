@@ -1,6 +1,6 @@
 import { Migration } from '@mikro-orm/migrations';
 
-export class Migration20240913132200 extends Migration {
+export class Migration20240917140546 extends Migration {
 
   async up(): Promise<void> {
     this.addSql('create table `brand` (`id` int unsigned not null auto_increment primary key, `remote_id` varchar(255) null, `title` varchar(255) not null) default character set utf8mb4 engine = InnoDB;');
@@ -13,8 +13,6 @@ export class Migration20240913132200 extends Migration {
     this.addSql('alter table `category` add unique `category_alias_unique`(`alias`);');
     this.addSql('alter table `category` add index `category_image_id_index`(`image_id`);');
     this.addSql('alter table `category` add index `category_parent_id_index`(`parent_id`);');
-
-    this.addSql('create table `letter` (`uuid` varchar(36) not null, `to` varchar(255) not null, `from` varchar(255) not null, `message_id` varchar(255) null, `status` enum(\'sent\', \'received\', \'read\', \'fail\') not null, `read_count` int not null, `status_updated_at` datetime not null, `created_at` datetime not null, `updated_at` datetime not null, primary key (`uuid`)) default character set utf8mb4 engine = InnoDB;');
 
     this.addSql('create table `option` (`id` int unsigned not null auto_increment primary key, `key` varchar(255) not null, `caption` varchar(255) not null, `type` enum(\'combo-boolean\', \'combo-colors\', \'combo-options\', \'numberfield\', \'textfield\') not null, `in_filter` tinyint(1) not null default false, `rank` int not null default 0) default character set utf8mb4 engine = InnoDB;');
     this.addSql('alter table `option` add unique `option_key_unique`(`key`);');
@@ -59,17 +57,24 @@ export class Migration20240913132200 extends Migration {
     this.addSql('alter table `user` add unique `user_email_unique`(`email`);');
     this.addSql('alter table `user` add index `user_role_id_index`(`role_id`);');
 
-    this.addSql('create table `order` (`id` int unsigned not null auto_increment primary key, `hash` varchar(255) not null, `cost` int unsigned not null, `status` enum(\'NEW\', \'CANCELLED\', \'PAID\') not null, `delivery` enum(\'SHIPPING\', \'PICKUP\') not null, `payment` enum(\'ONLINE\', \'OFFLINE\') not null, `recipient` json null, `user_id` int unsigned null, `created_at` datetime not null, `updated_at` datetime not null) default character set utf8mb4 engine = InnoDB;');
+    this.addSql('create table `order` (`id` int unsigned not null auto_increment primary key, `hash` varchar(255) not null, `cost` int unsigned not null, `composition` json null, `user_id` int unsigned null, `created_at` datetime not null) default character set utf8mb4 engine = InnoDB;');
+    this.addSql('alter table `order` add unique `order_hash_unique`(`hash`);');
     this.addSql('alter table `order` add index `order_user_id_index`(`user_id`);');
 
-    this.addSql('create table `order_product` (`id` int unsigned not null auto_increment primary key, `order_id` int unsigned not null, `product_id` int unsigned null, `amount` int unsigned not null, `price` int unsigned not null, `title` varchar(255) not null, `options` json null) default character set utf8mb4 engine = InnoDB;');
+    this.addSql('create table `payment` (`id` int unsigned not null auto_increment primary key, `service` enum(\'Yookassa\', \'UponCash\') not null, `paid` tinyint null, `link` varchar(255) null default null, `remote_id` varchar(255) null default null, `order_id` int unsigned not null, `created_at` datetime not null, `paid_at` datetime null default null) default character set utf8mb4 engine = InnoDB;');
+    this.addSql('alter table `payment` add unique `payment_order_id_unique`(`order_id`);');
+
+    this.addSql('create table `order_product` (`id` int unsigned not null auto_increment primary key, `order_id` int unsigned not null, `product_id` int unsigned null, `quantity` int unsigned not null, `price` int unsigned not null, `title` varchar(255) not null, `options` json null) default character set utf8mb4 engine = InnoDB;');
     this.addSql('alter table `order_product` add index `order_product_order_id_index`(`order_id`);');
     this.addSql('alter table `order_product` add index `order_product_product_id_index`(`product_id`);');
+
+    this.addSql('create table `delivery` (`id` int unsigned not null auto_increment primary key, `service` enum(\'Pickup\', \'Shipping\') not null, `delivered` tinyint null, `address` varchar(255) not null, `recipient` json null, `order_id` int unsigned not null, `created_at` datetime not null, `delivered_at` datetime not null) default character set utf8mb4 engine = InnoDB;');
+    this.addSql('alter table `delivery` add unique `delivery_order_id_unique`(`order_id`);');
 
     this.addSql('create table `cart` (`id` varchar(36) not null, `user_id` int unsigned null, `created_at` datetime not null, `updated_at` datetime not null, primary key (`id`)) default character set utf8mb4 engine = InnoDB;');
     this.addSql('alter table `cart` add unique `cart_user_id_unique`(`user_id`);');
 
-    this.addSql('create table `cart_product` (`id` varchar(36) not null, `cart_id` varchar(36) not null, `product_id` int unsigned not null, `amount` int unsigned not null default 1, `created_at` datetime not null, `updated_at` datetime not null, primary key (`id`)) default character set utf8mb4 engine = InnoDB;');
+    this.addSql('create table `cart_product` (`id` varchar(36) not null, `cart_id` varchar(36) not null, `product_id` int unsigned not null, `quantity` int unsigned not null default 1, `created_at` datetime not null, `updated_at` datetime not null, primary key (`id`)) default character set utf8mb4 engine = InnoDB;');
     this.addSql('alter table `cart_product` add index `cart_product_cart_id_index`(`cart_id`);');
     this.addSql('alter table `cart_product` add index `cart_product_product_id_index`(`product_id`);');
 
@@ -106,8 +111,12 @@ export class Migration20240913132200 extends Migration {
 
     this.addSql('alter table `order` add constraint `order_user_id_foreign` foreign key (`user_id`) references `user` (`id`) on update cascade on delete set null;');
 
+    this.addSql('alter table `payment` add constraint `payment_order_id_foreign` foreign key (`order_id`) references `order` (`id`) on update cascade;');
+
     this.addSql('alter table `order_product` add constraint `order_product_order_id_foreign` foreign key (`order_id`) references `order` (`id`) on update cascade on delete cascade;');
     this.addSql('alter table `order_product` add constraint `order_product_product_id_foreign` foreign key (`product_id`) references `product` (`id`) on update cascade on delete set null;');
+
+    this.addSql('alter table `delivery` add constraint `delivery_order_id_foreign` foreign key (`order_id`) references `order` (`id`) on update cascade;');
 
     this.addSql('alter table `cart` add constraint `cart_user_id_foreign` foreign key (`user_id`) references `user` (`id`) on update cascade on delete set null;');
 

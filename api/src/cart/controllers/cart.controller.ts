@@ -12,13 +12,7 @@ import {
 import { CartService } from '../services/cart.service'
 import { User } from '@/users/entities/user.entity'
 import { CurrentUser } from '@/auth/decorators/current-user.decorator'
-import {
-  AddProductDto,
-  CreateOrderDto,
-  GetOrderCostDto,
-  TemporaryCreateOrderDto,
-  UpdateProductDto
-} from '../dto/cart.dto'
+import { AddProductDto, CreateOrderDto, GetOrderCostDto, UpdateProductDto } from '../dto/cart.dto'
 
 @Controller('cart')
 export class CartController {

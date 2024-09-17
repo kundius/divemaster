@@ -6,13 +6,9 @@ import { PaymentService } from '../entities/payment.entity'
 export class UponCashService implements PaymentService {
   constructor() {}
 
-  async makePayment() {
-    return null
-  }
+  async process() {}
 
-  async getPaymentStatus() {
-    return false
-  }
+  async checkout() {}
 
   async getSuccessUrl() {
     return null

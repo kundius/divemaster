@@ -1,5 +1,6 @@
-import { Controller, Get, NotFoundException, Param, Post, Query } from '@nestjs/common'
+import { Body, Controller, Get, NotFoundException, Param, Post } from '@nestjs/common'
 import { OrderService } from '../services/order.service'
+import { YookassaServiceCheckoutDto } from '../services/yookassa.service'
 
 @Controller('order')
 export class OrderController {
@@ -11,12 +12,15 @@ export class OrderController {
     if (!order) {
       throw new NotFoundException()
     }
-
-    // Если статус оплаты неизвестен - проверяем через платёжный сервис
-    if (order.payment && order.payment.paid === null) {
-      await this.orderService.checkPaymentStatus(order.payment)
-    }
-
     return order
+  }
+
+  @Post('checkout/yookassa')
+  async checkoutYookassa(@Body() dto: YookassaServiceCheckoutDto) {
+    const order = await this.orderService.findOneById(+dto.object.metadata.orderId)
+    if (!order) {
+      throw new NotFoundException()
+    }
+    await this.orderService.checkoutPayment(order.payment, dto)
   }
 }

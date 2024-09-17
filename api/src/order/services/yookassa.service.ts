@@ -1,6 +1,23 @@
-import { Injectable } from '@nestjs/common'
-import { Payment, PaymentService, PaymentServiceMakedPayment } from '../entities/payment.entity'
+import { BadRequestException, Injectable } from '@nestjs/common'
+import { Payment, PaymentService } from '../entities/payment.entity'
 import { ConfigService } from '@nestjs/config'
+
+export interface YookassaServiceCheckoutDto {
+  type: string
+  event: string
+  object: {
+    id: string
+    status: string
+    paid: boolean
+    amount: {
+      value: string
+      currency: string
+    }
+    metadata: Record<string, string>
+    refundable: boolean
+    test: boolean
+  }
+}
 
 @Injectable()
 export class YookassaService implements PaymentService {
@@ -15,7 +32,7 @@ export class YookassaService implements PaymentService {
     return `Basic ${auth}`
   }
 
-  async makePayment(payment: Payment): Promise<PaymentServiceMakedPayment | null> {
+  async process(payment: Payment) {
     const returnUrl = await this.getSuccessUrl(payment)
 
     const params = {
@@ -34,8 +51,8 @@ export class YookassaService implements PaymentService {
       // Описание и метаданные на всякий случай
       description: payment.order.cost,
       metadata: {
-        payment_id: payment.id,
-        order_id: payment.order.id
+        paymentId: payment.id,
+        orderId: payment.order.id
       }
     }
 
@@ -51,15 +68,33 @@ export class YookassaService implements PaymentService {
 
     const data = await response.json()
 
-    return {
-      confirmationUrl: data.confirmation.confirmation_url,
-      remoteId: data.id
+    payment.link = data.confirmation.confirmation_url
+    payment.remoteId = data.id
+  }
+
+  async checkout(payment: Payment, dto: YookassaServiceCheckoutDto) {
+    const status = await this.getStatus(payment)
+
+    if (dto.object.status !== status) {
+      throw new BadRequestException('Status failed verification')
+    }
+
+    if (dto.object.status === 'succeeded') {
+      payment.paid = true
+      payment.paidAt = new Date()
+    }
+
+    if (dto.object.status === 'canceled') {
+      payment.paid = false
+      payment.paidAt = new Date()
     }
   }
 
-  async getPaymentStatus(payment: Payment) {
-    console.log('getPaymentStatus')
-    
+  async getSuccessUrl(payment: Payment) {
+    return `${this.configService.get('app.url')}/order/details/${payment.order.hash}`
+  }
+
+  async getStatus(payment: Payment): Promise<string | null> {
     if (!payment.remoteId) {
       return null
     }
@@ -79,24 +114,9 @@ export class YookassaService implements PaymentService {
 
       const data = await response.json()
 
-      console.log(data, response)
-
-      if (data.status === 'succeeded') {
-        return true
-      }
-
-      if (data.status === 'canceled') {
-        return false
-      }
-    } catch {
-      // Исключения игнорируем, потому что проверок может быть много, а ошибки нас не интересуют
-      // По истечению таймаута в 24 часа платежу будет выставлен статус false в любом случае
-    }
+      return data.status
+    } catch {}
 
     return null
-  }
-
-  async getSuccessUrl(payment: Payment) {
-    return `${this.configService.get('app.url')}/order/details/${payment.order.hash}`
   }
 }

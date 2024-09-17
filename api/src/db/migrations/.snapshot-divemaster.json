@@ -1925,8 +1925,9 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "length": 0,
+          "default": "null",
           "mappedType": "datetime"
         }
       },

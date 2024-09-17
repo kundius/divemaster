@@ -7,14 +7,9 @@ export enum PaymentServiceEnum {
   UponCash = 'UponCash'
 }
 
-export interface PaymentServiceMakedPayment {
-  remoteId: string | null
-  confirmationUrl: string | null
-}
-
 export interface PaymentService {
-  makePayment(payment: Payment): Promise<PaymentServiceMakedPayment | null>
-  getPaymentStatus(payment: Payment): Promise<boolean | null>
+  process(payment: Payment): Promise<void>
+  checkout(payment: Payment, dto: any): Promise<void>
   getSuccessUrl(payment: Payment): Promise<string | null>
 }
 
@@ -41,6 +36,6 @@ export class Payment {
   @Property()
   createdAt: Date & Opt = new Date()
 
-  @Property({ onUpdate: () => new Date() })
-  paidAt: Date & Opt = new Date()
+  @Property({ type: 'datetime', nullable: true, default: null })
+  paidAt: Date | null = null
 }

@@ -357,7 +357,7 @@ export class CartService {
     await this.em.flush()
 
     // получить ссылку на оплату
-    await this.orderService.getPaymentLink(payment)
+    await this.orderService.processPayment(payment)
 
     // отправить письмо
     await this.orderService.sendEmails(order)

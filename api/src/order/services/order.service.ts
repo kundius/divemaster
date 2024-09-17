@@ -2,12 +2,10 @@ import { EntityManager, EntityRepository, wrap } from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { Cron, CronExpression } from '@nestjs/schedule'
-import { addHours, compareDesc, subHours } from 'date-fns'
 import * as nunjucks from 'nunjucks'
 
-import { NotificationsService } from '@/notifications/services/notifications.service'
 import { formatPrice } from '@/lib/utils'
+import { NotificationsService } from '@/notifications/services/notifications.service'
 
 import { Order } from '../entities/order.entity'
 import { Payment, PaymentService, PaymentServiceEnum } from '../entities/payment.entity'
@@ -43,61 +41,6 @@ export class OrderService {
     }
   }
 
-  // Проверка статуса оплаты
-  async checkPaymentStatus(payment: Payment): Promise<boolean | null> {
-    await wrap(payment).init({ populate: ['order'] })
-
-    // Работает только при неизвестном статусе
-    if (payment.paid === null) {
-      const timeout = this.configService.get('payment.timeout', 24)
-      // Получаем сервис
-      const service = this.getPaymentService(payment)
-      // Спрашиваем у него статус
-      const status = await service.getPaymentStatus(payment)
-      // Это если оплачено
-      if (status === true) {
-        payment.paid = true
-        payment.paidAt = new Date()
-        await this.getEntityManager().persistAndFlush(payment)
-      } else if (
-        status === false ||
-        compareDesc(addHours(payment.createdAt, timeout), new Date())
-      ) {
-        // Это если не оплачено, или просто больше 24 часов с момента заказа
-        payment.paid = false
-        await this.getEntityManager().persistAndFlush(payment)
-      }
-    }
-
-    // И возврат статуса: true, false или null
-    return typeof payment.paid === 'boolean' ? payment.paid : null
-  }
-
-  async getPaymentLink(payment: Payment) {
-    await wrap(payment).init({ populate: ['order'] })
-
-    const service = this.getPaymentService(payment)
-
-    // TODO
-    // возможно стоит переместить изменение модели в класс оплаты
-    // тогда remoteId тут мешать не будет
-    // но не хочется взаимодействовать с базой там, как минимум из-за "context specific actions" в задачах по расписанию
-    // но можно изменить payment не сохраняя
-    if (payment.link === null) {
-      // вот так:
-      // await service.makePayment(payment)
-      // await this.getEntityManager().flush()
-      const makedPayment = await service.makePayment(payment)
-      if (makedPayment) {
-        payment.link = makedPayment.confirmationUrl
-        payment.remoteId = makedPayment.remoteId
-        await this.getEntityManager().flush()
-      }
-    }
-
-    return payment.link
-  }
-
   async findOneByHash(hash: string): Promise<Order | null> {
     return await this.orderRepository.findOne(
       { hash },
@@ -105,30 +48,27 @@ export class OrderService {
     )
   }
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
-  async checkOrderStatus() {
-    // Using global EntityManager instance methods for context specific actions is disallowed.
-    this.contextEntityManager = this.entityManager.fork()
+  async findOneById(id: number): Promise<Order | null> {
+    return await this.orderRepository.findOne(
+      { id },
+      { populate: ['products', 'payment', 'delivery'] }
+    )
+  }
 
-    const timeout = this.configService.get('payment.timeout', 24)
-    const orders = await this.getEntityManager().find(Order, {
-      payment: {
-        paid: {
-          $eq: null
-        }
-      },
-      createdAt: {
-        $gt: subHours(new Date(), timeout)
-      }
-    })
+  async processPayment(payment: Payment) {
+    await wrap(payment).init({ populate: ['order'] })
 
-    for (const order of orders) {
-      await this.checkPaymentStatus(order.payment)
-    }
-
+    const service = this.getPaymentService(payment)
+    await service.process(payment)
     await this.getEntityManager().flush()
+  }
 
-    this.contextEntityManager = null
+  async checkoutPayment(payment: Payment, dto: any) {
+    await wrap(payment).init({ populate: ['order'] })
+
+    const service = this.getPaymentService(payment)
+    await service.checkout(payment, dto)
+    await this.getEntityManager().flush()
   }
 
   async sendEmails(order: Order) {

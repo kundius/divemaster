@@ -2,8 +2,13 @@
 
 import { SpriteIcon } from '@/components/SpriteIcon'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { OrderEntity } from '@/types'
 
-export function UponCash() {
+export interface UponCashProps {
+  order: OrderEntity
+}
+
+export function UponCash({ order }: UponCashProps) {
   return (
     <Alert>
       <SpriteIcon name="payment-wallet" size={16} />

@@ -1,11 +1,4 @@
-import {
-  AbstractSqlConnection,
-  AbstractSqlDriver,
-  AbstractSqlPlatform,
-  EntityManager,
-  EntityRepository,
-  wrap
-} from '@mikro-orm/mariadb'
+import { EntityManager, EntityRepository, wrap } from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
@@ -13,16 +6,13 @@ import { Cron, CronExpression } from '@nestjs/schedule'
 import { addHours, compareDesc, subHours } from 'date-fns'
 import * as nunjucks from 'nunjucks'
 
-import { Product } from '@/products/entities/product.entity'
-
-import { OrderProduct } from '../entities/order-product.entity'
-import { Order } from '../entities/order.entity'
-import { Payment, PaymentService, PaymentServiceEnum } from '../entities/payment.entity'
-import { PickupPoint } from '../entities/pickup-point.entity'
-import { UponCashService } from './uponcash.service'
-import { YookassaService } from './yookassa.service'
 import { NotificationsService } from '@/notifications/services/notifications.service'
 import { formatPrice } from '@/lib/utils'
+
+import { Order } from '../entities/order.entity'
+import { Payment, PaymentService, PaymentServiceEnum } from '../entities/payment.entity'
+import { UponCashService } from './uponcash.service'
+import { YookassaService } from './yookassa.service'
 
 @Injectable()
 export class OrderService {
@@ -32,17 +22,9 @@ export class OrderService {
     private configService: ConfigService,
     @InjectRepository(Order)
     private orderRepository: EntityRepository<Order>,
-    @InjectRepository(Payment)
-    private paymentRepository: EntityRepository<Payment>,
-    @InjectRepository(PickupPoint)
-    private pickupPointRepository: EntityRepository<PickupPoint>,
-    @InjectRepository(OrderProduct)
-    private orderProductRepository: EntityRepository<OrderProduct>,
-    @InjectRepository(Product)
-    private productRepository: EntityRepository<Product>,
 
-    private UponCashService: UponCashService,
-    private YookassaService: YookassaService
+    private paymentUponCashService: UponCashService,
+    private paymentYookassaService: YookassaService
   ) {}
 
   private contextEntityManager: EntityManager | null = null
@@ -55,14 +37,14 @@ export class OrderService {
   getPaymentService(payment: Payment): PaymentService {
     switch (payment.service) {
       case PaymentServiceEnum.UponCash:
-        return this.UponCashService
+        return this.paymentUponCashService
       case PaymentServiceEnum.Yookassa:
-        return this.YookassaService
+        return this.paymentYookassaService
     }
   }
 
   // Проверка статуса оплаты
-  async checkPaymentStatus(payment: Payment, flush: boolean = false): Promise<boolean | null> {
+  async checkPaymentStatus(payment: Payment): Promise<boolean | null> {
     await wrap(payment).init({ populate: ['order'] })
 
     // Работает только при неизвестном статусе
@@ -96,10 +78,19 @@ export class OrderService {
 
     const service = this.getPaymentService(payment)
 
+    // TODO
+    // возможно стоит переместить изменение модели в класс оплаты
+    // тогда remoteId тут мешать не будет
+    // но не хочется взаимодействовать с базой там, как минимум из-за "context specific actions" в задачах по расписанию
+    // но можно изменить payment не сохраняя
     if (payment.link === null) {
-      const link = await service.makePayment(payment)
-      if (link) {
-        payment.link = link
+      // вот так:
+      // await service.makePayment(payment)
+      // await this.getEntityManager().flush()
+      const makedPayment = await service.makePayment(payment)
+      if (makedPayment) {
+        payment.link = makedPayment.confirmationUrl
+        payment.remoteId = makedPayment.remoteId
         await this.getEntityManager().flush()
       }
     }

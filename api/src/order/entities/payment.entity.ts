@@ -7,8 +7,13 @@ export enum PaymentServiceEnum {
   UponCash = 'UponCash'
 }
 
+export interface PaymentServiceMakedPayment {
+  remoteId: string | null
+  confirmationUrl: string | null
+}
+
 export interface PaymentService {
-  makePayment(payment: Payment): Promise<string | null>
+  makePayment(payment: Payment): Promise<PaymentServiceMakedPayment | null>
   getPaymentStatus(payment: Payment): Promise<boolean | null>
   getSuccessUrl(payment: Payment): Promise<string | null>
 }

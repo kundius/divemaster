@@ -1,21 +1,20 @@
-import { EntityManager } from '@mikro-orm/mariadb'
 import { Injectable } from '@nestjs/common'
 
-import { Payment, PaymentService } from '../entities/payment.entity'
+import { PaymentService } from '../entities/payment.entity'
 
 @Injectable()
 export class UponCashService implements PaymentService {
-  constructor(readonly em: EntityManager) {}
+  constructor() {}
 
-  async makePayment(payment: Payment): Promise<string | null> {
+  async makePayment() {
     return null
   }
 
-  async getPaymentStatus(payment: Payment): Promise<boolean> {
+  async getPaymentStatus() {
     return false
   }
 
-  async getSuccessUrl(payment: Payment): Promise<string | null> {
+  async getSuccessUrl() {
     return null
   }
 }

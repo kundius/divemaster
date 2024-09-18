@@ -49,7 +49,7 @@ export class YookassaService implements PaymentService {
       // Оплата в один этап
       capture: true,
       // Описание и метаданные на всякий случай
-      description: payment.order.cost,
+      // description: payment.order.cost,
       metadata: {
         paymentId: payment.id,
         orderId: payment.order.id

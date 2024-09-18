@@ -17,6 +17,7 @@ import { ArrowPathIcon } from '@heroicons/react/24/outline'
 export function Submit() {
   const router = useRouter()
   const cartId = useCartStore((state) => state.cartId)
+  const deleteCart = useCartStore((state) => state.deleteCart)
   const orderState = useOrderStore((state) => state)
   const [wobble, setWobble] = useState(false)
   const [peending, setPeending] = useState(false)
@@ -49,9 +50,11 @@ export function Submit() {
       agreement: orderState.agreement
     })
 
-    router.push(`/order/details/${result.hash}`)
+    router.replace(`/order/details/${result.hash}`)
 
     setPeending(false)
+
+    deleteCart()
   }
 
   return (

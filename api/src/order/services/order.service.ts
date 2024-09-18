@@ -2,9 +2,8 @@ import { EntityManager, EntityRepository, wrap } from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import * as nunjucks from 'nunjucks'
 
-import { formatPrice } from '@/lib/utils'
+import { formatPrice, njk } from '@/lib/utils'
 import { NotificationsService } from '@/notifications/services/notifications.service'
 
 import { Order } from '../entities/order.entity'
@@ -81,12 +80,6 @@ export class OrderService {
     const data = orderEntity.serialize({
       populate: ['products', 'products.product', 'products.product.images', 'payment', 'delivery']
     })
-
-    const njk = new nunjucks.Environment(new nunjucks.FileSystemLoader('views'), {
-      autoescape: true
-    })
-
-    njk.addFilter('formatPrice', formatPrice)
 
     const emailAdmin = this.configService.get('app.emailAdmin')
     if (emailAdmin) {

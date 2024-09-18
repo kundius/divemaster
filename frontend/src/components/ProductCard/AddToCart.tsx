@@ -2,6 +2,7 @@ import Image from 'next/image'
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
+import { ProductBuyDialog } from '@/components/ProductBuyDialog'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -12,20 +13,12 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipPortal,
-  TooltipProvider,
-  TooltipTrigger
-} from '@/components/ui/tooltip'
 import { getFileUrl } from '@/lib/utils'
 import { useCartStore } from '@/providers/cart-store-provider'
 import { useProductStore } from '@/providers/product-store-provider'
 
 import styles from './AddToCart.module.scss'
 import { SelectOption } from './SelectOption'
-import { ProductBuyDialog } from '@/components/ProductBuyDialog'
 
 export function AddToCart() {
   const {
@@ -64,29 +57,15 @@ export function AddToCart() {
 
   if (additionalOffers.length === 0 && !basicOffer) {
     return (
-      <TooltipProvider delayDuration={0}>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div className="w-full">
-              <ProductBuyDialog title="Заказать от 1 дня">
-                <button className={styles['action']}>
-                  <span className={styles['action-inner']}>
-                    <span className="text-nowrap">Заказать</span>
-                  </span>
-                </button>
-              </ProductBuyDialog>
-            </div>
-          </TooltipTrigger>
-          <TooltipPortal>
-            <TooltipContent>
-              <p className="text-center">
-                Сейчас нет в наличии,
-                <br /> доставим под заказ от 1 дня
-              </p>
-            </TooltipContent>
-          </TooltipPortal>
-        </Tooltip>
-      </TooltipProvider>
+      <div className="w-full">
+        <ProductBuyDialog title="Заказать от 1 дня">
+          <button className={styles['action']}>
+            <span className={styles['action-inner']}>
+              <span className="text-nowrap">Заказать</span>
+            </span>
+          </button>
+        </ProductBuyDialog>
+      </div>
     )
   }
 
@@ -143,27 +122,13 @@ export function AddToCart() {
             </Button>
           </DialogClose>
           {allOptionsSelected && !selectedOffer ? (
-            <TooltipProvider delayDuration={0}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="w-full">
-                    <ProductBuyDialog title="Заказать от 1 дня">
-                      <Button className="w-full leading-none" size="lg">
-                        Заказать
-                      </Button>
-                    </ProductBuyDialog>
-                  </div>
-                </TooltipTrigger>
-                <TooltipPortal>
-                  <TooltipContent>
-                    <p className="text-center">
-                      Сейчас нет в наличии,
-                      <br /> доставим под заказ от 1 дня
-                    </p>
-                  </TooltipContent>
-                </TooltipPortal>
-              </Tooltip>
-            </TooltipProvider>
+            <div className="w-full">
+              <ProductBuyDialog title="Заказать от 1 дня">
+                <Button className="w-full leading-none" size="lg">
+                  Заказать
+                </Button>
+              </ProductBuyDialog>
+            </div>
           ) : (
             <Button
               className="w-full"

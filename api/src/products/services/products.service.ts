@@ -1,4 +1,4 @@
-import { nanoid, pluck, slugify } from '@/lib/utils'
+import { nanoid, njk, pluck, slugify } from '@/lib/utils'
 import { StorageService } from '@/storage/services/storage.service'
 import {
   EntityRepository,
@@ -37,6 +37,7 @@ import { Product } from '../entities/product.entity'
 import { ProductsFilterService } from './products-filter.service'
 import { content as letterByClick } from '@/notifications/templates/order/by-click'
 import { NotificationsService } from '@/notifications/services/notifications.service'
+import { ConfigService } from '@nestjs/config'
 
 @Injectable()
 export class ProductsService {
@@ -57,7 +58,8 @@ export class ProductsService {
     private readonly offerRepository: EntityRepository<Offer>,
     private readonly notificationsService: NotificationsService,
     private readonly storageService: StorageService,
-    private readonly productsFilterService: ProductsFilterService
+    private readonly productsFilterService: ProductsFilterService,
+    private readonly configService: ConfigService
   ) {}
 
   async create({ brandId, ...fillable }: CreateProductDto) {
@@ -1125,14 +1127,13 @@ export class ProductsService {
   async orderByClick(id: number, dto: OrderByClickProductDto) {
     const product = await this.productsRepository.findOneOrFail(id)
 
-    await this.notificationsService.sendMail({
-      to: 'kundius.ruslan@gmail.com',
-      subject: `Заказать в 1 клик "${product.title}"`,
-      html: letterByClick({
-        product,
-        name: dto.name,
-        phone: dto.phone
+    const emailAdmin = this.configService.get('app.emailAdmin')
+    if (emailAdmin) {
+      await this.notificationsService.sendMail({
+        to: emailAdmin,
+        subject: `${dto.subject} "${product.title}" на сайте divermaster.ru`,
+        html: njk.render('mails/order-by-click.njk', { product, dto })
       })
-    })
+    }
   }
 }

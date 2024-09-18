@@ -2,16 +2,14 @@
 
 import { toast } from 'sonner'
 
+import { ProductBuyDialog } from '@/components/ProductBuyDialog'
 import { Button } from '@/components/ui/button'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useCartStore } from '@/providers/cart-store-provider'
 import { useProductStore } from '@/providers/product-store-provider'
 import { OptionType } from '@/types'
 
 import styles from './AddToCart.module.scss'
 import { SelectOption } from './SelectOption'
-import { TooltipPortal } from '@radix-ui/react-tooltip'
-import { ProductBuyDialog } from '@/components/ProductBuyDialog'
 
 export const OptionComponents = {
   [OptionType.COMBOCOLORS]: SelectOption,
@@ -73,25 +71,11 @@ export function AddToCart() {
       )}
       <div className="flex items-center gap-2">
         {allOptionsSelected && !selectedOffer ? (
-          <TooltipProvider delayDuration={0}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <ProductBuyDialog title="Заказать от 1 дня">
-                  <Button className="w-full leading-none" size="lg" key="not-available">
-                    Заказать
-                  </Button>
-                </ProductBuyDialog>
-              </TooltipTrigger>
-              <TooltipPortal>
-                <TooltipContent>
-                  <p className="text-center">
-                    Сейчас нет в наличии,
-                    <br /> доставим под заказ от 1 дня
-                  </p>
-                </TooltipContent>
-              </TooltipPortal>
-            </Tooltip>
-          </TooltipProvider>
+          <ProductBuyDialog title="Заказать от 1 дня">
+            <Button className="w-full leading-none" size="lg" key="not-available">
+              Заказать
+            </Button>
+          </ProductBuyDialog>
         ) : (
           <Button
             className="w-full"

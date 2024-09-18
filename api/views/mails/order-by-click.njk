@@ -1,0 +1,60 @@
+{% extends "layouts/mail.njk" %}
+
+{% block body %}
+<!-- BEGIN BODY -->
+<table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: auto;">
+  <tr>
+    <td valign="top" class="bg_white" style="padding: 2.5em 1.5rem 0 1.5rem;">
+      <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+          <td style="text-align: center;" align="center">
+            <img style="display: block; margin: 0 auto;" alt="" src="https://divermaster.ru/logo-dark.png" />
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr><!-- end tr -->
+
+  <tr>
+    <td valign="middle" class="bg_white" style="padding: 2.5em 0 2.5em 0;">
+      <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+          <td style="padding: 0 1.5rem; text-align: left; font-family: sans-serif; font-size: 24px; text-align: center">
+            {{ dto.subject }}
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr><!-- end tr -->
+
+  <tr>
+    <table class="bg_white" role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr>
+        <th colspan="2" style="text-align:left; padding: 0 0.75rem; padding-left: 1.5rem; color: #000; padding-bottom: 1rem; font-size: 12px; border-bottom: 1px solid rgba(0,0,0,.05);">Товар</th>
+      </tr>
+      <tr>
+        <td width="80px" style="text-align: left; padding: 0.75rem; padding-left: 1.5rem; border-bottom: 1px solid rgba(0,0,0,.05);">
+          <img src="https://divermaster.ru/storage/{{ product.images[0].file }}/read" alt="" style="width: 100%; height: auto; display: block;">
+        </td>
+        <td valign="middle" style="text-align: left; padding: 0.75rem; border-bottom: 1px solid rgba(0,0,0,.05);">
+          <h3 style="margin: 0; font-size: 14px">{{ product.title }}</h3>
+        </td>
+      </tr>
+      <tr>
+        <td valign="middle" align="center" style="text-align: left; padding: 2rem 1.5rem; border-top: 1px solid #f2f2f2;" colspan="2">
+          <h3 style="margin: 0 0 0.5rem; font-weight: bold; font-size: 16px;">Форма</h3>
+          <p style="margin: 0.5rem 0 0; font-size: 14px;">
+            <strong>Имя:</strong><br />
+            {{ dto.name }}
+          </p>
+          <p style="margin: 0.5rem 0 0; font-size: 14px;">
+            <strong>Телефон:</strong><br />
+            {{ dto.phone }}
+          </p>
+        </td>
+      </tr>
+    </table>
+  </tr><!-- end tr -->
+<!-- 1 Column Text + Button : END -->
+</table>
+{% endblock %}

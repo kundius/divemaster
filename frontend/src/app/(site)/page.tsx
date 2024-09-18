@@ -24,9 +24,12 @@ export default async function Page() {
       `products`,
       {
         limit: 10,
+        favorite: true,
         withImages: true,
-        active: true,
-        favorite: true
+        withBrand: true,
+        withOptions: true,
+        withOffers: true,
+        active: true
       },
       {
         next: {
@@ -38,9 +41,12 @@ export default async function Page() {
       `products`,
       {
         limit: 10,
+        recent: true,
         withImages: true,
-        active: true,
-        recent: true
+        withBrand: true,
+        withOptions: true,
+        withOffers: true,
+        active: true
       },
       {
         next: {

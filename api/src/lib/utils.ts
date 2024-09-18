@@ -1,5 +1,6 @@
 import slugifyFn from 'slugify'
 import { customAlphabet } from 'nanoid'
+import * as nunjucks from 'nunjucks'
 
 export function slugify(value: string) {
   return slugifyFn(value.toLocaleLowerCase(), { remove: /[*+~.,/\()'"!:@]/g })
@@ -18,3 +19,10 @@ export function formatPrice(value: number) {
     minimumFractionDigits: 0
   }).format(value)
 }
+
+
+export const njk = new nunjucks.Environment(new nunjucks.FileSystemLoader('views'), {
+  autoescape: true
+})
+
+njk.addFilter('formatPrice', formatPrice)

@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import styles from './Discount.module.scss'
-import Link from 'next/link'
+import { AuthButton } from './AuthButton'
 
 export function Discount() {
   return (
@@ -36,9 +36,7 @@ export function Discount() {
         <span>накопительную&nbsp;скидочную&nbsp;карту</span>. Совершая покупки
         по&nbsp;карте «DiveMaster», Вы увеличиваете свою персональную скидку.
         </div>
-        <Link href="/auth/signin" className={styles.button}>
-          Авторизоваться
-        </Link>
+        <AuthButton />
       </div>
     </div>
   )

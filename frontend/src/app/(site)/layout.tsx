@@ -1,6 +1,14 @@
+import { Metadata } from 'next'
+import { PropsWithChildren } from 'react'
+
 import { Footer } from '@/components/site/Footer'
 import { Header } from '@/components/site/Header'
-import { PropsWithChildren } from 'react'
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: `Интернет-магазин подводного снаряжени DiveMaster`
+  }
+}
 
 export default function Layout({ children }: PropsWithChildren) {
   return (

@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { Container } from '../Container'
 import { PrimaryButton, PrimaryButtonArrow } from '../PrimaryButton'
 import styles from './index.module.scss'
@@ -50,10 +51,10 @@ export function HomeAbout() {
               </p>
               <div className="flex mt-6 md:-ml-2">
                 <PrimaryButton asChild>
-                  <a href="#">
+                  <Link href="/catalog">
                     Перейти в каталог
                     <PrimaryButtonArrow />
-                  </a>
+                  </Link>
                 </PrimaryButton>
               </div>
             </div>

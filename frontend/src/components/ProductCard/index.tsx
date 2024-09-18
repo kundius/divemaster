@@ -1,49 +1,22 @@
+'use client'
+
 import Image from 'next/image'
 import Link from 'next/link'
 import { useMemo, useRef, useState } from 'react'
-import { toast } from 'sonner'
 
-import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from '@/components/ui/dialog'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { colorsObject } from '@/lib/colors'
-import { cn, getEntityId, getFileUrl, pluck } from '@/lib/utils'
-import { useCartStore } from '@/providers/cart-store-provider'
+import { getEntityId, getFileUrl, pluck } from '@/lib/utils'
 import { useProductStore } from '@/providers/product-store-provider'
 
-import { Gallery } from './Gallery'
-import styles from './index.module.scss'
-import { SelectOption } from './SelectOption'
-import { TooltipPortal } from '@radix-ui/react-tooltip'
 import { AddToCart } from './AddToCart'
 import { BuyInClick } from './BuyInClick'
+import { Gallery } from './Gallery'
+import styles from './index.module.scss'
 
 export function ProductCard() {
-  const {
-    product,
-    selectOptionValue,
-    selectedOffer,
-    selectedPrice,
-    defaultPrice,
-    selectedOldPrice,
-    defaultOldPrice,
-    additionalOffers,
-    basicOffer,
-    selectableOptions,
-    selectedOptionValues,
-    allOptionsSelected
-  } = useProductStore((state) => state)
-  const addToCart = useCartStore((state) => state.addToCart)
-
-  const [showOptionsDialog, setShowOptionsDialog] = useState(false)
+  const product = useProductStore((state) => state.product)
+  const defaultPrice = useProductStore((state) => state.defaultPrice)
+  const defaultOldPrice = useProductStore((state) => state.defaultOldPrice)
   const [showGallery, setShowGallery] = useState(false)
   const [galleryShowNav, setGalleryShowNav] = useState(false)
   const [thumbIndex, setThumbIndex] = useState(0)
@@ -101,139 +74,6 @@ export function ProductCard() {
       setStartIndex(thumbIndex)
     }, 1200)
   }
-
-  const addHandler = () => {
-    addToCart({
-      id: product.id,
-      optionValues: Object.values(selectedOptionValues).map((item) => item.id)
-    })
-    toast.success('Товар добавлен в корзину')
-    setShowOptionsDialog(false)
-  }
-
-  // const renderAddToCart = () => {
-  //   if (additionalOffers.length === 0 && !basicOffer) {
-  //     return (
-  //       <TooltipProvider delayDuration={0}>
-  //         <Tooltip>
-  //           <TooltipTrigger asChild>
-  //             <button className={cn(styles.purchaseAction)}>
-  //               <span className={styles.purchaseActionInner}>
-  //                 <span className="text-nowrap">Заказать</span>
-  //               </span>
-  //             </button>
-  //           </TooltipTrigger>
-  //           <TooltipPortal>
-  //             <TooltipContent>
-  //               <p className="text-center">
-  //                 Сейчас нет в наличии,
-  //                 <br /> доставим под заказ от 1 дня
-  //               </p>
-  //             </TooltipContent>
-  //           </TooltipPortal>
-  //         </Tooltip>
-  //       </TooltipProvider>
-  //     )
-  //   }
-
-  //   if (additionalOffers.length === 0 && !!basicOffer && selectableOptions.length === 0) {
-  //     return (
-  //       <button
-  //         className={cn(styles.purchaseAction, styles.purchaseActionCart)}
-  //         onClick={addHandler}
-  //       >
-  //         <span className={styles.purchaseActionInner}>
-  //           <span className="text-nowrap">В корзину</span>
-  //         </span>
-  //       </button>
-  //     )
-  //   }
-
-  //   return (
-  //     <Dialog open={showOptionsDialog} onOpenChange={setShowOptionsDialog}>
-  //       <DialogTrigger className={cn(styles.purchaseAction, styles.purchaseActionCart)}>
-  //         <span className={styles.purchaseActionInner}>
-  //           <span className="text-nowrap">В корзину</span>
-  //         </span>
-  //       </DialogTrigger>
-  //       <DialogContent className="sm:max-w-[640px] p-12 gap-8">
-  //         <DialogHeader>
-  //           <DialogTitle className="uppercase text-xl tracking-widest">
-  //             Выберите параметры
-  //           </DialogTitle>
-  //         </DialogHeader>
-  //         {selectableOptions.length > 0 && (
-  //           <div className="space-y-6">
-  //             {selectableOptions.map((option) => (
-  //               <SelectOption
-  //                 key={option.id}
-  //                 caption={option.caption}
-  //                 values={option.values}
-  //                 onSelect={(value) => selectOptionValue(option, value)}
-  //                 selected={selectedOptionValues[option.key]}
-  //               />
-  //             ))}
-  //           </div>
-  //         )}
-  //         <div className="bg-neutral-50 flex gap-4 items-center p-4 rounded-xl">
-  //           <div className="flex w-20 h-20 relative shrink-0 bg-white rounded-lg">
-  //             <Image
-  //               src={images[thumbIndex]}
-  //               alt={product.title}
-  //               fill
-  //               className="rounded-lg object-contain"
-  //             />
-  //           </div>
-  //           <div>
-  //             <div className="text-base font-bold leading-5">
-  //               {selectedOffer?.title ? selectedOffer.title : product.title}
-  //             </div>
-  //             <div className="text-primary text-lg font-bold mt-2">{selectedPrice}</div>
-  //           </div>
-  //         </div>
-  //         <DialogFooter className="flex gap-2">
-  //           <DialogClose asChild>
-  //             <Button className="w-full" size="lg" variant="secondary">
-  //               Отмена
-  //             </Button>
-  //           </DialogClose>
-  //           {allOptionsSelected && !selectedOffer ? (
-  //             <TooltipProvider delayDuration={0}>
-  //               <Tooltip>
-  //                 <TooltipTrigger asChild>
-  //                   <Button className="w-full leading-none" size="lg">
-  //                     Заказать
-  //                   </Button>
-  //                 </TooltipTrigger>
-  //                 <TooltipPortal>
-  //                   <TooltipContent>
-  //                     <p className="text-center">
-  //                       Сейчас нет в наличии,
-  //                       <br /> доставим под заказ от 1 дня
-  //                     </p>
-  //                   </TooltipContent>
-  //                 </TooltipPortal>
-  //               </Tooltip>
-  //             </TooltipProvider>
-  //           ) : (
-  //             <Button
-  //               className="w-full"
-  //               size="lg"
-  //               onClick={addHandler}
-  //               disabled={!allOptionsSelected}
-  //               key="available"
-  //             >
-  //               <svg viewBox="0 0 19 17" width="19" height="17" className="fill-current mr-2">
-  //                 <use href="/sprite.svg#cart"></use>
-  //               </svg>
-  //               В корзину
-  //             </Button>
-  //           )}
-  //         </DialogFooter>
-  //       </DialogContent>
-  //     </Dialog>
-  //   )
-  // }
 
   return (
     <div className={styles.root} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>

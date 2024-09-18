@@ -91,7 +91,7 @@ export interface PaymentEntity {
   link: string | null
   order: OrderEntity | number
   createdAt: string
-  paidAt: string
+  paidAt: string | null
 }
 
 export interface DeliveryEntity {

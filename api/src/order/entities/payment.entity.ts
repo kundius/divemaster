@@ -21,7 +21,11 @@ export class Payment {
   @Enum(() => PaymentServiceEnum)
   service!: PaymentServiceEnum
 
-  @Property({ type: 'tinyint', nullable: true, serializer: Boolean })
+  @Property({
+    type: 'tinyint',
+    nullable: true,
+    serializer: (value) => (value !== null ? Boolean(value) : value)
+  })
   paid: boolean | null = null
 
   @Property({ type: 'varchar', default: null, nullable: true })

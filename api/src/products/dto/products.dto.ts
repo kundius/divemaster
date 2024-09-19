@@ -153,19 +153,19 @@ export class CreateProductDto {
   @IsOptional()
   exploitation?: string
 
-  @Type(() => Boolean)
+  @Type(() => ParseBooleanString)
   @IsBoolean()
   active: boolean
 
-  @Type(() => Boolean)
+  @Type(() => ParseBooleanString)
   @IsBoolean()
   recent: boolean
 
-  @Type(() => Boolean)
+  @Type(() => ParseBooleanString)
   @IsBoolean()
   favorite: boolean
 
-  @Type(() => Boolean)
+  @Type(() => ParseBooleanString)
   @IsBoolean()
   inStock: boolean
 

@@ -13,6 +13,7 @@ import { UsersModule } from './users/users.module'
 import { OrderModule } from './order/order.module'
 import { NotificationsModule } from './notifications/notifications.module'
 import { ScheduleModule } from '@nestjs/schedule'
+import { BlogModule } from './blog/blog.module'
 
 @Module({
   imports: [
@@ -25,7 +26,8 @@ import { ScheduleModule } from '@nestjs/schedule'
     StorageModule,
     CartModule,
     OrderModule,
-    NotificationsModule
+    NotificationsModule,
+    BlogModule
   ],
   controllers: [AppController],
   providers: [AppService]

@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { Header } from '../Header'
 import { Footer } from '../Footer'
 
-export async function PrivateLayout({ children }: PropsWithChildren) {
+export async function DashboardLayout({ children }: PropsWithChildren) {
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>

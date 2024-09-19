@@ -12,6 +12,72 @@
           "nullable": false,
           "mappedType": "integer"
         },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "alias": {
+          "name": "alias",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "seo": {
+          "name": "seo",
+          "type": "json",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
+        }
+      },
+      "name": "blog_tag",
+      "indexes": [
+        {
+          "columnNames": [
+            "alias"
+          ],
+          "composite": false,
+          "keyName": "blog_tag_alias_unique",
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "PRIMARY",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
         "remote_id": {
           "name": "remote_id",
           "type": "varchar(255)",
@@ -399,6 +465,248 @@
           ],
           "referencedTableName": "category",
           "deleteRule": "set null",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "long_title": {
+          "name": "long_title",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
+        "alias": {
+          "name": "alias",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "read_time": {
+          "name": "read_time",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
+        "active": {
+          "name": "active",
+          "type": "tinyint(1)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "true",
+          "mappedType": "boolean"
+        },
+        "seo": {
+          "name": "seo",
+          "type": "json",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 0,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 0,
+          "mappedType": "datetime"
+        },
+        "image_id": {
+          "name": "image_id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        }
+      },
+      "name": "blog_post",
+      "indexes": [
+        {
+          "columnNames": [
+            "alias"
+          ],
+          "composite": false,
+          "keyName": "blog_post_alias_unique",
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
+        {
+          "columnNames": [
+            "image_id"
+          ],
+          "composite": false,
+          "keyName": "blog_post_image_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "PRIMARY",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "blog_post_image_id_foreign": {
+          "constraintName": "blog_post_image_id_foreign",
+          "columnNames": [
+            "image_id"
+          ],
+          "localTableName": "blog_post",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "file",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "blog_tag_id": {
+          "name": "blog_tag_id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "blog_post_id": {
+          "name": "blog_post_id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        }
+      },
+      "name": "blog_tag_posts",
+      "indexes": [
+        {
+          "columnNames": [
+            "blog_tag_id"
+          ],
+          "composite": false,
+          "keyName": "blog_tag_posts_blog_tag_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "blog_post_id"
+          ],
+          "composite": false,
+          "keyName": "blog_tag_posts_blog_post_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "PRIMARY",
+          "columnNames": [
+            "blog_tag_id",
+            "blog_post_id"
+          ],
+          "composite": true,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "blog_tag_posts_blog_tag_id_foreign": {
+          "constraintName": "blog_tag_posts_blog_tag_id_foreign",
+          "columnNames": [
+            "blog_tag_id"
+          ],
+          "localTableName": "blog_tag_posts",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "blog_tag",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "blog_tag_posts_blog_post_id_foreign": {
+          "constraintName": "blog_tag_posts_blog_post_id_foreign",
+          "columnNames": [
+            "blog_post_id"
+          ],
+          "localTableName": "blog_tag_posts",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "blog_post",
+          "deleteRule": "cascade",
           "updateRule": "cascade"
         }
       },

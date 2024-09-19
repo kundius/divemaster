@@ -15,7 +15,8 @@ export class BlogTagCreateDto {
 
   @Type(() => String)
   @IsString()
-  alias: string
+  @IsOptional()
+  alias?: string
 
   @Type(() => ParseJSONString)
   @IsObject()

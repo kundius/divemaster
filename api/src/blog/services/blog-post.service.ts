@@ -7,27 +7,46 @@ import { BlogPost } from '../entities/blog-post.entity'
 import { StorageService } from '@/storage/services/storage.service'
 import { BlogTag } from '../entities/blog-tag.entity'
 import { slugify } from '@/lib/utils'
+import { BlogTagService } from './blog-tag.service'
 
 @Injectable()
 export class BlogPostService {
   constructor(
     private storageService: StorageService,
     @InjectRepository(BlogPost)
-    private repository: EntityRepository<BlogPost>
+    private repository: EntityRepository<BlogPost>,
+    private blogTagService: BlogTagService
   ) {}
 
-  async create({ imageId, tags, ...fillable }: BlogPostCreateDto) {
-    const record = this.repository.create(fillable)
+  async makeUniqueAlias(from: string, n: number = 0) {
+    let alias = slugify(from)
+    if (n !== 0) {
+      alias = `${alias}-${n}`
+    }
+    const record = await this.repository.findOne({ alias })
+    if (!record) {
+      return alias
+    } else {
+      return this.makeUniqueAlias(from, n + 1)
+    }
+  }
+
+  async create({ imageId, tags, alias, ...fillable }: BlogPostCreateDto) {
+    const record = new BlogPost()
+
+    this.repository.assign(record, fillable)
+
+    record.alias = await this.makeUniqueAlias(alias || fillable.title)
 
     if (typeof imageId !== 'undefined') {
       record.image = imageId ? await this.storageService.findOne(imageId) : null
     }
 
+    await this.repository.getEntityManager().persistAndFlush(record)
+
     if (typeof tags !== 'undefined') {
       await this.setTags(record, tags)
     }
-
-    await this.repository.getEntityManager().persistAndFlush(record)
 
     return record
   }
@@ -49,20 +68,24 @@ export class BlogPostService {
     return this.repository.findOneOrFail({ id })
   }
 
-  async update(id: number, { imageId, tags, ...fillable }: BlogPostUpdateDto) {
+  async update(id: number, { imageId, tags, alias, ...fillable }: BlogPostUpdateDto) {
     const record = await this.repository.findOneOrFail(id)
 
     this.repository.assign(record, fillable)
+
+    if (typeof alias !== 'undefined' && alias !== record.alias) {
+      record.alias = await this.makeUniqueAlias(alias || record.title)
+    }
 
     if (typeof imageId !== 'undefined') {
       record.image = imageId ? await this.storageService.findOne(imageId) : null
     }
 
+    await this.repository.getEntityManager().persistAndFlush(record)
+
     if (typeof tags !== 'undefined') {
       await this.setTags(record, tags)
     }
-
-    await this.repository.getEntityManager().persistAndFlush(record)
   }
 
   async remove(id: number) {
@@ -71,20 +94,15 @@ export class BlogPostService {
   }
 
   async setTags(record: BlogPost, tagNames: string[]) {
-    const tags = await Promise.all(
-      tagNames.map(async (tagName) => {
-        const em = this.repository.getEntityManager()
-        let tag = await em.findOne(BlogTag, { name: tagName })
-        if (!tag) {
-          tag = em.create(BlogTag, { name: tagName, alias: slugify(tagName) })
-          em.persist(tag)
-          // tag = new BlogTag()
-          // tag.name = tagName
-          // await em.persistAndFlush(tag)
-        }
-        return tag
-      })
-    )
+    const tags: BlogTag[] = []
+    for (const tagName of tagNames) {
+      let tag = await this.blogTagService.findOneByName(tagName)
+      if (!tag) {
+        tag = await this.blogTagService.create({ name: tagName })
+      }
+      tags.push(tag)
+    }
     record.tags.set(tags)
+    await this.repository.getEntityManager().persistAndFlush(record)
   }
 }

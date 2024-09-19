@@ -38,62 +38,62 @@ const nav: Nav = [
     menu: [
       {
         title: 'Товары',
-        route: '/admin/products',
+        route: '/dashboard/products',
         icon: TagIcon,
         menu: [
           {
             title: 'Все товары',
-            route: '/admin/products'
+            route: '/dashboard/products'
           },
           {
             title: 'Категории',
-            route: '/admin/categories'
+            route: '/dashboard/categories'
           },
           {
             title: 'Бренды',
-            route: '/admin/brands'
+            route: '/dashboard/brands'
           },
           // {
           //   title: 'Отзывы',
-          //   route: '/admin/reviews'
+          //   route: '/dashboard/reviews'
           // },
           {
             title: 'Характеристики',
-            route: '/admin/options'
+            route: '/dashboard/options'
           }
           // {
           //   title: 'Импорт',
-          //   route: '/admin/import'
+          //   route: '/dashboard/import'
           // }
         ]
       },
       {
         title: 'Заказы',
-        route: '/admin/orders',
+        route: '/dashboard/orders',
         icon: ShoppingBagIcon,
         menu: [
           {
             title: 'Все заказы',
-            route: '/admin/orders'
+            route: '/dashboard/orders'
           },
           {
             title: 'Пункты выдачи',
-            route: '/admin/orders/pickup-points'
+            route: '/dashboard/orders/pickup-points'
           }
         ]
       },
       {
         title: 'Клиенты',
-        route: '/admin/users',
+        route: '/dashboard/users',
         icon: UserIcon,
         menu: [
           {
             title: 'Все пользователи',
-            route: '/admin/users'
+            route: '/dashboard/users'
           },
           {
             title: 'Доступы',
-            route: '/admin/user-roles'
+            route: '/dashboard/user-roles'
           }
         ]
       }
@@ -103,23 +103,23 @@ const nav: Nav = [
     title: 'Контент',
     menu: [
       {
-        title: 'Статьи',
-        route: '/admin/articles',
+        title: 'Блог',
+        route: '/dashboard/blog',
         icon: PencilSquareIcon,
         menu: [
           {
             title: 'Все статьи',
-            route: '/admin/articles'
+            route: '/dashboard/articles'
           },
           {
             title: 'Рубрики',
-            route: '/admin/rubrics'
+            route: '/dashboard/rubrics'
           }
         ]
       },
       {
         title: 'Страницы',
-        route: '/admin/pages',
+        route: '/dashboard/pages',
         icon: DocumentTextIcon
       }
     ]

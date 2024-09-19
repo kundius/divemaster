@@ -25,14 +25,14 @@ export class BlogPost {
   @Property({ default: true })
   active: boolean = true
 
+  @Property({ type: 'json', nullable: true })
+  seo: Record<string, string> | null = null
+
   @Property()
   createdAt: Date & Opt = new Date()
 
   @Property({ onUpdate: () => new Date() })
   updatedAt: Date & Opt = new Date()
-
-  @Property({ type: 'json', nullable: true })
-  seo: Record<string, string> | null = null
 
   @ManyToMany(() => BlogTag, (tag) => tag.posts)
   tags = new Collection<BlogTag>(this)

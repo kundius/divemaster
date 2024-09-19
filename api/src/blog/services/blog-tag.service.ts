@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common'
 
 import { BlogTagCreateDto, BlogTagFindAllDto, BlogTagUpdateDto } from '../dto/blog-tag.dto'
 import { BlogTag } from '../entities/blog-tag.entity'
+import { slugify } from '@/lib/utils'
 
 @Injectable()
 export class BlogTagService {
@@ -12,10 +13,25 @@ export class BlogTagService {
     private repository: EntityRepository<BlogTag>
   ) {}
 
-  async create({ ...fillable }: BlogTagCreateDto) {
+  async makeUniqueAlias(from: string, n: number = 0) {
+    let alias = slugify(from)
+    if (n !== 0) {
+      alias = `${alias}-${n}`
+    }
+    const record = await this.repository.findOne({ alias })
+    if (!record) {
+      return alias
+    } else {
+      return this.makeUniqueAlias(from, n + 1)
+    }
+  }
+
+  async create({ alias, ...fillable }: BlogTagCreateDto) {
     const record = new BlogTag()
 
     this.repository.assign(record, fillable)
+
+    record.alias = await this.makeUniqueAlias(alias || fillable.name)
 
     await this.repository.getEntityManager().persistAndFlush(record)
 
@@ -39,10 +55,18 @@ export class BlogTagService {
     return this.repository.findOneOrFail({ id })
   }
 
-  async update(id: number, { ...fillable }: BlogTagUpdateDto) {
+  async findOneByName(name: string) {
+    return this.repository.findOne({ name })
+  }
+
+  async update(id: number, { alias, ...fillable }: BlogTagUpdateDto) {
     const record = await this.repository.findOneOrFail(id)
 
     this.repository.assign(record, fillable)
+
+    if (typeof alias !== 'undefined' && alias !== record.alias) {
+      record.alias = await this.makeUniqueAlias(alias || record.name)
+    }
 
     await this.repository.getEntityManager().persistAndFlush(record)
   }

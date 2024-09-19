@@ -21,7 +21,8 @@ export class BlogPostCreateDto {
 
   @Type(() => String)
   @IsString()
-  alias: string
+  @IsOptional()
+  alias?: string
 
   @Type(() => String)
   @IsString()

@@ -5,9 +5,9 @@ import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer'
 import { Bars3BottomLeftIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Navigation } from '../Navigation'
 import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
+import { Navigation } from '../Navigation'
 
 export function NavDrawer() {
   const pathname = usePathname()

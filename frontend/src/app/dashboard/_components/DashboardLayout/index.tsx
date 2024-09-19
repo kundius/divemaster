@@ -1,10 +1,10 @@
 import Image from 'next/image'
 import { PropsWithChildren } from 'react'
 import styles from './styles.module.scss'
-import { Navigation } from '../Navigation'
+import { Navigation } from './Navigation'
 import Link from 'next/link'
-import { Header } from '../Header'
-import { Footer } from '../Footer'
+import { Header } from './Header'
+import { Footer } from './Footer'
 
 export async function DashboardLayout({ children }: PropsWithChildren) {
   return (
@@ -22,6 +22,7 @@ export async function DashboardLayout({ children }: PropsWithChildren) {
               <Navigation />
             </div>
           </div>
+          
           <div className={styles.body}>
             <Header />
 

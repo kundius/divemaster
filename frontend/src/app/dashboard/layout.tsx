@@ -1,18 +1,15 @@
-import React from 'react'
+import { PropsWithChildren } from 'react'
 
-import { AccessDeniedPage } from '@/components/admin/AccessDeniedPage'
-import { DashboardLayout } from '@/components/admin/DashboardLayout'
 import { HasScope } from '@/lib/HasScope'
 import { enableAuthPreload } from '@/providers/auth-server-provider'
 
-export default async function Layout({
-  children
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+import { AccessDenied } from './_components/AccessDenied'
+import { DashboardLayout } from './_components/DashboardLayout'
+
+export default async function Layout({ children }: PropsWithChildren) {
   enableAuthPreload()
   return (
-    <HasScope fallback={<AccessDeniedPage />} scopes="admin">
+    <HasScope fallback={<AccessDenied />} scopes="admin">
       <DashboardLayout>{children}</DashboardLayout>
     </HasScope>
   )

@@ -12,7 +12,7 @@ import {
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React from 'react'
-import styles from './styles.module.scss'
+import styles from './Navigation.module.scss'
 
 interface NavSecondLevelMenuItem {
   title: string

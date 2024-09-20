@@ -182,7 +182,7 @@ export function ProductOptions({ productId, initialOptions, initialValues }: Pro
         </div>
       ))}
       <div className="p-5 rounded-md flex items-center justify-end gap-4 bg-neutral-50">
-        <Link href="/admin/products">
+        <Link href="/dashboard/products">
           <Button type="button" variant="outline">
             Отмена
           </Button>

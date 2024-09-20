@@ -23,7 +23,7 @@ export function OptionUpdateForm({ initialData }: OptionUpdateFormProps) {
       rank: initialData.rank
     },
     onSuccess() {
-      router.push(`/admin/options`)
+      router.push(`/dashboard/options`)
     }
   })
   return <OptionForm form={form} onSubmit={onSubmit} />

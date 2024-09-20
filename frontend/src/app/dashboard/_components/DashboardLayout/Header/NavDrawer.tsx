@@ -27,7 +27,7 @@ export function NavDrawer() {
       </DrawerTrigger>
       <DrawerContent>
         <div className="flex justify-center mb-8">
-          <Link href="/admin">
+          <Link href="/dashboard">
             <Image src="/logo-dark.png" alt="Divemaster Logo" width={148} height={71} priority />
           </Link>
         </div>

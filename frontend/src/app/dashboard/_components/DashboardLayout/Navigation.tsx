@@ -105,17 +105,7 @@ const nav: Nav = [
       {
         title: 'Блог',
         route: '/dashboard/blog',
-        icon: PencilSquareIcon,
-        menu: [
-          {
-            title: 'Все статьи',
-            route: '/dashboard/articles'
-          },
-          {
-            title: 'Рубрики',
-            route: '/dashboard/rubrics'
-          }
-        ]
+        icon: PencilSquareIcon
       },
       {
         title: 'Страницы',

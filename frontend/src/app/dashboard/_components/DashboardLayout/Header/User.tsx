@@ -30,7 +30,7 @@ export function User() {
           </div>
         </div>
         <DropdownMenuSeparator />
-        <Link href="/admin/profile">
+        <Link href="/dashboard/profile">
           <DropdownMenuItem>Профиль</DropdownMenuItem>
         </Link>
         <DropdownMenuSeparator />

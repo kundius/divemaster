@@ -1,6 +1,6 @@
 'use client'
 
-import { DataTable, DataTableColumn } from '@/components/admin/DataTable'
+import { DataTable, DataTableColumn } from '@/components/DataTable'
 import type { FilterField } from '@/components/admin/Filter'
 import { Button } from '@/components/ui/button'
 import { ApiRemoveDialog } from '@/lib/ApiRemoveDialog'

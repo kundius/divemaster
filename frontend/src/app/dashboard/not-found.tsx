@@ -6,7 +6,7 @@ export default function NotFound() {
     <div>
       <h1 className="mb-4 text-4xl font-bold tracking-tight">Ошибка 404</h1>
       <p className="text-md mb-8">Запрашиваемый ресурс не найден.</p>
-      <Link href="/admin" prefetch={false}>
+      <Link href="/dashboard" prefetch={false}>
         <Button>Панель управления</Button>
       </Link>
     </div>

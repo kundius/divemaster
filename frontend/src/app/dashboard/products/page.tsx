@@ -27,7 +27,7 @@ export default async function Page(props: PageProps) {
     <PageLayout
       title="Товары"
       actions={
-        <Link href="/admin/products/create">
+        <Link href="/dashboard/products/create">
           <Button>Добавить товар</Button>
         </Link>
       }

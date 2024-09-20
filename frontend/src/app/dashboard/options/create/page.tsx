@@ -11,7 +11,7 @@ export default function Page() {
   const items = [
     {
       title: 'Свойства',
-      href: `/admin/options/create`
+      href: `/dashboard/options/create`
     },
     {
       title: 'Категории'

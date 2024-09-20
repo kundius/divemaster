@@ -1,6 +1,6 @@
 'use client'
 
-import { DataTable, DataTableColumn } from '@/components/admin/DataTable'
+import { DataTable, DataTableColumn } from '@/components/DataTable'
 import type { FilterField } from '@/components/admin/Filter'
 import { Button } from '@/components/ui/button'
 import { ApiRemoveDialog } from '@/lib/ApiRemoveDialog'
@@ -71,12 +71,12 @@ export function OptionTable({ initialData }: OptionTableProps) {
       },
       formatter: (id) => (
         <div className="flex gap-2">
-          <Link href={`/admin/options/${id}`}>
+          <Link href={`/dashboard/options/${id}`}>
             <Button variant="outline" size="sm-icon">
               <PencilIcon className="w-4 h-4" />
             </Button>
           </Link>
-          <Link href={`/admin/options/${id}/categories`}>
+          <Link href={`/dashboard/options/${id}/categories`}>
             <Button variant="outline" size="sm-icon">
               <SquaresPlusIcon className="w-4 h-4" />
             </Button>

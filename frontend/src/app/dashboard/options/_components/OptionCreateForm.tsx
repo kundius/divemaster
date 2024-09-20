@@ -19,7 +19,7 @@ export function OptionCreateForm() {
       rank: 0
     },
     onSuccess() {
-      router.push(`/admin/options`)
+      router.push(`/dashboard/options`)
     }
   })
   return <OptionForm form={form} onSubmit={onSubmit} />

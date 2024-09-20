@@ -1,6 +1,6 @@
 'use client'
 
-import { DataTable, DataTableColumn } from '@/components/admin/DataTable'
+import { DataTable, DataTableColumn } from '@/components/DataTable'
 import type { FilterField } from '@/components/admin/Filter'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'

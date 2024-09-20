@@ -14,7 +14,7 @@ export async function DashboardLayout({ children }: PropsWithChildren) {
           <div className={styles.sidebar}>
             <div className="sticky top-0">
               <div className={styles.logo}>
-                <Link href="/admin">
+                <Link href="/dashboard">
                   <Image src="/logo.png" alt="Divemaster Logo" width={148} height={71} priority />
                 </Link>
               </div>

@@ -31,7 +31,7 @@ export function ProductCreate() {
       return values
     },
     onSuccess: (data) => {
-      router.push(`/admin/products/${data.id}`)
+      router.push(`/dashboard/products/${data.id}`)
     }
   })
   return <ProductForm form={form} onSubmit={onSubmit} />

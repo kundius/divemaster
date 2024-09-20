@@ -23,6 +23,11 @@
 //   cities: PickupPointCitiesCity[]
 // }
 
+export interface FindAllResult<TRow> {
+  rows: TRow[]
+  total: number
+}
+
 export interface CartGetOrderCost {
   cost: number
   composition: {
@@ -304,4 +309,27 @@ export interface CartProductEntity {
   oldPrice?: number
   price?: number
   active?: boolean
+}
+
+export interface BlogPostEntity {
+  id: number
+  title: string
+  longTitle: string | null
+  alias: string
+  content: string | null
+  readTime: string | null
+  active: boolean
+  seo: Record<string, string> | null
+  createdAt: string
+  updatedAt: string
+  tags: BlogTagEntity[]
+  image: FileEntity | null
+}
+
+export interface BlogTagEntity {
+  id: number
+  name: string
+  alias: string
+  seo: Record<string, string> | null
+  posts: BlogPostEntity[]
 }

@@ -1,6 +1,5 @@
 'use client'
 
-import { Pagination } from '@/components/admin/Pagination'
 import { Button } from '@/components/ui/button'
 import {
   Select,
@@ -16,17 +15,26 @@ import {
   ChevronRightIcon
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { parseAsInteger, useQueryState } from 'nuqs'
 
-export interface OrdersPaginationProps {
+export interface StaticPaginationProps {
   total: number
   page: number
   limit: number
 }
 
-export function OrdersPagination({ total, page, limit }: OrdersPaginationProps) {
+export function StaticPagination({
+  total,
+  page,
+  limit
+}: StaticPaginationProps) {
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
   const setPageIndex = (value: number) => {
-    return `/dashboard/orders?page=${value}`
+    const search = new URLSearchParams(searchParams)
+    search.set('page', String(value))
+    return `${pathname}?${search.toString()}`
   }
 
   const getPageCount = () => {

@@ -3,7 +3,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestj
 import { BlogPostCreateDto, BlogPostFindAllDto, BlogPostUpdateDto } from '../dto/blog-post.dto'
 import { BlogPostService } from '../services/blog-post.service'
 
-@Controller('blog/Post')
+@Controller('blog/post')
 export class BlogPostController {
   constructor(private readonly service: BlogPostService) {}
 

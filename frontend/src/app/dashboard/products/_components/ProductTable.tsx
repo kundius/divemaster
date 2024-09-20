@@ -1,6 +1,6 @@
 'use client'
 
-import { DataTable, DataTableColumn } from '@/components/admin/DataTable'
+import { DataTable, DataTableColumn } from '@/components/DataTable'
 import type { FilterField } from '@/components/admin/Filter'
 import { Button } from '@/components/ui/button'
 import { ApiRemoveDialog } from '@/lib/ApiRemoveDialog'
@@ -56,7 +56,7 @@ export function ProductTable({ initialData }: ProductTableProps) {
     //   },
     //   formatter: (category) => {
     //     return (
-    //       <Link href={`/admin/categories/${category.id}`}>
+    //       <Link href={`/dashboard/categories/${category.id}`}>
     //         <Badge variant="outline">{category.title}</Badge>
     //       </Link>
     //     )
@@ -89,7 +89,7 @@ export function ProductTable({ initialData }: ProductTableProps) {
       },
       formatter: (id) => (
         <div className="flex gap-2">
-          <Link href={`/admin/products/${id}`}>
+          <Link href={`/dashboard/products/${id}`}>
             <Button variant="outline" size="sm-icon">
               <PencilIcon className="w-4 h-4" />
             </Button>

@@ -14,11 +14,11 @@ export default function Layout({
   const items = [
     {
       title: 'Свойства',
-      href: `/admin/options/${params.id}`
+      href: `/dashboard/options/${params.id}`
     },
     {
       title: 'Категории',
-      href: `/admin/options/${params.id}/categories`
+      href: `/dashboard/options/${params.id}/categories`
     }
   ]
   return (

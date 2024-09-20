@@ -14,35 +14,35 @@ export default function Layout({
   const items = [
     {
       title: 'Свойства',
-      href: `/admin/products/${params.id}`
+      href: `/dashboard/products/${params.id}`
     },
     {
       title: 'Описание',
-      href: `/admin/products/${params.id}/description`
+      href: `/dashboard/products/${params.id}/description`
     },
     {
       title: 'Категории',
-      href: `/admin/products/${params.id}/categories`
+      href: `/dashboard/products/${params.id}/categories`
     },
     {
       title: 'Галерея',
-      href: `/admin/products/${params.id}/gallery`
+      href: `/dashboard/products/${params.id}/gallery`
     },
     {
       title: 'Характеристики',
-      href: `/admin/products/${params.id}/options`
+      href: `/dashboard/products/${params.id}/options`
     },
     // {
     //   title: 'Отзывы',
-    //   href: `/admin/products/${params.id}/reviews`
+    //   href: `/dashboard/products/${params.id}/reviews`
     // },
     // {
     //   title: 'Связи',
-    //   href: `/admin/products/${params.id}/links`
+    //   href: `/dashboard/products/${params.id}/links`
     // },
     {
       title: 'Торговые предложения',
-      href: `/admin/products/${params.id}/offers`
+      href: `/dashboard/products/${params.id}/offers`
     }
   ]
   return (

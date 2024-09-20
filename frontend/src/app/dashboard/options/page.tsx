@@ -27,7 +27,7 @@ export default async function Page(props: PageProps) {
     <PageLayout
       title="Характеристики"
       actions={
-        <Link href="/admin/options/create">
+        <Link href="/dashboard/options/create">
           <Button>Добавить параметр</Button>
         </Link>
       }

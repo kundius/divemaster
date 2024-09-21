@@ -1,5 +1,5 @@
 import { PaginationQueryDto } from '@/lib/pagination-query.dto'
-import { ParseBooleanString } from '@/lib/parse-boolean-string'
+import { ParseBoolean } from '@/lib/parse-boolean'
 import { QueryOrder } from '@mikro-orm/core'
 import { PartialType } from '@nestjs/mapped-types'
 import { Type } from 'class-transformer'
@@ -23,31 +23,31 @@ export class SortProductImageDto {
 }
 
 export class FindOneProductDto {
-  @ParseBooleanString()
+  @ParseBoolean()
   @IsBoolean()
   active: boolean = false
 
-  @ParseBooleanString()
+  @ParseBoolean()
   @IsBoolean()
   withOffers: boolean = false
 
-  @ParseBooleanString()
+  @ParseBoolean()
   @IsBoolean()
   withImages: boolean = false
 
-  @ParseBooleanString()
+  @ParseBoolean()
   @IsBoolean()
   withContent: boolean = false
 
-  @ParseBooleanString()
+  @ParseBoolean()
   @IsBoolean()
   withOptions: boolean = false
 
-  @ParseBooleanString()
+  @ParseBoolean()
   @IsBoolean()
   withBrand: boolean = false
 
-  @ParseBooleanString()
+  @ParseBoolean()
   @IsBoolean()
   withCategories: boolean = false
 }
@@ -68,31 +68,31 @@ export class FindAllProductDto extends PaginationQueryDto {
   @IsOptional()
   category?: number
 
-  @ParseBooleanString()
+  @ParseBoolean()
   @IsBoolean()
   active: boolean = false
 
-  @ParseBooleanString()
+  @ParseBoolean()
   @IsBoolean()
   favorite: boolean = false
 
-  @ParseBooleanString()
+  @ParseBoolean()
   @IsBoolean()
   recent: boolean = false
 
-  @ParseBooleanString()
+  @ParseBoolean()
   @IsBoolean()
   withImages: boolean = false
 
-  @ParseBooleanString()
+  @ParseBoolean()
   @IsBoolean()
   withContent: boolean = false
 
-  @ParseBooleanString()
+  @ParseBoolean()
   @IsBoolean()
   withOptions: boolean = false
 
-  @ParseBooleanString()
+  @ParseBoolean()
   @IsBoolean()
   withOffers: boolean = false
 
@@ -100,7 +100,7 @@ export class FindAllProductDto extends PaginationQueryDto {
   @IsBoolean()
   withBrand: boolean = false
 
-  @ParseBooleanString()
+  @ParseBoolean()
   @IsBoolean()
   withCategories: boolean = false
 
@@ -153,19 +153,19 @@ export class CreateProductDto {
   @IsOptional()
   exploitation?: string
 
-  @Type(() => ParseBooleanString)
+  @Type(() => ParseBoolean)
   @IsBoolean()
   active: boolean
 
-  @Type(() => ParseBooleanString)
+  @Type(() => ParseBoolean)
   @IsBoolean()
   recent: boolean
 
-  @Type(() => ParseBooleanString)
+  @Type(() => ParseBoolean)
   @IsBoolean()
   favorite: boolean
 
-  @Type(() => ParseBooleanString)
+  @Type(() => ParseBoolean)
   @IsBoolean()
   inStock: boolean
 
@@ -223,7 +223,7 @@ export class OrderByClickProductDto {
   @IsString()
   subject: string
 
-  @ParseBooleanString()
+  @ParseBoolean()
   @IsBoolean()
   approve: boolean = false
 }

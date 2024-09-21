@@ -1,24 +1,34 @@
-import { UsersPage } from '@/components/admin/UsersPage'
-import { DEFAULT_LIMIT } from '@/lib/ApiTable/constants'
-import { ApiTableData } from '@/lib/ApiTable/types'
+import type { Metadata } from 'next'
+import Link from 'next/link'
+
+import { PageLayout } from '@/components/admin/PageLayout'
+import { Button } from '@/components/ui/button'
 import { apiGet } from '@/lib/api'
 import { withServerAuth } from '@/lib/api/with-server-auth'
-import { PageProps, UserEntity } from '@/types'
-import type { Metadata } from 'next'
+import { FindAllResult, PageProps, UserEntity } from '@/types'
+
+import { UsersList } from './_components/UsersList'
 
 export const metadata: Metadata = {
   title: 'Пользователи'
 }
 
 export default async function Page(props: PageProps) {
-  const initialData = await apiGet<ApiTableData<UserEntity>>(
+  const fallbackData = await apiGet<FindAllResult<UserEntity>>(
     'users',
-    {
-      limit: DEFAULT_LIMIT,
-      ...props.searchParams
-    },
+    props.searchParams,
     withServerAuth()
   )
 
-  return <UsersPage initialData={initialData} />
+  const actions = [
+    <Button asChild key="create">
+      <Link href="/dashboard/users/create">Добавить пользователя</Link>
+    </Button>
+  ]
+
+  return (
+    <PageLayout title="Пользователи" actions={actions}>
+      <UsersList fallbackData={fallbackData} />
+    </PageLayout>
+  )
 }

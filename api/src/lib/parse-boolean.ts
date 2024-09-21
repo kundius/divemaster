@@ -1,6 +1,6 @@
 import { Transform } from 'class-transformer'
 
-export function ParseBooleanString() {
+export function ParseBoolean() {
   return Transform(({ value }) => {
     if (typeof value === 'boolean') {
       return value

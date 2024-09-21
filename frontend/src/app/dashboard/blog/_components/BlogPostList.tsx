@@ -1,17 +1,18 @@
 'use client'
 
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
+import Image from 'next/image'
 import Link from 'next/link'
 import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryStates } from 'nuqs'
 import useSWR from 'swr'
 
 import { DataTable, DataTableColumn, DataTableFilterField } from '@/components/DataTable'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ApiRemoveDialog } from '@/lib/ApiRemoveDialog'
 import { clearEmpty, getFileUrl } from '@/lib/utils'
-import { BlogPostEntity, BlogPostStatusEnum, BlogTagEntity, FindAllResult } from '@/types'
-import { Badge } from '@/components/ui/badge'
-import Image from 'next/image'
+import { BlogPostEntity, BlogTagEntity, FindAllResult } from '@/types'
+
 import { BlogPostStatusColors, BlogPostStatusIcons, BlogPostStatusLabels } from '../data'
 
 export interface BlogPostListProps {
@@ -68,7 +69,12 @@ export function BlogPostList({ fallbackData }: BlogPostListProps) {
           <div className="flex gap-2 items-center">
             {record.image && (
               <div className="flex w-12 h-12 relative self-start">
-                <Image src={getFileUrl(record.image)} fill alt="" className="object-cover rounded" />
+                <Image
+                  src={getFileUrl(record.image)}
+                  fill
+                  alt=""
+                  className="object-cover rounded"
+                />
               </div>
             )}
             <div className="space-y-1">

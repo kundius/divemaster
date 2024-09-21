@@ -32,23 +32,27 @@ export class UsersService {
   }
 
   async findAll(dto: FindAllUserQueryDto) {
-    let where: FilterQuery<User> = {}
+    const qb = this.usersRepository.createQueryBuilder('user')
 
     if (dto.query) {
-      where = {
-        ...where,
-        name: {
-          $like: '%' + dto.query + '%'
-        }
-      }
+      qb.andWhere({
+        $or: [
+          { name: { $like: '%' + dto.query + '%' } },
+          { email: { $like: '%' + dto.query + '%' } }
+        ]
+      })
     }
 
-    const [rows, total] = await this.usersRepository.findAndCount(where, {
-      limit: dto.take,
-      offset: dto.skip,
-      orderBy: { [dto.sort]: dto.dir },
-      populate: ['role']
-    })
+    if (dto.roles) {
+      qb.andWhere({ role: { title: { $in: dto.roles } } })
+    }
+
+    qb.leftJoinAndSelect('user.role', 'role')
+    qb.limit(dto.take)
+    qb.offset(dto.skip)
+    qb.orderBy({ [dto.sort]: dto.dir })
+
+    const [rows, total] = await qb.getResultAndCount()
 
     return { rows, total }
   }

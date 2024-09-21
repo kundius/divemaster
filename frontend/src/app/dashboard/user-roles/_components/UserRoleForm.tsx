@@ -1,5 +1,11 @@
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { z } from 'zod'
+
 import { Button, ButtonLoadingIcon } from '@/components/ui/button'
 import {
   Form,
@@ -11,8 +17,9 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { TagsInput } from '@/components/ui/tags-input'
-import { UseFormReturn, useFormContext } from 'react-hook-form'
-import { z } from 'zod'
+import { apiPatch, apiPost } from '@/lib/api'
+import { withClientAuth } from '@/lib/api/with-client-auth'
+import { UserRoleEntity } from '@/types'
 
 export const UserRoleFormSchema = z.object({
   title: z.string().trim().min(1),
@@ -22,11 +29,59 @@ export const UserRoleFormSchema = z.object({
 export type UserRoleFormFields = z.infer<typeof UserRoleFormSchema>
 
 export interface UserRoleFormProps {
-  form: UseFormReturn<UserRoleFormFields, any, undefined>
-  onSubmit: (values: UserRoleFormFields) => Promise<void>
+  record?: UserRoleEntity
 }
 
-export function UserRoleForm({ form, onSubmit }: UserRoleFormProps) {
+export function UserRoleForm({ record }: UserRoleFormProps) {
+  const router = useRouter()
+
+  const form = useForm<UserRoleFormFields>({
+    resolver: zodResolver(UserRoleFormSchema),
+    defaultValues: record
+      ? {
+          scope: record.scope || [],
+          title: record.title
+        }
+      : {
+          title: '',
+          scope: []
+        }
+  })
+
+  const onSubmit = async (values: UserRoleFormFields) => {
+    if (record) {
+      update(values)
+    } else {
+      create(values)
+    }
+  }
+
+  const update = async (values: UserRoleFormFields) => {
+    if (!record) {
+      throw new Error('record not defined')
+    }
+
+    try {
+      await apiPatch(`roles/${record.id}`, values, withClientAuth())
+
+      toast.success('Доступ изменен')
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Unknown error')
+    }
+  }
+
+  const create = async (values: UserRoleFormFields) => {
+    try {
+      const result = await apiPost<UserRoleEntity>(`roles`, values, withClientAuth())
+
+      toast.success('Доступ добавлен')
+
+      router.push(`/dashboard/user-roles/${result.id}`)
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Unknown error')
+    }
+  }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>

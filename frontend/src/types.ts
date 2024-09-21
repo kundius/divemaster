@@ -319,7 +319,7 @@ export interface BlogPostEntity {
   content: string | null
   readTime: string | null
   status: BlogPostStatusEnum
-  seo: Record<string, string> | null
+  metadata: Record<string, string> | null
   createdAt: string
   updatedAt: string
   tags: BlogTagEntity[]

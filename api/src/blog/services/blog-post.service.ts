@@ -1,14 +1,14 @@
-import { EntityRepository, ObjectQuery } from '@mikro-orm/mariadb'
+import { EntityRepository } from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { Injectable } from '@nestjs/common'
 
+import { StorageService } from '@/storage/services/storage.service'
+import { slugify } from '@/lib/utils'
+
 import { BlogPostCreateDto, BlogPostFindAllDto, BlogPostUpdateDto } from '../dto/blog-post.dto'
 import { BlogPost } from '../entities/blog-post.entity'
-import { StorageService } from '@/storage/services/storage.service'
 import { BlogTag } from '../entities/blog-tag.entity'
-import { slugify } from '@/lib/utils'
 import { BlogTagService } from './blog-tag.service'
-import { OperatorMap } from '@mikro-orm/core/typings'
 
 @Injectable()
 export class BlogPostService {

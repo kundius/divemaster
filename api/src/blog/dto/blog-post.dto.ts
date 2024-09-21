@@ -12,8 +12,8 @@ import {
 } from 'class-validator'
 
 import { PaginationQueryDto } from '@/lib/pagination-query.dto'
-import { ParseArrayString } from '@/lib/parse-array-string'
-import { ParseJSONString } from '@/lib/parse-json-string'
+import { ParseArray } from '@/lib/parse-array'
+import { ParseObject } from '@/lib/parse-object'
 
 import { BlogPost, BlogPostStatusEnum } from '../entities/blog-post.entity'
 
@@ -46,10 +46,10 @@ export class BlogPostCreateDto {
   @IsOptional()
   status?: BlogPostStatusEnum
 
-  @ParseJSONString()
+  @ParseObject()
   @IsObject()
   @IsOptional()
-  seo?: Record<string, string>
+  metadata?: Record<string, string>
 
   @Type(() => Number)
   @IsNumber()
@@ -69,7 +69,7 @@ export class BlogPostFindAllDto extends PaginationQueryDto {
   @IsOptional()
   query?: string
 
-  @ParseArrayString()
+  @ParseArray()
   @IsArray()
   @IsOptional()
   tags?: string[]

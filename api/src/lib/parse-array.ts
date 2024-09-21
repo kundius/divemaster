@@ -1,13 +1,17 @@
 import { Transform } from 'class-transformer'
 
-export function ParseJSONString() {
+export function ParseArray() {
   return Transform(({ value }) => {
+    if (Array.isArray(value)) {
+      return value
+    }
+
     if (typeof value !== 'string') {
       return undefined
     }
 
     try {
-      return JSON.parse(value)
+      return value.split(',')
     } catch {}
 
     return undefined

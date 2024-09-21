@@ -1,5 +1,11 @@
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { z } from 'zod'
+
 import { Button, ButtonLoadingIcon } from '@/components/ui/button'
 import {
   Form,
@@ -12,8 +18,9 @@ import {
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { ApiInputComboBox } from '@/lib/ApiInputComboBox'
-import { UseFormReturn } from 'react-hook-form'
-import { z } from 'zod'
+import { apiPatch, apiPost } from '@/lib/api'
+import { withClientAuth } from '@/lib/api/with-client-auth'
+import { UserEntity } from '@/types'
 
 export const UserFormSchema = z.object({
   roleId: z.number(),
@@ -26,11 +33,64 @@ export const UserFormSchema = z.object({
 export type UserFormFields = z.infer<typeof UserFormSchema>
 
 export interface UserFormProps {
-  form: UseFormReturn<UserFormFields, any, undefined>
-  onSubmit: (values: UserFormFields) => Promise<void>
+  record?: UserEntity
 }
 
-export function UserForm({ form, onSubmit }: UserFormProps) {
+export function UserForm({ record }: UserFormProps) {
+  const router = useRouter()
+
+  const form = useForm<UserFormFields>({
+    resolver: zodResolver(UserFormSchema),
+    defaultValues: record
+      ? {
+          email: record.email || '',
+          roleId: record.role.id,
+          name: record.name,
+          password: '',
+          active: record.active
+        }
+      : {
+          name: '',
+          email: '',
+          password: '',
+          active: true
+        }
+  })
+
+  const onSubmit = async (values: UserFormFields) => {
+    if (record) {
+      update(values)
+    } else {
+      create(values)
+    }
+  }
+
+  const update = async (values: UserFormFields) => {
+    if (!record) {
+      throw new Error('record not defined')
+    }
+
+    try {
+      await apiPatch(`users/${record.id}`, values, withClientAuth())
+
+      toast.success('Пользователь изменен')
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Unknown error')
+    }
+  }
+
+  const create = async (values: UserFormFields) => {
+    try {
+      const result = await apiPost<UserEntity>(`users`, values, withClientAuth())
+
+      toast.success('Пользователь добавлен')
+
+      router.push(`/dashboard/users/${result.id}`)
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Unknown error')
+    }
+  }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>

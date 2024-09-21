@@ -4,7 +4,7 @@ import { Type } from 'class-transformer'
 import { IsEnum, IsOptional, IsString, IsJSON, IsObject } from 'class-validator'
 
 import { PaginationQueryDto } from '@/lib/pagination-query.dto'
-import { ParseJSONString } from '@/lib/parse-json-string'
+import { ParseObject } from '@/lib/parse-object'
 
 import { BlogTag } from '../entities/blog-tag.entity'
 
@@ -18,10 +18,10 @@ export class BlogTagCreateDto {
   @IsOptional()
   alias?: string
 
-  @Type(() => ParseJSONString)
+  @Type(() => ParseObject)
   @IsObject()
   @IsOptional()
-  seo?: Record<string, string>
+  metadata?: Record<string, string>
 }
 
 export class BlogTagUpdateDto extends PartialType(BlogTagCreateDto) {}

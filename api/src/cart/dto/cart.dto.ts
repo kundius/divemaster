@@ -1,12 +1,12 @@
 import { Type } from 'class-transformer'
 import { IsArray, IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
 
-import { ParseBooleanString } from '@/lib/parse-boolean-string'
+import { ParseBoolean } from '@/lib/parse-boolean'
 import { DeliveryService } from '@/order/entities/delivery.entity'
 import { PaymentServiceEnum } from '@/order/entities/payment.entity'
 
 export class GetOrderCostDto {
-  @ParseBooleanString()
+  @ParseBoolean()
   @IsBoolean()
   @IsOptional()
   personalDiscount?: boolean
@@ -21,15 +21,15 @@ export class GetOrderCostDto {
 }
 
 export class CreateOrderDto {
-  @ParseBooleanString()
+  @ParseBoolean()
   @IsBoolean()
   agreement: boolean
 
-  @ParseBooleanString()
+  @ParseBoolean()
   @IsBoolean()
   legalEntity: boolean
 
-  @ParseBooleanString()
+  @ParseBoolean()
   @IsBoolean()
   personalDiscount: boolean
 

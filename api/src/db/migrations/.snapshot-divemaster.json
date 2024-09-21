@@ -30,8 +30,8 @@
           "nullable": false,
           "mappedType": "string"
         },
-        "seo": {
-          "name": "seo",
+        "metadata": {
+          "name": "metadata",
           "type": "json",
           "unsigned": false,
           "autoincrement": false,
@@ -541,8 +541,8 @@
           ],
           "mappedType": "enum"
         },
-        "seo": {
-          "name": "seo",
+        "metadata": {
+          "name": "metadata",
           "type": "json",
           "unsigned": false,
           "autoincrement": false,

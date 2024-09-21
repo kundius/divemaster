@@ -4,7 +4,7 @@ import React from 'react'
 import { User } from './User'
 
 import styles from './Header.module.scss'
-import { NavDrawer } from './_Header/NavDrawer'
+import { NavDrawer } from './NavDrawer'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -15,7 +15,7 @@ export function Header() {
         <NavDrawer />
       </div>
       <div className={styles.logo}>
-        <Link href="/dashboard">
+        <Link href="/">
           <Image src="/logo.png" alt="Divemaster Logo" width={128} height={61} priority />
         </Link>
       </div>

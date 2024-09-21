@@ -1,9 +1,10 @@
 import { PaginationQueryDto } from '@/lib/pagination-query.dto'
 import { Type } from 'class-transformer'
-import { IsBoolean, IsEmail, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
+import { IsArray, IsBoolean, IsEmail, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
 import { User } from '../entities/user.entity'
 import { QueryOrder } from '@mikro-orm/core'
 import { PartialType } from '@nestjs/mapped-types'
+import { ParseArray } from '@/lib/parse-array'
 
 export class CreateUserDto {
   @Type(() => String)
@@ -33,7 +34,12 @@ export class FindAllUserQueryDto extends PaginationQueryDto {
   @Type(() => String)
   @IsString()
   @IsOptional()
-  readonly query?: string
+  query?: string
+
+  @ParseArray()
+  @IsArray()
+  @IsOptional()
+  roles?: string[]
 
   @Type(() => String)
   @IsString()

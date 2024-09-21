@@ -21,16 +21,11 @@ export function NavDrawer() {
   return (
     <Drawer direction="left" open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        <Button variant="ghost" size="icon" className="flex">
+        <Button variant="ghost" size="icon" className="flex text-white w-10 h-10">
           <Bars3BottomLeftIcon className="w-8 h-8" />
         </Button>
       </DrawerTrigger>
       <DrawerContent>
-        <div className="flex justify-center mb-8">
-          <Link href="/dashboard">
-            <Image src="/logo-dark.png" alt="Divemaster Logo" width={148} height={71} priority />
-          </Link>
-        </div>
         <Navigation variant="dark" />
       </DrawerContent>
     </Drawer>

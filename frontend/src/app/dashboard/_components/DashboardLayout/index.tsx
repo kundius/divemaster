@@ -1,18 +1,22 @@
 import Image from 'next/image'
 import { PropsWithChildren } from 'react'
-import styles from './styles.module.scss'
-import { Navigation } from './Navigation'
 import Link from 'next/link'
-import { Header } from './Header'
+
+import styles from './index.module.scss'
+import { Navigation } from './Navigation'
 import { Footer } from './Footer'
+import { User } from './User'
+import { Header } from './Header'
 
 export async function DashboardLayout({ children }: PropsWithChildren) {
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
+        <Header />
+
         <div className={styles.layout}>
           <div className={styles.sidebar}>
-            <div className="sticky top-0">
+            <div className={styles.sidesticky}>
               <div className={styles.logo}>
                 <Link href="/dashboard">
                   <Image src="/logo.png" alt="Divemaster Logo" width={148} height={71} priority />
@@ -21,15 +25,13 @@ export async function DashboardLayout({ children }: PropsWithChildren) {
 
               <Navigation />
             </div>
-          </div>
-          
-          <div className={styles.body}>
-            <Header />
 
-            <div className="p-3 lg:p-8 flex-grow">{children}</div>
-
-            <Footer />
+            <div className={styles.sidefloat}>
+              <User />
+            </div>
           </div>
+
+          <div className={styles.body}>{children}</div>
         </div>
       </div>
     </div>

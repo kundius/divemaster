@@ -3,8 +3,8 @@
 import { Button } from '@/components/ui/button'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { useEffect, useState } from 'react'
-import { SearchFilter, SearchFilterProps } from './SearchFilter'
-import { FacetedFilter, FacetedFilterProps } from './FacetedFilter'
+import { SearchFilter, SearchFilterProps } from '../SearchFilter'
+import { FacetedFilter, FacetedFilterProps } from '../FacetedFilter'
 
 // TODO:
 // значения фильтров не типизированы (надо ли?)

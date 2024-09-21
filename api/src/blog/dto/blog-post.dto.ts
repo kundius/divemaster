@@ -1,13 +1,21 @@
-import { QueryOrder } from '@mikro-orm/core'
+import { Enum, QueryOrder } from '@mikro-orm/core'
 import { PartialType } from '@nestjs/mapped-types'
 import { Type } from 'class-transformer'
-import { IsArray, IsBoolean, IsEnum, IsNumber, IsObject, IsOptional, IsString } from 'class-validator'
+import {
+  IsArray,
+  IsBoolean,
+  IsEnum,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString
+} from 'class-validator'
 
 import { PaginationQueryDto } from '@/lib/pagination-query.dto'
-import { ParseBooleanString } from '@/lib/parse-boolean-string'
+import { ParseArrayString } from '@/lib/parse-array-string'
 import { ParseJSONString } from '@/lib/parse-json-string'
 
-import { BlogPost } from '../entities/blog-post.entity'
+import { BlogPost, BlogPostStatusEnum } from '../entities/blog-post.entity'
 
 export class BlogPostCreateDto {
   @Type(() => String)
@@ -34,11 +42,11 @@ export class BlogPostCreateDto {
   @IsOptional()
   readTime?: string
 
-  @Type(() => ParseBooleanString)
-  @IsBoolean()
-  active: boolean
+  @IsEnum(BlogPostStatusEnum)
+  @IsOptional()
+  status?: BlogPostStatusEnum
 
-  @Type(() => ParseJSONString)
+  @ParseJSONString()
   @IsObject()
   @IsOptional()
   seo?: Record<string, string>
@@ -59,16 +67,21 @@ export class BlogPostFindAllDto extends PaginationQueryDto {
   @Type(() => String)
   @IsString()
   @IsOptional()
-  readonly query?: string
+  query?: string
+
+  @ParseArrayString()
+  @IsArray()
+  @IsOptional()
+  tags?: string[]
 
   @Type(() => String)
   @IsString()
   @IsOptional()
-  sort: keyof BlogPost = 'id'
+  sort: keyof BlogPost = 'createdAt'
 
   @IsEnum(QueryOrder)
   @IsOptional()
-  dir: QueryOrder = QueryOrder.ASC
+  dir: QueryOrder = QueryOrder.DESC
 }
 
 export class BlogPostFindOneDto {}

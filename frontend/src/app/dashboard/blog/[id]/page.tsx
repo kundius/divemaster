@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 }
 
 export default async function Page({ params }: PageProps<{ id: string }>) {
-  const record = await apiGet<BlogPostEntity>(`blog/post/${params.id}`, withServerAuth())
+  const record = await apiGet<BlogPostEntity>(`blog/post/${params.id}`, {}, withServerAuth())
   return (
     <PageLayout title="Редактировать пост">
       <BlogPostForm record={record} />

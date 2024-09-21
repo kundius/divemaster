@@ -121,7 +121,7 @@ export function ProductTable({ initialData }: ProductTableProps) {
         value: vespTable.filter,
         fields: filterFields
       }}
-      onChangeFilter={vespTable.onChangeFilter}
+      setFilter={vespTable.onChangeFilter}
       pagination={{
         page: vespTable.page,
         limit: vespTable.limit,
@@ -131,8 +131,8 @@ export function ProductTable({ initialData }: ProductTableProps) {
         sort: vespTable.sort,
         dir: vespTable.dir
       }}
-      onChangePagination={vespTable.onChangePagination}
-      onChangeSorting={vespTable.onChangeSorting}
+      setPagination={vespTable.onChangePagination}
+      setSorting={vespTable.onChangeSorting}
     />
   )
 }

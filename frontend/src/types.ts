@@ -318,7 +318,7 @@ export interface BlogPostEntity {
   alias: string
   content: string | null
   readTime: string | null
-  active: boolean
+  status: BlogPostStatusEnum
   seo: Record<string, string> | null
   createdAt: string
   updatedAt: string
@@ -332,4 +332,11 @@ export interface BlogTagEntity {
   alias: string
   seo: Record<string, string> | null
   posts: BlogPostEntity[]
+  postsTotal?: number
+}
+
+export enum BlogPostStatusEnum {
+  Published = 'published',
+  Draft = 'draft',
+  Archived = 'archived'
 }

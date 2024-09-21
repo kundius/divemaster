@@ -526,15 +526,20 @@
           "nullable": true,
           "mappedType": "string"
         },
-        "active": {
-          "name": "active",
-          "type": "tinyint(1)",
+        "status": {
+          "name": "status",
+          "type": "enum('published','draft','archived')",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "default": "true",
-          "mappedType": "boolean"
+          "default": "'draft'",
+          "enumItems": [
+            "published",
+            "draft",
+            "archived"
+          ],
+          "mappedType": "enum"
         },
         "seo": {
           "name": "seo",

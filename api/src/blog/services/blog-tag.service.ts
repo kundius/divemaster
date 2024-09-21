@@ -5,6 +5,7 @@ import { Injectable } from '@nestjs/common'
 import { BlogTagCreateDto, BlogTagFindAllDto, BlogTagUpdateDto } from '../dto/blog-tag.dto'
 import { BlogTag } from '../entities/blog-tag.entity'
 import { slugify } from '@/lib/utils'
+import { BlogPost } from '../entities/blog-post.entity'
 
 @Injectable()
 export class BlogTagService {
@@ -39,15 +40,27 @@ export class BlogTagService {
   }
 
   async findAll(dto: BlogTagFindAllDto) {
-    let where: ObjectQuery<BlogTag> = {}
+    const qb = this.repository.createQueryBuilder('tag')
+
     if (dto.query) {
-      where = { ...where, name: { $like: '%' + dto.query + '%' } }
+      qb.andWhere({ title: { $like: '%' + dto.query + '%' } })
     }
-    const [rows, total] = await this.repository.findAndCount(where, {
-      limit: dto.take,
-      offset: dto.skip,
-      orderBy: { [dto.sort]: dto.dir }
-    })
+
+    const knex = this.repository.getEntityManager().getKnex()
+    const qbPostsTotal = this.repository
+      .getEntityManager()
+      .createQueryBuilder(BlogPost, 'post')
+      .where({ tags: knex.ref('tag.id') })
+      .count('post.id', true)
+      .as('posts_total')
+
+    qb.select(['*', qbPostsTotal])
+    qb.limit(dto.take)
+    qb.offset(dto.skip)
+    qb.orderBy({ [dto.sort]: dto.dir })
+
+    const [rows, total] = await qb.getResultAndCount()
+
     return { rows, total }
   }
 

@@ -8,6 +8,7 @@ import { StorageService } from '@/storage/services/storage.service'
 import { BlogTag } from '../entities/blog-tag.entity'
 import { slugify } from '@/lib/utils'
 import { BlogTagService } from './blog-tag.service'
+import { OperatorMap } from '@mikro-orm/core/typings'
 
 @Injectable()
 export class BlogPostService {
@@ -52,20 +53,34 @@ export class BlogPostService {
   }
 
   async findAll(dto: BlogPostFindAllDto) {
-    let where: ObjectQuery<BlogPost> = {}
+    const qb = this.repository.createQueryBuilder('post')
+
     if (dto.query) {
-      where = { ...where, title: { $like: '%' + dto.query + '%' } }
+      qb.andWhere({ title: { $like: '%' + dto.query + '%' } })
     }
-    const [rows, total] = await this.repository.findAndCount(where, {
-      limit: dto.take,
-      offset: dto.skip,
-      orderBy: { [dto.sort]: dto.dir }
-    })
+
+    if (dto.tags) {
+      qb.andWhere({ tags: { name: { $in: dto.tags } } })
+    }
+
+    qb.leftJoinAndSelect('post.image', 'image')
+    qb.leftJoinAndSelect('post.tags', 'tags')
+    qb.limit(dto.take)
+    qb.offset(dto.skip)
+    qb.orderBy({ [dto.sort]: dto.dir })
+
+    const [rows, total] = await qb.getResultAndCount()
+
     return { rows, total }
   }
 
   async findOne(id: number) {
-    return this.repository.findOneOrFail({ id })
+    return this.repository.findOneOrFail(
+      { id },
+      {
+        populate: ['tags', 'image']
+      }
+    )
   }
 
   async update(id: number, { imageId, tags, alias, ...fillable }: BlogPostUpdateDto) {

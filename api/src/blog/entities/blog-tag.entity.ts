@@ -17,4 +17,7 @@ export class BlogTag {
 
   @ManyToMany(() => BlogPost)
   posts = new Collection<BlogPost>(this)
+
+  @Property({ persist: false })
+  postsTotal?: number
 }

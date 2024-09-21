@@ -1,7 +1,5 @@
 'use client'
 
-import { Filter, FilterProps } from '@/components/admin/Filter'
-import { Pagination, PaginationProps } from '@/components/admin/Pagination'
 import { Button } from '@/components/ui/button'
 import {
   Table,
@@ -12,8 +10,29 @@ import {
   TableRow
 } from '@/components/ui/table'
 import { cn } from '@/lib/utils'
-import { ArrowsUpDownIcon, BarsArrowDownIcon, BarsArrowUpIcon } from '@heroicons/react/24/outline'
+import {
+  ArrowsUpDownIcon,
+  BarsArrowDownIcon,
+  BarsArrowUpIcon,
+  XMarkIcon
+} from '@heroicons/react/24/outline'
 import { ReactNode } from 'react'
+
+import { Pagination, PaginationProps } from './Pagination'
+import { SearchFilter, SearchFilterProps } from './SearchFilter'
+import { FacetedFilter, FacetedFilterProps } from './FacetedFilter'
+
+export interface SearchFilterField extends Omit<SearchFilterProps, 'onChange' | 'value'> {
+  type: 'search'
+  name: string
+}
+
+export interface FacetedFilterField extends Omit<FacetedFilterProps, 'onChange' | 'value'> {
+  type: 'faceted'
+  name: string
+}
+
+export type DataTableFilterField = SearchFilterField | FacetedFilterField
 
 export type DataTableColumn<T> = {
   [K in keyof T]: {
@@ -26,34 +45,50 @@ export type DataTableColumn<T> = {
   }
 }[keyof T]
 
-export interface DataTableProps<TRow> {
+export type DataTableFilter = Record<string, string | string[] | null>
+
+export interface DataTablePagination {
+  page: number
+  limit: number
+}
+
+export interface DataTableSorting {
+  sort: string | null
+  dir: string | null
+}
+
+export interface DataTableProps<TRow, TFilter> {
   isLoading?: boolean
   columns?: DataTableColumn<TRow>[]
   data?: TRow[]
+  total?: number
   keyId?: keyof TRow
-  filter?: Pick<FilterProps, 'value' | 'fields'>
-  onChangeFilter?: FilterProps['onChange']
-  pagination?: Pick<PaginationProps, 'limit' | 'page' | 'total'>
-  onChangePagination?: PaginationProps['onChange']
-  sorting?: {
-    sort?: string
-    dir?: string
-  }
-  onChangeSorting?: (sort?: string, dir?: string) => void
+  filters?: DataTableFilterField[]
+  filter?: TFilter
+  setFilter?: (value: TFilter) => void
+  pagination?: DataTablePagination
+  setPagination?: (pagination: DataTablePagination) => void
+  sorting?: DataTableSorting
+  setSorting?: (sorting: DataTableSorting) => void
 }
 
-export function DataTable<TRow extends object = object>(props: DataTableProps<TRow>) {
+export function DataTable<
+  TRow extends unknown = unknown,
+  TFilter extends DataTableFilter = DataTableFilter
+>(props: DataTableProps<TRow, TFilter>) {
   const {
     keyId,
     isLoading,
     data = [],
+    total = 0,
     columns = [],
-    filter,
-    onChangeFilter,
+    filters = [],
+    filter = {} as TFilter,
+    setFilter: onChangeFilter,
     pagination,
-    onChangePagination,
+    setPagination: onChangePagination,
     sorting,
-    onChangeSorting
+    setSorting: onChangeSorting
   } = props
 
   const changeSortHandler = (column: DataTableColumn<TRow>) => {
@@ -62,15 +97,15 @@ export function DataTable<TRow extends object = object>(props: DataTableProps<TR
     const field = String(column.key)
 
     if (sorting?.sort === field && sorting?.dir === 'ASC') {
-      onChangeSorting(field, 'DESC')
+      onChangeSorting({ sort: field, dir: 'DESC' })
     } else if (sorting?.sort === field && sorting?.dir === 'DESC') {
-      onChangeSorting(undefined, undefined)
+      onChangeSorting({ sort: null, dir: null })
     } else {
-      onChangeSorting(field, 'ASC')
+      onChangeSorting({ sort: field, dir: 'ASC' })
     }
   }
 
-  const renderValue = (row: TRow, column: DataTableColumn<TRow>): ReactNode => {
+  const renderCell = (row: TRow, column: DataTableColumn<TRow>): ReactNode => {
     if (column.formatter) {
       return column.formatter(row[column.key], row)
     }
@@ -78,7 +113,7 @@ export function DataTable<TRow extends object = object>(props: DataTableProps<TR
     return <>{row[column.key]}</>
   }
 
-  const renderSort = (column: DataTableColumn<TRow>): ReactNode => {
+  const renderHead = (column: DataTableColumn<TRow>): ReactNode => {
     if (!column.sortable) {
       return column.label
     }
@@ -106,11 +141,59 @@ export function DataTable<TRow extends object = object>(props: DataTableProps<TR
     )
   }
 
+  const renderFilter = (item: DataTableFilterField) => {
+    let value = filter[item.name]
+    switch (item.type) {
+      case 'faceted':
+        if (typeof value === 'string') {
+          value = [value]
+        }
+        return (
+          <FacetedFilter
+            options={item.options}
+            title={item.title}
+            value={value}
+            onChange={(value) => onChangeFilter?.({ ...filter, [item.name]: value })}
+          />
+        )
+      case 'search':
+        if (Array.isArray(value)) {
+          value = value.join(',')
+        }
+        return (
+          <SearchFilter
+            placeholder={item.placeholder}
+            value={value}
+            onChange={(value) => onChangeFilter?.({ ...filter, [item.name]: value })}
+          />
+        )
+    }
+  }
+
+  const resetFilter = () => {
+    let newValue: TFilter = { ...filter }
+    for (const key of Object.keys(filter)) {
+      newValue = { ...newValue, [key]: null }
+    }
+    onChangeFilter?.(newValue)
+  }
+
+  const isFiltered = () => {
+    return Object.values(filter).filter((v) => !!v).length > 0
+  }
+
   return (
-    <>
-      {filter && (
-        <div className="mb-4">
-          <Filter fields={filter.fields} value={filter.value} onChange={onChangeFilter} />
+    <div className="space-y-4">
+      {filters.length > 0 && (
+        <div className="flex items-center flex-wrap gap-2">
+          {filters.map((item) => (
+            <div key={item.name}>{renderFilter(item)}</div>
+          ))}
+          {isFiltered() && (
+            <Button variant="ghost" className="h-8 px-3" onClick={resetFilter}>
+              Сбросить <XMarkIcon className="ml-1 -mr-1 h-4 w-4" />
+            </Button>
+          )}
         </div>
       )}
 
@@ -120,7 +203,7 @@ export function DataTable<TRow extends object = object>(props: DataTableProps<TR
             <TableRow>
               {columns.map((column, i) => (
                 <TableHead key={`${i}-${String(column.key)}`} {...column.headProps}>
-                  {renderSort(column)}
+                  {renderHead(column)}
                 </TableHead>
               ))}
             </TableRow>
@@ -130,7 +213,7 @@ export function DataTable<TRow extends object = object>(props: DataTableProps<TR
               <TableRow key={keyId ? String(row[keyId]) : i}>
                 {columns.map((column, k) => (
                   <TableCell key={`${k}-${String(column.key)}`} {...column.cellProps}>
-                    {renderValue(row, column)}
+                    {renderCell(row, column)}
                   </TableCell>
                 ))}
               </TableRow>
@@ -140,14 +223,17 @@ export function DataTable<TRow extends object = object>(props: DataTableProps<TR
       </div>
 
       {pagination && (
-        <div className="flex items-center justify-between flex-wrap mt-4">
-          <div className="flex-1 text-sm text-muted-foreground">
-            {/* {table.getFilteredSelectedRowModel().rows.length} of{" "} */}
-            {/* {table.getFilteredRowModel().rows.length} row(s) selected. */}
-          </div>
-          {pagination && <Pagination {...pagination} onChange={onChangePagination} />}
+        <div className="flex items-center justify-between flex-wrap">
+          <div />
+          {pagination && (
+            <Pagination
+              {...pagination}
+              total={total}
+              onChange={(page, limit) => onChangePagination?.({ page, limit })}
+            />
+          )}
         </div>
       )}
-    </>
+    </div>
   )
 }

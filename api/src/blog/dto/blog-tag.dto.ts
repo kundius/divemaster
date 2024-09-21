@@ -35,11 +35,11 @@ export class BlogTagFindAllDto extends PaginationQueryDto {
   @Type(() => String)
   @IsString()
   @IsOptional()
-  sort: keyof BlogTag = 'id'
+  sort: keyof BlogTag = 'postsTotal'
 
   @IsEnum(QueryOrder)
   @IsOptional()
-  dir: QueryOrder = QueryOrder.ASC
+  dir: QueryOrder = QueryOrder.DESC
 }
 
 export class BlogTagFindOneDto {}

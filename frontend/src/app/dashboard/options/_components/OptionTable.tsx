@@ -107,7 +107,7 @@ export function OptionTable({ initialData }: OptionTableProps) {
         value: apiTable.filter,
         fields: filterFields
       }}
-      onChangeFilter={apiTable.onChangeFilter}
+      setFilter={apiTable.onChangeFilter}
       pagination={{
         page: apiTable.page,
         limit: apiTable.limit,
@@ -117,8 +117,8 @@ export function OptionTable({ initialData }: OptionTableProps) {
         sort: apiTable.sort,
         dir: apiTable.dir
       }}
-      onChangePagination={apiTable.onChangePagination}
-      onChangeSorting={apiTable.onChangeSorting}
+      setPagination={apiTable.onChangePagination}
+      setSorting={apiTable.onChangeSorting}
     />
   )
 }

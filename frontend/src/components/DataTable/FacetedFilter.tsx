@@ -22,8 +22,8 @@ export interface FacetedFilterProps {
     value: string
     icon?: React.ComponentType<{ className?: string }>
   }[]
-  value?: string[]
-  onChange?: (value?: string[]) => void
+  value?: string[] | null
+  onChange?: (value: string[] | null) => void
 }
 
 export function FacetedFilter(props: FacetedFilterProps) {
@@ -86,7 +86,7 @@ export function FacetedFilter(props: FacetedFilterProps) {
                         selectedValues.add(option.value)
                       }
                       const filterValues = Array.from(selectedValues)
-                      onChange?.(filterValues.length ? filterValues : undefined)
+                      onChange?.(filterValues.length ? filterValues : null)
                     }}
                   >
                     <div
@@ -113,7 +113,7 @@ export function FacetedFilter(props: FacetedFilterProps) {
                 <CommandSeparator />
                 <CommandGroup>
                   <CommandItem
-                    onSelect={() => onChange?.(undefined)}
+                    onSelect={() => onChange?.(null)}
                     className="justify-center text-center"
                   >
                     Очистить

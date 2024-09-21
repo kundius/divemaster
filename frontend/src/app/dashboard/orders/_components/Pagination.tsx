@@ -1,6 +1,6 @@
 'use client'
 
-import { Pagination } from '@/components/admin/Pagination'
+import { Pagination } from '@/components/DataTable/Pagination'
 import { Button } from '@/components/ui/button'
 import {
   Select,

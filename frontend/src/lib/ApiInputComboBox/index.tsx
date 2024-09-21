@@ -1,4 +1,4 @@
-import { Pagination } from '@/components/admin/Pagination'
+import { Pagination } from '@/components/DataTable/Pagination'
 import { Button, ButtonLoadingIcon } from '@/components/ui/button'
 import {
   Command,

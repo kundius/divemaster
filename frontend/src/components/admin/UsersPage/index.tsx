@@ -87,18 +87,18 @@ export function UsersPage({ initialData }: UsersPageProps) {
           value: vespTable.filter,
           fields: filterFields
         }}
-        onChangeFilter={vespTable.onChangeFilter}
+        setFilter={vespTable.onChangeFilter}
         pagination={{
           page: vespTable.page,
           limit: vespTable.limit,
           total: vespTable.data.total
         }}
-        onChangePagination={vespTable.onChangePagination}
+        setPagination={vespTable.onChangePagination}
         sorting={{
           sort: vespTable.sort,
           dir: vespTable.dir
         }}
-        onChangeSorting={vespTable.onChangeSorting}
+        setSorting={vespTable.onChangeSorting}
       />
     </>
   )

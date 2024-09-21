@@ -1,6 +1,12 @@
-import { Collection, Entity, ManyToMany, ManyToOne, Opt, PrimaryKey, Property } from '@mikro-orm/core'
+import { Collection, Entity, Enum, ManyToMany, ManyToOne, Opt, PrimaryKey, Property } from '@mikro-orm/core'
 import { BlogTag } from './blog-tag.entity'
 import { File } from '@/storage/entities/file.entity'
+
+export enum BlogPostStatusEnum {
+  Published = 'published',
+  Draft = 'draft',
+  Archived = 'archived'
+}
 
 @Entity()
 export class BlogPost {
@@ -22,8 +28,11 @@ export class BlogPost {
   @Property({ nullable: true, type: 'varchar' })
   readTime: string | null = null
 
-  @Property({ default: true })
-  active: boolean = true
+  @Enum({
+    items: () => BlogPostStatusEnum,
+    default: BlogPostStatusEnum.Draft
+  })
+  status: BlogPostStatusEnum = BlogPostStatusEnum.Draft
 
   @Property({ type: 'json', nullable: true })
   seo: Record<string, string> | null = null

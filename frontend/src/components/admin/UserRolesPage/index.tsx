@@ -125,7 +125,7 @@ export function UserRolesPage({ initialData }: UserRolesPageProps) {
           value: vespTable.filter,
           fields: filterFields
         }}
-        onChangeFilter={vespTable.onChangeFilter}
+        setFilter={vespTable.onChangeFilter}
         pagination={{
           page: vespTable.page,
           limit: vespTable.limit,
@@ -135,8 +135,8 @@ export function UserRolesPage({ initialData }: UserRolesPageProps) {
           sort: vespTable.sort,
           dir: vespTable.dir
         }}
-        onChangePagination={vespTable.onChangePagination}
-        onChangeSorting={vespTable.onChangeSorting}
+        setPagination={vespTable.onChangePagination}
+        setSorting={vespTable.onChangeSorting}
       />
     </>
   )

@@ -148,3 +148,23 @@ export function getEntityId(entity: number | { id: number }) {
   }
   return entity.id
 }
+
+export function clearUndefined<I extends Record<string, any>>(object: I): Partial<I> {
+  let output = { ...object }
+  for (const key of Object.keys(output)) {
+    if (typeof output[key] === 'undefined') {
+      delete output[key]
+    }
+  }
+  return output
+}
+
+export function clearEmpty<I extends Record<string, any>>(object: I): Partial<I> {
+  let output = { ...object }
+  for (const key of Object.keys(output)) {
+    if (!output[key]) {
+      delete output[key]
+    }
+  }
+  return output
+}

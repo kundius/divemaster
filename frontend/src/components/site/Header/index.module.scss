@@ -142,7 +142,11 @@
 
 .city-select {
   margin-right: -10px;
+  min-width: 180px;
 
+  @include --max-2xl {
+    min-width: auto;
+  }
   @include --max-md {
     margin-right: -4px;
   }

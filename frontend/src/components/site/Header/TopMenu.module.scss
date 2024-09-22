@@ -108,6 +108,7 @@
 .more-list {
   position: absolute;
   background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0px 6px 7px 0px rgba(0, 8, 35, 0.19);
   transition: all .3s ease;
   visibility: hidden;
   opacity: 0;

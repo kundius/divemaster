@@ -14,19 +14,8 @@ export default async function Page({ searchParams }: PageProps) {
     page,
     limit
   })
-
-  const paginationHandler = async (page: number, limit: number) => {
-    'use server'
-
-    let url = '/blog'
-    if (page !== 1) {
-      url = url + `?page=${page}`
-    }
-    redirect(url)
-  }
-
   return (
-    <div className="pt-12 pb-40">
+    <div className="pt-12 pb-40 max-sm:pt-4 max-sm:pb-12">
       <Container>
         <Headline
           className="mb-8"
@@ -34,11 +23,11 @@ export default async function Page({ searchParams }: PageProps) {
           breadcrumbs={[{ title: 'Главная', href: '/' }]}
           separator
         />
-        <div className="grid grid-cols-3 gap-x-5 gap-y-24">
+        <div className="grid grid-cols-3 gap-x-5 gap-y-24 max-lg:grid-cols-2 max-sm:gap-x-4 max-sm:gap-y-12">
           {posts.rows.map((post) => (
             <BlogPostCard record={post} key={post.id} />
           ))}
-          <div className="col-span-3 flex justify-end">
+          <div className="col-span-3 flex justify-end max-lg:col-span-2">
             <StaticPagination
               limit={limit}
               total={posts.total}

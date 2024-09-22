@@ -26,7 +26,7 @@ export function BlogPostCard({ record }: BlogPostCardProps) {
           />
           {record.readTime && (
             <div className={css.readTime}>
-              <ClockIcon className="w-6 h-6" /> {record.readTime} мин.
+              <ClockIcon className="w-6 h-6 max-sm:w-4 max-sm:h-4" /> {record.readTime} мин.
             </div>
           )}
         </div>

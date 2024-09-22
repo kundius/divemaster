@@ -62,6 +62,10 @@
   .button:hover & {
     color: #fff;
   }
+
+  @include --max-md {
+    color: rgb(133, 138, 142);
+  }
 }
 
 .title {

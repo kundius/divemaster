@@ -7,6 +7,10 @@
   border-radius: 24px;
   overflow: hidden;
   z-index: 10;
+
+  @include --max-sm {
+    border-radius: 16px;
+  }
 }
 
 .figure::after {
@@ -23,6 +27,15 @@
     rgba(0, 0, 0, 0) 80%,
     rgba(0, 0, 0, 0.6) 100%
   );
+
+  @include --max-sm {
+    background: linear-gradient(
+      45deg,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0) 60%,
+      rgba(0, 0, 0, 0.6) 100%
+    );
+  }
 }
 
 .readTime {
@@ -37,6 +50,12 @@
   gap: 8px;
   font-weight: bold;
   font-size: 16px;
+
+  @include --max-sm {
+    font-size: 12px;
+    padding: 4px;
+    gap: 4px;
+  }
 }
 
 .image {
@@ -55,12 +74,20 @@
 
 .info {
   margin-top: 28px;
+
+  @include --max-sm {
+    margin-top: 16px;
+  }
 }
 
 .date {
   font-size: 14px;
   color: #afafaf;
   line-height: 1;
+
+  @include --max-sm {
+    font-size: 12px;
+  }
 }
 
 .title {
@@ -70,6 +97,12 @@
   display: block;
   text-decoration: none;
   margin-top: 10px;
+
+  @include --max-sm {
+    font-size: 16px;
+    line-height: 18px;
+    margin-top: 8px;
+  }
 }
 
 .title::after {
@@ -87,6 +120,10 @@
   gap: 4px;
   flex-wrap: wrap;
   margin-top: 10px;
+
+  @include --max-sm {
+    margin-top: 8px;
+  }
 }
 
 .tag {
@@ -101,6 +138,11 @@
   background-color: #ffffff;
   border: 1px solid #e3e3e3;
   text-decoration: none;
+
+  @include --max-sm {
+    font-size: 12px;
+    line-height: 20px;
+  }
 }
 
 .tag:hover {

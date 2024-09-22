@@ -1,4 +1,4 @@
-import { EntityRepository } from '@mikro-orm/mariadb'
+import { EntityRepository, wrap } from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { Injectable } from '@nestjs/common'
 
@@ -39,6 +39,10 @@ export class BlogPostService {
 
     record.alias = await this.makeUniqueAlias(alias || fillable.title)
 
+    if (typeof fillable.content !== 'undefined') {
+      record.readTime = String(Math.floor(fillable.content.length / 1000))
+    }
+
     if (typeof imageId !== 'undefined') {
       record.image = imageId ? await this.storageService.findOne(imageId) : null
     }
@@ -61,6 +65,28 @@ export class BlogPostService {
 
     if (dto.tags) {
       qb.andWhere({ tags: { name: { $in: dto.tags } } })
+    }
+
+    // TODO: найти способ получить список полей автоматически
+    qb.select([
+      'id',
+      'title',
+      'longTitle',
+      'alias',
+      'readTime',
+      'status',
+      'createdAt',
+      'updatedAt',
+      'tags',
+      'image'
+    ])
+
+    if (dto.withContent) {
+      qb.addSelect(['content'])
+    }
+
+    if (dto.withMetadata) {
+      qb.addSelect(['metadata'])
     }
 
     qb.leftJoinAndSelect('post.image', 'image')
@@ -90,6 +116,10 @@ export class BlogPostService {
 
     if (typeof alias !== 'undefined' && alias !== record.alias) {
       record.alias = await this.makeUniqueAlias(alias || record.title)
+    }
+
+    if (typeof fillable.content !== 'undefined') {
+      record.readTime = String(Math.ceil(fillable.content.length / 1000))
     }
 
     if (typeof imageId !== 'undefined') {

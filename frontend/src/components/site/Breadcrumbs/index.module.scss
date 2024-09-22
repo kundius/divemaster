@@ -10,27 +10,19 @@
 .crumb {
   display: inline-block;
   margin-right: 16px;
-  padding-left: 24px;
+  padding-right: 24px;
   position: relative;
 }
 
-.crumb::before {
+.crumb::after {
   content: '';
   position: absolute;
   width: 6px;
   height: 6px;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6px' height='6px'%3E%3Cpath fill-rule='evenodd' fill='%23b6b6b6' d='M-0.000,1.998 L3.000,1.998 L2.000,0.997 L3.000,-0.001 L6.000,2.935 L3.000,5.997 L2.000,4.998 L3.000,3.998 L-0.000,3.998 L-0.000,1.998 Z'/%3E%3C/svg%3E");
-  left: 0;
+  right: 0;
   top: 50%;
   margin-top: -3px;
-}
-
-.crumb:first-child {
-  padding-left: 0;
-}
-
-.crumb:first-child::before {
-  display: none;
 }
 
 a.crumb {

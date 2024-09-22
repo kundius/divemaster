@@ -16,6 +16,7 @@ import { ParseArray } from '@/lib/parse-array'
 import { ParseObject } from '@/lib/parse-object'
 
 import { BlogPost, BlogPostStatusEnum } from '../entities/blog-post.entity'
+import { ParseBoolean } from '@/lib/parse-boolean'
 
 export class BlogPostCreateDto {
   @Type(() => String)
@@ -73,6 +74,14 @@ export class BlogPostFindAllDto extends PaginationQueryDto {
   @IsArray()
   @IsOptional()
   tags?: string[]
+
+  @ParseBoolean()
+  @IsBoolean()
+  withContent: boolean = false
+
+  @ParseBoolean()
+  @IsBoolean()
+  withMetadata: boolean = false
 
   @Type(() => String)
   @IsString()

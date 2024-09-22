@@ -6,6 +6,7 @@ import styles from './index.module.scss'
 import { Navigation } from './Navigation'
 import { User } from './User'
 import { Header } from './Header'
+import { Branding } from './Branding'
 
 export async function DashboardLayout({ children }: PropsWithChildren) {
   return (
@@ -15,17 +16,20 @@ export async function DashboardLayout({ children }: PropsWithChildren) {
 
         <div className={styles.layout}>
           <div className={styles.sidebar}>
-            <div className={styles.sidesticky}>
-              <div className={styles.logo}>
+            <div className={styles.sidebarHeader}>
+              <Branding />
+              {/* <div className={styles.logo}>
                 <Link href="/">
                   <Image src="/logo.png" alt="Divemaster Logo" width={148} height={71} priority />
                 </Link>
-              </div>
+              </div> */}
+            </div>
 
+            <div className={styles.sidebarBody}>
               <Navigation />
             </div>
 
-            <div className={styles.sidefloat}>
+            <div className={styles.sidebarFooter}>
               <User />
             </div>
           </div>

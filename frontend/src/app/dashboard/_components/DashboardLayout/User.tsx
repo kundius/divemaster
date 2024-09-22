@@ -19,7 +19,7 @@ export function User() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <div className={styles.button}>
-          <Avatar>
+          <Avatar className='rounded-md'>
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>{user?.name?.slice(0, 1)}</AvatarFallback>
           </Avatar>

@@ -1,4 +1,4 @@
-import { EntityRepository, wrap } from '@mikro-orm/mariadb'
+import { EntityRepository } from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { Injectable } from '@nestjs/common'
 
@@ -18,6 +18,18 @@ export class BlogPostService {
     private repository: EntityRepository<BlogPost>,
     private blogTagService: BlogTagService
   ) {}
+
+  fieldsWithoutExtraContent = [
+    'id',
+    'title',
+    'alias',
+    'readTime',
+    'status',
+    'createdAt',
+    'updatedAt',
+    'tags',
+    'image'
+  ]
 
   async makeUniqueAlias(from: string, n: number = 0) {
     let alias = slugify(from)
@@ -59,38 +71,24 @@ export class BlogPostService {
   async findAll(dto: BlogPostFindAllDto) {
     const qb = this.repository.createQueryBuilder('post')
 
+    // TODO: найти способ получить список полей автоматически
+    qb.select(this.fieldsWithoutExtraContent)
+
+    qb.leftJoinAndSelect('post.image', 'image')
+    qb.leftJoinAndSelect('post.tags', 'tags')
+
+    if (dto.withExtraContent) {
+      qb.addSelect(['content', 'metadata', 'longTitle'])
+    }
+
     if (dto.query) {
       qb.andWhere({ title: { $like: '%' + dto.query + '%' } })
     }
 
     if (dto.tags) {
-      qb.andWhere({ tags: { name: { $in: dto.tags } } })
+      qb.andWhere('tags.name in (?)', [dto.tags])
     }
 
-    // TODO: найти способ получить список полей автоматически
-    qb.select([
-      'id',
-      'title',
-      'longTitle',
-      'alias',
-      'readTime',
-      'status',
-      'createdAt',
-      'updatedAt',
-      'tags',
-      'image'
-    ])
-
-    if (dto.withContent) {
-      qb.addSelect(['content'])
-    }
-
-    if (dto.withMetadata) {
-      qb.addSelect(['metadata'])
-    }
-
-    qb.leftJoinAndSelect('post.image', 'image')
-    qb.leftJoinAndSelect('post.tags', 'tags')
     qb.limit(dto.take)
     qb.offset(dto.skip)
     qb.orderBy({ [dto.sort]: dto.dir })
@@ -101,12 +99,11 @@ export class BlogPostService {
   }
 
   async findOne(id: number) {
-    return this.repository.findOneOrFail(
-      { id },
-      {
-        populate: ['tags', 'image']
-      }
-    )
+    return this.repository.findOneOrFail({ id }, { populate: ['tags', 'image'] })
+  }
+
+  async findOneByAlias(alias: string) {
+    return this.repository.findOne({ alias }, { populate: ['tags', 'image'] })
   }
 
   async update(id: number, { imageId, tags, alias, ...fillable }: BlogPostUpdateDto) {
@@ -149,5 +146,22 @@ export class BlogPostService {
     }
     record.tags.set(tags)
     await this.repository.getEntityManager().persistAndFlush(record)
+  }
+
+  async findNeighbors(id: number) {
+    const qbTarget = this.repository.createQueryBuilder('a').select('a.createdAt').where({ id })
+    const qbNext = this.repository
+      .createQueryBuilder('b')
+      .select(this.fieldsWithoutExtraContent)
+      .where({ createdAt: { $gt: qbTarget.getKnexQuery() } })
+      .orderBy({ createdAt: 'ASC' })
+      .limit(1)
+    const qbPrevious = this.repository
+      .createQueryBuilder('b')
+      .select(this.fieldsWithoutExtraContent)
+      .where({ createdAt: { $lt: qbTarget.getKnexQuery() } })
+      .orderBy({ createdAt: 'DESC' })
+      .limit(1)
+    return Promise.all([qbPrevious.getSingleResult(), qbNext.getSingleResult()])
   }
 }

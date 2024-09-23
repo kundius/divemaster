@@ -77,11 +77,7 @@ export class BlogPostFindAllDto extends PaginationQueryDto {
 
   @ParseBoolean()
   @IsBoolean()
-  withContent: boolean = false
-
-  @ParseBoolean()
-  @IsBoolean()
-  withMetadata: boolean = false
+  withExtraContent: boolean = false
 
   @Type(() => String)
   @IsString()

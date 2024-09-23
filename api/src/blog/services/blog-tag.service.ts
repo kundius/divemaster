@@ -68,6 +68,10 @@ export class BlogTagService {
     return this.repository.findOneOrFail({ id })
   }
 
+  async findOneByAlias(alias: string) {
+    return this.repository.findOne({ alias })
+  }
+
   async findOneByName(name: string) {
     return this.repository.findOne({ name })
   }

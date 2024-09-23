@@ -1,11 +1,63 @@
-export default function Page({ params }: { params: { post: string } }) {
+import { ClockIcon } from '@heroicons/react/24/outline'
+import { Metadata } from 'next'
+
+import { Headline } from '@/components/Headline'
+import { Container } from '@/components/site/Container'
+import { apiGet } from '@/lib/api'
+import { getFileUrl } from '@/lib/utils'
+import { BlogPostEntity, PageProps } from '@/types'
+
+import { PostContent } from '../../_comoinents/PostContent'
+import { PostFooter } from '../../_comoinents/PostFooter'
+import { PostMeta } from '../../_comoinents/PostMeta'
+import { PostNeighbors } from '../../_comoinents/PostNeighbors'
+
+export async function generateMetadata(props: PageProps<{ alias: string }>): Promise<Metadata> {
+  const post = await apiGet<BlogPostEntity>(`blog/post/alias:${props.params.alias}`)
+  const metadata = post.metadata || {}
+
+  let title = metadata.title || post.longTitle || post.title
+  let description = metadata.description || ''
+  let keywords = metadata.keywords || ''
+
+  let images = []
+  if (post.image) images.push(getFileUrl(post.image))
+
+  return {
+    title,
+    description,
+    keywords,
+    openGraph: {
+      title,
+      description,
+      images
+    }
+  }
+}
+
+export default async function Page({ params }: PageProps<{ alias: string }>) {
+  const post = await apiGet<BlogPostEntity>(`blog/post/alias:${params.alias}`)
+  const neighbors = await apiGet<{ previous: BlogPostEntity; next: BlogPostEntity }>(
+    `blog/post/${post.id}/neighbors`
+  )
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Запись {params.post}
-        </p>
-      </div>
-    </main>
+    <div className="pt-12 pb-40 max-sm:pt-4 max-sm:pb-12">
+      <Container>
+        <Headline
+          title={post.longTitle || post.title}
+          breadcrumbs={[
+            { title: 'Главная', href: '/' },
+            { title: 'Блог', href: '/blog' }
+          ]}
+          separator
+        />
+        <PostMeta record={post} />
+        <div className="space-y-24 mt-8 max-md:space-y-16">
+          <PostContent content={post.content || ''} />
+          <PostFooter record={post} />
+          <PostNeighbors previous={neighbors.previous} next={neighbors.next} />
+        </div>
+      </Container>
+    </div>
   )
 }

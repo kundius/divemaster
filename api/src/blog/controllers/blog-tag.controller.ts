@@ -17,6 +17,11 @@ export class BlogTagController {
     return this.service.findAll(query)
   }
 
+  @Get('alias::alias')
+  findOneByAlias(@Param('alias') alias: string) {
+    return this.service.findOneByAlias(alias)
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.service.findOne(+id)

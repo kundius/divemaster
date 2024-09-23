@@ -3,12 +3,15 @@ import { Breadcrumbs, BreadcrumbsProps } from '../site/Breadcrumbs'
 import css from './index.module.scss'
 import { ChevronLeftIcon } from '@heroicons/react/24/outline'
 import { cn } from '@/lib/utils'
+import { ReactNode } from 'react'
+import { diving } from '../site/Header/menu'
 
 export interface HeadlineProps {
   breadcrumbs?: BreadcrumbsProps['items']
   className?: string
   title: string
   description?: string
+  actions?: ReactNode
   separator?: boolean
   back?: {
     href: string
@@ -21,6 +24,7 @@ export function Headline({
   breadcrumbs,
   title,
   description,
+  actions,
   back,
   separator = false
 }: HeadlineProps) {
@@ -32,8 +36,15 @@ export function Headline({
         </div>
       )}
       <div className={css.titleContainer}>
-        <div className={css.title}>{title}</div>
-        <div className={css.description}>{description}</div>
+        <div
+          className={cn(css.title, {
+            [css.titleSingle]: title.split(' ').length === 1
+          })}
+        >
+          {title}
+        </div>
+        {description && <div className={css.description}>{description}</div>}
+        {actions && <div className={css.actions}>{actions}</div>}
       </div>
       {back && (
         <div className={css.back}>

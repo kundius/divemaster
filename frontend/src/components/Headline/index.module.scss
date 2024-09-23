@@ -9,21 +9,47 @@
   display: flex;
   align-items: center;
   gap: 64px;
+
+  @include --max-lg {
+    gap: 32px;
+  }
+  @include --max-md {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
 }
 
 .title {
   color: rgb(10, 10, 10);
-  text-transform: uppercase;
   font-family: var(--font-sans-narrow);
   font-size: 36px;
   line-height: 40px;
   font-weight: bold;
   letter-spacing: -0.0125em;
+
+  @include --max-md {
+    font-size: 18px;
+    line-height: 22px;
+    letter-spacing: 0;
+  }
+}
+
+.titleSingle {
+  text-transform: uppercase;
+
+  @include --max-md {
+    font-size: 24px;
+    line-height: 32px;
+  }
 }
 
 .description {
   font-size: 14px;
   color: var(--neutral400);
+}
+
+.actions {
+  margin-left: auto;
 }
 
 .back {
@@ -67,10 +93,10 @@
 
 .separator {
   display: block;
-  height: 1px;
+  height: 0;
+  border-bottom-width: 1px;
   width: 100%;
-  background: #f3f3f3;
-  margin-top: 12px;
+  margin-top: 16px;
 }
 
 .back + .separator {

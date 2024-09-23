@@ -330,7 +330,7 @@ export interface BlogTagEntity {
   id: number
   name: string
   alias: string
-  seo: Record<string, string> | null
+  metadata: Record<string, string> | null
   posts: BlogPostEntity[]
   postsTotal?: number
 }

@@ -5,6 +5,10 @@
   color: #b6b6b6;
   line-height: 1.2;
   margin-bottom: 4px;
+
+  @include --max-md {
+    font-size: 12px;
+  }
 }
 
 .crumb {
@@ -12,6 +16,11 @@
   margin-right: 16px;
   padding-right: 24px;
   position: relative;
+
+  @include --max-md {
+    margin-right: 8px;
+    padding-right: 16px;
+  }
 }
 
 .crumb::after {

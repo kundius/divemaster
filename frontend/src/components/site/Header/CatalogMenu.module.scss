@@ -1,6 +1,7 @@
 .first {
   display: flex;
   align-items: center;
+  position: relative;
 }
 
 .first-link {
@@ -81,10 +82,6 @@
   }
 }
 
-.first-item {
-  position: relative;
-}
-
 .second {
   visibility: hidden;
   transform: translateY(-20px) scale(0.9, 0.9);
@@ -92,7 +89,7 @@
   border-radius: 20px;
   padding: 36px 16px 16px;
   position: absolute;
-  left: 0;
+  left: 16px;
   width: 640px;
   top: 100%;
   z-index: 1;

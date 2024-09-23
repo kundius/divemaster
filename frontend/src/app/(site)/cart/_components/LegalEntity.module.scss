@@ -5,6 +5,11 @@
   border-radius: 12px;
   padding: 12px 24px;
   transition: 0.3s ease;
+
+  @include --max-xl {
+    padding: 12px 16px;
+    gap: 16px;
+  }
 }
 
 label.wrap {
@@ -21,6 +26,11 @@ label.wrap:hover {
   font-weight: bold;
   color: #000;
   font-family: var(--font-sans-narrow);
+
+  @include --max-lg {
+    font-size: 14px;
+    line-height: 18px;
+  }
 }
 
 .control {

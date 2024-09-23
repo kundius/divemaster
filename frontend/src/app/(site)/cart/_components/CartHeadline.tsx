@@ -24,7 +24,7 @@ export function CartHeadline() {
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <button className={styles.clear} type="button">
-            Удалить товары
+            Удалить
           </button>
         </AlertDialogTrigger>
         <AlertDialogContent>

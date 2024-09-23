@@ -7,6 +7,17 @@
   min-height: 48px;
   border-radius: 4px;
   margin-bottom: 40px;
+
+  @include --max-lg {
+    margin-bottom: 32px;
+  }
+  @include --max-md {
+    margin-left: calc(var(--container-padding) * -1);
+    margin-right: calc(var(--container-padding) * -1);
+    padding-left: var(--container-padding);
+    padding-right: var(--container-padding);
+    border-radius: 0;
+  }
 }
 
 .title {
@@ -15,6 +26,14 @@
   color: #000;
   line-height: 1.25;
   margin: 0 16px;
+
+  @include --max-lg {
+    font-size: 14px;
+    margin: 0 12px;
+  }
+  @include --max-md {
+    margin: 0;
+  }
 }
 
 .clear {
@@ -25,6 +44,10 @@
   min-height: 32px;
   border-radius: 4px;
   line-height: 1;
+
+  @include --max-md {
+    margin-right: -12px;
+  }
 }
 
 .clear:hover {

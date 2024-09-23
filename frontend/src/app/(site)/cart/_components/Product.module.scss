@@ -1,48 +1,80 @@
 .layout {
   display: grid;
-  grid-template-columns:
-    [image-start] 120px [image-end] 40px [info-start] 1fr [info-end] 40px [actions-start] min-content [actions-end] 20px [quantity-start] min-content [quantity-end] 40px [price-start] minmax(
-      80px,
-      auto
-    )
-    [price-end];
-  grid-template-rows: [info-start] auto [info-end] 20px [options-start] auto [options-end];
+  gap: 0px 0px;
+  grid-auto-columns: 1fr;
+  grid-template-columns: 120px 40px 1fr 40px min-content 20px min-content 40px minmax(80px, auto);
+  grid-template-rows: auto 20px auto;
+  grid-template-areas:
+    'image . name . actions . quantity . price'
+    'image . . . . . . . .'
+    'image . options options options options options options options';
+
+  @include --max-xl {
+    grid-template-columns: 80px 24px 1fr 24px min-content 12px min-content 24px minmax(80px, auto);
+  }
+  @include --max-lg {
+    grid-template-columns: 64px 24px 1fr 24px minmax(80px, auto);
+    grid-template-rows: auto 20px auto 20px auto;
+    grid-template-areas:
+      'image . name . price'
+      'image . . . .'
+      'image . options options options'
+      'image . . . .'
+      'image . quantity . actions';
+  }
+  @include --max-md {
+    grid-template-columns: 64px 12px 1fr 16px min-content;
+    grid-template-rows: auto 32px auto 24px auto 8px auto;
+    gap: 0px 0px;
+    grid-template-areas:
+      'image . name name name'
+      'image . . . .'
+      'image . options options options'
+      'image . . . .'
+      'image . price price price'
+      'image . . . .'
+      'image . quantity . actions';
+  }
 }
 
 .layoutImage {
-  grid-column: image-start / image-end;
-  grid-row: info-start / options-end;
+  grid-area: image;
 }
 
 .layoutInfo {
-  grid-column: info-start / info-end;
-  grid-row: info-start / info-end;
+  grid-area: name;
 }
 
 .layoutActions {
-  grid-column: actions-start / actions-end;
-  grid-row: info-start / info-end;
+  grid-area: actions;
+
+  @include --max-lg {
+    justify-content: flex-end;
+    display: flex;
+  }
 }
 
 .layoutQuantity {
-  grid-column: quantity-start / quantity-end;
-  grid-row: info-start / info-end;
+  grid-area: quantity;
 }
 
 .layoutPrice {
-  grid-column: price-start / price-end;
-  grid-row: info-start / info-end;
+  grid-area: price;
 }
 
 .layouOptions {
-  grid-column: info-start / price-end;
-  grid-row: options-start / options-end;
+  grid-area: options;
 }
 
 .wrap + .wrap {
   padding-top: 40px;
   margin-top: 40px;
   border-top: 1px solid #f3f3f3;
+
+  @include --max-xl {
+    padding-top: 32px;
+    margin-top: 32px;
+  }
 }
 
 .figure {
@@ -51,13 +83,15 @@
   align-items: center;
   border: 1px solid #e3e3e3;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 1;
+  padding: 4px;
 }
 
 .image {
   width: 100%;
-  height: auto;
+  width: 100%;
   display: block;
+  object-fit: cover;
 }
 
 .info {
@@ -75,6 +109,10 @@
   font-weight: bold;
   align-self: flex-start;
   margin-bottom: 10px;
+
+  @include --max-md {
+    margin-bottom: 2px;
+  }
 }
 
 .title {
@@ -187,6 +225,12 @@
 
 .prices {
   text-align: right;
+
+  @include --max-md {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
 }
 
 .price {
@@ -203,7 +247,6 @@
   text-decoration: line-through;
   color: #9c9c9c;
   font-family: var(--font-sans-wide);
-  margin-top: 2px;
 }
 
 .profit {
@@ -211,12 +254,22 @@
   line-height: 1;
   color: #acacbc;
   margin-top: 11px;
+
+  @include --max-md {
+    display: none;
+  }
 }
 
 .options {
   display: flex;
   flex-wrap: wrap;
-  gap: 32px;
+  column-gap: 32px;
+  row-gap: 12px;
+
+  @include --max-lg {
+    column-gap: 24px;
+    row-gap: 5px;
+  }
 }
 
 .option {
@@ -235,6 +288,10 @@
   height: 12px;
   margin-top: -6px;
   background: #d2d2d2;
+
+  @include --max-lg {
+    left: calc(100% + 12px);
+  }
 }
 
 .option:last-child::after {

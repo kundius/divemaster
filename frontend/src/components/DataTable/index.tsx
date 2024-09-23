@@ -132,7 +132,7 @@ export function DataTable<
       <Button
         variant="ghost"
         size="sm"
-        className="-ml-3 h-8"
+        className="-ml-2 px-2 h-8"
         onClick={() => changeSortHandler(column)}
       >
         <span className="text-sm">{column.label}</span>

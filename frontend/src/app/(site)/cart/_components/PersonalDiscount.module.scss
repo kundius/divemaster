@@ -3,6 +3,10 @@
   border-radius: 12px;
   padding: 24px;
   transition: 0.3s ease;
+
+  @include --max-xl {
+    padding: 16px;
+  }
 }
 
 label.wrap {
@@ -26,6 +30,10 @@ label.wrap:hover {
   justify-content: space-between;
   align-items: center;
   margin-top: 20px;
+
+  @include --max-lg {
+    margin-top: 16px;
+  }
 }
 
 .applyLabel {
@@ -34,6 +42,11 @@ label.wrap:hover {
   color: #000;
   font-weight: bold;
   font-family: var(--font-sans-narrow);
+
+  @include --max-lg {
+    font-size: 14px;
+    line-height: 16px;
+  }
 }
 
 .applyControl {

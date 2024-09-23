@@ -1,6 +1,6 @@
 'use client'
 
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { CheckCircleIcon, PencilIcon, TrashIcon, XCircleIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import Link from 'next/link'
 import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryStates } from 'nuqs'
@@ -11,17 +11,13 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ApiRemoveDialog } from '@/lib/ApiRemoveDialog'
 import { clearEmpty, getFileUrl } from '@/lib/utils'
-import { BlogPostEntity, BlogTagEntity, FindAllResult } from '@/types'
+import { ProductEntity, FindAllResult } from '@/types'
 
-import { BlogPostStatusColors, BlogPostStatusIcons, BlogPostStatusLabels } from '../data'
-
-export interface BlogPostListProps {
-  fallbackData?: FindAllResult<BlogPostEntity>
+export interface ProductListProps {
+  fallbackData?: FindAllResult<ProductEntity>
 }
 
-export function BlogPostList({ fallbackData }: BlogPostListProps) {
-  const tagsQuery = useSWR<FindAllResult<BlogTagEntity>>([`blog/tag`, { limit: 100 }])
-
+export function ProductList({ fallbackData }: ProductListProps) {
   const [pagination, setPagination] = useQueryStates(
     {
       page: parseAsInteger.withDefault(1),
@@ -42,13 +38,16 @@ export function BlogPostList({ fallbackData }: BlogPostListProps) {
     tags: parseAsArrayOf(parseAsString)
   })
 
-  const { data, isLoading, mutate } = useSWR<FindAllResult<BlogPostEntity>>(
+  const { data, isLoading, mutate } = useSWR<FindAllResult<ProductEntity>>(
     [
-      `blog/post`,
+      `products`,
       {
         ...pagination,
         ...clearEmpty(sorting),
-        ...clearEmpty(filter)
+        ...clearEmpty(filter),
+        withBrand: true,
+        withImages: true,
+        withCategories: true
       }
     ],
     {
@@ -59,18 +58,22 @@ export function BlogPostList({ fallbackData }: BlogPostListProps) {
 
   const refetch = () => mutate(data, { revalidate: true })
 
-  const columns: DataTableColumn<BlogPostEntity>[] = [
+  const columns: DataTableColumn<ProductEntity>[] = [
     {
       key: 'title',
-      label: 'Пост',
+      label: 'Товар',
       sortable: true,
       formatter: (title, record) => {
+        let image: null | string = null
+        if (record.images && record.images[0]) {
+          image = getFileUrl(record.images[0].file)
+        }
         return (
           <div className="flex gap-3 items-center">
-            {record.image && (
+            {image && (
               <div className="flex w-12 h-12 relative self-start">
                 <Image
-                  src={getFileUrl(record.image)}
+                  src={image}
                   fill
                   alt=""
                   className="object-cover rounded"
@@ -79,10 +82,10 @@ export function BlogPostList({ fallbackData }: BlogPostListProps) {
             )}
             <div className="space-y-1">
               <div className="text-balance">{title}</div>
-              {record.tags.length > 0 && (
+              {record.categories && record.categories.length > 0 && (
                 <div className="flex gap-1.5 flex-wrap">
-                  {record.tags.map((tag) => (
-                    <Badge variant="outline">{tag.name}</Badge>
+                  {record.categories.map((category) => (
+                    <Badge variant="outline" className='font-normal'>{category.title}</Badge>
                   ))}
                 </div>
               )}
@@ -92,21 +95,13 @@ export function BlogPostList({ fallbackData }: BlogPostListProps) {
       }
     },
     {
-      key: 'status',
-      label: 'Статус',
+      key: 'active',
+      label: 'Активен',
       sortable: true,
-      headProps: {
-        className: 'w-36'
-      },
-      formatter: (status) => {
-        const label = BlogPostStatusLabels[status]
-        const color = BlogPostStatusColors[status]
-        const Icon = BlogPostStatusIcons[status]
-        return (
-          <div className="flex gap-1.5 items-center text-neutral-700 text-sm">
-            <Icon className={`w-5 h-5 -mt-1 ${color}`} /> {label}
-          </div>
-        )
+      formatter: (active) => {
+        const Icon = active ? CheckCircleIcon : XCircleIcon
+        const color = active ? 'text-green-500' : 'text-amber-500'
+        return <Icon className={`w-6 h-6 ${color}`} />
       }
     },
     {
@@ -116,12 +111,12 @@ export function BlogPostList({ fallbackData }: BlogPostListProps) {
       },
       formatter: (id) => (
         <div className="flex gap-2">
-          <Link href={`/dashboard/blog/${id}`}>
+          <Link href={`/dashboard/products/${id}`}>
             <Button variant="outline" size="sm-icon">
               <PencilIcon className="w-4 h-4" />
             </Button>
           </Link>
-          <ApiRemoveDialog url={`blog/post/${id}`} onSuccess={refetch}>
+          <ApiRemoveDialog url={`products/${id}`} onSuccess={refetch}>
             <Button variant="destructive-outline" size="sm-icon">
               <TrashIcon className="w-4 h-4" />
             </Button>
@@ -136,19 +131,13 @@ export function BlogPostList({ fallbackData }: BlogPostListProps) {
       name: 'query',
       type: 'search',
       placeholder: 'Поиск по названию'
-    },
-    {
-      name: 'tags',
-      type: 'faceted',
-      options: (tagsQuery.data?.rows || []).map((item) => ({ label: item.name, value: item.name })),
-      title: 'Теги'
     }
   ]
 
   const { rows, total } = data || { rows: [], total: 0 }
 
   return (
-    <DataTable<BlogPostEntity, typeof filter>
+    <DataTable<ProductEntity, typeof filter>
       data={rows}
       total={total}
       isLoading={isLoading}

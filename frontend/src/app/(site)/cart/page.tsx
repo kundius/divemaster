@@ -18,16 +18,16 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <div className="pt-12 pb-40 max-sm:pt-4 max-sm:pb-12">
+    <div className="pt-12 pb-40 max-md:pt-6 max-md:pb-20 max-lg:pt-8 max-lg:pb-24">
       <Container small>
         <EmptyFallback>
-          <Headline className="mb-8" title="Корзина" />
-          <div className="flex gap-20">
-            <div className="w-2/3 flex-grow">
+          <Headline className="mb-8 max-md:mb-6" title="Корзина" />
+          <div className="flex gap-20 max-xl:gap-10 max-md:flex-col max-md:gap-8">
+            <div className="w-2/3 flex-grow max-lg:w-3/5 max-md:w-full">
               <CartHeadline />
               <Products />
             </div>
-            <div className="w-1/3 max-w-[360px]">
+            <div className="w-1/3 md:max-w-[360px] max-lg:w-2/5 max-md:w-full">
               <div className="sticky top-32 space-y-4">
                 <OrderInfoContainer />
                 <Authentication />

@@ -6,10 +6,20 @@
   font-size: 16px;
   width: 100%;
   transition: 0.3s ease;
+
+  @include --max-md {
+    height: 44px;
+    font-size: 14px;
+    padding: 0 12px;
+  }
 }
 
 .search:focus {
   outline: none;
   background: var(--white);
   box-shadow: 0 0 20px var(--neutral200);
+
+  @include --max-md {
+    box-shadow: 0 0 16px var(--neutral200);
+  }
 }

@@ -160,21 +160,23 @@ export function Product({ cartProduct }: ProductProps) {
             )}
           </div>
         </div>
-        <div className={styles.layouOptions}>
-          <div className={styles.options}>
-            {cartProduct.optionValues?.map((optionValue) => (
-              <div key={optionValue.id} className={styles.option}>
-                {typeof optionValue.option !== 'number' && (
-                  <div className={styles.optionLabel}>{optionValue.option.caption}:</div>
-                )}
-                {typeof optionValue.option !== 'number' &&
-                  optionValue.option.type === OptionType.COMBOCOLORS &&
-                  renderColor(optionValue.content)}
-                <div className={styles.optionValue}>{optionValue.content}</div>
-              </div>
-            ))}
+        {cartProduct.optionValues && cartProduct.optionValues.length > 0 && (
+          <div className={styles.layouOptions}>
+            <div className={styles.options}>
+              {cartProduct.optionValues?.map((optionValue) => (
+                <div key={optionValue.id} className={styles.option}>
+                  {typeof optionValue.option !== 'number' && (
+                    <div className={styles.optionLabel}>{optionValue.option.caption}:</div>
+                  )}
+                  {typeof optionValue.option !== 'number' &&
+                    optionValue.option.type === OptionType.COMBOCOLORS &&
+                    renderColor(optionValue.content)}
+                  <div className={styles.optionValue}>{optionValue.content}</div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   )

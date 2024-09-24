@@ -6,6 +6,11 @@
   padding: 20px;
   gap: 20px;
   cursor: pointer;
+
+  @include --max-lg {
+    padding: 16px;
+    gap: 16px;
+  }
 }
 
 .item:hover {
@@ -44,6 +49,11 @@
   margin-top: 4px;
   display: block;
   text-align: left;
+
+  @include --max-lg {
+    font-size: 12px;
+    line-height: 14px;
+  }
 }
 
 .active {

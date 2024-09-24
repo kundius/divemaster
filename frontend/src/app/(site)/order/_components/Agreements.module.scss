@@ -6,6 +6,10 @@
   border-radius: 12px;
   padding: 12px 24px;
   transition: 0.3s ease;
+
+  @include --max-lg {
+    padding: 12px 20px;
+  }
 }
 
 .wrap a {

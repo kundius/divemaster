@@ -27,7 +27,7 @@ export function Recipient() {
   return (
     <div>
       <div className={css.title}>Данные получателя</div>
-      <div className="grid grid-cols-2 gap-4 mt-4">
+      <div className="grid md:grid-cols-2 gap-4 mt-4">
         <div className="space-y-1">
           <Label htmlFor="recipientName">
             Имя и фамилия <span className="text-red-500">*</span>
@@ -63,7 +63,7 @@ export function Recipient() {
           />
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-4 mt-4">
+      <div className="grid md:grid-cols-2 gap-4 mt-4">
         <div className="space-y-1">
           <Label htmlFor="recipientPhone">
             Телефон <span className="text-red-500">*</span>

@@ -28,7 +28,7 @@ export function Payment() {
   return (
     <div>
       <div className={css.title}>Способ оплаты</div>
-      <div className="mt-4 grid grid-cols-2 gap-3">
+      <div className="mt-4 grid lg:grid-cols-2 gap-3">
         <MethodCard
           title="Онлайн на сайте"
           description="Быстро и удобно"

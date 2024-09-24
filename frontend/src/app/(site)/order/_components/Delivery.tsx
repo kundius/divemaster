@@ -26,29 +26,25 @@ export function Delivery() {
       <div>
         <div className={cn(css.title, 'mb-4')}>Выберите способ получения</div>
         <Alert variant="default">
-          <SpriteIcon name="exclamation-circle" size={14} />
+          <SpriteIcon name="exclamation-circle" size={16} />
           <AlertDescription>
             Пожалуйста, обратите внимание. В связи с большим объёмом заказов срок доставки может
             быть увеличен.
           </AlertDescription>
         </Alert>
-        <div className="grid grid-cols-2 gap-3 mt-3">
-          <div>
-            <MethodCard
-              title="Самовывоз"
-              description="Из магазина или пункта выдачи"
-              icon={<SpriteIcon name="self-pickup" size={40} />}
-              action="/order/delivery/pickup"
-            />
-          </div>
-          <div>
-            <MethodCard
-              title="Доставка"
-              description="Курьером до вашей двери"
-              icon={<SpriteIcon name="delivery" size={40} />}
-              action="/order/delivery/shipping"
-            />
-          </div>
+        <div className="grid lg:grid-cols-2 gap-3 mt-3">
+          <MethodCard
+            title="Самовывоз"
+            description="Из магазина или пункта выдачи"
+            icon={<SpriteIcon name="self-pickup" size={40} />}
+            action="/order/delivery/pickup"
+          />
+          <MethodCard
+            title="Доставка"
+            description="Курьером до вашей двери"
+            icon={<SpriteIcon name="delivery" size={40} />}
+            action="/order/delivery/shipping"
+          />
         </div>
         <div className="mt-6">
           <Products />

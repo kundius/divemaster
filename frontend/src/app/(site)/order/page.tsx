@@ -18,28 +18,28 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <div className="pt-12 pb-40">
+    <div className="pt-12 pb-40 max-md:pt-6 max-md:pb-20 max-lg:pt-8 max-lg:pb-24">
       <Container small>
         <Headline
-          className="mb-8"
+          className="mb-8 max-md:mb-6"
           title="Оформление заказа"
           back={{ href: '/cart', title: 'Вернуться в корзину' }}
         />
-        <div className="flex gap-20">
-          <div className="w-2/3 flex-grow">
+        <div className="flex gap-20 max-md:flex-col max-md:gap-8 max-lg:gap-6 max-xl:gap-10">
+          <div className="flex-grow w-full">
             <div className="border rounded-xl divide-y">
-              <div className="py-9 px-7">
+              <div className="px-7 py-9 max-lg:px-5 max-lg:py-5 max-md:px-2 max-md:py-6">
                 <Delivery />
               </div>
-              <div className="py-9 px-7">
+              <div className="py-9 px-7 max-lg:px-5 max-lg:py-5 max-md:px-2 max-md:py-6">
                 <Recipient />
               </div>
-              <div className="py-9 px-7">
+              <div className="py-9 px-7 max-lg:px-5 max-lg:py-5 max-md:px-2 max-md:py-6">
                 <Payment />
               </div>
             </div>
           </div>
-          <div className="w-1/3 max-w-[360px]">
+          <div className="flex-shrink-0 w-full md:w-[280px] lg:w-[300px] xl:w-[360px]">
             <div className="sticky top-32 space-y-4">
               <OrderInfoContainer />
               <Authentication />

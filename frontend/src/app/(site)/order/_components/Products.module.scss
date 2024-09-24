@@ -1,6 +1,10 @@
 .title {
   font-weight: bold;
   margin-bottom: 16px;
+
+  @include --max-md {
+    font-size: 14px;
+  }
 }
 
 .list {

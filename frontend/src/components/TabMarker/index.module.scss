@@ -4,6 +4,10 @@
   &.wrapper_lg {
     width: 100%;
   }
+
+  @include --max-md {
+    width: 100%;
+  }
 }
 
 .item {
@@ -21,6 +25,10 @@
   .wrapper_lg & {
     font-size: 16px;
     letter-spacing: 2px;
+    line-height: 42px;
+  }
+
+  @include --max-md {
     line-height: 42px;
   }
 }

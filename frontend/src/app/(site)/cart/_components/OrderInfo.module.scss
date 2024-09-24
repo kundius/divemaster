@@ -4,7 +4,11 @@
   padding: 32px 24px;
 
   @include --max-xl {
-    padding: 24px 16px;
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+  @include --max-lg {
+    padding: 20px;
   }
 }
 
@@ -15,9 +19,9 @@
   font-weight: bold;
   margin-bottom: 20px;
 
-  @include --max-lg {
-    font-size: 16px;
-    margin-bottom: 16px;
+  @include --max-xl {
+    font-size: 14px;
+    margin-bottom: 24px;
   }
 }
 
@@ -32,10 +36,6 @@
 
 .price + .price {
   margin-top: 8px;
-
-  @include --max-lg {
-    margin-top: 4px;
-  }
 }
 
 .priceLabel {
@@ -43,7 +43,7 @@
   line-height: 1;
   color: #3a3a3a;
 
-  @include --max-lg {
+  @include --max-xl {
     font-size: 12px;
   }
 }
@@ -53,7 +53,7 @@
   font-weight: bold;
   color: #000;
 
-  @include --max-lg {
+  @include --max-xl {
     font-size: 14px;
   }
 }
@@ -61,10 +61,6 @@
 .priceValueNegative {
   font-size: 14px;
   color: #ff0001;
-
-  @include --max-lg {
-    font-size: 12px;
-  }
 }
 
 .total {
@@ -73,7 +69,7 @@
   align-items: center;
   margin-top: 24px;
 
-  @include --max-lg {
+  @include --max-xl {
     margin-top: 16px;
   }
 }
@@ -84,8 +80,8 @@
   color: #3a3a3a;
   font-weight: bold;
 
-  @include --max-lg {
-    font-size: 16px;
+  @include --max-xl {
+    font-size: 14px;
   }
 }
 
@@ -94,8 +90,4 @@
   line-height: 1;
   color: #b6359d;
   font-weight: bold;
-
-  @include --max-lg {
-    font-size: 14px;
-  }
 }

@@ -13,8 +13,10 @@ export function PersonalDiscount({ discount, ...props }: PersonalDiscountProps) 
   return (
     <label className={styles.wrap}>
       <span className={styles.desc}>
-        Ваша персональная скидка в&nbsp;магазинах <strong>DiveMaster</strong>{' '}
-        <strong>{discount}%</strong>
+        Ваша персональная скидка в&nbsp;магазинах{' '}
+        <span className="whitespace-nowrap">
+          <strong>DiveMaster</strong> <strong>{discount}%</strong>
+        </span>
       </span>
       <span className={styles.apply}>
         <span className={styles.applyLabel}>Применить персональную скидку</span>

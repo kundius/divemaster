@@ -4,8 +4,8 @@
   padding: 24px;
   transition: 0.3s ease;
 
-  @include --max-xl {
-    padding: 16px;
+  @include --max-lg {
+    padding: 20px;
   }
 }
 
@@ -38,14 +38,13 @@ label.wrap:hover {
 
 .applyLabel {
   font-size: 16px;
-  line-height: 20px;
+  line-height: 1.25;
   color: #000;
   font-weight: bold;
   font-family: var(--font-sans-narrow);
 
-  @include --max-lg {
+  @include --max-xl {
     font-size: 14px;
-    line-height: 16px;
   }
 }
 

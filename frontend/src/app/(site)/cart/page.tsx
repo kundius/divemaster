@@ -22,12 +22,12 @@ export default function Page() {
       <Container small>
         <EmptyFallback>
           <Headline className="mb-8 max-md:mb-6" title="Корзина" />
-          <div className="flex gap-20 max-xl:gap-10 max-md:flex-col max-md:gap-8">
-            <div className="w-2/3 flex-grow max-lg:w-3/5 max-md:w-full">
+          <div className="flex gap-20 max-md:flex-col max-md:gap-8 max-lg:gap-6 max-xl:gap-10">
+            <div className="flex-grow w-full">
               <CartHeadline />
               <Products />
             </div>
-            <div className="w-1/3 md:max-w-[360px] max-lg:w-2/5 max-md:w-full">
+            <div className="flex-shrink-0 w-full md:w-[280px] lg:w-[300px] xl:w-[360px]">
               <div className="sticky top-32 space-y-4">
                 <OrderInfoContainer />
                 <Authentication />

@@ -3,6 +3,10 @@
   height: calc(100vh - 32px - 90px - 48px - 48px - 84px - 42px - 24px - 24px);
   min-height: 320px;
   overflow: auto;
+
+  @include --max-xl {
+    height: calc(100vh - 32px - 90px - 32px - 32px - 84px - 42px - 24px - 24px);
+  }
 }
 
 .alert {

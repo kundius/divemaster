@@ -9,19 +9,23 @@ export function Layout({ children }: PropsWithChildren) {
   return (
     <div className="overflow-hidden">
       <Container>
-        <div className={cn('flex gap-16', css.layout)}>{children}</div>
+        <div className={cn('flex gap-16 max-xl:gap-10 max-lg:gap-8', css.layout)}>{children}</div>
       </Container>
     </div>
   )
 }
 
 export function LayoutContent({ children }: PropsWithChildren) {
-  return <div className="w-1/3 py-12 flex flex-col">{children}</div>
+  return (
+    <div className="w-1/3 py-12 flex flex-col max-xl:py-8 max-lg:w-2/5 max-md:w-full">
+      {children}
+    </div>
+  )
 }
 
 export function LayoutMap({ children }: PropsWithChildren) {
   return (
-    <div className="w-2/3 relative">
+    <div className="w-2/3 relative max-lg:w-3/5 max-md:hidden">
       <div className={css.map}>{children}</div>
     </div>
   )

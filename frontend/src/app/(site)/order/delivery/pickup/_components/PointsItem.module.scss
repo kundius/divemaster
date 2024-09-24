@@ -13,6 +13,10 @@
   display: flex;
   align-items: center;
   gap: 12px;
+
+  @include --max-lg {
+    gap: 8px;
+  }
 }
 
 .icon {
@@ -22,6 +26,12 @@
   height: 32px;
   margin: 4px 0;
   align-self: flex-start;
+
+  @include --max-lg {
+    width: 24px;
+    height: 24px;
+    margin: 2px 0;
+  }
 }
 
 .title {

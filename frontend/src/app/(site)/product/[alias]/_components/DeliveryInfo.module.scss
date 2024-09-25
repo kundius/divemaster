@@ -31,7 +31,7 @@
   font-size: 14px;
   color: rgb(34, 34, 34);
   font-weight: bold;
-  line-height: 1.2;
+  line-height: 18px;
 }
 
 .text {
@@ -41,13 +41,18 @@
   margin-top: 4px;
 }
 
+.headline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .action {
   font-size: 12px;
   color: rgb(34, 34, 34);
   text-transform: uppercase;
-  line-height: 1;
+  line-height: 18px;
   align-self: flex-start;
-  margin: 8px 0;
 }
 
 a.action {

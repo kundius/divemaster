@@ -10,13 +10,12 @@
 }
 
 .values {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
   gap: 8px;
 }
 
 .value {
-  flex: 1 1 0px;
   font-size: 14px;
   color: rgb(34, 34, 34);
   line-height: 42px;
@@ -34,6 +33,7 @@
   border-radius: 4px;
   background-color: rgb(255, 255, 255);
   user-select: none;
+  min-width: max-content;
 }
 
 .value:hover {

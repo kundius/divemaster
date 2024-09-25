@@ -11,10 +11,12 @@ export function DeliveryInfo() {
           </svg>
         </div>
         <div className={styles.content}>
-          <div className={styles.title}>Самовывоз</div>
+          <div className={styles.headline}>
+            <div className={styles.title}>Самовывоз</div>
+            <div className={styles.action}>В наличии на складе</div>
+          </div>
           <div className={styles.text}>Из магазина, пункта выдачи или постамата</div>
         </div>
-        <div className={styles.action}>В наличии на складе</div>
       </div>
       <div className={styles.item}>
         <div className={styles.icon}>
@@ -23,12 +25,14 @@ export function DeliveryInfo() {
           </svg>
         </div>
         <div className={styles.content}>
-          <div className={styles.title}>Доставка</div>
+          <div className={styles.headline}>
+            <div className={styles.title}>Доставка</div>
+            <Link href="/info/delivery-and-payment" className={styles.action} target="_blank">
+              Варианты доставки
+            </Link>
+          </div>
           <div className={styles.text}>Курьером до вашей двери</div>
         </div>
-        <Link href="#" className={styles.action}>
-          Варианты доставки
-        </Link>
       </div>
     </div>
   )

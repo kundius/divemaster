@@ -1,5 +1,11 @@
 .layout {
-  min-height: calc(100vh - 32px - 90px);
+  height: calc(100vh - 32px - 90px);
+  min-height: calc(640px - 32px - 90px);
+
+  @include --max-md {
+    height: calc(100vh - 58px - 42px - 59px);
+    min-height: calc(480px - 58px - 42px - 59px);
+  }
 }
 
 .map {

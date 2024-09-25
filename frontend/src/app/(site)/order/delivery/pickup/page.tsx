@@ -29,7 +29,7 @@ export default function Page() {
             size="lg"
             selected={DeliveryService.Pickup}
           />
-          <div className="mt-6 flex-grow">
+          <div className="mt-6 flex-grow overflow-auto">
             <PointsList />
           </div>
         </LayoutContent>

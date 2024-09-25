@@ -38,7 +38,8 @@ export function Headline({
       <div className={css.titleContainer}>
         <div
           className={cn(css.title, {
-            [css.titleSingle]: title.split(' ').length === 1
+            // [css.titleSingle]: title.split(' ').length === 1
+            [css.titleSingle]: title.length < 20
           })}
         >
           {title}

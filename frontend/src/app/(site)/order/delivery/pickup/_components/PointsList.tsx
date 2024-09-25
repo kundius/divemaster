@@ -12,7 +12,6 @@ import { DeliveryService } from '@/types'
 
 import { PointsDetails } from './PointsDetails'
 import { PointsItem } from './PointsItem'
-import css from './PointsList.module.scss'
 import { usePointsQuery } from './PointsQuery'
 
 export function PointsList() {
@@ -69,7 +68,7 @@ export function PointsList() {
   return (
     <div>
       {coverage === 'subject' && (
-        <Alert variant="default" className={cn('mb-4', css.alert)}>
+        <Alert variant="default" className="mb-4">
           <SpriteIcon name="exclamation-circle" size={14} />
           <AlertTitle>Внимание!</AlertTitle>
           <AlertDescription>
@@ -78,7 +77,7 @@ export function PointsList() {
           </AlertDescription>
         </Alert>
       )}
-      <div className={cn('flex flex-col', css.scrollable)}>
+      <div className="flex flex-col">
         {rows.map((item) => (
           <PointsItem key={item.id} entity={item} />
         ))}

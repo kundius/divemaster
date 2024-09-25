@@ -20,7 +20,7 @@ export function PaidPeending({ onRefresh }: PaidPeendingProps) {
   }
 
   return (
-    <div className="p-6 rounded-lg bg-amber-50">
+    <div className="p-6 rounded-lg bg-amber-50 max-md:p-5">
       <div className="flex justify-between items-center mb-4">
         <div className="font-bold">Статус</div>
         <button

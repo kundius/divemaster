@@ -9,7 +9,7 @@ export interface PaidSuccessProps {
 
 export function PaidSuccess({ paidAt }: PaidSuccessProps) {
   return (
-    <div className="p-6 rounded-lg bg-emerald-50">
+    <div className="p-6 rounded-lg bg-emerald-50 max-md:p-5">
       <div className="flex justify-between items-center mb-4">
         <div className="font-bold">Статус</div>
         {paidAt && (

@@ -17,7 +17,7 @@ export function Layout({ children }: PropsWithChildren) {
 
 export function LayoutContent({ children }: PropsWithChildren) {
   return (
-    <div className="w-1/3 py-12 flex flex-col max-xl:py-8 max-lg:w-2/5 max-md:w-full">
+    <div className="w-1/3 py-12 max-lg:py-8 max-md:py-6 flex flex-col max-lg:w-2/5 max-md:w-full">
       {children}
     </div>
   )

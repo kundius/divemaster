@@ -8,13 +8,20 @@ export function AddToCart() {
     <AddToCartDialog
       requestButton={
         <button className={styles['action']}>
-          <SpriteIcon name="one-click" size={22} className="mr-2 -ml-1" />
+          <SpriteIcon
+            name="one-click"
+            className="w-6 h-6 mr-2 -ml-1 max-md:w-3 max-md:h-3 max-md:mr-0.5 max-md:-ml-0.5"
+          />
           <span className="text-nowrap">Заказать</span>
         </button>
       }
     >
       <button className={styles['action']}>
-        <SpriteIcon name="cart" size={20} className="mr-2 -ml-1" />В корзину
+        <SpriteIcon
+          name="cart"
+          className="w-6 h-6 mr-2 -ml-1 max-md:w-3 max-md:h-3 max-md:mr-0.5 max-md:-ml-0.5"
+        />
+        <span className="text-nowrap">В корзину</span>
       </button>
     </AddToCartDialog>
   )

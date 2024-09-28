@@ -28,10 +28,12 @@
   margin-top: -80px;
   padding-bottom: 120px;
   margin-bottom: -120px;
+  pointer-events: none;
 }
 
 .viewport {
   position: relative;
+  pointer-events: all;
 }
 
 .container {

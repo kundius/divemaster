@@ -7,10 +7,10 @@ import styles from './Sticky.module.scss'
 
 export function Sticky({ children }: PropsWithChildren) {
   const anchorRef = useRef<HTMLDivElement>(null)
-  const [sticky] = useElementVisibility(anchorRef)
+  const [anchorVisible] = useElementVisibility(anchorRef)
 
   return (
-    <div className={styles.block} data-header-sticky={sticky}>
+    <div className={styles.block} data-header-sticky={!anchorVisible}>
       <div className={styles.anchor} ref={anchorRef} />
       {children}
     </div>

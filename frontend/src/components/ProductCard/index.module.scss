@@ -272,8 +272,9 @@
 
 .prices {
   display: flex;
-  gap: 20px;
+  column-gap: 20px;
   align-items: center;
+  flex-wrap: wrap;
   white-space: nowrap;
   justify-content: flex-start;
   font-size: 18px;
@@ -282,7 +283,7 @@
   @include --max-md {
     font-size: 12px;
     line-height: 1.2;
-    gap: 8px;
+    column-gap: 8px;
   }
 }
 

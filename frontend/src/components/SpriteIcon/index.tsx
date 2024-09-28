@@ -5,10 +5,10 @@ import css from './index.module.scss'
 export interface SpriteIconProps {
   className?: string
   name: string
-  size: number
+  size?: number
 }
 
-export function SpriteIcon({ name, size, className }: SpriteIconProps) {
+export function SpriteIcon({ name, size = 24, className }: SpriteIconProps) {
   return (
     <svg
       viewBox={`0 0 ${size} ${size}`}

@@ -11,7 +11,7 @@ export function Products() {
 
   return (
     <div
-      className="grid grid-cols-4 gap-5 scroll-mt-60 max-2xl:scroll-mt-40 max-2xl:grid-cols-3 relative"
+      className="grid grid-cols-4 max-2xl:grid-cols-3 max-sm:grid-cols-2 gap-5 max-lg:gap-3 max-sm:gap-2 scroll-mt-60 max-2xl:scroll-mt-40 relative"
       ref={setListElement}
     >
       {rows.map((item) => {

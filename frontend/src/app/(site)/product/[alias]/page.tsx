@@ -69,6 +69,7 @@ export default async function Page({ params: { alias } }: { params: { alias: str
     }
   ]
 
+  // TODO: вынести на сервер, что-то вроде parents или сразу breadcrumbs
   const addParents = (categories: CategoryEntity[], parent: number | null) => {
     for (const category of categories) {
       if (category.parent === parent) {

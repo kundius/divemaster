@@ -10,7 +10,10 @@ export function BuyInClick() {
         <span className={css['inner']}>
           Купить <span className="text-nowrap">в 1 клик</span>
         </span>
-        <SpriteIcon name="one-click" size={20} className="ml-2 -mr-1" />
+        <SpriteIcon
+          name="one-click"
+          className="w-6 h-6 ml-2 -mr-1 max-md:w-3 max-md:h-3 max-md:ml-0.5 max-md:-mr-0.5"
+        />
       </button>
     </ProductBuyDialog>
   )

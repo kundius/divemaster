@@ -76,6 +76,7 @@ export default async function Page({ params: { alias } }: { params: { alias: str
     }
   ]
 
+  // TODO: вынести на сервер, что-то вроде parents категории
   const addParents = (category: CategoryEntity) => {
     if (!!category.parent && typeof category.parent === 'object') {
       addParents(category.parent)
@@ -92,7 +93,7 @@ export default async function Page({ params: { alias } }: { params: { alias: str
 
   return (
     <ProductsStoreProvider categoryId={category.id} favorite={isParent}>
-      <div className="pt-6 pb-40">
+      <div className="pt-6 pb-40 max-md:pb-20 max-lg:pb-24">
         <Container>
           <Headline breadcrumbs={crumbs} separator title={category.title} />
 
@@ -110,7 +111,7 @@ export default async function Page({ params: { alias } }: { params: { alias: str
           )}
 
           <div className="flex gap-x-5 mt-14">
-            <div className="w-1/5 space-y-5 max-2xl:w-1/4">
+            <div className="w-1/5 max-2xl:w-1/4 space-y-5 max-lg:hidden">
               {!isParent && (
                 <div className="mb-80">
                   <Filter />
@@ -134,7 +135,7 @@ export default async function Page({ params: { alias } }: { params: { alias: str
                 ]}
               />
             </div>
-            <div className="w-4/5 max-2xl:w-3/4">
+            <div className="w-4/5 max-2xl:w-3/4 max-lg:w-full">
               {isParent ? (
                 <div className="mb-6 text-xl font-sans-narrow uppercase font-bold">
                   Популярные товары

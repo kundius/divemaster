@@ -24,6 +24,7 @@ import { LabeledInput } from '../LabeledInput'
 import { ProductBuyDialog } from '../ProductBuyDialog'
 import { SelectOption } from './SelectOption'
 import { Button } from '../ui/button'
+import { SpriteIcon } from '../SpriteIcon'
 
 export function AddToCartDialog({
   children,
@@ -67,11 +68,9 @@ export function AddToCartDialog({
   return (
     <Dialog open={show} onOpenChange={toggleShow}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[640px] p-8 gap-8">
+      <DialogContent className="max-w-96 md:p-8 md:gap-8 md:max-w-[640px]">
         <DialogHeader>
-          <DialogTitle className="uppercase text-xl tracking-widest">
-            Выберите параметры
-          </DialogTitle>
+          <DialogTitle>Выберите параметры</DialogTitle>
         </DialogHeader>
         {productStore.selectableOptions.length > 0 && (
           <div className="space-y-6">
@@ -86,8 +85,8 @@ export function AddToCartDialog({
             ))}
           </div>
         )}
-        <div className="bg-neutral-50 flex gap-4 items-center p-4 rounded-xl">
-          <div className="flex w-20 h-20 relative shrink-0 bg-white rounded-lg">
+        <div className="bg-neutral-50 flex gap-4 items-center p-4 rounded-xl max-md:gap-2 max-md:p-2">
+          <div className="flex w-20 h-20 relative shrink-0 bg-white rounded-lg max-md:w-16 max-md:h-16">
             <Image
               src={thumbnail}
               alt={productStore.product.title}
@@ -96,15 +95,17 @@ export function AddToCartDialog({
             />
           </div>
           <div>
-            <div className="text-base font-bold leading-5">
+            <div className="text-base font-bold text-balance max-md:text-sm">
               {productStore.selectedOffer?.title
                 ? productStore.selectedOffer.title
                 : productStore.product.title}
             </div>
-            <div className="flex items-center gap-4 mt-2">
-              <div className="text-primary text-lg font-bold">{productStore.selectedPrice}</div>
+            <div className="flex items-center flex-wrap gap-4 mt-2 max-md:gap-2 max-md:mt-1">
+              <div className="text-primary text-lg font-bold max-md:text-base">
+                {productStore.selectedPrice}
+              </div>
               {productStore.selectedOldPrice && (
-                <div className="text-neutral-400 text-base line-through">
+                <div className="text-neutral-400 text-base line-through max-md:text-xs">
                   {productStore.selectedOldPrice}
                 </div>
               )}
@@ -121,6 +122,7 @@ export function AddToCartDialog({
             <div className="w-full">
               <ProductBuyDialog title="Заказать от 1 дня">
                 <Button className="w-full leading-none" size="lg">
+                  <SpriteIcon name="one-click" size={22} className="mr-2 -ml-2" />
                   Заказать
                 </Button>
               </ProductBuyDialog>
@@ -133,10 +135,7 @@ export function AddToCartDialog({
               disabled={!productStore.allOptionsSelected}
               key="available"
             >
-              <svg viewBox="0 0 19 17" width="19" height="17" className="fill-current mr-2">
-                <use href="/sprite.svg#cart"></use>
-              </svg>
-              В корзину
+              <SpriteIcon name="cart" size={19} className="mr-2 -ml-2" />В корзину
             </Button>
           )}
         </DialogFooter>

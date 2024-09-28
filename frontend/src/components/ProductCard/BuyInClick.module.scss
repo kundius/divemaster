@@ -8,7 +8,6 @@
   font-weight: 500;
   align-items: center;
   justify-content: center;
-  gap: 8px;
   color: #ffffff;
   font-family: var(--font-sans-wide);
   background: #e5b2da;
@@ -23,22 +22,6 @@
   @include --max-md {
     font-size: 9px;
     height: 28px;
-    gap: 2px;
-  }
-}
-
-.action::after {
-  content: '';
-  background: var(--icon-click-white) no-repeat 50% 50%;
-  width: 24px;
-  height: 24px;
-  display: block;
-  flex-shrink: 0;
-  background-size: contain;
-
-  @include --max-md {
-    width: 16px;
-    height: 16px;
   }
 }
 

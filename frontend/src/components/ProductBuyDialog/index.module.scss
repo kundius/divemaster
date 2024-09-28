@@ -7,7 +7,7 @@
   }
   @include --max-md {
     padding: 24px;
-    max-width: 320px;
+    max-width: 384px;
   }
 }
 
@@ -208,7 +208,9 @@
 }
 
 .rows {
-  max-width: 290px;
+  @include --md {
+    max-width: 290px;
+  }
 }
 
 * + .rowInput {

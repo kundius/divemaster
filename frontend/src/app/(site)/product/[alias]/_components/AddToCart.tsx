@@ -15,6 +15,7 @@ import styles from './AddToCart.module.scss'
 import { SelectOption } from './SelectOption'
 import { SpriteIcon } from '@/components/SpriteIcon'
 import { AddToCartDialog } from '@/components/AddToCartDialog'
+import Link from 'next/link'
 
 export const OptionComponents = {
   [OptionType.COMBOCOLORS]: SelectOption,
@@ -81,7 +82,7 @@ export function AddToCart() {
         {productStore.allOptionsSelected && !productStore.selectedOffer ? (
           <ProductBuyDialog title="Заказать от 1 дня">
             <Button className="flex-grow px-4" size="lg" key="not-available">
-              <SpriteIcon name="one-click" size={22} className="fill-current mr-2 -ml-2" />
+              <SpriteIcon name="one-click" size={22} className="mr-2 -ml-2" />
               Заказать
             </Button>
           </ProductBuyDialog>
@@ -93,7 +94,7 @@ export function AddToCart() {
             disabled={!productStore.allOptionsSelected}
             key="available"
           >
-            <SpriteIcon name="cart" size={20} className="fill-current mr-2 -ml-2" />В корзину
+            <SpriteIcon name="cart" size={20} className="mr-2 -ml-2" />В корзину
           </Button>
         )}
         <ProductBuyDialog title="Заказать в 1 клик">
@@ -105,7 +106,7 @@ export function AddToCart() {
             <span className="w-min whitespace-normal leading-none">
               Купить <span className="text-nowrap">в 1 клик</span>
             </span>
-            <SpriteIcon name="one-click" size={22} className="fill-current ml-2 -mr-2" />
+            <SpriteIcon name="one-click" size={22} className="ml-2 -mr-2" />
           </Button>
         </ProductBuyDialog>
       </div>
@@ -120,13 +121,13 @@ export function AddToCart() {
           <AddToCartDialog
             requestButton={
               <Button className="flex-grow h-9 text-sm" size="lg">
-                <SpriteIcon name="one-click" size={22} className="fill-current mr-2 -ml-2" />
+                <SpriteIcon name="one-click" size={22} className="mr-2 -ml-2" />
                 Заказать
               </Button>
             }
           >
             <Button className="flex-grow h-9 text-sm" size="lg">
-              <SpriteIcon name="cart" size={20} className="fill-current mr-2 -ml-2" />В корзину
+              <SpriteIcon name="cart" size={20} className="mr-2 -ml-2" />В корзину
             </Button>
           </AddToCartDialog>
           <div className="text-xs text-center mt-0.5">В наличии на складе</div>
@@ -137,10 +138,14 @@ export function AddToCart() {
               <span className="w-min whitespace-normal leading-none">
                 Купить <span className="text-nowrap">в 1 клик</span>
               </span>
-              <SpriteIcon name="one-click" size={22} className="fill-current ml-2 -mr-2" />
+              <SpriteIcon name="one-click" size={22} className="ml-2 -mr-2" />
             </Button>
           </ProductBuyDialog>
-          <div className="text-xs text-primary underline text-center mt-0.5">Доставка</div>
+          <div className="text-xs text-primary underline text-center mt-0.5">
+            <Link href="/info/delivery-and-payment" target="_blank">
+              Доставка
+            </Link>
+          </div>
         </div>
       </div>
     </div>

@@ -14,6 +14,7 @@ import { OptionType } from '@/types'
 import styles from './AddToCart.module.scss'
 import { SelectOption } from './SelectOption'
 import { SpriteIcon } from '@/components/SpriteIcon'
+import { AddToCartDialog } from '@/components/AddToCartDialog'
 
 export const OptionComponents = {
   [OptionType.COMBOCOLORS]: SelectOption,
@@ -116,18 +117,23 @@ export function AddToCart() {
         data-float-menu={showFloatMenu}
       >
         <div className="flex flex-col flex-grow">
-          <Button className="flex-grow px-4 h-9" size="lg">
-            <SpriteIcon name="cart" size={20} className="fill-current mr-2 -ml-2" />В корзину
-          </Button>
+          <AddToCartDialog
+            requestButton={
+              <Button className="flex-grow h-9 text-sm" size="lg">
+                <SpriteIcon name="one-click" size={22} className="fill-current mr-2 -ml-2" />
+                Заказать
+              </Button>
+            }
+          >
+            <Button className="flex-grow h-9 text-sm" size="lg">
+              <SpriteIcon name="cart" size={20} className="fill-current mr-2 -ml-2" />В корзину
+            </Button>
+          </AddToCartDialog>
           <div className="text-xs text-center mt-0.5">В наличии на складе</div>
         </div>
         <div className="flex flex-col flex-grow">
           <ProductBuyDialog title="Заказать в 1 клик">
-            <Button
-              variant="accent-outline"
-              size="lg"
-              className="flex-grow px-4 h-9 max-w-40 max-lg:text-sm"
-            >
+            <Button variant="accent-outline" size="lg" className="flex-grow px-4 h-9 text-sm">
               <span className="w-min whitespace-normal leading-none">
                 Купить <span className="text-nowrap">в 1 клик</span>
               </span>

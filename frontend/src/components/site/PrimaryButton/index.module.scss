@@ -24,9 +24,11 @@
   transition: 0.5s ease;
 
   @include --max-md {
-    height: 32px;
+    /* height: 32px; */
+    height: 36px;
     min-width: 132px;
-    border-radius: 16px;
+    /* border-radius: 16px; */
+    border-radius: 18px;
     font-weight: 500;
   }
 }

@@ -1,10 +1,14 @@
 .items {
-  --gap: 16px;
-  --columns: 4;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
 
-  display: flex;
-  gap: var(--gap);
-  flex-wrap: wrap;
+  @include --max-xl {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @include --max-md {
+    gap: 8px;
+  }
 }
 
 .item {
@@ -12,7 +16,6 @@
   background-color: rgb(245, 245, 245);
   padding: 8px;
   color: rgb(255, 0, 21);
-  width: calc((100% / var(--columns)) - (var(--gap) * (var(--columns) - 1) / var(--columns)));
   cursor: pointer;
 
   &:hover {

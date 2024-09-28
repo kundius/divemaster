@@ -164,7 +164,7 @@
   position: relative;
   border-top: 1px solid rgba(231, 231, 235, 0.34);
 
-  :global(body:has([data-hero-after-header]):not(:has([data-stuck]))) & {
+  :global(body:has([data-hero-after-header]):not(:has([data-header-sticky="true"]))) & {
     border-bottom-color: rgba(231, 231, 235, 0.34);
   }
 

@@ -1,15 +1,19 @@
 'use client'
 
+import { useIntersectionObserver } from '@reactuses/core'
+import { useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 import { ProductBuyDialog } from '@/components/ProductBuyDialog'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import { useCartStore } from '@/providers/cart-store-provider'
 import { useProductStore } from '@/providers/product-store-provider'
 import { OptionType } from '@/types'
 
 import styles from './AddToCart.module.scss'
 import { SelectOption } from './SelectOption'
+import { SpriteIcon } from '@/components/SpriteIcon'
 
 export const OptionComponents = {
   [OptionType.COMBOCOLORS]: SelectOption,
@@ -21,35 +25,37 @@ export const OptionComponents = {
 
 export function AddToCart() {
   const addToCart = useCartStore((state) => state.addToCart)
-  const {
-    product,
-    selectOptionValue,
-    selectedOffer,
-    selectedOldPrice,
-    selectedPrice,
-    selectableOptions,
-    selectedOptionValues,
-    allOptionsSelected
-  } = useProductStore((state) => state)
+  const productStore = useProductStore((state) => state)
+
+  const wrapperRef = useRef<HTMLDivElement | null>(null)
+  const [showFloatMenu, setShowFloatMenu] = useState(false)
+  useIntersectionObserver(wrapperRef, ([e]) => {
+    setShowFloatMenu(e.boundingClientRect.bottom < 0)
+  })
 
   const addHandler = () => {
     addToCart({
-      id: product.id,
-      optionValues: Object.values(selectedOptionValues).map((item) => item.id)
+      id: productStore.product.id,
+      optionValues: Object.values(productStore.selectedOptionValues).map((item) => item.id)
     })
     toast.success('Товар добавлен в корзину')
   }
 
   return (
-    <div className="space-y-12">
-      <div>
-        {product.priceDecrease && <div className={styles.discount}>-{product.priceDecrease}%</div>}
-        {selectedOldPrice && <div className={styles.oldPrice}>{selectedOldPrice}</div>}
-        <div className={styles.realPrice}>{selectedPrice}</div>
+    <div ref={wrapperRef}>
+      <div className={styles.prices}>
+        {productStore.product.priceDecrease && (
+          <div className={styles.discount}>-{productStore.product.priceDecrease}%</div>
+        )}
+        {productStore.selectedOldPrice && (
+          <div className={styles.oldPrice}>{productStore.selectedOldPrice}</div>
+        )}
+        <div className={styles.realPrice}>{productStore.selectedPrice}</div>
       </div>
-      {selectableOptions.length > 0 && (
-        <div className={styles.options}>
-          {selectableOptions.map((option) => {
+
+      {productStore.selectableOptions.length > 0 && (
+        <div className={cn(styles.options, 'mt-12')}>
+          {productStore.selectableOptions.map((option) => {
             if (!option.values || option.values.length === 0) return null
 
             const Component = OptionComponents[option.type]
@@ -62,44 +68,74 @@ export function AddToCart() {
                 caption={option.caption}
                 type={option.type}
                 values={option.values}
-                onSelect={(value) => selectOptionValue(option, value)}
-                selected={selectedOptionValues[option.key]}
+                onSelect={(value) => productStore.selectOptionValue(option, value)}
+                selected={productStore.selectedOptionValues[option.key]}
               />
             )
           })}
         </div>
       )}
-      <div className="flex items-center gap-2">
-        {allOptionsSelected && !selectedOffer ? (
+
+      <div className="flex items-center gap-2 mt-12 max-md:gap-4">
+        {productStore.allOptionsSelected && !productStore.selectedOffer ? (
           <ProductBuyDialog title="Заказать от 1 дня">
-            <Button className="w-full leading-none" size="lg" key="not-available">
+            <Button className="flex-grow px-4" size="lg" key="not-available">
+              <SpriteIcon name="one-click" size={22} className="fill-current mr-2 -ml-2" />
               Заказать
             </Button>
           </ProductBuyDialog>
         ) : (
           <Button
-            className="w-full"
+            className="flex-grow px-4"
             size="lg"
             onClick={addHandler}
-            disabled={!allOptionsSelected}
+            disabled={!productStore.allOptionsSelected}
             key="available"
           >
-            <svg viewBox="0 0 19 17" width="19" height="17" className="fill-current mr-2">
-              <use href="/sprite.svg#cart"></use>
-            </svg>
-            В корзину
+            <SpriteIcon name="cart" size={20} className="fill-current mr-2 -ml-2" />В корзину
           </Button>
         )}
         <ProductBuyDialog title="Заказать в 1 клик">
-          <Button variant="accent-outline" size="lg" className="max-w-40">
+          <Button
+            variant="accent-outline"
+            size="lg"
+            className="flex-grow px-4 max-w-40 max-lg:text-sm"
+          >
             <span className="w-min whitespace-normal leading-none">
               Купить <span className="text-nowrap">в 1 клик</span>
             </span>
-            <svg viewBox="0 0 18 22" width="18" height="22" className="fill-current ml-2">
-              <use href="/sprite.svg#one-click"></use>
-            </svg>
+            <SpriteIcon name="one-click" size={22} className="fill-current ml-2 -mr-2" />
           </Button>
         </ProductBuyDialog>
+      </div>
+
+      <div
+        className={cn('flex gap-4 pt-2 px-4 pb-1', styles.floatMenu, {
+          [styles.floatMenuVisible]: showFloatMenu
+        })}
+        data-float-menu={showFloatMenu}
+      >
+        <div className="flex flex-col flex-grow">
+          <Button className="flex-grow px-4 h-9" size="lg">
+            <SpriteIcon name="cart" size={20} className="fill-current mr-2 -ml-2" />В корзину
+          </Button>
+          <div className="text-xs text-center mt-0.5">В наличии на складе</div>
+        </div>
+        <div className="flex flex-col flex-grow">
+          <ProductBuyDialog title="Заказать в 1 клик">
+            <Button
+              variant="accent-outline"
+              size="lg"
+              className="flex-grow px-4 h-9 max-w-40 max-lg:text-sm"
+            >
+              <span className="w-min whitespace-normal leading-none">
+                Купить <span className="text-nowrap">в 1 клик</span>
+              </span>
+              <SpriteIcon name="one-click" size={22} className="fill-current ml-2 -mr-2" />
+            </Button>
+          </ProductBuyDialog>
+          <div className="text-xs text-primary underline text-center mt-0.5">Доставка</div>
+        </div>
       </div>
     </div>
   )

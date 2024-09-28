@@ -18,6 +18,19 @@
     font-size: 10px;
     width: 30px;
     height: 30px;
+    display: none;
+  }
+}
+
+.prices {
+  @include --max-md {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    &::after {
+      content: '';
+      display: block;
+    }
   }
 }
 
@@ -27,6 +40,11 @@
   text-decoration: line-through;
   line-height: 1.2;
   margin-bottom: 8px;
+
+  @include --max-md {
+    font-size: 16px;
+    margin-bottom: 0;
+  }
 }
 
 .realPrice {
@@ -34,10 +52,38 @@
   color: rgb(182, 53, 157);
   font-weight: bold;
   line-height: 1.2;
+
+  @include --max-md {
+    font-size: 24px;
+    order: -1;
+  }
 }
 
 .options {
   display: flex;
   flex-direction: column;
   gap: 24px;
+}
+
+.floatMenu {
+  position: fixed;
+  bottom: 59px;
+  left: 0;
+  right: 0;
+  background: #fff;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  transform: translateY(100%);
+  box-shadow: none;
+  transition: 0.3s ease;
+
+  @include --md {
+    display: none;
+  }
+}
+
+.floatMenuVisible {
+  transform: translateY(0);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }

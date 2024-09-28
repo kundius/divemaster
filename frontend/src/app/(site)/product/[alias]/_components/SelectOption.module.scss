@@ -13,6 +13,17 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
   gap: 8px;
+
+  @include --max-md {
+    display: flex;
+  }
+}
+
+.valuesContainer {
+  @include --max-md {
+    width: calc(100vw - var(--container-padding) * 2);
+    overflow: auto;
+  }
 }
 
 .value {
@@ -34,6 +45,11 @@
   background-color: rgb(255, 255, 255);
   user-select: none;
   min-width: max-content;
+
+  @include --max-md {
+    min-width: 60px;
+    flex-grow: 1;
+  }
 }
 
 .value:hover {

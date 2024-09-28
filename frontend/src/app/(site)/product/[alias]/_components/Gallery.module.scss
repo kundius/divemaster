@@ -1,10 +1,12 @@
 .root {
+}
+
+.sliders {
   display: flex;
   gap: 12px;
 }
 
 .mainSlider {
-  --slide-height: 19rem;
   --slide-spacing: 1rem;
   --slide-size: 100%;
 
@@ -41,15 +43,15 @@
   --slide-spacing: 8px;
   --slide-size: 20%;
 
-  width: 120px;
+  width: 15%;
   flex-shrink: 0;
   padding: 20px 0;
   display: flex;
   flex-direction: column;
   position: relative;
 
-  @include --max-xl {
-    width: 100px;
+  @include --max-md {
+    display: none;
   }
 }
 
@@ -65,7 +67,6 @@
   display: flex;
   touch-action: pan-x pinch-zoom;
   margin-top: calc(var(--slide-spacing) * -1);
-  // height: calc(var(--slide-spacing) + var(--slide-height));
   flex-direction: column;
   flex-grow: 1;
 }
@@ -139,4 +140,45 @@
       background: transparent;
     }
   }
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @include --md {
+    display: none;
+  }
+}
+
+.dot {
+  width: 32px;
+  height: 32px;
+  position: relative;
+}
+
+.dot::before {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: #e3e3e3;
+  border-radius: 50%;
+  transition: 0.3s ease;
+}
+
+.dotActive::before {
+  background: #bcbcbc;
+  width: 16px;
+  height: 16px;
+}
+
+.dotPrev::before,
+.dotNext::before {
+  width: 10px;
+  height: 10px;
 }

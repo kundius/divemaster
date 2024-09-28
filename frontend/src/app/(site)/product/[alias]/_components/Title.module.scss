@@ -10,4 +10,11 @@
   @include --max-xl {
     font-size: 32px;
   }
+  @include --max-lg {
+    font-size: 28px;
+  }
+  @include --max-md {
+    font-size: 18px;
+    line-height: 20px;
+  }
 }

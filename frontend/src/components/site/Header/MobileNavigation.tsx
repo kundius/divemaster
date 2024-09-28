@@ -2,7 +2,14 @@
 
 import { cn, disableScroll, enableScroll } from '@/lib/utils'
 import dynamic from 'next/dynamic'
-import { ComponentType, PropsWithChildren, createContext, useContext, useEffect, useState } from 'react'
+import {
+  ComponentType,
+  PropsWithChildren,
+  createContext,
+  useContext,
+  useEffect,
+  useState
+} from 'react'
 import { createPortal } from 'react-dom'
 import styles from './MobileNavigation.module.scss'
 import { usePathname } from 'next/navigation'
@@ -27,6 +34,8 @@ interface MobileNavigationContextType {
 
 const MobileNavigationContext = createContext<MobileNavigationContextType>(null!)
 
+// массивы opened и loaded нужны, чтобы открытие каталога после меня создавало эффект открытия каталога поверх меню
+// TODO: непонятно зачем высчитывать оффсеты, если можно сделать их через селектор has на рут элементе
 export function MobileNavigation({ children }: PropsWithChildren) {
   const pathname = usePathname()
   const [offsetTop, setOffsetTop] = useState(0)

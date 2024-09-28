@@ -12,12 +12,17 @@
   margin-bottom: 20px;
   font-family: var(--font-sans-narrow);
   scroll-margin-top: 160px;
+
+  @include --max-md {
+    font-size: 16px;
+    padding-bottom: 12px;
+  }
 }
 
 .collapse {
   max-height: calc(24px * 16);
   overflow: hidden;
-  transition: .3s ease;
+  transition: 0.3s ease;
 
   @include --max-xl {
     max-height: calc(24px * 12);
@@ -41,6 +46,10 @@
 .content {
   font-size: 16px;
   line-height: 1.5;
+
+  @include --max-md {
+    font-size: 14px;
+  }
 
   p {
     margin: 0;
@@ -90,7 +99,7 @@
     line-height: 1.5;
     font-weight: bold;
   }
-  
+
   * + h2 {
     margin-top: 24px;
   }
@@ -104,7 +113,7 @@
     line-height: 1.5;
     font-weight: bold;
   }
-  
+
   * + h3 {
     margin-top: 24px;
   }
@@ -112,7 +121,7 @@
   :global(.table) {
     overflow: auto;
   }
-  
+
   * + :global(.table) {
     margin: 12px 0;
   }

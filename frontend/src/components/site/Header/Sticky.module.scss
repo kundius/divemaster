@@ -40,7 +40,7 @@
         backdrop-filter: blur(0);
       }
 
-      &[data-stuck] {
+      &[data-header-sticky="true"] {
         box-shadow: 0px 6px 7px 0px rgba(0, 8, 35, 0.19);
 
         &::before {

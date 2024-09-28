@@ -1,9 +1,15 @@
 .root {
   background: #252728;
   padding: 18px 0;
-  
+
   @include --max-md {
-    padding: 12px 0 72px;
+    padding: 12px 0;
+    :global(body):has([data-header-toolbar]) & {
+      padding-bottom: calc(12px + 59px);
+    }
+    :global(body):has([data-float-menu='true']):has([data-header-toolbar]) & {
+      padding-bottom: calc(12px + 59px + 66px);
+    }
   }
 }
 
@@ -78,7 +84,7 @@
   display: flex;
   flex-shrink: 0;
   filter: grayscale(100%) contrast(0);
-  transition: .3s ease;
+  transition: 0.3s ease;
 
   &:hover {
     filter: grayscale(0);

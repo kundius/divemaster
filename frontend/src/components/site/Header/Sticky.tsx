@@ -1,18 +1,17 @@
 'use client'
 
-import { cn } from '@/lib/utils'
 import styles from './Sticky.module.scss'
-import { PropsWithChildren, useEffect, useRef } from 'react'
+import { PropsWithChildren, useEffect, useRef, useState } from 'react'
 
 export function Sticky({ children }: PropsWithChildren) {
   const observerRef = useRef<IntersectionObserver | null>(null)
-  const blockRef = useRef<HTMLDivElement>(null)
   const anchorRef = useRef<HTMLDivElement>(null)
+  const [sticky, setSticky] = useState(false)
 
   useEffect(() => {
     observerRef.current = new IntersectionObserver(
       ([e]) => {
-        blockRef.current?.toggleAttribute('data-stuck', e.intersectionRatio < 1)
+        setSticky(e.intersectionRatio < 1)
       },
       { threshold: [1] }
     )
@@ -32,7 +31,7 @@ export function Sticky({ children }: PropsWithChildren) {
   }, [anchorRef])
 
   return (
-    <div className={styles.block} ref={blockRef} data-header-sticky=''>
+    <div className={styles.block} data-header-sticky={sticky}>
       <div className={styles.anchor} ref={anchorRef} />
       {children}
     </div>

@@ -38,24 +38,26 @@ export function SelectOption({
   return (
     <div className={styles.control}>
       <div className={styles.caption}>{caption}</div>
-      <div className={styles.values}>
-        {values.map((value) => (
-          <button
-            key={value.id}
-            className={cn(styles.value, {
-              [styles.active]: selected?.id === value.id
-            })}
-            onClick={() => onSelect?.(value)}
-          >
-            {type === OptionType.COMBOCOLORS && (
-              <span
-                className={styles.color}
-                style={{ backgroundColor: colorsObject[value.content] }}
-              />
-            )}
-            {value.content}
-          </button>
-        ))}
+      <div className={styles.valuesContainer}>
+        <div className={styles.values}>
+          {values.map((value) => (
+            <button
+              key={value.id}
+              className={cn(styles.value, {
+                [styles.active]: selected?.id === value.id
+              })}
+              onClick={() => onSelect?.(value)}
+            >
+              {type === OptionType.COMBOCOLORS && (
+                <span
+                  className={styles.color}
+                  style={{ backgroundColor: colorsObject[value.content] }}
+                />
+              )}
+              {value.content}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   )

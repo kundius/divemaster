@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import { apiPost } from '@/lib/api'
-import { getFileUrl } from '@/lib/utils'
+import { cn, getFileUrl } from '@/lib/utils'
 import { useProductStore } from '@/providers/product-store-provider'
 
 import css from './index.module.scss'
@@ -83,6 +83,9 @@ export function ProductBuyDialog({ children, title }: PropsWithChildren<{ title:
         <DialogTrigger asChild>{children}</DialogTrigger>
         <DialogContent className={css.content}>
           <div className={css.layout}>
+            <div className={css.layoutTitle}>
+              <div className={css.title}>{title}</div>
+            </div>
             <div className={css.layoutProduct}>
               <div className={css.product}>
                 <div className={css.productImage}>
@@ -97,7 +100,6 @@ export function ProductBuyDialog({ children, title }: PropsWithChildren<{ title:
               </div>
             </div>
             <div className={css.layoutForm}>
-              <div className={css.title}>{title}</div>
               <div className={css.desc}>
                 Отправьте заявку, и наши менеджеры свяжутся с Вами в ближайшее время.
               </div>
@@ -133,10 +135,10 @@ export function ProductBuyDialog({ children, title }: PropsWithChildren<{ title:
                 </div>
               </form>
             </div>
-            <Image src={assetsS} alt="" className={css.assetsS} />
-            <Image src={assetsDive} alt="" className={css.assetsDive} />
-            <Image src={assetsMaster} alt="" className={css.assetsMaster} />
-            <Image src={assetsRing} alt="" className={css.assetsRing} />
+            <Image src={assetsS} alt="" className={cn(css.assetsS, 'max-md:hidden')} />
+            <Image src={assetsDive} alt="" className={cn(css.assetsDive, 'max-md:hidden')} />
+            <Image src={assetsMaster} alt="" className={cn(css.assetsMaster, 'max-md:hidden')} />
+            <Image src={assetsRing} alt="" className={cn(css.assetsRing, 'max-md:hidden')} />
           </div>
         </DialogContent>
       </Dialog>

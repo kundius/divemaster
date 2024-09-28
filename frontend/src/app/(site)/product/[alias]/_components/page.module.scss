@@ -4,46 +4,62 @@
   font-weight: bold;
   font-family: var(--sans-narrow);
   color: #b2b2b2;
-}
 
-.title {
-  id-template-rows: [gellery-start] auto [gellery-end] 80px [warranty-start] auto [warranty-end] 30px [content-start] auto [content-end];
+  @include --max-md {
+    font-size: 12px;
+  }
 }
-
 
 .sku {
   font-size: 12px;
   color: rgb(172, 172, 188);
   line-height: 1.2;
   margin-top: 8px;
+
+  @include --max-md {
+    font-size: 11px;
+    margin-top: 6px;
+  }
 }
 
 .layout {
   display: grid;
-  grid-template-columns: [left-start] 60fr [left-end] 80px [right-start] 40fr [right-end];
-  grid-template-rows: [gellery-start] auto [gellery-end] 80px [warranty-start] auto [warranty-end] 30px [content-start] auto [content-end];
+  grid-template-columns: 6fr 54px 4fr;
+  grid-template-rows: auto 80px auto 30px auto;
+  gap: 0px 0px;
+  grid-template-areas:
+    'gallery . info'
+    '. . info'
+    'warranty . info'
+    '. . info'
+    'content . info';
 
-  @include --max-xl {
-    grid-template-columns: [left-start] 60fr [left-end] 54px [right-start] 40fr [right-end];
+  @include --max-md {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 24px auto 36px auto 80px auto;
+    grid-template-areas:
+      'gallery'
+      '.'
+      'info'
+      '.'
+      'warranty'
+      '.'
+      'content';
   }
 }
 
 .layoutGallery {
-  grid-row: gellery-start / gellery-end;
-  grid-column: left-start / left-end;
+  grid-area: gallery;
 }
 
 .layoutInfo {
-  grid-row: gellery-start / content-end;
-  grid-column: right-start / right-end;
+  grid-area: info;
 }
 
 .layoutWarranty {
-  grid-row: warranty-start / warranty-end;
-  grid-column: left-start / left-end;
+  grid-area: warranty;
 }
 
 .layoutContent {
-  grid-row: content-start / content-end;
-  grid-column: left-start / left-end;
+  grid-area: content;
 }

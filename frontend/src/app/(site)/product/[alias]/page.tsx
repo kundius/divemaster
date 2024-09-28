@@ -89,7 +89,7 @@ export default async function Page({ params: { alias } }: { params: { alias: str
   return (
     <ProductStoreProvider product={product}>
       <Container>
-        <div className="pb-6 pt-6">
+        <div className="pb-6 pt-6 max-md:pt-2 max-md:pb-2 max-md:border-b">
           <Breadcrumbs items={crumbs} />
         </div>
         <div className={cn(styles.layout, 'mb-40')}>
@@ -97,7 +97,7 @@ export default async function Page({ params: { alias } }: { params: { alias: str
             <Gallery items={product.images?.map((item) => getFileUrl(item.file)) || []} />
           </div>
           <div className={styles.layoutInfo}>
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center justify-between mb-2 max-md:mb-1">
               {!!product.brand && typeof product.brand === 'object' && (
                 <div className={styles.brand}>{product.brand.title}</div>
               )}
@@ -114,7 +114,7 @@ export default async function Page({ params: { alias } }: { params: { alias: str
               <ReviewsShort count={0} rating={4} />
               {product.specifications && <SpecButton />}
             </div>
-            <div className="mt-3">
+            <div className="mt-3 max-md:mt-7">
               <AddToCart />
             </div>
             <div className="mt-10">

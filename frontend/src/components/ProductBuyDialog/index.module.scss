@@ -1,6 +1,14 @@
-.content.content {
+.content {
   padding: 120px;
   max-width: 960px;
+
+  @include --max-lg {
+    padding: 64px;
+  }
+  @include --max-md {
+    padding: 24px;
+    max-width: 320px;
+  }
 }
 
 .assetsS {
@@ -42,18 +50,39 @@
 .layout {
   display: grid;
   grid-template-columns: 1fr 60px 1fr;
-  position: relative;
-  z-index: 1;
+  grid-template-rows: auto 56px 1fr;
+  gap: 0px 0px;
+  grid-template-areas:
+    'product . title'
+    'product . .'
+    'product . form';
+
+  @include --md {
+    position: relative;
+    z-index: 1;
+  }
+  @include --max-md {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 16px auto 16px auto;
+    grid-template-areas:
+      'title'
+      '.'
+      'product'
+      '.'
+      'form';
+  }
 }
 
 .layoutProduct {
-  grid-column-start: 1;
-  grid-column-end: 2;
+  grid-area: product;
+}
+
+.layoutTitle {
+  grid-area: title;
 }
 
 .layoutForm {
-  grid-column-start: 3;
-  grid-column-end: 4;
+  grid-area: form;
 }
 
 .product {
@@ -71,6 +100,10 @@
   bottom: -30px;
   top: 0;
   border: 10px solid rgba(73, 88, 254, 0.07);
+
+  @include --max-md {
+    display: none;
+  }
 }
 
 .productImage {
@@ -79,6 +112,12 @@
   aspect-ratio: 1;
   left: -60px;
   margin-right: 30px;
+
+  @include --max-md {
+    left: 0;
+    margin-right: 0;
+    max-width: 160px;
+  }
 }
 
 .productTitle {
@@ -88,6 +127,11 @@
   line-height: 1.25;
   font-family: var(--font-sans-narrow);
   margin-top: 16px;
+
+  @include --max-md {
+    font-size: 16px;
+    margin-top: 8px;
+  }
 }
 
 .productPrice {
@@ -96,6 +140,10 @@
   flex-wrap: wrap;
   gap: 4px;
   margin-top: 12px;
+
+  @include --max-md {
+    margin-top: 8px;
+  }
 }
 
 .productPriceLabel {
@@ -103,6 +151,11 @@
   font-size: 16px;
   line-height: 1;
   padding-top: 4px;
+
+  @include --max-md {
+    font-size: 12px;
+    padding-top: 2px;
+  }
 }
 
 .productPriceValue {
@@ -110,6 +163,10 @@
   font-weight: bold;
   color: #b6359d;
   line-height: 1;
+
+  @include --max-md {
+    font-size: 16px;
+  }
 }
 
 .productPriceDesc {
@@ -117,17 +174,25 @@
   font-size: 14px;
   line-height: 1;
   padding-top: 4px;
+
+  @include --max-md {
+    font-size: 12px;
+    padding-top: 2px;
+  }
 }
 
 .title {
   font-size: 30px;
-  line-height: 18px;
+  line-height: 1;
   text-transform: uppercase;
   color: #333333;
   font-weight: bold;
   line-height: 1;
-  margin-bottom: 56px;
   font-family: var(--font-sans-narrow);
+
+  @include --max-md {
+    font-size: 18px;
+  }
 }
 
 .desc {
@@ -136,6 +201,10 @@
   color: #343434;
   font-weight: 400;
   margin-bottom: 38px;
+
+  @include --max-md {
+    display: none;
+  }
 }
 
 .rows {
@@ -148,10 +217,20 @@
 
 * + .rowRules {
   margin-top: 18px;
+
+  @include --max-md {
+    margin-top: 16px;
+  }
 }
 
 * + .rowSubmit {
   margin-top: 34px;
+
+  @include --max-md {
+    margin-top: 16px;
+    display: flex;
+    justify-content: center;
+  }
 }
 
 .rules {
@@ -207,6 +286,14 @@
   align-items: center;
   width: 640px;
   padding: 64px;
+
+  @include --max-lg {
+    padding: 64px;
+  }
+  @include --max-md {
+    padding: 24px;
+    width: 320px;
+  }
 }
 
 .successTitle {

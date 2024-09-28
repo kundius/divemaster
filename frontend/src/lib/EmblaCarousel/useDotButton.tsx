@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 type UseDotButtonType = {
   selectedIndex: number
+  setSelectedIndex: (value: number) => void
   scrollSnaps: number[]
   onDotButtonClick: (index: number) => void
 }
@@ -39,6 +40,7 @@ export const useDotButton = (emblaApi: EmblaCarouselType | undefined): UseDotBut
 
   return {
     selectedIndex,
+    setSelectedIndex,
     scrollSnaps,
     onDotButtonClick
   }

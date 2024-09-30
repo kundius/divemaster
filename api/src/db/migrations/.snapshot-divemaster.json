@@ -908,6 +908,19 @@
           "length": 36,
           "mappedType": "string"
         },
+        "type": {
+          "name": "type",
+          "type": "enum('Yookassa','UponCash')",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "enumItems": [
+            "Yookassa",
+            "UponCash"
+          ],
+          "mappedType": "enum"
+        },
         "name": {
           "name": "name",
           "type": "varchar(255)",

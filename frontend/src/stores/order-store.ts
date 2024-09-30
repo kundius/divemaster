@@ -10,6 +10,7 @@ export type OrderState = {
   delivery?: {
     service: DeliveryService
     address: string
+    properties: Record<string, unknown>
   }
   payment?: {
     service: PaymentService

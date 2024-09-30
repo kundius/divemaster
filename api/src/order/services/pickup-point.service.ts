@@ -8,7 +8,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 import { FindAllPickupPointQueryDto } from '../dto/pickup-point.dto'
-import { PickupPoint } from '../entities/pickup-point.entity'
+import { PickupPoint, PickupPointTypeEnum } from '../entities/pickup-point.entity'
 
 type DataSubjects = {
   district: string
@@ -156,6 +156,8 @@ export class PickupPointService {
 
           this.em.persist(
             this.pickupPointRepository.create({
+              type: PickupPointTypeEnum.cdek,
+
               // регион из базы регионов
               districtName: subject.district,
               subjectName: subject.name,

@@ -19,6 +19,7 @@ export function OrderInfoContainer() {
   }
   if (delivery) {
     params.deliveryService = delivery.service
+    params.deliveryProperties = JSON.stringify(delivery.properties)
   }
   const { data, isLoading } = useSWR<CartGetOrderCost>(
     cartId ? [`cart/${cartId}/get-order-cost`, params] : null

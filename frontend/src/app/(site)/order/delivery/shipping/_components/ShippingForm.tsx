@@ -63,7 +63,8 @@ export function ShippingForm() {
 
     orderState.setDelivery({
       service: DeliveryService.Shipping,
-      address: tmp.join(', ')
+      address: tmp.join(', '),
+      properties: {}
     })
     router.push('/order')
   }

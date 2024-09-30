@@ -50,7 +50,10 @@ export function PointsList() {
             onClick={() => {
               orderState.setDelivery({
                 service: DeliveryService.Pickup,
-                address: selected.fullAddress
+                address: selected.fullAddress,
+                properties: {
+                  pickupPointId: selected.id
+                }
               })
               router.push('/order')
             }}

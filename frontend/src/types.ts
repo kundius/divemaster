@@ -47,8 +47,14 @@ export interface CityEntity {
   lon: number
 }
 
+export enum PickupPointTypeEnum {
+  cdek = 'cdek',
+  store = 'store'
+}
+
 export interface PickupPointEntity {
   id: string
+  type: PickupPointTypeEnum
   name: string
   districtName: string
   subjectName: string

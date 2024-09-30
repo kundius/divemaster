@@ -1,10 +1,18 @@
-import { Entity, PrimaryKey, Property } from '@mikro-orm/core'
+import { Entity, Enum, PrimaryKey, Property } from '@mikro-orm/core'
 import { v4 } from 'uuid'
+
+export enum PickupPointTypeEnum {
+  cdek = 'cdek',
+  store = 'store'
+}
 
 @Entity()
 export class PickupPoint {
   @PrimaryKey({ type: 'uuid' })
   id = v4()
+
+  @Enum(() => PickupPointTypeEnum)
+  type: PickupPointTypeEnum
 
   @Property()
   name: string

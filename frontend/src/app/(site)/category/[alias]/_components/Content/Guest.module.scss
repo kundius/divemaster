@@ -76,7 +76,7 @@
 
 .content {
   font-size: 18px;
-  line-height: 22px;
+  line-height: 1.2;
   color: inherit;
   p {
     margin: 0;
@@ -91,14 +91,11 @@
 
   @include --max-xl {
     font-size: 16px;
-    line-height: 18px;
   }
   @include --max-lg {
     font-size: 14px;
-    line-height: 16px;
   }
   @include --max-md {
     font-size: 14px;
-    line-height: 16px;
   }
 }

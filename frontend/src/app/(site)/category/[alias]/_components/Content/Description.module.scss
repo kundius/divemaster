@@ -4,75 +4,75 @@
   line-height: 1.2;
 
   h2 {
-    font-size: 28px;
+    font-size: calc(28em / 18);
     font-weight: bold;
   }
   * + h2 {
-    margin-top: 24px;
+    margin-top: calc(24em / 28);
 
-    @include --max-lg {
+    /* @include --max-lg {
       margin-top: 16px;
-    }
+    } */
   }
   h3 {
-    font-size: 24px;
+    font-size: calc(24em / 18);
     font-weight: bold;
   }
   * + h3 {
-    margin-top: 24px;
+    margin-top: calc(24em / 24);
 
-    @include --max-lg {
+    /* @include --max-lg {
       margin-top: 16px;
-    }
+    } */
   }
   h4 {
-    font-size: 22px;
+    font-size: calc(22em / 18);
     font-weight: bold;
   }
   * + h4 {
-    margin-top: 24px;
+    margin-top: calc(24em / 24);
 
-    @include --max-lg {
+    /* @include --max-lg {
       margin-top: 16px;
-    }
+    } */
   }
   p {
     margin: 0;
   }
   * + p {
-    margin-top: 24px;
+    margin-top: calc(24em / 18);
 
-    @include --max-lg {
+    /* @include --max-lg {
       margin-top: 16px;
-    }
+    } */
   }
   ul {
-    margin: 12px 0 36px;
+    margin: calc(12em / 18) 0 calc(36em / 18);
     padding: 0;
     list-style: none;
     li {
-      padding-left: 60px;
+      padding-left: calc(60em / 18);
       position: relative;
       margin-top: 2px;
       &::before {
         content: '';
-        width: 10px;
-        height: 10px;
+        width: calc(10em / 18);
+        height: calc(10em / 18);
         border-radius: 50%;
         background: #00cdff;
         position: absolute;
-        top: 2px;
-        left: 34px;
+        top: calc(2em / 18);
+        left: calc(34em / 18);
       }
     }
     @include --max-xl {
       li {
         &::before {
-          top: 4px;
+          top: calc(4em / 18);
         }
       }
     }
-    @include --max-lg {
+    /* @include --max-lg {
       margin-bottom: 16px;
       li {
         padding-left: 20px;
@@ -80,8 +80,8 @@
           left: 2px;
         }
       }
-    }
-    @include --max-md {
+    } */
+    /* @include --max-md {
       margin-bottom: 32px;
       li {
         padding-left: 36px;
@@ -94,13 +94,20 @@
           left: 12px;
         }
       }
-    }
+    } */
   }
   * + ul {
-    margin-top: 24px;
+    margin-top: calc(24em / 18);
 
-    @include --max-lg {
+    /* @include --max-lg {
       margin-top: 16px;
-    }
+    } */
+  }
+
+  @include --max-lg {
+    font-size: 16px;
+  }
+  @include --max-md {
+    font-size: 14px;
   }
 }

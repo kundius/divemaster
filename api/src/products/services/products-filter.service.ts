@@ -132,7 +132,7 @@ export class ProductsFilterService {
     const filters: Filter[] = []
     filters.push({
       type: 'toggle',
-      title: 'recent',
+      title: 'Новинка',
       name: 'recent'
     })
     filters.push({

@@ -69,7 +69,8 @@ export default function CatalogButtonContent() {
               </ul>
             </div>
           )}
-          <div className={styles['grid-brands']}>
+          {/* TODO: brands */}
+          {/* <div className={styles['grid-brands']}>
             <Link href="#Бренды" className={styles.headline}>
               <span className={styles['headline-icon']}>
                 <Image src="/icons/catalog/brands-small.svg" width={55} height={31} alt="" />
@@ -83,7 +84,7 @@ export default function CatalogButtonContent() {
                 </li>
               ))}
             </ul>
-          </div>
+          </div> */}
           {swimming && (
             <div className={styles['grid-swimming']}>
               <Link href={`/category/${swimming.alias}`} className={styles.headline}>

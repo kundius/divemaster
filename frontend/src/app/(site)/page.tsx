@@ -84,6 +84,7 @@ export default async function Page() {
       />
       <div className="bg-white py-6">
         <Container>
+          {/* TODO: brands */}
           <BrandsCarousel
             items={[
               {

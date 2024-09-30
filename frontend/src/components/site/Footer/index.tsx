@@ -32,10 +32,11 @@ export function Footer() {
                     title: 'О магазине',
                     href: '/info/about'
                   },
-                  {
-                    title: 'Бренды',
-                    href: '/brand'
-                  },
+                  // TODO: brands
+                  // {
+                  //   title: 'Бренды',
+                  //   href: '/brand'
+                  // },
                   {
                     title: 'Доставка и оплата',
                     href: '/info/delivery-and-payment'

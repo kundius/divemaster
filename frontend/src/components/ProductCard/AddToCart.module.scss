@@ -22,6 +22,14 @@
     background-position: 100% 0;
   }
 
+  @include --max-3xl {
+    font-size: 14px;
+    height: 48px;
+  }
+  @include --max-xl {
+    font-size: 12px;
+    height: 44px;
+  }
   @include --max-md {
     font-size: 9px;
     height: 28px;

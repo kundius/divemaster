@@ -20,10 +20,17 @@ const parseContent = (content?: string): string[] => {
 export function Content({ title, content }: ContentProps) {
   const renderContent = () => {
     const parsedContent = parseContent(content)
+    const output: JSX.Element[] = []
+
+    if (title) {
+      output.push(
+        <div key="title" className={styles.title} dangerouslySetInnerHTML={{ __html: title }} />
+      )
+    }
 
     if (parsedContent.length === 2) {
-      return (
-        <div className={styles.grid}>
+      output.push(
+        <div key="before" className={styles.grid}>
           <Description content={parsedContent[0]} />
           <Discount />
           <Guest />
@@ -33,26 +40,30 @@ export function Content({ title, content }: ContentProps) {
     }
 
     if (parsedContent.length === 1) {
-      return (
-        <div className={styles.grid}>
+      output.push(
+        <div key="after" className={styles.grid}>
           <Description content={parsedContent[0]} />
           <Guest />
         </div>
       )
     }
-    return (
-      <div className={styles.grid}>
-        <Guest />
-        <Discount />
-      </div>
-    )
+
+    if (title && parsedContent.length === 0) {
+      output.push(
+        <div key="empty" className={styles.grid}>
+          <Guest />
+          <Discount />
+        </div>
+      )
+    }
+
+    return output
   }
-  if (!content && !title) return null
+
   return (
-    <div className={styles.block}>
-      {title && <div className={styles.title} dangerouslySetInnerHTML={{ __html: title }} />}
+    <>
       {renderContent()}
       <Questions />
-    </div>
+    </>
   )
 }

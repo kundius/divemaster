@@ -56,6 +56,7 @@ export default async function Page({ params: { alias } }: { params: { alias: str
     {
       withParent: true,
       withChildren: true,
+      withContent: true,
       active: true
     },
     {
@@ -93,7 +94,7 @@ export default async function Page({ params: { alias } }: { params: { alias: str
 
   return (
     <ProductsStoreProvider categoryId={category.id} favorite={isParent}>
-      <div className="pt-6 pb-40 max-md:pb-20 max-lg:pb-24">
+      <div className="pt-6">
         <Container>
           <Headline breadcrumbs={crumbs} separator title={category.title} />
 
@@ -111,7 +112,7 @@ export default async function Page({ params: { alias } }: { params: { alias: str
           )}
 
           <div className="flex gap-x-5 mt-14">
-            <div className="w-1/5 max-2xl:w-1/4 space-y-5 max-lg:hidden">
+            <div className="w-[320px] max-xl:w-[260px] flex-shrink-0 space-y-5 max-lg:hidden">
               {!isParent && (
                 <div className="mb-80">
                   <Filter />
@@ -135,23 +136,27 @@ export default async function Page({ params: { alias } }: { params: { alias: str
                 ]}
               />
             </div>
-            <div className="w-4/5 max-2xl:w-3/4 max-lg:w-full">
-              {isParent ? (
-                <div className="mb-6 text-xl font-sans-narrow uppercase font-bold">
-                  Популярные товары
-                </div>
-              ) : (
-                <Sorting />
-              )}
+            <div className="w-full">
+              <div className="hidden">
+                {isParent ? (
+                  <div className="mb-6 text-xl font-sans-narrow uppercase font-bold">
+                    Популярные товары
+                  </div>
+                ) : (
+                  <Sorting />
+                )}
+              </div>
               <Products />
               <Pagination />
             </div>
           </div>
 
-          <Content
-            title={category.longTitle || undefined}
-            content={category.description || undefined}
-          />
+          <div className="mt-40 max-lg:mt-24">
+            <Content
+              title={category.longTitle || undefined}
+              content={category.description || undefined}
+            />
+          </div>
         </Container>
       </div>
     </ProductsStoreProvider>

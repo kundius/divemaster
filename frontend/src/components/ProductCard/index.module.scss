@@ -11,6 +11,12 @@
   flex-direction: column;
   padding: 20px 20px 68px;
 
+  @include --max-3xl {
+    padding: 16px 16px 62px;
+  }
+  @include --max-xl {
+    padding: 12px 12px 58px;
+  }
   @include --max-md {
     padding-top: 6px;
     padding-left: 6px;
@@ -239,6 +245,12 @@
   font-family: var(--font-sans-narrow);
   text-wrap: pretty;
 
+  @include --max-3xl {
+    font-size: 18px;
+  }
+  @include --max-xl {
+    font-size: 16px;
+  }
   @include --max-md {
     font-size: 12px;
   }
@@ -264,6 +276,14 @@
   margin-top: 8px;
   font-family: var(--font-sans-narrow);
 
+  @include --max-3xl {
+    font-size: 12px;
+    margin-top: 6px;
+  }
+  @include --max-xl {
+    font-size: 11px;
+    margin-top: 4px;
+  }
   @include --max-md {
     font-size: 8px;
     margin-top: 6px;
@@ -280,6 +300,16 @@
   font-size: 18px;
   line-height: 20px;
 
+  @include --max-3xl {
+    font-size: 16px;
+    line-height: 18px;
+    column-gap: 16px;
+  }
+  @include --max-xl {
+    font-size: 14px;
+    line-height: 16px;
+    column-gap: 12px;
+  }
   @include --max-md {
     font-size: 12px;
     line-height: 1.2;
@@ -305,6 +335,12 @@
   align-items: center;
   margin: -20px -20px 12px; // fix lags
 
+  @include --max-3xl {
+    margin: -16px -16px 8px;
+  }
+  @include --max-3xl {
+    margin: -12px -12px 6px;
+  }
   @include --max-md {
     margin-top: -6px;
     margin-left: -6px;

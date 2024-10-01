@@ -173,7 +173,7 @@ export function CategoryForm({ form, onSubmit }: CategoryFormProps) {
             )}
           />
           <div className="p-5 rounded-md flex items-center justify-end gap-4 bg-neutral-50">
-            <Link href="/admin/categories">
+            <Link href="/dashboard/categories">
               <Button type="button" variant="outline">
                 Отмена
               </Button>

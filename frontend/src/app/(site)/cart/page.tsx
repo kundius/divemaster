@@ -11,6 +11,7 @@ import { LegalEntity } from './_components/LegalEntity'
 import { OrderInfoContainer } from './_components/OrderInfoContainer'
 import { Products } from './_components/Products'
 import Link from 'next/link'
+import { SectionPage } from '@/components/SectionPage'
 
 export const metadata: Metadata = {
   title: 'Корзина'
@@ -18,8 +19,8 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <div className="pt-12 pb-40 max-md:pt-6 max-md:pb-20 max-lg:pt-8 max-lg:pb-24">
-      <Container small>
+    <SectionPage>
+      <div className="max-w-7xl mx-auto">
         <EmptyFallback>
           <Headline className="mb-8 max-md:mb-6" title="Корзина" />
           <div className="flex gap-20 max-md:flex-col max-md:gap-8 max-lg:gap-6 max-xl:gap-10">
@@ -44,7 +45,7 @@ export default function Page() {
             </div>
           </div>
         </EmptyFallback>
-      </Container>
-    </div>
+      </div>
+    </SectionPage>
   )
 }

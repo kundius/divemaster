@@ -6,7 +6,6 @@ import { PageProps, ProductEntity } from '@/types'
 import type { Metadata } from 'next'
 import { OrdersPagination } from './_components/Pagination'
 
-import { createSearchParamsCache, parseAsInteger, parseAsString } from 'nuqs/server'
 import {
   Table,
   TableBody,
@@ -16,16 +15,13 @@ import {
   TableCell
 } from '@/components/ui/table'
 
-export const searchParamsCache = createSearchParamsCache({
-  page: parseAsInteger.withDefault(1)
-})
-
 export const metadata: Metadata = {
   title: 'Заказы'
 }
 
 export default async function Page(props: PageProps) {
-  const { page } = searchParamsCache.parse(props.searchParams)
+  let { page = 1 } = props.searchParams
+  page = Number(page)
   const initialData = await apiGet<ApiTableData<ProductEntity>>(
     'products',
     {

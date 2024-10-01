@@ -7,7 +7,8 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <div>
-      <div className="text-2xl font-sans-narrow uppercase font-bold mb-12">Мои данные</div>
+      {/* <div className="text-2xl font-sans-narrow uppercase font-bold mb-12">Мои данные</div> */}
+      Страница в разработке
     </div>
   )
 }

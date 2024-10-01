@@ -4,9 +4,14 @@ import Script from 'next/script'
 import { useEffect, useRef, useState } from 'react'
 import { usePointsQuery } from './PointsQuery'
 import { useLocationStore } from '@/providers/location-store-provider'
-import { PickupPointEntity } from '@/types'
+import { PickupPointEntity, PickupPointTypeEnum } from '@/types'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
+
+const presets: { [key in PickupPointTypeEnum]: string } = {
+  [PickupPointTypeEnum.cdek]: 'islands#darkGreenIcon',
+  [PickupPointTypeEnum.store]: 'islands#violetIcon'
+}
 
 export function PointsMap() {
   const locationStore = useLocationStore((state) => state)
@@ -33,11 +38,11 @@ export function PointsMap() {
             coordinates: [row.lat, row.lon]
           },
           properties: {
-            iconCaption: row.shortAddress
+            iconCaption: row.type === PickupPointTypeEnum.store ? row.shortAddress : undefined
           }
         },
         {
-          preset: 'islands#circleIcon'
+          preset: presets[row.type]
         }
       )
 

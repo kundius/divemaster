@@ -1,5 +1,14 @@
 import Image from 'next/image'
 import styles from './CarpHunting.module.scss'
+import Link from 'next/link'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
 
 export function CarpHunting() {
   return (
@@ -16,17 +25,32 @@ export function CarpHunting() {
         />
       </div>
       <div className={styles.content}>
-        <a href="#" className={styles.label}>
+        <Link href="/category/vsyo-dlya-podvodnoj-ohoty" className={styles.label}>
           Всё для подводной охоты
-        </a>
+        </Link>
         <div className={styles.title}>Охота на&nbsp;карпа</div>
         <div className={styles.links}>
-          <a href="#">пневматические подводные ружья</a>
-          <a href="#">аксессуары</a>
+          <Link href="/category/vsyo-dlya-podvodnoj-ohoty-ruzhya-pnevmaty">
+            пневматические подводные ружья
+          </Link>
+          <Link href="/category/vsyo-dlya-podvodnoj-ohoty-aksessuary-dlya-podvodnoj-ohoty">
+            аксессуары
+          </Link>
         </div>
-        <a href="#" className={styles.button}>
-          смотреть видео
-        </a>
+        <Dialog>
+          <DialogTrigger className={styles.button}>смотреть видео</DialogTrigger>
+          <DialogContent className="max-w-[800px]">
+            <DialogHeader>
+              <DialogTitle>Охота на&nbsp;карпа</DialogTitle>
+              <DialogDescription>
+                <video width="100%" height="500" controls autoPlay>
+                  <source src="/Карп 7200.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
+                  Тег video не поддерживается вашим браузером.
+                </video>
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   )

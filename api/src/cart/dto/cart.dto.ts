@@ -1,9 +1,18 @@
 import { Type } from 'class-transformer'
-import { IsArray, IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
+import {
+  IsArray,
+  IsBoolean,
+  IsEnum,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString
+} from 'class-validator'
 
 import { ParseBoolean } from '@/lib/parse-boolean'
 import { DeliveryService } from '@/order/entities/delivery.entity'
 import { PaymentServiceEnum } from '@/order/entities/payment.entity'
+import { ParseObject } from '@/lib/parse-object'
 
 export class GetOrderCostDto {
   @ParseBoolean()
@@ -14,6 +23,11 @@ export class GetOrderCostDto {
   @IsEnum(DeliveryService)
   @IsOptional()
   deliveryService?: DeliveryService
+
+  @ParseObject()
+  @IsObject()
+  @IsOptional()
+  deliveryProperties?: Record<string, unknown>
 
   @IsEnum(PaymentServiceEnum)
   @IsOptional()

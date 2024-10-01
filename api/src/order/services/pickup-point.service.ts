@@ -99,13 +99,20 @@ export class PickupPointService {
     private configService: ConfigService
   ) {}
 
+  async findOne(id: string): Promise<PickupPoint | null> {
+    return await this.pickupPointRepository.findOne(id)
+  }
+
   async findAll(dto: FindAllPickupPointQueryDto) {
     let where: ObjectQuery<PickupPoint> = {}
     if (dto.subject) {
       where = { ...where, subjectName: dto.subject }
     }
     return await this.pickupPointRepository.find(where, {
-      groupBy: 'shortAddress'
+      groupBy: 'shortAddress',
+      orderBy: {
+        type: 'DESC'
+      }
     })
   }
 
@@ -122,7 +129,13 @@ export class PickupPointService {
     const countryFilter = 'filter[2][type]=eq&filter[2][field]=country&filter[2][value]=28' // только по России
     const activeFilter = 'filter[3][type]=eq&filter[3][field]=state&filter[3][value]=active' // только активные
 
-    this.em.remove(await this.pickupPointRepository.findAll())
+    this.em.remove(
+      await this.pickupPointRepository.findAll({
+        where: {
+          type: PickupPointTypeEnum.cdek
+        }
+      })
+    )
 
     let count = 0
     let repeat = 0

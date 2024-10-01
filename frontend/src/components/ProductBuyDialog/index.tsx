@@ -15,6 +15,7 @@ import assetsRing from './assets/ring.png'
 import assetsS from './assets/s.png'
 import { PrimaryButton, PrimaryButtonArrow, PrimaryButtonSpinner } from '../site/PrimaryButton'
 import { LabeledInput } from '../LabeledInput'
+import Link from 'next/link'
 
 export function ProductBuyDialog({ children, title }: PropsWithChildren<{ title: string }>) {
   const product = useProductStore((state) => state.product)
@@ -121,9 +122,9 @@ export function ProductBuyDialog({ children, title }: PropsWithChildren<{ title:
                       required
                     />
                     Соглашаюсь с{' '}
-                    <a href="/info/privacy-policy" target="_blank">
+                    <Link href="/info/privacy-policy" target="_blank">
                       Политикой обработки персональных данных
-                    </a>
+                    </Link>
                   </label>
                 </div>
                 <div className={css.rowSubmit}>

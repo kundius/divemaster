@@ -30,7 +30,7 @@
   color: rgba(254, 254, 254, 0.702);
   line-height: 12px;
   display: block;
-  
+
   @include --max-lg {
     font-size: 10px;
   }
@@ -50,6 +50,6 @@
   top: 3px;
 }
 
-.contacts:hover .icon {
-  background-color: rgb(89, 80, 254);
-}
+// .contacts:hover .icon {
+//   background-color: rgb(89, 80, 254);
+// }

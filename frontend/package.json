@@ -81,6 +81,7 @@
     "zustand-computed": "^1.4.1"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.15",
     "@types/deep-equal": "^1.0.4",
     "@types/lodash.isequal": "^4.5.8",
     "@types/negotiator": "^0.6.3",

@@ -32,9 +32,10 @@ export function BrandsCarousel({ items }: BrandsCarouselProps) {
           <button className={styles.prev} onClick={onPrevButtonClick} disabled={prevBtnDisabled} />
           <button className={styles.next} onClick={onNextButtonClick} disabled={nextBtnDisabled} />
         </div>
-        <a href="#" className={styles.all}>
+        {/* TODO: brands */}
+        {/* <a href="#" className={styles.all}>
           смотреть все
-        </a>
+        </a> */}
       </div>
       <div className={styles.slider}>
         <div className={styles.viewport} ref={emblaRef}>

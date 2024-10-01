@@ -34,7 +34,8 @@ const config = {
     extend: {
       backgroundImage: {
         'gray-to-light': 'linear-gradient(90deg, #a7b4bd 0%, #d3dbdf 100%)',
-        'light-gray': 'linear-gradient(90deg, #f5f5f5 0%, #fbfbfb 100%)'
+        'light-gray': 'linear-gradient(90deg, #f5f5f5 0%, #fbfbfb 100%)',
+        'blue-gradient': 'linear-gradient(90deg, #e9f5ff 0%, #f5fbff 100%)'
       },
       fontFamily: {
         sans: ['var(--font-sans)', ...fontFamily.sans],
@@ -115,7 +116,7 @@ const config = {
       // => @media (min-width: 1792px) { ... }
     }
   },
-  plugins: [require('tailwindcss-animate'), colorVarsPlugin]
+  plugins: [require('@tailwindcss/typography'), require('tailwindcss-animate'), colorVarsPlugin]
 } satisfies Config
 
 export default config

@@ -162,7 +162,9 @@ export function ConsultationWidget() {
                           <span className={styles.rulesControl} />
                           <span className={styles.rulesText}>
                             Соглашаюсь с{' '}
-                            <Link href="/">Политикой обработки персональных данных</Link>
+                            <Link href="/info/privacy-policy" target="_blank">
+                              Политикой обработки персональных данных
+                            </Link>
                           </span>
                         </label>
                       </FormControl>

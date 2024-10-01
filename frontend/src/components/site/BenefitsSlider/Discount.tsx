@@ -14,7 +14,7 @@ export function Discount() {
         </div>
         <div className={styles.action}>
           <PrimaryButton asChild>
-            <a href="#">
+            <a href="/info/discount">
               Узнать больше
               <PrimaryButtonArrow />
             </a>

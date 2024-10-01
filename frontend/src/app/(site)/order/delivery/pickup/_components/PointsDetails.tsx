@@ -13,7 +13,7 @@ export function PointsDetails({ entity }: PointsDetailsProps) {
       <div className={css.content}>
         <div className={css.headline}>
           <div className={css.icon}>
-            <SpriteIcon name="logo-marker" size={54} />
+            <SpriteIcon name={`pickup-${entity.type}`} size={54} />
           </div>
           <div className={css.title}>{entity.fullAddress}</div>
         </div>

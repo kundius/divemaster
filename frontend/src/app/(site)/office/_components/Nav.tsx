@@ -49,9 +49,9 @@ export function Nav() {
           <span className={styles.text}>Избранное</span>
         </Link>
       </li>
-      {user && (
+      {user && false && (
         <li>
-          <Link href="/admin" className={styles.item}>
+          <Link href="/dashboard" className={styles.item}>
             <span className={styles.icon}>
               <svg viewBox="0 0 24 24" width="20" height="20">
                 <use href="/sprite.svg#office-admin"></use>

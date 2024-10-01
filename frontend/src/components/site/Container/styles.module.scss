@@ -6,10 +6,3 @@
   margin-right: auto;
   box-sizing: content-box;
 }
-
-.small {
-  width: calc(var(--container-width) * 0.8);
-  @include --max-2xl {
-    width: var(--container-width);
-  }
-}

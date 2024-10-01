@@ -16,6 +16,7 @@ import styles from './_components/page.module.scss'
 import { ProductStoreProvider } from '@/providers/product-store-provider'
 import { Title } from './_components/Title'
 import type { Metadata } from 'next'
+import { SectionPage } from '@/components/SectionPage'
 
 export async function generateStaticParams() {
   const products = await apiGet<ApiTableData<ProductEntity>>(`products`, {
@@ -89,8 +90,8 @@ export default async function Page({ params: { alias } }: { params: { alias: str
 
   return (
     <ProductStoreProvider product={product}>
-      <Container>
-        <div className="pb-6 pt-6 max-md:pt-2 max-md:pb-2 max-md:border-b">
+      <SectionPage withBreadcrumbs>
+        <div className="pb-6 max-md:pb-2 max-md:border-b">
           <Breadcrumbs items={crumbs} />
         </div>
         <div className={cn(styles.layout, 'mb-40')}>
@@ -135,7 +136,7 @@ export default async function Page({ params: { alias } }: { params: { alias: str
             )}
           </div>
         </div>
-      </Container>
+      </SectionPage>
     </ProductStoreProvider>
   )
 }

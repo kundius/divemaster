@@ -22,11 +22,14 @@ import { Delivery, DeliveryService } from '@/order/entities/delivery.entity'
 import { Payment, PaymentServiceEnum } from '@/order/entities/payment.entity'
 import { LazyModuleLoader } from '@nestjs/core'
 import { OrderService } from '@/order/services/order.service'
+import { PickupPointService } from '@/order/services/pickup-point.service'
+import { PickupPointTypeEnum } from '@/order/entities/pickup-point.entity'
 
 @Injectable()
 export class CartService {
   constructor(
     private orderService: OrderService,
+    private pickupPointService: PickupPointService,
     private configService: ConfigService,
     private em: EntityManager,
     @InjectRepository(Cart)
@@ -252,7 +255,17 @@ export class CartService {
       switch (dto.deliveryService) {
         case DeliveryService.Shipping:
         case DeliveryService.Pickup:
-          if (cost < Number(this.configService.get('DELIVERY_FREE_LIMIT', '0'))) {
+          console.log('deliveryProperties', dto.deliveryProperties?.pickupPointId)
+          let inStore = false
+          if (dto.deliveryProperties?.pickupPointId) {
+            const pickupPoint = await this.pickupPointService.findOne(
+              String(dto.deliveryProperties.pickupPointId)
+            )
+            if (pickupPoint) {
+              inStore = pickupPoint.type === PickupPointTypeEnum.store
+            }
+          }
+          if (!inStore && cost < Number(this.configService.get('DELIVERY_FREE_LIMIT', '0'))) {
             composition.push({
               name: 'delivery',
               caption: `Доставка`,

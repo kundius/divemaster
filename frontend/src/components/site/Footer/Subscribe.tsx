@@ -8,11 +8,7 @@ export function Subscribe() {
       <div className={styles.title}>Будь в курсе наших новостей и событий:</div>
       <form className={styles.form}>
         <div className={styles.group}>
-          <input
-            type="text"
-            className={styles.input}
-            placeholder="Ваша электронная почта"
-          />
+          <input type="text" className={styles.input} placeholder="Ваша электронная почта" />
           <button type="submit" className={styles.submit}>
             Подписаться
             <span className={styles.submitArrow} />
@@ -22,9 +18,9 @@ export function Subscribe() {
           <input type="checkbox" value="1" className={styles.acceptanceInput} />
           <span className={styles.acceptanceCheckbox} />
           Согласен(-на) с{' '}
-          <a href="#" target="_blank">
+          <Link href="/info/privacy-policy" target="_blank">
             правилами пользования сайтом
-          </a>
+          </Link>
         </label>
       </form>
     </div>

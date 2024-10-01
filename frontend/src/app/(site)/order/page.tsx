@@ -1,7 +1,6 @@
 import { Metadata } from 'next'
 
 import { Headline } from '@/components/Headline'
-import { Container } from '@/components/site/Container'
 
 import { Authentication } from '../cart/_components/Authentication'
 import { Agreement } from './_components/Agreement'
@@ -11,6 +10,7 @@ import { Payment } from './_components/Payment'
 import { Recipient } from './_components/Recipient'
 import { Submit } from './_components/Submit'
 import { OrderInfoContainer } from './_components/OrderInfoContainer'
+import { SectionPage } from '@/components/SectionPage'
 
 export const metadata: Metadata = {
   title: 'Оформление заказа'
@@ -18,8 +18,8 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <div className="pt-12 pb-40 max-md:pt-6 max-md:pb-20 max-lg:pt-8 max-lg:pb-24">
-      <Container small>
+    <SectionPage>
+      <div className="max-w-7xl mx-auto">
         <Headline
           className="mb-8 max-md:mb-6"
           title="Оформление заказа"
@@ -49,7 +49,7 @@ export default function Page() {
             </div>
           </div>
         </div>
-      </Container>
-    </div>
+      </div>
+    </SectionPage>
   )
 }

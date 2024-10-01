@@ -19,6 +19,7 @@ import { Products } from './_components/Products'
 import { Pagination } from './_components/Pagination'
 import { Content } from './_components/Content'
 import { Headline } from '@/components/Headline'
+import { SectionPage } from '@/components/SectionPage'
 
 export async function generateStaticParams() {
   const categories = await apiGet<ApiTableData<CategoryEntity>>(`categories`, {
@@ -94,71 +95,68 @@ export default async function Page({ params: { alias } }: { params: { alias: str
 
   return (
     <ProductsStoreProvider categoryId={category.id} favorite={isParent}>
-      <div className="pt-6">
-        <Container>
-          <Headline breadcrumbs={crumbs} separator title={category.title} />
+      <SectionPage withBreadcrumbs>
+        <Headline breadcrumbs={crumbs} separator title={category.title} />
 
-          {isParent && (
-            <div className="grid grid-cols-5 gap-x-5 mt-10 gap-y-16 pb-10 border-b mb-14 border-neutral-100 max-2xl:grid-cols-4">
-              {category.children?.map((item) => (
-                <CategoryCard
-                  key={item.id}
-                  title={item.title}
-                  href={`/category/${item.alias}`}
-                  image={!!item.image ? getFileUrl(item.image) : '/noimage.png'}
-                />
-              ))}
-            </div>
-          )}
-
-          <div className="flex gap-x-5 mt-14">
-            <div className="w-[320px] max-xl:w-[260px] flex-shrink-0 space-y-5 max-lg:hidden">
-              {!isParent && (
-                <div className="mb-80">
-                  <Filter />
-                </div>
-              )}
-              <ConsultationWidget />
-              <BenefitsSideSlider
-                items={[
-                  {
-                    content: <BenefitsSideSliderDiscount />,
-                    name: 'BenefitsSideSliderDiscount1'
-                  },
-                  {
-                    content: <BenefitsSideSliderDiscount />,
-                    name: 'BenefitsSideSliderDiscount2'
-                  },
-                  {
-                    content: <BenefitsSideSliderDiscount />,
-                    name: 'BenefitsSideSliderDiscount3'
-                  }
-                ]}
+        {isParent && (
+          <div className="grid grid-cols-5 gap-x-5 mt-10 gap-y-16 pb-10 border-b mb-14 border-neutral-100 max-2xl:grid-cols-4">
+            {category.children?.map((item) => (
+              <CategoryCard
+                key={item.id}
+                title={item.title}
+                href={`/category/${item.alias}`}
+                image={!!item.image ? getFileUrl(item.image) : '/noimage.png'}
               />
-            </div>
-            <div className="w-full">
-              <div className="hidden">
-                {isParent ? (
-                  <div className="mb-6 text-xl font-sans-narrow uppercase font-bold">
-                    Популярные товары
-                  </div>
-                ) : (
-                  <Sorting />
-                )}
-              </div>
-              <Products />
-              <Pagination />
-            </div>
+            ))}
           </div>
+        )}
 
-          <div className="mt-40 max-lg:mt-24">
-            <Content
-              title={category.longTitle || undefined}
-              content={category.description || undefined}
+        <div className="flex gap-x-5 mt-14">
+          <div className="w-[320px] max-xl:w-[260px] flex-shrink-0 space-y-5 max-lg:hidden">
+            {!isParent && (
+              <div className="mb-80">
+                <Filter />
+              </div>
+            )}
+            <ConsultationWidget />
+            <BenefitsSideSlider
+              items={[
+                {
+                  content: <BenefitsSideSliderDiscount />,
+                  name: 'BenefitsSideSliderDiscount1'
+                },
+                {
+                  content: <BenefitsSideSliderDiscount />,
+                  name: 'BenefitsSideSliderDiscount2'
+                },
+                {
+                  content: <BenefitsSideSliderDiscount />,
+                  name: 'BenefitsSideSliderDiscount3'
+                }
+              ]}
             />
           </div>
-        </Container>
-      </div>
+          <div className="w-full">
+            <div className="hidden">
+              {isParent ? (
+                <div className="mb-6 text-xl font-sans-narrow uppercase font-bold">
+                  Популярные товары
+                </div>
+              ) : (
+                <Sorting />
+              )}
+            </div>
+            <Products />
+            <Pagination />
+          </div>
+        </div>
+      </SectionPage>
+      <Container>
+        <Content
+          title={category.longTitle || undefined}
+          content={category.description || undefined}
+        />
+      </Container>
     </ProductsStoreProvider>
   )
 }

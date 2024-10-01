@@ -773,6 +773,7 @@
   }
 }
 
+.list li span,
 .list li a {
   text-decoration: underline;
   color: #000000;
@@ -783,4 +784,8 @@
   &:hover {
     color: #a90083;
   }
+}
+
+.list li span {
+  text-decoration: none;
 }

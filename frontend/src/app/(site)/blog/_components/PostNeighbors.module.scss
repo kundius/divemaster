@@ -1,0 +1,46 @@
+.neighbors {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top-width: 1px;
+  border-bottom-width: 1px;
+  padding: 24px 0;
+  gap: 24px;
+
+  @include --max-md {
+    padding: 12px 0;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+}
+
+.previous {
+  font-size: 14px;
+  line-height: 20px;
+  color: #515151;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+
+  @include --max-md {
+    font-size: 12px;
+    line-height: 16px;
+  }
+}
+
+.space {
+  flex-grow: 1;
+}
+
+.next {
+  font-size: 14px;
+  line-height: 20px;
+  color: #515151;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}

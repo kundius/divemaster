@@ -1,6 +1,7 @@
 import { cn, formatPrice } from '@/lib/utils'
 import styles from './index.module.scss'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export interface AllCategoriesProps {}
 
@@ -9,51 +10,51 @@ export function AllCategories(props: AllCategoriesProps) {
   return (
     <div className={cn(styles.root, 'gap-8 columns-3')}>
       <div className={cn(styles.group, styles.groupWeapon)}>
-        <a href="#" className={styles.title}>
-          Оружие
-        </a>
+        <span className={styles.title}>Оружие</span>
         <ul className={styles.list}>
           <li>
-            <a href="#">Пневмат подводные ружья</a>
+            <span>Пневмат подводные ружья</span>
           </li>
           <li>
-            <a href="#">Ремонт ружей пневматы</a>
+            <span>Ремонт ружей пневматы</span>
           </li>
           <li>
-            <a href="#">Аксессуары для ружей пневматы</a>
+            <span>Аксессуары для ружей пневматы</span>
           </li>
           <li>
-            <a href="#">Ножи</a>
+            <span>Ножи</span>
           </li>
           <li>
-            <a href="#">Гарпуны</a>
+            <span>Гарпуны</span>
           </li>
           <li>
-            <a href="#">Арбалеты</a>
+            <span>Арбалеты</span>
           </li>
           <li>
-            <a href="#">Ремонт арбалета</a>
+            <span>Ремонт арбалета</span>
           </li>
           <li>
-            <a href="#">Тяги для арбалета</a>
+            <span>Тяги для арбалета</span>
           </li>
           <li>
-            <a href="#">Акссесуары для арбалета</a>
+            <span>Акссесуары для арбалета</span>
           </li>
           <li>
-            <a href="#">Слинги</a>
+            <span>Слинги</span>
           </li>
           <li>
-            <a href="#">Наконечники</a>
+            <span>Наконечники</span>
           </li>
           <li>
-            <a href="#">Катушки</a>
+            <span>Катушки</span>
           </li>
           <li>
-            <a href="#">Лини</a>
+            <span>Лини</span>
           </li>
           <li>
-            <a href="#">Аксессуары для подводной охоты</a>
+            <Link href="/category/vsyo-dlya-podvodnoj-ohoty-aksessuary-dlya-podvodnoj-ohoty">
+              Аксессуары для подводной охоты
+            </Link>
           </li>
         </ul>
         <div className={styles.imageWrap}>
@@ -67,36 +68,38 @@ export function AllCategories(props: AllCategoriesProps) {
         </div>
       </div>
       <div className={cn(styles.group, styles.groupMailingPlants)}>
-        <a href="#" className={styles.title}>
-          Гидрокостюмы
-        </a>
+        <span className={styles.title}>Гидрокостюмы</span>
         <ul className={styles.list}>
           <li>
-            <a href="#">Для подводной охоты</a>
+            <Link href="/category/vsyo-dlya-podvodnoj-ohoty-gidrokostyumy-dlya-podvodnoj-ohoty">
+              Для подводной охоты
+            </Link>
           </li>
           <li>
-            <a href="#">Для дайвинга</a>
+            <Link href="/category/vsyo-dlya-dajvinga-gidrokostyumy-dlya-dajvinga-i-syorfinga">
+              Для дайвинга
+            </Link>
           </li>
           <li>
-            <a href="#">AQUADISCOVERY</a>
+            <span>AQUADISCOVERY</span>
           </li>
           <li>
-            <a href="#">AQUATEAM</a>
+            <span>AQUATEAM</span>
           </li>
           <li>
-            <a href="#">BEUCHAT</a>
+            <span>BEUCHAT</span>
           </li>
           <li>
-            <a href="#">CRESSI</a>
+            <span>CRESSI</span>
           </li>
           <li>
-            <a href="#">JAKBOENO</a>
+            <span>JAKBOENO</span>
           </li>
           <li>
-            <a href="#">MARLIN</a>
+            <span>MARLIN</span>
           </li>
           <li>
-            <a href="#">OMER</a>
+            <span>OMER</span>
           </li>
         </ul>
         <div className={styles.imageWrap}>
@@ -110,9 +113,7 @@ export function AllCategories(props: AllCategoriesProps) {
         </div>
       </div>
       <div className={cn(styles.group, styles.groupTubes)}>
-        <a href="#" className={styles.title}>
-          Трубки
-        </a>
+        <span className={styles.title}>Трубки</span>
         <div className={styles.imageWrap}>
           <Image
             className={styles.image}
@@ -124,9 +125,7 @@ export function AllCategories(props: AllCategoriesProps) {
         </div>
       </div>
       <div className={cn(styles.group, styles.groupMasks)}>
-        <a href="#" className={styles.title}>
-          Маски
-        </a>
+        <span className={styles.title}>Маски</span>
         <div className={styles.imageWrap}>
           <Image
             className={styles.image}
@@ -138,21 +137,23 @@ export function AllCategories(props: AllCategoriesProps) {
         </div>
       </div>
       <div className={cn(styles.group, styles.groupFlippers)}>
-        <a href="#" className={styles.title}>
-          Ласты
-        </a>
+        <span className={styles.title}>Ласты</span>
         <ul className={styles.list}>
           <li>
-            <a href="#">Ласты для подводной охоты</a>
+            <Link href="/category/vsyo-dlya-podvodnoj-ohoty-lasty-dlya-podvodnoj-ohoty">
+              Ласты для подводной охоты
+            </Link>
           </li>
           <li>
-            <a href="#">Запчасти для ласт</a>
+            <span>Запчасти для ласт</span>
           </li>
           <li>
-            <a href="#">Ласты для дайвинга</a>
+            <Link href="/category/vsyo-dlya-dajvinga-lasty-dlya-dajvinga">Ласты для дайвинга</Link>
           </li>
           <li>
-            <a href="#">Аксессуары для ласт для дайвинга</a>
+            <Link href="/category/vsyo-dlya-dajvinga-aksessuary-dlya-last">
+              Аксессуары для ласт для дайвинга
+            </Link>
           </li>
         </ul>
         <div className={styles.imageWrap}>
@@ -166,9 +167,7 @@ export function AllCategories(props: AllCategoriesProps) {
         </div>
       </div>
       <div className={cn(styles.group, styles.groupGloves)}>
-        <a href="#" className={styles.title}>
-          Перчатки
-        </a>
+        <span className={styles.title}>Перчатки</span>
         <div className={styles.imageWrap}>
           <Image
             className={styles.image}
@@ -180,9 +179,7 @@ export function AllCategories(props: AllCategoriesProps) {
         </div>
       </div>
       <div className={cn(styles.group, styles.groupSocks)}>
-        <a href="#" className={styles.title}>
-          Носки
-        </a>
+        <span className={styles.title}>Носки</span>
         <div className={styles.imageWrap}>
           <Image
             className={styles.image}
@@ -194,15 +191,13 @@ export function AllCategories(props: AllCategoriesProps) {
         </div>
       </div>
       <div className={cn(styles.group, styles.groupCylins)}>
-        <a href="#" className={styles.title}>
-          Баллоны
-        </a>
+        <span className={styles.title}>Баллоны</span>
         <ul className={styles.list}>
           <li>
-            <a href="#">Для дайвинга</a>
+            <span>Для дайвинга</span>
           </li>
           <li>
-            <a href="#">Для подводной охоты</a>
+            <span>Для подводной охоты</span>
           </li>
         </ul>
         <div className={styles.imageWrap}>
@@ -216,9 +211,7 @@ export function AllCategories(props: AllCategoriesProps) {
         </div>
       </div>
       <div className={cn(styles.group, styles.groupNeopreneAccessories)}>
-        <a href="#" className={styles.title}>
-          Неопреновые аксессуары
-        </a>
+        <span className={styles.title}>Неопреновые аксессуары</span>
         <div className={styles.imageWrap}>
           <Image
             className={styles.image}
@@ -230,15 +223,13 @@ export function AllCategories(props: AllCategoriesProps) {
         </div>
       </div>
       <div className={cn(styles.group, styles.groupLights)}>
-        <a href="#" className={styles.title}>
-          Фонари
-        </a>
+        <span className={styles.title}>Фонари</span>
         <ul className={styles.list}>
           <li>
-            <a href="#">Фонари</a>
+            <span>Фонари</span>
           </li>
           <li>
-            <a href="#">Акссесуары для фонарей</a>
+            <span>Акссесуары для фонарей</span>
           </li>
         </ul>
         <div className={styles.imageWrap}>
@@ -252,9 +243,7 @@ export function AllCategories(props: AllCategoriesProps) {
         </div>
       </div>
       <div className={cn(styles.group, styles.groupUnloadingVests)}>
-        <a href="#" className={styles.title}>
-          Разгрузочные жилеты
-        </a>
+        <span className={styles.title}>Разгрузочные жилеты</span>
         <div className={styles.imageWrap}>
           <Image
             className={styles.image}
@@ -266,9 +255,7 @@ export function AllCategories(props: AllCategoriesProps) {
         </div>
       </div>
       <div className={cn(styles.group, styles.groupBots)}>
-        <a href="#" className={styles.title}>
-          Боты
-        </a>
+        <span className={styles.title}>Боты</span>
         <div className={styles.imageWrap}>
           <Image
             className={styles.image}
@@ -280,9 +267,7 @@ export function AllCategories(props: AllCategoriesProps) {
         </div>
       </div>
       <div className={cn(styles.group, styles.groupCargoAndCargoSystems)}>
-        <a href="#" className={styles.title}>
-          Груза и грузовые системы
-        </a>
+        <span className={styles.title}>Груза и грузовые системы</span>
         <div className={styles.imageWrap}>
           <Image
             className={styles.image}
@@ -294,10 +279,10 @@ export function AllCategories(props: AllCategoriesProps) {
         </div>
       </div>
       <div className={cn(styles.group, styles.groupRegulatorsAndOctopuses)}>
-        <a href="#" className={styles.title}>
-          Регуляторы<br />
-          и октопусы
-        </a>
+        <span className={styles.title}>
+          Регуляторы
+          <br />и октопусы
+        </span>
         <div className={styles.imageWrap}>
           <Image
             className={styles.image}
@@ -309,9 +294,7 @@ export function AllCategories(props: AllCategoriesProps) {
         </div>
       </div>
       <div className={cn(styles.group, styles.groupBagsCoversBoxes)}>
-        <a href="#" className={styles.title}>
-          Сумки, чехлы, боксы
-        </a>
+        <span className={styles.title}>Сумки, чехлы, боксы</span>
         <div className={styles.imageWrap}>
           <Image
             className={styles.image}
@@ -323,9 +306,7 @@ export function AllCategories(props: AllCategoriesProps) {
         </div>
       </div>
       <div className={cn(styles.group, styles.groupCompensators)}>
-        <a href="#" className={styles.title}>
-          Компенсаторы
-        </a>
+        <span className={styles.title}>Компенсаторы</span>
         <div className={styles.imageWrap}>
           <Image
             className={styles.image}
@@ -337,9 +318,7 @@ export function AllCategories(props: AllCategoriesProps) {
         </div>
       </div>
       <div className={cn(styles.group, styles.groupBeltsAndBuckles)}>
-        <a href="#" className={styles.title}>
-          Пояса и пряжки
-        </a>
+        <span className={styles.title}>Пояса и пряжки</span>
         <div className={styles.imageWrap}>
           <Image
             className={styles.image}
@@ -351,15 +330,15 @@ export function AllCategories(props: AllCategoriesProps) {
         </div>
       </div>
       <div className={cn(styles.group, styles.groupDevicesAndComputers)}>
-        <a href="#" className={styles.title}>
-          Приборы и компьютеры
-        </a>
+        <span className={styles.title}>Приборы и компьютеры</span>
         <ul className={styles.list}>
           <li>
-            <a href="#">Для подводной охоты</a>
+            <Link href="/category/vsyo-dlya-podvodnoj-ohoty-kompyutery-dlya-podvodnoj-ohoty">
+              Для подводной охоты
+            </Link>
           </li>
           <li>
-            <a href="#">Для дайвинга</a>
+            <Link href="/category/vsyo-dlya-dajvinga-pribory-i-kompyutery">Для дайвинга</Link>
           </li>
         </ul>
         <div className={styles.imageWrap}>
@@ -373,10 +352,10 @@ export function AllCategories(props: AllCategoriesProps) {
         </div>
       </div>
       <div className={cn(styles.group, styles.groupPhotoAndVideo)}>
-        <a href="#" className={styles.title}>
-          Фото-<br />
-          и видеосъёмка
-        </a>
+        <span className={styles.title}>
+          Фото-
+          <br />и видеосъёмка
+        </span>
         <div className={styles.imageWrap}>
           <Image
             className={styles.image}
@@ -388,10 +367,11 @@ export function AllCategories(props: AllCategoriesProps) {
         </div>
       </div>
       <div className={cn(styles.group, styles.groupBuoysTugboatsRafts)}>
-        <a href="#" className={styles.title}>
-          Буи, буксировщики,<br />
+        <span className={styles.title}>
+          Буи, буксировщики,
+          <br />
           плоты
-        </a>
+        </span>
         <div className={styles.imageWrap}>
           <Image
             className={styles.image}
@@ -403,9 +383,7 @@ export function AllCategories(props: AllCategoriesProps) {
         </div>
       </div>
       <div className={cn(styles.group, styles.groupChemistry)}>
-        <a href="#" className={styles.title}>
-          Химия
-        </a>
+        <span className={styles.title}>Химия</span>
         <div className={styles.imageWrap}>
           <Image
             className={styles.image}

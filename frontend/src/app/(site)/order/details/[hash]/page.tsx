@@ -9,6 +9,7 @@ import { formatPrice } from '@/lib/utils'
 import { DeliveryService, OrderEntity } from '@/types'
 
 import { PaymentContainer } from './_components/PaymentContainer'
+import { SectionPage } from '@/components/SectionPage'
 
 export const metadata: Metadata = {
   title: 'Информация о заказе'
@@ -22,8 +23,8 @@ const DeliveryServiceNames: Record<DeliveryService, string> = {
 export default async function Page({ params: { hash } }: { params: { hash: string } }) {
   const order = await apiGet<OrderEntity>(`order/hash:${hash}`)
   return (
-    <div className="pt-12 pb-40 max-md:pt-6 max-md:pb-20 max-lg:pt-8 max-lg:pb-24">
-      <Container small>
+    <SectionPage>
+      <div className="max-w-7xl mx-auto">
         <Headline className="mb-8 max-md:mb-6" title="Информация о заказе" />
         <div className="flex gap-20 max-md:flex-col max-md:gap-8 max-lg:gap-6 max-xl:gap-10">
           <div className="flex-grow w-full">
@@ -136,7 +137,7 @@ export default async function Page({ params: { hash } }: { params: { hash: strin
             </div>
           </div>
         </div>
-      </Container>
-    </div>
+      </div>
+    </SectionPage>
   )
 }

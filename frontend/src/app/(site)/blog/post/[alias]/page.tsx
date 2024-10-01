@@ -7,10 +7,11 @@ import { apiGet } from '@/lib/api'
 import { getFileUrl } from '@/lib/utils'
 import { BlogPostEntity, PageProps } from '@/types'
 
-import { PostContent } from '../../_comoinents/PostContent'
-import { PostFooter } from '../../_comoinents/PostFooter'
-import { PostMeta } from '../../_comoinents/PostMeta'
-import { PostNeighbors } from '../../_comoinents/PostNeighbors'
+import { PostContent } from '../../_components/PostContent'
+import { PostFooter } from '../../_components/PostFooter'
+import { PostMeta } from '../../_components/PostMeta'
+import { PostNeighbors } from '../../_components/PostNeighbors'
+import { SectionPage } from '@/components/SectionPage'
 
 export async function generateMetadata(props: PageProps<{ alias: string }>): Promise<Metadata> {
   const post = await apiGet<BlogPostEntity>(`blog/post/alias:${props.params.alias}`)
@@ -41,23 +42,21 @@ export default async function Page({ params }: PageProps<{ alias: string }>) {
     `blog/post/${post.id}/neighbors`
   )
   return (
-    <div className="pt-12 pb-40 max-sm:pt-4 max-sm:pb-12">
-      <Container>
-        <Headline
-          title={post.longTitle || post.title}
-          breadcrumbs={[
-            { title: 'Главная', href: '/' },
-            { title: 'Блог', href: '/blog' }
-          ]}
-          separator
-        />
-        <PostMeta record={post} />
-        <div className="space-y-24 mt-8 max-md:space-y-16">
-          <PostContent content={post.content || ''} />
-          <PostFooter record={post} />
-          <PostNeighbors previous={neighbors.previous} next={neighbors.next} />
-        </div>
-      </Container>
-    </div>
+    <SectionPage withBreadcrumbs>
+      <Headline
+        title={post.longTitle || post.title}
+        breadcrumbs={[
+          { title: 'Главная', href: '/' },
+          { title: 'Блог', href: '/blog' }
+        ]}
+        separator
+      />
+      <PostMeta record={post} />
+      <div className="space-y-24 mt-8 max-md:space-y-16">
+        <PostContent content={post.content || ''} />
+        <PostFooter record={post} />
+        <PostNeighbors previous={neighbors.previous} next={neighbors.next} />
+      </div>
+    </SectionPage>
   )
 }

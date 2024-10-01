@@ -72,12 +72,7 @@ export function ProductList({ fallbackData }: ProductListProps) {
           <div className="flex gap-3 items-center">
             {image && (
               <div className="flex w-12 h-12 relative self-start">
-                <Image
-                  src={image}
-                  fill
-                  alt=""
-                  className="object-cover rounded"
-                />
+                <Image src={image} fill alt="" className="object-cover rounded" />
               </div>
             )}
             <div className="space-y-1">
@@ -85,7 +80,9 @@ export function ProductList({ fallbackData }: ProductListProps) {
               {record.categories && record.categories.length > 0 && (
                 <div className="flex gap-1.5 flex-wrap">
                   {record.categories.map((category) => (
-                    <Badge variant="outline" className='font-normal'>{category.title}</Badge>
+                    <Badge variant="outline" className="font-normal" key={category.id}>
+                      {category.title}
+                    </Badge>
                   ))}
                 </div>
               )}

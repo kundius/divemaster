@@ -22,13 +22,9 @@ export function PointsItem({ entity }: PointsItemProps) {
     <div className={css.wrap} onClick={selectHandler}>
       <div className={css.headline}>
         <div className={css.icon}>
-          <SpriteIcon name="logo-marker" size={32} />
+          <SpriteIcon name={`pickup-${entity.type}`} size={32} />
         </div>
-        <div className={css.title}>
-          {entity.type}
-          <br />
-          {entity.fullAddress}
-        </div>
+        <div className={css.title}>{entity.fullAddress}</div>
       </div>
       <div className={css.description}>{entity.note}</div>
       <div className={css.timetable}>{entity.workTime}</div>

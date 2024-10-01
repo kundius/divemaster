@@ -49,12 +49,12 @@ export function Toolbar() {
         <span className={styles.title}>Корзина</span>
         {cartTotal.count > 0 && <span className={styles.badge}>{cartTotal.count}</span>}
       </Link>
-      <Link href="#" className={cn(styles.button, 'block')}>
+      <Link href="/office/favourites" className={cn(styles.button, 'block')}>
         <span className={styles.icon}>
           <SpriteIcon name="favorites" size={24} />
         </span>
         <span className={styles.title}>Избранное</span>
-        <span className={styles.badge}>0</span>
+        {/* <span className={styles.badge}>0</span> */}
       </Link>
       {authLoaded ? (
         !authUser ? (
@@ -82,12 +82,12 @@ export function Toolbar() {
           </span>
         </div>
       )}
-      <Link href="#" className={cn(styles.button, 'block')}>
+      <Link href="/office/comparison#" className={cn(styles.button, 'block')}>
         <span className={styles.icon}>
           <SpriteIcon name="comparison" size={24} />
         </span>
         <span className={styles.title}>Сравнить</span>
-        <span className={styles.badge}>0</span>
+        {/* <span className={styles.badge}>0</span> */}
       </Link>
     </div>
   )

@@ -16,7 +16,7 @@ export function SpriteIcon({ name, size = 24, className }: SpriteIconProps) {
       height={size}
       className={cn(css.svg, className)}
     >
-      <use href={`/sprite.svg?5#${name}`}></use>
+      <use href={`/sprite.svg?8#${name}`}></use>
     </svg>
   )
 }

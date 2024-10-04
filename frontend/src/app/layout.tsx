@@ -9,6 +9,9 @@ import { CartStoreProvider } from '@/providers/cart-store-provider'
 import { LocationStoreProvider } from '@/providers/location-store-provider'
 import { OrderStoreProvider } from '@/providers/order-store-provider'
 import '@/styles/globals.scss'
+import Script from 'next/script'
+import { Suspense } from 'react'
+import YandexMetrika from '@/components/YandexMetrika'
 
 const fontSans = FontSans({
   weight: ['400', '500', '700'],
@@ -64,6 +67,24 @@ export default async function RootLayout({
           </AuthServerProvider>
         </SWRGlobalProvider>
         <Toaster richColors position="top-center" />
+        <Script id="metrika-counter" strategy="afterInteractive">
+          {`(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+            m[i].l=1*new Date();
+            for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+            k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+            (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+            ym(98552573, "init", {
+              defer: true,
+              clickmap:true,
+              trackLinks:true,
+              accurateTrackBounce:true,
+              webvisor:true
+            });`}
+        </Script>
+        <Suspense fallback={<></>}>
+          <YandexMetrika />
+        </Suspense>
       </body>
     </html>
   )

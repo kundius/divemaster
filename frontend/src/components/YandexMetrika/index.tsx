@@ -3,13 +3,17 @@
 import { useEffect } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 
-export default function YandexMetrika() {
+export interface YandexMetrikaProps {
+  code: number
+}
+
+export default function YandexMetrika({ code }: YandexMetrikaProps) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
   useEffect(() => {
     const url = `${pathname}?${searchParams}`
-    ym(YandexMetrika, 'hit', url)
+    ym(code, 'hit', url)
   }, [pathname, searchParams])
 
   return null

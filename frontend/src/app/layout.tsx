@@ -83,7 +83,7 @@ export default async function RootLayout({
             });`}
         </Script>
         <Suspense fallback={<></>}>
-          <YandexMetrika />
+          <YandexMetrika code={98552573} />
         </Suspense>
       </body>
     </html>

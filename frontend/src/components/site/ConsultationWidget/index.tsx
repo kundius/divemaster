@@ -16,6 +16,7 @@ interface Fields {
   rules: boolean
 }
 
+// TODO: отправка формы
 export function ConsultationWidget() {
   const [showSuccess, setShowSuccess] = useState(false)
   const form = useForm<Fields>({
@@ -44,6 +45,8 @@ export function ConsultationWidget() {
 
     form.reset()
   }
+
+  return null
 
   return (
     <Form {...form}>

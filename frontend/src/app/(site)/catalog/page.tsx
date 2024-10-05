@@ -26,7 +26,7 @@ export default async function Page() {
         <Headline breadcrumbs={crumbs} separator title="Каталог" />
 
         <div className="flex gap-x-5 mt-14">
-          <div className="w-1/5 space-y-5 max-2xl:w-1/4">
+          <div className="w-[320px] max-xl:w-[260px] flex-shrink-0 space-y-5 max-lg:hidden">
             <ConsultationWidget />
             <BenefitsSideSlider
               items={[
@@ -45,7 +45,7 @@ export default async function Page() {
               ]}
             />
           </div>
-          <div className="w-4/5 max-2xl:w-3/4">
+          <div className="w-full">
             <div className="mb-6 text-xl font-sans-narrow uppercase font-bold">
               Популярные товары
             </div>

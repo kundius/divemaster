@@ -8,10 +8,10 @@ export function HomeAbout() {
   return (
     <div className={styles.root}>
       <Container>
-        <div className={styles.heading}>
+        <h1 className={styles.heading}>
           Интернет-магазин снаряжения для дайвинга, подводной охоты
           <br className="max-xl:hidden" />и плавания DiveMaster
-        </div>
+        </h1>
         <Image
           src="/home-about/image1.jpg"
           alt=""
@@ -29,11 +29,9 @@ export function HomeAbout() {
         <Image src="/home-about/d.png" alt="" width={143} height={431} className={styles.d} />
         <div className={styles.grid}>
           <div className={styles.equipment}>
-            <div className={styles.title}>
-              Экипировка для подводной охоты, дайвинга, плавания
-              <br />
-              оптом и в розницу
-            </div>
+            <h2 className={styles.title}>
+              Экипировка для подводной охоты, дайвинга, плавания оптом и в розницу
+            </h2>
             <div className={styles.content}>
               <ul className={styles.listCheck}>
                 <li>Низкие цены в Воронеже и России.</li>
@@ -124,13 +122,31 @@ export function HomeAbout() {
             <div className={styles.content}>
               <div className="flex items-center justify-around w-[550px] max-w-full mt-16 mb-8 -ml-4 max-xl:mt-12 max-lg:mt-8 max-md:w-[240px] max-md:mt-6">
                 <div>
-                  <Image src="/home-about/gift.svg" alt="" width={58} height={58} className='max-lg:w-[40px] max-lg:h-[40px] max-md:w-[32px] max-md:h-[32px] object-cover' />
+                  <Image
+                    src="/home-about/gift.svg"
+                    alt=""
+                    width={58}
+                    height={58}
+                    className="max-lg:w-[40px] max-lg:h-[40px] max-md:w-[32px] max-md:h-[32px] object-cover"
+                  />
                 </div>
                 <div>
-                  <Image src="/home-about/card.svg" alt="" width={92} height={67} className='max-lg:w-[60px] max-lg:h-[44px] max-md:w-[51px] max-md:h-[38px] object-cover' />
+                  <Image
+                    src="/home-about/card.svg"
+                    alt=""
+                    width={92}
+                    height={67}
+                    className="max-lg:w-[60px] max-lg:h-[44px] max-md:w-[51px] max-md:h-[38px] object-cover"
+                  />
                 </div>
                 <div>
-                  <Image src="/home-about/discount.svg" alt="" width={70} height={70} className='max-lg:w-[48px] max-lg:h-[48px] max-md:w-[38px] max-md:h-[38px] object-cover' />
+                  <Image
+                    src="/home-about/discount.svg"
+                    alt=""
+                    width={70}
+                    height={70}
+                    className="max-lg:w-[48px] max-lg:h-[48px] max-md:w-[38px] max-md:h-[38px] object-cover"
+                  />
                 </div>
               </div>
               <ul className={styles.listDotAlt}>

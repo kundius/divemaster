@@ -402,10 +402,13 @@ export function AllCategories(props: AllCategoriesProps) {
         </div>
       </div>
       <div className={cn(styles.group, styles.groupPhotoAndVideo)}>
-        <span className={styles.title}>
+        <Link
+          href="/category/vsyo-dlya-dajvinga-aksessuary-dlya-foto-i-videosuyomki"
+          className={styles.title}
+        >
           Фото-
           <br />и видеосъёмка
-        </span>
+        </Link>
         <div className={styles.imageWrap}>
           <Image
             className={styles.image}

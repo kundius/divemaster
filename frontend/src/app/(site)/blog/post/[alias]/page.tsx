@@ -36,6 +36,8 @@ export async function generateMetadata(props: PageProps<{ alias: string }>): Pro
   }
 }
 
+export const revalidate = 60
+
 export default async function Page({ params }: PageProps<{ alias: string }>) {
   const post = await apiGet<BlogPostEntity>(`blog/post/alias:${params.alias}`)
   const neighbors = await apiGet<{ previous: BlogPostEntity; next: BlogPostEntity }>(

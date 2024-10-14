@@ -9,6 +9,8 @@ import { apiGet } from '@/lib/api'
 import { BlogPostEntity, FindAllResult, PageProps } from '@/types'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 
+export const revalidate = 60
+
 export default async function Page({ searchParams }: PageProps) {
   const limit = Number(searchParams.limit || 6)
   const page = Number(searchParams.page || 1)

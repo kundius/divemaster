@@ -29,6 +29,8 @@ export async function generateMetadata(props: PageProps<{ alias: string }>): Pro
   }
 }
 
+export const revalidate = 60
+
 export default async function Page({ params, searchParams }: PageProps<{ alias: string }>) {
   const tag = await apiGet<BlogTagEntity>(`blog/tag/alias:${params.alias}`)
   const limit = Number(searchParams.limit || 6)

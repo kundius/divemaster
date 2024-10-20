@@ -37,9 +37,31 @@ export default function Page() {
         </p>
         <p>В нашей школе обучают:</p>
         <p>Тренер по детскому плаванию и инструктор по дайвингу международной организации CMAS.</p>
-        <p className="grid grid-cols-2 gap-4">
-          <Image src={image3} alt="" width={597} height={856} />
-          <Image src={image6} alt="" width={1197} height={847} />
+        <p className="grid grid-cols-2 grid-rows-2 gap-4">
+          <Image
+            src={image3}
+            alt=""
+            width={597}
+            height={856}
+            className="m-0"
+            style={{ gridColumn: '1 / 2', gridRow: '1 / 3' }}
+          />
+          <Image
+            src={image6}
+            alt=""
+            width={1197}
+            height={847}
+            className="m-0"
+            style={{ gridColumn: '2 / 3', gridRow: '1 / 2' }}
+          />
+          <Image
+            src={image2}
+            alt=""
+            width={597}
+            height={856}
+            className="m-0"
+            style={{ gridColumn: '2 / 3', gridRow: '2 / 3' }}
+          />
         </p>
         <p>Инструктор по скубатлону</p>
         <p className="grid grid-cols-2 gap-4">
@@ -50,9 +72,9 @@ export default function Page() {
           тренировки детей и взрослых.
         </p>
         <p className="grid grid-cols-3 gap-4">
-          <Image src={image4} alt="" width={1080} height={1080} />
-          <Image src={image1} alt="" width={640} height={640} />
-          <Image src={image5} alt="" width={854} height={854} />
+          <Image src={image4} alt="" width={1080} height={1080} className="m-0" />
+          <Image src={image1} alt="" width={640} height={640} className="m-0" />
+          <Image src={image5} alt="" width={854} height={854} className="m-0" />
         </p>
         <p>
           Телефон для записи <strong>+7 (906) 586-55-55</strong>

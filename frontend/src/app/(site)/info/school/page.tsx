@@ -43,24 +43,21 @@ export default function Page() {
             alt=""
             width={597}
             height={856}
-            className="m-0"
-            style={{ gridColumn: '1 / 2', gridRow: '1 / 3' }}
+            style={{ gridColumn: '1 / 2', gridRow: '1 / 3', margin: 0 }}
           />
           <Image
             src={image6}
             alt=""
             width={1197}
             height={847}
-            className="m-0"
-            style={{ gridColumn: '2 / 3', gridRow: '1 / 2' }}
+            style={{ gridColumn: '2 / 3', gridRow: '1 / 2', margin: 0 }}
           />
           <Image
             src={image2}
             alt=""
             width={597}
             height={856}
-            className="m-0"
-            style={{ gridColumn: '2 / 3', gridRow: '2 / 3' }}
+            style={{ gridColumn: '2 / 3', gridRow: '2 / 3', margin: 0 }}
           />
         </p>
         <p>Инструктор по скубатлону</p>
@@ -72,9 +69,9 @@ export default function Page() {
           тренировки детей и взрослых.
         </p>
         <p className="grid grid-cols-3 gap-4">
-          <Image src={image4} alt="" width={1080} height={1080} className="m-0" />
-          <Image src={image1} alt="" width={640} height={640} className="m-0" />
-          <Image src={image5} alt="" width={854} height={854} className="m-0" />
+          <Image src={image4} alt="" width={1080} height={1080} style={{ margin: 0 }} />
+          <Image src={image1} alt="" width={640} height={640} style={{ margin: 0 }} />
+          <Image src={image5} alt="" width={854} height={854} style={{ margin: 0 }} />
         </p>
         <p>
           Телефон для записи <strong>+7 (906) 586-55-55</strong>

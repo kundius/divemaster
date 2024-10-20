@@ -61,9 +61,6 @@ export default function Page() {
           />
         </p>
         <p>Инструктор по скубатлону</p>
-        <p className="grid grid-cols-2 gap-4">
-          <Image src={image2} alt="" width={597} height={856} />
-        </p>
         <p>
           Профессионально занимаемся подводным плаванием с 2004 года. Проводится обучение и
           тренировки детей и взрослых.

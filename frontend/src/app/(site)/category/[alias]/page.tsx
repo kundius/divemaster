@@ -99,7 +99,7 @@ export default async function Page({ params: { alias } }: { params: { alias: str
         <Headline breadcrumbs={crumbs} separator title={category.title} />
 
         {isParent && (
-          <div className="grid grid-cols-5 gap-x-5 mt-10 gap-y-16 pb-10 border-b mb-14 border-neutral-100 max-2xl:grid-cols-4">
+          <div className="grid grid-cols-5 gap-x-5 mt-10 gap-y-16 pb-10 border-b mb-14 border-neutral-100 max-2xl:grid-cols-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-md:gap-x-2">
             {category.children?.map((item) => (
               <CategoryCard
                 key={item.id}

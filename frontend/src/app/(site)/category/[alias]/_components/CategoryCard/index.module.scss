@@ -28,7 +28,7 @@
 .figureImage {
   width: 100%;
   height: auto;
-  transition: .5s ease;
+  transition: 0.5s ease;
   transform-origin: 50% 100%;
 }
 
@@ -45,6 +45,11 @@
   text-align: center;
   min-height: 40px;
   margin-top: 16px;
+
+  @include --max-md {
+    font-size: 18px;
+    margin-top: 12px;
+  }
 }
 
 .title:hover {

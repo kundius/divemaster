@@ -24,7 +24,7 @@ export function Content({ title, content }: ContentProps) {
 
     if (title) {
       output.push(
-        <div key="title" className={styles.title} dangerouslySetInnerHTML={{ __html: title }} />
+        <h1 key="title" className={styles.title} dangerouslySetInnerHTML={{ __html: title }} />
       )
     }
 

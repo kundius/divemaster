@@ -94,7 +94,7 @@
   }
 
   @include --max-lg {
-    gap: 8px;
+    gap: 12px;
     align-items: center;
     flex-direction: column;
     &:hover {
@@ -104,6 +104,9 @@
         border: 1px solid #a3d8e7;
       }
     }
+  }
+  @include --max-md {
+    gap: 8px;
   }
 }
 

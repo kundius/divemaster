@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  
+
   // @include --max-xl {
   //   flex-direction: column;
   //   gap: 0;
@@ -33,10 +33,29 @@
 }
 
 .item {
-  filter: grayscale(100%) contrast(0%);
-  transition: .3s ease;
+  display: flex;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s ease;
+  color: #4a4e50;
+  background: #808080;
+  border-radius: 8px;
 
   &:hover {
-    filter: grayscale(0);
+    color: #fff;
   }
+}
+
+.itemOk:hover {
+  background: #ff7700;
+}
+
+.itemVk:hover {
+  background: #0077ff;
+}
+
+.itemRutube:hover {
+  background: #0b1d37;
 }

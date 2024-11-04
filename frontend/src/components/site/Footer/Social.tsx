@@ -1,6 +1,8 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import styles from './Social.module.scss'
+import { SpriteIcon } from '@/components/SpriteIcon'
+import { cn } from '@/lib/utils'
 
 const items = [
   {
@@ -18,12 +20,17 @@ export function Social() {
     <div className={styles.root}>
       <div className={styles.title}>Мы в соцсетях:</div>
       <div className={styles.list}>
-        {items.map((item, i) => (
-          <Link href={item.href} key={i} className={styles.item} target="_blank">
-            <Image src={item.icon} width={36} height={36} alt="" />
+          <Link href='https://ok.ru/group/49481371549835' className={cn(styles.item, styles.itemOk)} target="_blank">
+            <SpriteIcon name='social-ok' />
           </Link>
-        ))}
+          <Link href='https://vk.com/clubpodvoh' className={cn(styles.item, styles.itemVk)} target="_blank">
+            <SpriteIcon name='social-vk' />
+          </Link>
+          <Link href='https://rutube.ru/channel/46176466/' className={cn(styles.item, styles.itemRutube)} target="_blank">
+            <SpriteIcon name='social-rutube' />
+          </Link>
       </div>
     </div>
   )
 }
+// SpriteIcon

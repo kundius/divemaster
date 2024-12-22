@@ -46,7 +46,7 @@ export default async function Page() {
   ]
 
   return (
-    <ProductsStoreProvider favorite>
+    <ProductsStoreProvider>
       <SectionPage withBreadcrumbs>
         <Headline breadcrumbs={crumbs} separator title="Каталог" />
 

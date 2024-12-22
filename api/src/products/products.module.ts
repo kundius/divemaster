@@ -18,6 +18,7 @@ import { ProductsService } from './services/products.service'
 import { ProductsFilterService } from './services/products-filter.service'
 import { Offer } from './entities/offer.entity'
 import { NotificationsModule } from '@/notifications/notifications.module'
+import { PrismaService } from '@/prisma.service'
 
 @Module({
   imports: [
@@ -31,7 +32,8 @@ import { NotificationsModule } from '@/notifications/notifications.module'
     CategoriesService,
     BrandsService,
     OptionsService,
-    ProductsFilterService
+    ProductsFilterService,
+    PrismaService
   ]
 })
 export class ProductsModule {}

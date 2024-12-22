@@ -1,6 +1,7 @@
 import { nanoid, njk, pluck, slugify } from '@/lib/utils'
 import { StorageService } from '@/storage/services/storage.service'
 import {
+  CreateRequestContext,
   EntityRepository,
   FilterOptions,
   ObjectQuery,
@@ -10,7 +11,7 @@ import {
   wrap
 } from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
-import { isArray, isBoolean, isNumber, isString, isUndefined } from '@modyqyw/utils'
+import { isArray, isBoolean, isNumber, isString, isUndefined, sleep } from '@modyqyw/utils'
 import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common'
 import { join } from 'path'
 import zlib from 'node:zlib'
@@ -38,10 +39,13 @@ import { ProductsFilterService } from './products-filter.service'
 import { content as letterByClick } from '@/notifications/templates/order/by-click'
 import { NotificationsService } from '@/notifications/services/notifications.service'
 import { ConfigService } from '@nestjs/config'
+import { PrismaService } from '@/prisma.service'
+import { Prisma } from '@prisma/client'
 
 @Injectable()
 export class ProductsService {
   constructor(
+    private readonly prismaService: PrismaService,
     @InjectRepository(Product)
     private readonly productsRepository: EntityRepository<Product>,
     @InjectRepository(ProductImage)
@@ -77,94 +81,116 @@ export class ProductsService {
   }
 
   async findAll(dto: FindAllProductDto) {
-    let exclude: ('description' | 'specifications' | 'exploitation')[] = []
-    let populate: Populate<
-      Product,
-      'images' | 'brand' | 'categories' | 'offers' | 'offers.optionValues' | 'optionValues'
-    > = []
-    let filters: FilterOptions = []
-    let populateOrderBy: OrderDefinition<Product> = {}
-    let populateWhere: ObjectQuery<Product> = {}
-    let where: ObjectQuery<Product> = {}
+    const args: Prisma.ProductFindManyArgs = {}
+    args.where = {}
+    args.include = {}
+    // let exclude: ('description' | 'specifications' | 'exploitation')[] = []
+    // let populate: Populate<
+    //   Product,
+    //   'images' | 'brand' | 'categories' | 'offers' | 'offers.optionValues' | 'optionValues'
+    // > = []
+    // let filters: FilterOptions = []
+    // let populateOrderBy: OrderDefinition<Product> = {}
+    // let populateWhere: ObjectQuery<Product> = {}
+    // let where: ObjectQuery<Product> = {}
 
     if (dto.withImages) {
-      populate = [...populate, 'images']
-      populateOrderBy = { ...populateOrderBy, images: { rank: QueryOrder.ASC } }
-      populateWhere = { ...populateWhere, images: { active: true } }
+      args.include.images = {
+        include: {
+          file: true
+        }
+      }
+      //   populate = [...populate, 'images']
+      //   populateOrderBy = { ...populateOrderBy, images: { rank: QueryOrder.ASC } }
+      //   populateWhere = { ...populateWhere, images: { active: true } }
     }
 
     if (dto?.withOffers) {
-      populate = [...populate, 'offers', 'offers.optionValues']
+      args.include.offers = true
+      //   populate = [...populate, 'offers', 'offers.optionValues']
     }
 
     if (dto?.withOptions) {
-      populate = [...populate, 'optionValues']
+      args.include.optionValues = true
+      //   populate = [...populate, 'optionValues']
     }
 
     if (dto?.withBrand) {
-      populate = [...populate, 'brand']
+      args.include.brand = true
+      //   populate = [...populate, 'brand']
     }
 
     if (dto?.withCategories) {
-      populate = [...populate, 'categories']
+      args.include.categories = true
+      //   populate = [...populate, 'categories']
     }
 
-    if (!dto.withContent) {
-      exclude = [...exclude, 'description', 'specifications', 'exploitation']
-    }
+    // if (!dto.withContent) {
+    //   exclude = [...exclude, 'description', 'specifications', 'exploitation']
+    // }
 
-    if (dto.active) {
-      filters = [...filters, 'active']
-    }
+    // if (dto.active) {
+    //   filters = [...filters, 'active']
+    // }
 
-    if (dto.favorite) {
-      filters = [...filters, 'favorite']
-    }
+    // if (dto.favorite) {
+    //   filters = [...filters, 'favorite']
+    // }
 
-    if (dto.recent) {
-      filters = [...filters, 'recent']
-    }
+    // if (dto.recent) {
+    //   filters = [...filters, 'recent']
+    // }
 
     if (dto.query) {
-      where = { ...where, title: { $like: '%' + dto.query + '%' } }
+      args.where.title = { contains: dto.query }
+      //   where = { ...where, title: { $like: '%' + dto.query + '%' } }
     }
 
-    if (typeof dto.category !== 'undefined') {
-      // TODO: HIERARCHY_DEPTH_LIMIT
-      // товары выбираются без учета подкатегорий
-      where = { ...where, categories: { $in: [dto.category] } }
-    }
+    // if (typeof dto.category !== 'undefined') {
+    //   // TODO: HIERARCHY_DEPTH_LIMIT
+    //   // товары выбираются без учета подкатегорий
+    //   where = { ...where, categories: { $in: [dto.category] } }
+    // }
 
-    if (dto.filter) {
-      let filter = {}
-      try {
-        filter = JSON.parse(dto.filter)
-      } catch {}
-      await this.productsFilterService.init(dto.category)
-      const ids = await this.productsFilterService.search(filter)
-      where = { ...where, id: { $in: ids } }
-    }
+    // if (dto.filter) {
+    //   let filter = {}
+    //   try {
+    //     filter = JSON.parse(dto.filter)
+    //   } catch {}
+    //   await this.productsFilterService.init(dto.category)
+    //   const ids = await this.productsFilterService.search(filter)
+    //   where = { ...where, id: { $in: ids } }
+    // }
 
-    const [rows, total] = await this.productsRepository.findAndCount(where, {
-      limit: dto.take,
-      offset: dto.skip,
-      orderBy: { [dto.sort]: dto.dir },
-      filters,
-      exclude,
-      populate,
-      populateOrderBy,
-      populateWhere
-    })
+    // const [rows, total] = await this.productsRepository.findAndCount(where, {
+    //   limit: dto.take,
+    //   offset: dto.skip,
+    //   orderBy: { [dto.sort]: dto.dir },
+    //   filters,
+    //   exclude,
+    //   populate,
+    //   populateOrderBy,
+    //   populateWhere
+    // })
 
-    if (dto.withOptions) {
-      await Promise.all(
-        rows.map(async (item) =>
-          wrap(item).assign({ options: await this.findProductOptions(item.id) })
-        )
-      )
-    }
+    args.orderBy = { [dto.sort]: dto.dir.toLowerCase() }
+    // args.skip = dto.skip
+    // args.take = dto.take
 
-    return { rows, total, filters: this.productsFilterService.filters }
+    const rows = await this.prismaService.product.findMany(args)
+    const total = await this.prismaService.product.count({ where: args.where })
+
+    // if (dto.withOptions) {
+    //   await Promise.all(
+    //     rows.map(async (item) =>
+    //       wrap(item).assign({ options: await this.findProductOptions(item.id) })
+    //     )
+    //   )
+    // }
+
+    // return { rows, total, filters: this.productsFilterService.filters }
+
+    return { rows, total }
   }
 
   async findOne(id: number, dto?: FindOneProductDto) {

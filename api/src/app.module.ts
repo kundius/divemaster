@@ -6,7 +6,7 @@ import { AppService } from './app.service'
 import { AuthModule } from './auth/auth.module'
 import { CartModule } from './cart/cart.module'
 import configuration from './config/configuration'
-import mikroOrmConfig from './db/mikro-orm.config' // your ORM config
+import mikroOrmConfig from './db/mikro-orm.config'
 import { ProductsModule } from './products/products.module'
 import { StorageModule } from './storage/storage.module'
 import { UsersModule } from './users/users.module'

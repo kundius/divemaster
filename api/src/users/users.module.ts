@@ -6,10 +6,11 @@ import { Role } from './entities/role.entity'
 import { User } from './entities/user.entity'
 import { RolesService } from './services/roles.service'
 import { UsersService } from './services/users.service'
+import { PrismaService } from '@/prisma.service'
 
 @Module({
   imports: [MikroOrmModule.forFeature([User, Role])],
-  providers: [RolesService, UsersService],
+  providers: [RolesService, UsersService, PrismaService],
   controllers: [UsersController, RolesController],
   exports: [UsersService, RolesService]
 })

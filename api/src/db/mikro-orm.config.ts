@@ -5,11 +5,11 @@ import { SeedManager } from '@mikro-orm/seeder'
 
 export default {
   extensions: [Migrator, SeedManager],
-  entities: ['./dist/**/entities/*.entity.js'],
-  entitiesTs: ['./src/**/entities/*.entity.ts'],
+  // entities: ['./dist/**/entities/*.entity.js'],
+  // entitiesTs: ['./src/**/entities/*.entity.ts'],
   driver: MariaDbDriver,
   debug: false,
-  autoLoadEntities: false,
+  autoLoadEntities: true,
   host: process.env['DATABASE_HOST'],
   dbName: process.env['DATABASE_NAME'],
   password: process.env['DATABASE_PASSWORD'],

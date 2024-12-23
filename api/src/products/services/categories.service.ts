@@ -50,66 +50,36 @@ export class CategoriesService {
     const args: Prisma.CategoryFindManyArgs = {}
     args.where = {}
     args.include = {}
-    // let exclude: 'description'[] = []
-    // let populate: Populate<
-    //   Category,
-    //   'children' | 'children.children' | 'parent' | 'parent.parent'
-    // > = []
-    // let filters: FilterOptions = []
-    // let populateOrderBy: OrderDefinition<Category> = {}
-    // let populateWhere: ObjectQuery<Category> = {}
-    // let where: ObjectQuery<Category> = {}
 
     if (dto.withChildren) {
+      // HIERARCHY_DEPTH_LIMIT
       args.include.children = true
-      //   // HIERARCHY_DEPTH_LIMIT
-      //   populate = [...populate, 'children', 'children.children']
-      //   populateOrderBy = { ...populateOrderBy, children: { id: QueryOrder.ASC } }
-      //   if (dto.active) {
-      //     populateWhere = { ...populateWhere, children: { active: true } }
-      //   }
     }
 
     if (dto.withParent) {
+      // HIERARCHY_DEPTH_LIMIT
       args.include.parent = true
-      //   // HIERARCHY_DEPTH_LIMIT
-      //   populate = [...populate, 'parent', 'parent.parent']
     }
 
     if (!dto.withContent) {
       args.omit = { description: true }
-      //   exclude = [...exclude, 'description']
     }
 
     if (dto.active) {
       args.where.active = true
-      //   filters = [...filters, 'active']
     }
 
     if (dto.query) {
       args.where.title = { contains: dto.query }
-      //   where = { ...where, title: { $like: '%' + dto.query + '%' } }
     }
 
     if (typeof dto.parent !== 'undefined') {
       args.where.parent_id = dto.parent === 0 ? null : dto.parent
-      //   where = { ...where, parent: dto.parent === 0 ? null : dto.parent }
     }
 
     args.orderBy = { [dto.sort]: dto.dir.toLowerCase() }
     args.skip = dto.skip
     args.take = dto.take
-
-    // const [rows, total] = await this.categoriesRepository.findAndCount(where, {
-    //   limit: dto.take,
-    //   offset: dto.skip,
-    //   orderBy: { [dto.sort]: dto.dir },
-    //   exclude,
-    //   populate,
-    //   filters,
-    //   populateOrderBy,
-    //   populateWhere
-    // })
 
     const rows = await this.prismaService.category.findMany(args)
     const total = await this.prismaService.category.count({ where: args.where })

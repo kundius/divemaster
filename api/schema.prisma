@@ -182,7 +182,7 @@ model Offer {
   rank                Int                   @default(0)
   product_id          Int                   @db.UnsignedInt
   product             Product               @relation(fields: [product_id], references: [id], map: "offer_product_id_foreign")
-  offer_option_values OfferOptionValues[]
+  optionValues        OfferOptionValues[]
 
 
   @@map("offer")
@@ -195,6 +195,7 @@ model OfferOptionValues {
   offer           Offer        @relation(fields: [offer_id], references: [id], onDelete: Cascade, map: "offer_option_values_offer_id_foreign")
   option_value    OptionValue @relation(fields: [option_value_id], references: [id], onDelete: Cascade, map: "offer_option_values_option_value_id_foreign")
 
+  @@map("offer_option_values")
   @@id([offer_id, option_value_id])
   @@index([offer_id], map: "offer_option_values_offer_id_index")
   @@index([option_value_id], map: "offer_option_values_option_value_id_index")
@@ -207,8 +208,8 @@ model Option {
   type             OptionType
   in_filter        Boolean            @default(false)
   rank             Int                @default(0)
-  category_options CategoryOptions[]
-  option_value     OptionValue[]
+  categories       CategoryOptions[]
+  values           OptionValue[]
 
   @@map("option")
 }

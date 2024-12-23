@@ -82,100 +82,89 @@ export class ProductsService {
 
   async findAll(dto: FindAllProductDto) {
     const args: Prisma.ProductFindManyArgs = {}
+
     args.where = {}
     args.include = {}
-    // let exclude: ('description' | 'specifications' | 'exploitation')[] = []
-    // let populate: Populate<
-    //   Product,
-    //   'images' | 'brand' | 'categories' | 'offers' | 'offers.optionValues' | 'optionValues'
-    // > = []
-    // let filters: FilterOptions = []
-    // let populateOrderBy: OrderDefinition<Product> = {}
-    // let populateWhere: ObjectQuery<Product> = {}
-    // let where: ObjectQuery<Product> = {}
 
     if (dto.withImages) {
       args.include.images = {
         include: {
           file: true
+        },
+        where: {
+          active: true
+        },
+        orderBy: {
+          rank: 'asc'
         }
       }
-      //   populate = [...populate, 'images']
-      //   populateOrderBy = { ...populateOrderBy, images: { rank: QueryOrder.ASC } }
-      //   populateWhere = { ...populateWhere, images: { active: true } }
     }
 
     if (dto?.withOffers) {
-      args.include.offers = true
-      //   populate = [...populate, 'offers', 'offers.optionValues']
+      args.include.offers = {
+        include: {
+          optionValues: true
+        }
+      }
     }
 
     if (dto?.withOptions) {
       args.include.optionValues = true
-      //   populate = [...populate, 'optionValues']
     }
 
     if (dto?.withBrand) {
       args.include.brand = true
-      //   populate = [...populate, 'brand']
     }
 
     if (dto?.withCategories) {
       args.include.categories = true
-      //   populate = [...populate, 'categories']
     }
 
-    // if (!dto.withContent) {
-    //   exclude = [...exclude, 'description', 'specifications', 'exploitation']
-    // }
+    if (!dto.withContent) {
+      args.omit = { description: true, specifications: true, exploitation: true }
+    }
 
-    // if (dto.active) {
-    //   filters = [...filters, 'active']
-    // }
+    if (dto.active) {
+      args.where.active = true
+    }
 
-    // if (dto.favorite) {
-    //   filters = [...filters, 'favorite']
-    // }
+    if (dto.favorite) {
+      args.where.favorite = true
+    }
 
-    // if (dto.recent) {
-    //   filters = [...filters, 'recent']
-    // }
+    if (dto.recent) {
+      args.where.recent = true
+    }
 
     if (dto.query) {
       args.where.title = { contains: dto.query }
-      //   where = { ...where, title: { $like: '%' + dto.query + '%' } }
     }
 
-    // if (typeof dto.category !== 'undefined') {
-    //   // TODO: HIERARCHY_DEPTH_LIMIT
-    //   // товары выбираются без учета подкатегорий
-    //   where = { ...where, categories: { $in: [dto.category] } }
-    // }
+    if (typeof dto.category !== 'undefined') {
+      // TODO: HIERARCHY_DEPTH_LIMIT
+      // товары выбираются без учета подкатегорий
+      args.where.categories = {
+        some: {
+          category_id: dto.category
+        }
+      }
+    }
 
-    // if (dto.filter) {
-    //   let filter = {}
-    //   try {
-    //     filter = JSON.parse(dto.filter)
-    //   } catch {}
-    //   await this.productsFilterService.init(dto.category)
-    //   const ids = await this.productsFilterService.search(filter)
-    //   where = { ...where, id: { $in: ids } }
-    // }
-
-    // const [rows, total] = await this.productsRepository.findAndCount(where, {
-    //   limit: dto.take,
-    //   offset: dto.skip,
-    //   orderBy: { [dto.sort]: dto.dir },
-    //   filters,
-    //   exclude,
-    //   populate,
-    //   populateOrderBy,
-    //   populateWhere
-    // })
+    if (dto.filter) {
+      let filter = {}
+      try {
+        filter = JSON.parse(dto.filter)
+      } catch {}
+      await this.productsFilterService.init(dto.category)
+      const ids = await this.productsFilterService.search(filter)
+      args.where.id = {
+        in: ids
+      }
+    }
 
     args.orderBy = { [dto.sort]: dto.dir.toLowerCase() }
-    // args.skip = dto.skip
-    // args.take = dto.take
+    args.skip = dto.skip
+    args.take = dto.take
 
     const rows = await this.prismaService.product.findMany(args)
     const total = await this.prismaService.product.count({ where: args.where })
@@ -188,9 +177,7 @@ export class ProductsService {
     //   )
     // }
 
-    // return { rows, total, filters: this.productsFilterService.filters }
-
-    return { rows, total }
+    return { rows, total, filters: this.productsFilterService.filters }
   }
 
   async findOne(id: number, dto?: FindOneProductDto) {

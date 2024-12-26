@@ -21,8 +21,9 @@ model BlogPost {
   image_id       Int?             @db.UnsignedInt
   status         BlogPostStatus @default(draft)
   file           File?            @relation(fields: [image_id], references: [id], map: "blog_post_image_id_foreign")
-  blog_tag_posts BlogTagPosts[]
+  tags           BlogTagPosts[]
 
+  @@map("blog_post")
   @@index([image_id], map: "blog_post_image_id_index")
 }
 
@@ -31,7 +32,9 @@ model BlogTag {
   name           String           @db.VarChar(255)
   alias          String           @unique(map: "blog_tag_alias_unique") @db.VarChar(255)
   metadata       String?          @db.LongText
-  blog_tag_posts BlogTagPosts[]
+  posts          BlogTagPosts[]
+  
+  @@map("blog_tag")
 }
 
 model BlogTagPosts {
@@ -40,6 +43,7 @@ model BlogTagPosts {
   blog_post    BlogPost @relation(fields: [blog_post_id], references: [id], onDelete: Cascade, map: "blog_tag_posts_blog_post_id_foreign")
   blog_tag     BlogTag  @relation(fields: [blog_tag_id], references: [id], onDelete: Cascade, map: "blog_tag_posts_blog_tag_id_foreign")
 
+  @@map("blog_tag_posts")
   @@id([blog_tag_id, blog_post_id])
   @@index([blog_post_id], map: "blog_tag_posts_blog_post_id_index")
   @@index([blog_tag_id], map: "blog_tag_posts_blog_tag_id_index")
@@ -60,7 +64,9 @@ model Cart {
   created_at   DateTime       @db.DateTime(0)
   updated_at   DateTime       @db.DateTime(0)
   user         User?          @relation(fields: [user_id], references: [id], map: "cart_user_id_foreign")
-  cart_product CartProduct[]
+  products     CartProduct[]
+  
+  @@map("cart")
 }
 
 model CartProduct {
@@ -72,8 +78,9 @@ model CartProduct {
   updated_at                 DateTime                     @db.DateTime(0)
   cart                       Cart                         @relation(fields: [cart_id], references: [id], onDelete: Cascade, map: "cart_product_cart_id_foreign")
   product                    Product                      @relation(fields: [product_id], references: [id], onDelete: Cascade, map: "cart_product_product_id_foreign")
-  cart_product_option_values CartProductOptionValues[]
+  optionValues               CartProductOptionValues[]
 
+  @@map("cart_product")
   @@index([cart_id], map: "cart_product_cart_id_index")
   @@index([product_id], map: "cart_product_product_id_index")
 }
@@ -81,9 +88,10 @@ model CartProduct {
 model CartProductOptionValues {
   cart_product_id String       @db.VarChar(36)
   option_value_id Int          @db.UnsignedInt
-  cart_product    CartProduct @relation(fields: [cart_product_id], references: [id], onDelete: Cascade, map: "cart_product_option_values_cart_product_id_foreign")
-  option_value    OptionValue @relation(fields: [option_value_id], references: [id], onDelete: Cascade, map: "cart_product_option_values_option_value_id_foreign")
+  product         CartProduct @relation(fields: [cart_product_id], references: [id], onDelete: Cascade, map: "cart_product_option_values_cart_product_id_foreign")
+  optionValue     OptionValue @relation(fields: [option_value_id], references: [id], onDelete: Cascade, map: "cart_product_option_values_option_value_id_foreign")
 
+  @@map("cart_product_option_values")
   @@id([cart_product_id, option_value_id])
   @@index([cart_product_id], map: "cart_product_option_values_cart_product_id_index")
   @@index([option_value_id], map: "cart_product_option_values_option_value_id_index")
@@ -103,8 +111,8 @@ model Category {
   file              File?               @relation(fields: [image_id], references: [id], map: "category_image_id_foreign")
   parent            Category?           @relation("categoryTocategory", fields: [parent_id], references: [id], map: "category_parent_id_foreign")
   children          Category[]          @relation("categoryTocategory")
-  category_options  CategoryOptions[]
-  category_products CategoryProducts[]
+  options           CategoryOptions[]
+  products          CategoryProducts[]
 
   @@map("category")
   @@index([image_id], map: "category_image_id_index")
@@ -143,6 +151,8 @@ model City {
   district String @db.VarChar(255)
   lat      Float  @db.Float
   lon      Float  @db.Float
+
+  @@map("city")
 }
 
 model Delivery {
@@ -155,6 +165,8 @@ model Delivery {
   created_at   DateTime         @db.DateTime(0)
   delivered_at DateTime         @db.DateTime(0)
   order        Order            @relation(fields: [order_id], references: [id], map: "delivery_order_id_foreign")
+
+  @@map("delivery")
 }
 
 model File {
@@ -183,7 +195,6 @@ model Offer {
   product_id          Int                   @db.UnsignedInt
   product             Product               @relation(fields: [product_id], references: [id], map: "offer_product_id_foreign")
   optionValues        OfferOptionValues[]
-
 
   @@map("offer")
   @@index([product_id], map: "offer_product_id_index")
@@ -240,9 +251,10 @@ model Order {
   created_at    DateTime        @db.DateTime(0)
   delivery      Delivery?
   user          User?           @relation(fields: [user_id], references: [id], map: "order_user_id_foreign")
-  order_product OrderProduct[]
+  products      OrderProduct[]
   payment       Payment?
 
+  @@map("order")
   @@index([user_id], map: "order_user_id_index")
 }
 
@@ -257,6 +269,7 @@ model OrderProduct {
   order      Order    @relation(fields: [order_id], references: [id], onDelete: Cascade, map: "order_product_order_id_foreign")
   product    Product? @relation(fields: [product_id], references: [id], map: "order_product_product_id_foreign")
 
+  @@map("order_product")
   @@index([order_id], map: "order_product_order_id_index")
   @@index([product_id], map: "order_product_product_id_index")
 }
@@ -271,6 +284,8 @@ model Payment {
   created_at DateTime        @db.DateTime(0)
   paid_at    DateTime?       @db.DateTime(0)
   order      Order           @relation(fields: [order_id], references: [id], map: "payment_order_id_foreign")
+
+  @@map("payment")
 }
 
 model PickupPoint {
@@ -294,22 +309,24 @@ model PickupPoint {
   have_cash        Boolean           @default(false)
   have_cashless    Boolean           @default(false)
   type             PickupPointType
+
+  @@map("pickup_point")
 }
 
 model Product {
   id                Int                 @id @default(autoincrement()) @db.UnsignedInt
   remote_id         String?             @db.VarChar(255)
   title             String              @db.VarChar(255)
-  long_title        String?             @db.VarChar(255)
+  longTitle         String?             @db.VarChar(255)
   alias             String              @unique(map: "product_alias_unique") @db.VarChar(255)
   sku               String?             @db.VarChar(255)
   rank              Int                 @default(0)
-  price_decrease    Int?
+  priceDecrease     Int?
   description       String?             @db.Text
   specifications    String?             @db.Text
   exploitation      String?             @db.Text
   active            Boolean             @default(true)
-  in_stock          Boolean             @default(true)
+  inStock           Boolean             @default(true)
   recent            Boolean             @default(false)
   favorite          Boolean             @default(false)
   brand_id          Int?                @db.UnsignedInt
@@ -344,6 +361,8 @@ model Role {
   title String  @unique(map: "role_title_unique") @db.VarChar(255)
   scope String? @db.LongText
   user  User[]
+
+  @@map("role")
 }
 
 model User {
@@ -358,6 +377,7 @@ model User {
   order    Order[]
   role     Role    @relation(fields: [role_id], references: [id], map: "user_role_id_foreign")
 
+  @@map("user")
   @@index([role_id], map: "user_role_id_index")
 }
 

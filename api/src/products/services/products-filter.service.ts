@@ -1,9 +1,5 @@
-import { EntityRepository, FilterQuery, ObjectQuery } from '@mikro-orm/mariadb'
-import { InjectRepository } from '@mikro-orm/nestjs'
 import { isArray, isBoolean, isNull, isNumber, isString, isUndefined } from '@modyqyw/utils'
 import { Injectable } from '@nestjs/common'
-import { Option, OptionType } from '../entities/option.entity'
-import { Product } from '../entities/product.entity'
 import { PrismaService } from '@/prisma.service'
 import { $Enums, Prisma } from '@prisma/client'
 
@@ -62,14 +58,17 @@ export class ProductsFilterService {
   // colors: string[]
   // toggle: boolean
   async loadData(categoryId?: number): Promise<DataRecord[]> {
-    let where: ObjectQuery<Product> = {
-      active: true
-    }
-    if (categoryId) {
-      // TODO: HIERARCHY_DEPTH_LIMIT
-      where = { ...where, categories: { $in: [categoryId] } }
-    }
+    // TODO: HIERARCHY_DEPTH_LIMIT
     const products = await this.prismaService.product.findMany({
+      where: {
+        categories: categoryId
+          ? {
+              some: {
+                category_id: categoryId
+              }
+            }
+          : undefined
+      },
       include: {
         brand: true,
         optionValues: {
@@ -87,7 +86,7 @@ export class ProductsFilterService {
         id: product.id,
         title: product.title,
         price: product.offers.map((offer) => offer.price),
-        inStock: product.in_stock,
+        inStock: product.inStock,
         recent: product.recent,
         favorite: product.favorite
       }
@@ -129,6 +128,7 @@ export class ProductsFilterService {
 
   // по умолчанию фильтры имеют не заполненные варианты
   async loadFilters(categoryId?: number): Promise<Filter[]> {
+    // TODO: HIERARCHY_DEPTH_LIMIT
     const options = await this.prismaService.option.findMany({
       where: {
         categories: categoryId

@@ -41,6 +41,7 @@ import { NotificationsService } from '@/notifications/services/notifications.ser
 import { ConfigService } from '@nestjs/config'
 import { PrismaService } from '@/prisma.service'
 import { Prisma } from '@prisma/client'
+import { connect } from 'node:http2'
 
 @Injectable()
 export class ProductsService {
@@ -66,17 +67,14 @@ export class ProductsService {
     private readonly configService: ConfigService
   ) {}
 
-  async create({ brandId, ...fillable }: CreateProductDto) {
-    const product = new Product()
-
-    this.productsRepository.assign(product, fillable)
-
-    if (typeof brandId !== 'undefined') {
-      product.brand = brandId ? await this.brandRepository.findOneOrFail({ id: +brandId }) : null
-    }
-
-    await this.productsRepository.getEntityManager().persistAndFlush(product)
-
+  async create({ brandId, rank, ...fillable }: CreateProductDto) {
+    const product = await this.prismaService.product.create({
+      data: {
+        ...fillable,
+        rank: rank || 0,
+        brand: brandId ? { connect: { id: +brandId } } : undefined
+      }
+    })
     return product
   }
 
@@ -181,174 +179,157 @@ export class ProductsService {
   }
 
   async findOne(id: number, dto?: FindOneProductDto) {
-    let exclude: ('description' | 'specifications' | 'exploitation')[] = []
-    let populate: Populate<
-      Product,
-      'images' | 'brand' | 'categories' | 'offers' | 'offers.optionValues' | 'optionValues'
-    > = []
-    let filters: FilterOptions = []
-    let populateOrderBy: OrderDefinition<Product> = {}
-    let populateWhere: ObjectQuery<Product> = {}
+    const args: Prisma.ProductFindUniqueArgs = { where: { id } }
+
+    args.include = {}
 
     if (dto?.withOffers) {
-      populate = [...populate, 'offers', 'offers.optionValues']
+      args.include.offers = {
+        include: { optionValues: true }
+      }
     }
 
     if (dto?.withOptions) {
-      populate = [...populate, 'optionValues']
+      args.include.optionValues = true
     }
 
     if (dto?.withImages) {
-      populate = [...populate, 'images']
-      populateOrderBy = { ...populateOrderBy, images: { rank: QueryOrder.ASC } }
-      populateWhere = { ...populateWhere, images: { active: true } }
+      args.include.images = {
+        include: { file: true },
+        where: { active: true },
+        orderBy: { rank: 'asc' }
+      }
     }
 
     if (dto?.withBrand) {
-      populate = [...populate, 'brand']
+      args.include.brand = true
     }
 
     if (dto?.withCategories) {
-      populate = [...populate, 'categories']
+      args.include.categories = true
     }
 
     if (!dto?.withContent) {
-      exclude = [...exclude, 'description', 'specifications', 'exploitation']
+      args.omit = { description: true, specifications: true, exploitation: true }
     }
 
     if (dto?.active) {
-      filters = [...filters, 'active']
+      args.where.active = true
     }
 
-    const product = await this.productsRepository.findOneOrFail(
-      { id },
-      {
-        filters,
-        exclude,
-        populate,
-        populateOrderBy,
-        populateWhere
-      }
-    )
+    const product = await this.prismaService.product.findUnique(args)
 
-    if (dto?.withOptions) {
-      wrap(product).assign({ options: await this.findProductOptions(product.id) })
-    }
+    // if (dto?.withOptions) {
+    //   wrap(product).assign({ options: await this.findProductOptions(product.id) })
+    // }
 
     return product
   }
 
   async findOneByAlias(alias: string, dto?: FindOneProductDto) {
-    let exclude: ('description' | 'specifications' | 'exploitation')[] = []
-    let populate: Populate<
-      Product,
-      'images' | 'brand' | 'categories' | 'offers' | 'offers.optionValues' | 'optionValues'
-    > = []
-    let filters: FilterOptions = []
-    let populateOrderBy: OrderDefinition<Product> = {}
-    let populateWhere: ObjectQuery<Product> = {}
+    const args: Prisma.ProductFindUniqueArgs = { where: { alias } }
+
+    args.include = {}
 
     if (dto?.withOffers) {
-      populate = [...populate, 'offers', 'offers.optionValues']
+      args.include.offers = {
+        include: { optionValues: true }
+      }
     }
 
     if (dto?.withOptions) {
-      populate = [...populate, 'optionValues']
+      args.include.optionValues = true
     }
 
     if (dto?.withImages) {
-      populate = [...populate, 'images']
-      populateOrderBy = { ...populateOrderBy, images: { rank: QueryOrder.ASC } }
-      populateWhere = { ...populateWhere, images: { active: true } }
+      args.include.images = {
+        include: { file: true },
+        where: { active: true },
+        orderBy: { rank: 'asc' }
+      }
     }
 
     if (dto?.withBrand) {
-      populate = [...populate, 'brand']
+      args.include.brand = true
     }
 
     if (dto?.withCategories) {
-      populate = [...populate, 'categories']
+      args.include.categories = true
     }
 
     if (!dto?.withContent) {
-      exclude = [...exclude, 'description', 'specifications', 'exploitation']
+      args.omit = { description: true, specifications: true, exploitation: true }
     }
 
     if (dto?.active) {
-      filters = [...filters, 'active']
+      args.where.active = true
     }
 
-    const product = await this.productsRepository.findOne(
-      { alias },
-      {
-        filters,
-        exclude,
-        populate,
-        populateOrderBy,
-        populateWhere
-      }
-    )
+    const product = await this.prismaService.product.findUnique(args)
 
-    if (product && dto?.withOptions) {
-      wrap(product).assign({ options: await this.findProductOptions(product.id) })
-    }
+    // if (dto?.withOptions) {
+    //   wrap(product).assign({ options: await this.findProductOptions(product.id) })
+    // }
 
     return product
   }
 
   async update(id: number, { brandId, ...fillable }: UpdateProductDto) {
-    const product = await this.findOne(id)
-
-    this.productsRepository.assign(product, fillable)
-
-    if (typeof brandId !== 'undefined') {
-      product.brand = brandId ? await this.brandRepository.findOneOrFail({ id: +brandId }) : null
-    }
-
-    await this.productsRepository.getEntityManager().persistAndFlush(product)
+    const product = await this.prismaService.product.update({
+      where: { id },
+      data: {
+        ...fillable,
+        brand: brandId ? { connect: { id: +brandId } } : undefined
+      }
+    })
+    return product
   }
 
   async remove(id: number) {
-    const product = await this.productsRepository.findOneOrFail({ id })
-    await this.productsRepository.getEntityManager().removeAndFlush(product)
+    const product = await this.prismaService.product.delete({
+      where: { id }
+    })
+    return product
   }
 
   async createProductImage(productId: number, upload: Express.Multer.File) {
-    const product = await this.productsRepository.findOneOrFail(
-      { id: productId },
-      {
-        populate: ['images']
-      }
-    )
+    const product = await this.prismaService.product.findUniqueOrThrow({
+      where: { id: productId },
+      include: { images: true }
+    })
 
     const file = await this.storageService.upload(
       upload,
       join(String(productId), `${nanoid()}-${upload.originalname}`)
     )
-    const productImage = new ProductImage()
-    productImage.file = file
-    productImage.product = product
-    productImage.rank = product.images.length
-    await this.productImageRepository.getEntityManager().persistAndFlush(productImage)
+
+    const productImage = await this.prismaService.productImage.create({
+      data: {
+        rank: product.images.length || 0,
+        file: {
+          connect: { id: file.id }
+        },
+        product: {
+          connect: { id: product.id }
+        }
+      }
+    })
     return productImage
   }
 
   async findAllProductImage(productId: number) {
-    const product = await this.productsRepository.findOneOrFail({ id: productId })
-    return await this.productImageRepository.find(
-      { product },
-      {
-        orderBy: {
-          rank: QueryOrder.ASC
-        }
-      }
-    )
+    const productImages = await this.prismaService.productImage.findMany({
+      where: { product: { id: productId } },
+      orderBy: { rank: 'asc' }
+    })
+    return productImages
   }
 
   async findOneProductImage(productId: number, fileId: number) {
-    const product = await this.productsRepository.findOneOrFail({ id: productId })
-    const file = await this.storageService.findOneOrFail(fileId)
-    return this.productImageRepository.findOneOrFail({ product, file })
+    const productImage = await this.prismaService.productImage.findUniqueOrThrow({
+      where: { file_id_product_id: { product_id: productId, file_id: fileId } }
+    })
+    return productImage
   }
 
   async updateProductImage(
@@ -356,91 +337,88 @@ export class ProductsService {
     fileId: number,
     { ...fillable }: UpdateProductImageDto
   ) {
-    const productImage = await this.findOneProductImage(productId, fileId)
-
-    this.productImageRepository.assign(productImage, fillable)
-
-    await this.productImageRepository.getEntityManager().persistAndFlush(productImage)
+    const productImage = await this.prismaService.productImage.update({
+      where: { file_id_product_id: { product_id: productId, file_id: fileId } },
+      data: { ...fillable }
+    })
+    return productImage
   }
 
   async sortProductImage(productId: number, { files }: SortProductImageDto) {
-    const product = await this.productsRepository.findOneOrFail({ id: productId })
     for (const fileId of Object.keys(files)) {
-      const file = await this.storageService.findOneOrFail(+fileId)
-      const productImage = await this.productImageRepository.findOneOrFail({
-        product,
-        file
+      await this.prismaService.productImage.update({
+        where: { file_id_product_id: { product_id: productId, file_id: +fileId } },
+        data: { rank: files[fileId] }
       })
-      productImage.rank = files[fileId]
-      this.productImageRepository.getEntityManager().persist(productImage)
     }
-    await this.productImageRepository.getEntityManager().flush()
   }
 
   async removeProductImage(productId: number, fileId: number) {
-    const product = await this.productsRepository.findOneOrFail({ id: productId })
-    const file = await this.storageService.findOneOrFail(fileId)
-    const productImage = await this.productImageRepository.findOneOrFail({ product, file })
-    await this.productImageRepository.getEntityManager().removeAndFlush(productImage)
-    await this.storageService.remove(fileId)
+    const productImage = await this.prismaService.productImage.delete({
+      where: { file_id_product_id: { file_id: fileId, product_id: productId } }
+    })
+    return productImage
   }
 
   async findAllCategory(productId: number) {
-    const product = await this.productsRepository.findOne(
-      { id: productId },
-      {
-        populate: ['categories']
-      }
-    )
-    return product?.categories || []
+    const product = await this.prismaService.product.findUniqueOrThrow({
+      where: { id: productId },
+      include: { categories: true }
+    })
+    return product.categories
   }
 
   async updateCategory(productId: number, { categories }: UpdateProductCategoryDto) {
-    const product = await this.productsRepository.findOneOrFail({ id: productId })
-    product.categories.removeAll()
-    for (const categoryId of categories) {
-      const category = await this.categoryRepository.findOneOrFail({ id: +categoryId })
-      product.categories.add(category)
-    }
-    await this.productsRepository.getEntityManager().persistAndFlush(product)
+    const product = await this.prismaService.product.update({
+      where: { id: productId },
+      data: {
+        categories: {
+          set: categories.map((categoryId) => ({
+            category_id_product_id: { category_id: +categoryId, product_id: productId }
+          }))
+        }
+      }
+    })
+    return product
   }
 
   async findProductOptions(productId: number) {
-    const categories = await this.categoryRepository.find({
-      products: { $in: [productId] }
+    const categories = await this.prismaService.category.findMany({
+      where: { products: { some: { product_id: productId } } }
     })
     const categoryIds = categories.map((category) => category.id) || []
-    const options = await this.optionRepository.find(
-      { categories: { $in: categoryIds } },
-      { orderBy: { rank: QueryOrder.ASC } }
-    )
+    const options = await this.prismaService.option.findMany({
+      where: { categories: { some: { category_id: { in: categoryIds } } } },
+      orderBy: { rank: 'asc' }
+    })
     return options
   }
 
   async updateOptions(productId: number, values: UpdateProductOptions) {
     const product = await this.findOne(productId)
     const options = await this.findProductOptions(productId)
-    const em = this.optionValueRepository.getEntityManager()
 
     const findOptionValues = async (option: Option) => {
-      return this.optionValueRepository.find(
-        { option, product },
-        { orderBy: { rank: QueryOrder.ASC } }
-      )
+      return this.prismaService.optionValue.findMany({
+        where: { option: { id: option.id }, product: { id: product?.id } },
+        orderBy: { rank: 'asc' }
+      })
     }
 
     const findOrCreateOptionValue = async (option: Option) => {
-      const variant = await this.optionValueRepository.findOne(
-        { option, product },
-        { orderBy: { rank: QueryOrder.ASC } }
-      )
+      const variant = await this.prismaService.optionValue.findFirst({
+        where: { option: { id: option.id }, product: { id: product?.id } },
+        orderBy: { rank: 'asc' }
+      })
 
       if (!variant) {
-        return this.optionValueRepository.create({
-          option,
-          product,
-          content: '',
-          rank: 0
+        return await this.prismaService.optionValue.create({
+          data: {
+            option: { connect: { id: option.id } },
+            product: { connect: { id: product?.id } },
+            content: '',
+            rank: 0
+          }
         })
       }
 
@@ -454,7 +432,7 @@ export class ProductsService {
 
       if (isUndefined(value)) {
         for (const optionValue of optionValues) {
-          em.remove(optionValue)
+          await this.prismaService.optionValue.delete({ where: { id: optionValue.id } })
         }
         return
       }
@@ -464,19 +442,24 @@ export class ProductsService {
         for (const optionValue of optionValues) {
           const index = value.indexOf(optionValue.content)
           if (index === -1) {
-            em.remove(optionValue)
+            await this.prismaService.optionValue.delete({ where: { id: optionValue.id } })
             continue
           }
-          optionValue.rank = index
+          await this.prismaService.optionValue.update({
+            where: { id: optionValue.id },
+            data: { rank: index }
+          })
           delete value[index]
         }
         // добавляем новые варианты
         for (const key in value) {
-          this.optionValueRepository.create({
-            option,
-            product,
-            content: value[key],
-            rank: Number(key)
+          await this.prismaService.optionValue.create({
+            data: {
+              option: { connect: { id: option.id } },
+              product: { connect: { id: product?.id } },
+              content: value[key],
+              rank: Number(key)
+            }
           })
         }
         return
@@ -491,22 +474,31 @@ export class ProductsService {
       const optionValue = await findOrCreateOptionValue(option)
 
       if (isUndefined(value)) {
-        em.remove(optionValue)
+        await this.prismaService.optionValue.delete({ where: { id: optionValue.id } })
         return
       }
 
       if (isNumber(value)) {
-        optionValue.content = String(value)
+        await this.prismaService.optionValue.update({
+          where: { id: optionValue.id },
+          data: { content: String(value) }
+        })
         return
       }
 
       if (isBoolean(value)) {
-        optionValue.content = value ? '1' : '0'
+        await this.prismaService.optionValue.update({
+          where: { id: optionValue.id },
+          data: { content: value ? '1' : '0' }
+        })
         return
       }
 
       if (isString(value)) {
-        optionValue.content = value
+        await this.prismaService.optionValue.update({
+          where: { id: optionValue.id },
+          data: { content: value }
+        })
         return
       }
 
@@ -526,21 +518,16 @@ export class ProductsService {
     for (const option of options) {
       await updaters[option.type](option)
     }
-
-    await em.flush()
   }
 
   async findAllOffers(productId: number) {
-    const product = await this.productsRepository.findOneOrFail({ id: productId })
-    return this.offerRepository.find(
-      { product },
-      {
-        orderBy: {
-          rank: QueryOrder.ASC
-        },
-        populate: ['optionValues']
-      }
-    )
+    return await this.prismaService.offer.findMany({
+      where: { product: { id: productId } },
+      orderBy: {
+        rank: 'asc'
+      },
+      include: { optionValues: true }
+    })
   }
 
   async createOffer(productId: number, dto: CreateOfferDto) {

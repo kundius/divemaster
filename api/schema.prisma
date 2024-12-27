@@ -108,7 +108,7 @@ model Category {
   active            Boolean             @default(true)
   image_id          Int?                @db.UnsignedInt
   parent_id         Int?                @db.UnsignedInt
-  file              File?               @relation(fields: [image_id], references: [id], map: "category_image_id_foreign")
+  image             File?               @relation(fields: [image_id], references: [id], map: "category_image_id_foreign")
   parent            Category?           @relation("categoryTocategory", fields: [parent_id], references: [id], map: "category_parent_id_foreign")
   children          Category[]          @relation("categoryTocategory")
   options           CategoryOptions[]

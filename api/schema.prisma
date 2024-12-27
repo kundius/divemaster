@@ -204,7 +204,7 @@ model OfferOptionValues {
   offer_id        Int          @db.UnsignedInt
   option_value_id Int          @db.UnsignedInt
   offer           Offer        @relation(fields: [offer_id], references: [id], onDelete: Cascade, map: "offer_option_values_offer_id_foreign")
-  option_value    OptionValue @relation(fields: [option_value_id], references: [id], onDelete: Cascade, map: "offer_option_values_option_value_id_foreign")
+  option_value    OptionValue  @relation(fields: [option_value_id], references: [id], onDelete: Cascade, map: "offer_option_values_option_value_id_foreign")
 
   @@map("offer_option_values")
   @@id([offer_id, option_value_id])

@@ -40,7 +40,13 @@ import { content as letterByClick } from '@/notifications/templates/order/by-cli
 import { NotificationsService } from '@/notifications/services/notifications.service'
 import { ConfigService } from '@nestjs/config'
 import { PrismaService } from '@/prisma.service'
-import { Prisma } from '@prisma/client'
+import {
+  Prisma,
+  Category as PrismaCategory,
+  Option as PrismaOption,
+  Product as PrismaProduct,
+  $Enums
+} from '@prisma/client'
 import { connect } from 'node:http2'
 
 @Injectable()
@@ -531,63 +537,70 @@ export class ProductsService {
   }
 
   async createOffer(productId: number, dto: CreateOfferDto) {
-    const product = await this.productsRepository.findOneOrFail({ id: productId })
-
-    const currentOffers = await this.offerRepository.find(
-      { product },
-      { populate: ['optionValues'] }
-    )
+    const currentOffers = await this.prismaService.offer.findMany({
+      where: { product: { id: productId } },
+      include: { optionValues: true }
+    })
     const existOffer = currentOffers.find(
       (currentOffer) =>
-        JSON.stringify(pluck(currentOffer.optionValues.getItems(), 'id').sort()) ===
+        JSON.stringify(pluck(currentOffer.optionValues, 'option_value_id').sort()) ===
         JSON.stringify(dto.optionValues.sort())
     )
     if (existOffer) {
       throw new BadRequestException('Торговое предложение с указанными опциями уже сущесивует')
     }
 
-    const offer = new Offer()
-
-    this.offerRepository.assign(offer, {
-      product,
-      price: dto.price,
-      title: dto.title,
-      optionValues: dto.optionValues
+    const offer = await this.prismaService.offer.create({
+      data: {
+        product: { connect: { id: productId } },
+        price: dto.price,
+        title: dto.title,
+        optionValues: {
+          create: dto.optionValues.map((id) => ({ option_value: { connect: { id } } }))
+        }
+      }
     })
-
-    await this.offerRepository.getEntityManager().persistAndFlush(offer)
 
     return offer
   }
 
   async removeOffer(id: number) {
-    const offer = await this.offerRepository.findOneOrFail({ id })
-    await this.offerRepository.getEntityManager().removeAndFlush(offer)
+    const offer = await this.prismaService.offer.delete({ where: { id } })
+    return offer
   }
 
   async updateOffer(id: number, dto: UpdateOfferDto) {
-    const offer = await this.offerRepository.findOneOrFail({ id })
-
-    const currentOffers = await this.offerRepository.find(
-      { product: offer.product, id: { $ne: offer.id } },
-      { populate: ['optionValues'] }
-    )
+    const currentOffer = await this.prismaService.offer.findUniqueOrThrow({
+      where: { id },
+      include: { product: true }
+    })
+    const currentOffers = await this.prismaService.offer.findMany({
+      where: { product: { id: currentOffer.product.id }, id: { not: currentOffer.id } },
+      include: { optionValues: true }
+    })
     const existOffer = currentOffers.find(
       (currentOffer) =>
-        JSON.stringify(pluck(currentOffer.optionValues.getItems(), 'id').sort()) ===
+        JSON.stringify(pluck(currentOffer.optionValues, 'option_value_id').sort()) ===
         JSON.stringify(dto.optionValues.sort())
     )
     if (existOffer) {
       throw new BadRequestException('Торговое предложение с указанными опциями уже сущесивует')
     }
 
-    this.offerRepository.assign(offer, {
-      price: dto.price,
-      title: dto.title,
-      optionValues: dto.optionValues
+    const offer = await this.prismaService.offer.update({
+      where: { id },
+      data: {
+        price: dto.price,
+        title: dto.title,
+        optionValues: {
+          set: dto.optionValues.map((id) => ({
+            offer_id_option_value_id: { offer_id: id, option_value_id: id }
+          }))
+        }
+      }
     })
 
-    await this.offerRepository.getEntityManager().persistAndFlush(offer)
+    return offer
   }
 
   async import(upload: Express.Multer.File) {
@@ -636,26 +649,36 @@ export class ProductsService {
         return input
       }
 
-      const parseCategories = async (): Promise<Record<string, Category>> => {
-        const rqs = async (data: any, parent: Category | null) => {
+      const parseCategories = async (): Promise<Record<string, PrismaCategory>> => {
+        const rqs = async (data: any, parent: PrismaCategory | null) => {
           let output = {}
           for (const group of data) {
-            let localCategory = await this.categoryRepository.findOne({
-              remoteId: group['Ид']
-            })
-            if (!localCategory) {
-              localCategory = new Category()
-              localCategory.remoteId = group['Ид']
+            const localAlias = slugify(group['Наименование'])
+            const localData: Prisma.CategoryCreateArgs['data'] = {
+              remote_id: group['Ид'],
+              title: group['Наименование'],
+              alias: parent ? `${parent.alias}-${localAlias}` : localAlias,
+              active: true,
+              parent: parent
+                ? {
+                    connect: {
+                      id: parent.id
+                    }
+                  }
+                : undefined
             }
-            localCategory.title = group['Наименование']
-            localCategory.alias = slugify(group['Наименование'])
-            localCategory.active = true
-            if (parent) {
-              localCategory.parent = parent
-              localCategory.alias = `${parent.alias}-${localCategory.alias}`
-            }
-            await this.categoryRepository.getEntityManager().persistAndFlush(localCategory)
 
+            let localCategory = await this.prismaService.category.findFirst({
+              where: { remote_id: group['Ид'] }
+            })
+            if (localCategory) {
+              localCategory = await this.prismaService.category.update({
+                data: localData,
+                where: { id: localCategory.id }
+              })
+            } else {
+              localCategory = await this.prismaService.category.create({ data: localData })
+            }
             output[group['Ид']] = localCategory
 
             if (Array.isArray(group?.['Группы']?.['Группа'])) {
@@ -710,24 +733,29 @@ export class ProductsService {
           if (itemProperty['Наименование'] !== 'Бренд') continue
 
           for (const itemBrand of itemProperty['ВариантыЗначений']['Справочник']) {
-            let brand = await this.brandRepository.findOne({
-              remoteId: itemBrand['ИдЗначения']
+            const brandData: Prisma.BrandCreateArgs['data'] = {
+              remote_id: itemBrand['ИдЗначения'],
+              title: itemBrand['Значение']
+            }
+            let brand = await this.prismaService.brand.findFirst({
+              where: { remote_id: itemBrand['ИдЗначения'] }
             })
             if (!brand) {
-              brand = new Brand()
-              brand.remoteId = itemBrand['ИдЗначения']
+              brand = await this.prismaService.brand.create({ data: brandData })
+            } else {
+              brand = await this.prismaService.brand.update({
+                where: { id: brand.id },
+                data: brandData
+              })
             }
-            brand.title = itemBrand['Значение']
-            await this.brandRepository.getEntityManager().persistAndFlush(brand)
-
             output[itemBrand['ИдЗначения']] = brand
           }
         }
         return output
       }
 
-      const createOptionsFromOffers = async (productOffers, product: Product) => {
-        const output: Record<string, Option> = {}
+      const createOptionsFromOffers = async (productOffers, product: PrismaProduct) => {
+        const output: Record<string, PrismaOption> = {}
         const tmp: Record<string, string[]> = {}
         for (const productOffer of productOffers) {
           if (productOffer['ХарактеристикиТовара']) {
@@ -746,61 +774,86 @@ export class ProductsService {
 
         // добавляем значения опций, присутствующие в выгрузке
         for (const [caption, strValues] of Object.entries(tmp)) {
-          let option = await this.optionRepository.findOne({
-            caption
+          const optionData: Prisma.OptionCreateArgs['data'] = {
+            caption: caption,
+            key: slugify(caption),
+            rank: 2,
+            in_filter: true,
+            type: $Enums.OptionType.combo_options
+          }
+
+          let option = await this.prismaService.option.findFirst({
+            where: { caption }
           })
+
           if (!option) {
-            option = new Option()
-            option.caption = caption
-            option.key = slugify(caption)
-            option.rank = 2
-            option.inFilter = true
-            option.type = OptionType.COMBOOPTIONS
-            await this.optionRepository.getEntityManager().persistAndFlush(option)
+            option = await this.prismaService.option.create({
+              data: optionData
+            })
           }
 
           output[caption] = option
 
           // добавляем категории товара в категории опции
-          await option.categories.init()
-          for (const category of product.categories) {
-            if (!option.categories.contains(category)) {
-              option.categories.add(category)
-            }
+          const productCategories = await this.prismaService.category.findMany({
+            where: { products: { some: { product_id: product.id } } }
+          })
+          for (const productCategory of productCategories) {
+            // TODO_PRISMA: тут скорее всегонеправильно connectOrCreate описан
+            option = await this.prismaService.option.update({
+              where: { id: option.id },
+              data: {
+                categories: {
+                  connectOrCreate: {
+                    where: {
+                      category_id_option_id: {
+                        category_id: productCategory.id,
+                        option_id: option.id
+                      }
+                    },
+                    create: {
+                      category_id: productCategory.id
+                    }
+                  }
+                }
+              }
+            })
           }
 
-          await option.values.init()
           for (const strValue of strValues) {
             // создаем значения опции товара, присутствующие в выгрузке
-            let optionValue = await this.optionValueRepository.findOne({
-              option,
-              product,
-              content: strValue
+            let optionValue = await this.prismaService.optionValue.findFirst({
+              where: {
+                option: { id: option.id },
+                product: { id: product.id },
+                content: strValue
+              }
             })
             if (!optionValue) {
-              optionValue = new OptionValue()
-              optionValue.option = option
-              optionValue.product = product
-              optionValue.content = strValue
-              await this.optionValueRepository.getEntityManager().persistAndFlush(optionValue)
+              optionValue = await this.prismaService.optionValue.create({
+                data: {
+                  option: { connect: { id: option.id } },
+                  product: { connect: { id: product.id } },
+                  content: strValue
+                }
+              })
             }
           }
         }
 
         // удаляем значения опций, отсутствующие в выгрузке
         for (const [caption, strValues] of Object.entries(tmp)) {
-          const option = await this.optionRepository.findOne({ caption })
+          const option = await this.prismaService.option.findFirst({ where: { caption } })
 
           if (!option) continue
 
-          const optionValues = await this.optionValueRepository.find({
-            option,
-            product,
-            content: {
-              $nin: strValues
+          await this.prismaService.optionValue.deleteMany({
+            where: {
+              option: { id: option.id },
+              product: { id: product.id },
+              content: { notIn: strValues }
             }
           })
-          await this.optionValueRepository.getEntityManager().removeAndFlush(optionValues)
         }
 
         return output
@@ -808,36 +861,55 @@ export class ProductsService {
 
       const parseProducts = async (limit: number) => {
         const data = productsParsed['КоммерческаяИнформация']['Каталог']['Товары']['Товар']
-        let output: Record<string, Product> = {}
+        let output: Record<string, PrismaProduct> = {}
         let i = 0
         for (const itemProduct of data) {
           if (i === limit) break
 
           i++
 
-          let product = await this.productsRepository.findOne({
-            remoteId: itemProduct['Ид']
+          const productData: Prisma.ProductCreateArgs['data'] = {
+            remote_id: itemProduct['Ид'],
+            sku: itemProduct['Артикул'],
+            alias: slugify(itemProduct['Наименование']),
+            title: itemProduct['Наименование'],
+            description: itemProduct['Описание']
+          }
+
+          let product = await this.prismaService.product.findFirst({
+            where: { remote_id: itemProduct['Ид'] }
           })
 
           if (!product) {
-            product = new Product()
-            product.remoteId = itemProduct['Ид']
+            product = await this.prismaService.product.create({
+              data: productData
+            })
+          } else {
+            product = await this.prismaService.product.update({
+              where: { id: product.id },
+              data: {
+                ...productData,
+                alias:
+                  productData['alias'] === product.alias
+                    ? productData['alias']
+                    : await getUniqueProductAlias(productData['alias'])
+              }
+            })
           }
 
           output[itemProduct['Ид']] = product
 
-          product.sku = itemProduct['Артикул']
-          const alias = slugify(itemProduct['Наименование'])
-          product.alias = alias === product.alias ? alias : await getUniqueProductAlias(alias)
-          product.title = itemProduct['Наименование']
-          product.description = itemProduct['Описание']
-
-          await this.productsRepository.getEntityManager().persistAndFlush(product)
-
           // удаляем все файлы, загружаем новые
-          await product.images.init({ populate: ['file'] })
-          for (const productImage of product.images) {
-            await this.productImageRepository.getEntityManager().removeAndFlush(productImage)
+          const productImages = await this.prismaService.productImage.findMany({
+            where: { product_id: product.id },
+            include: { file: true }
+          })
+          for (const productImage of productImages) {
+            await this.prismaService.productImage.delete({
+              where: {
+                file_id_product_id: { file_id: productImage.file.id, product_id: product.id }
+              }
+            })
             await this.storageService.remove(productImage.file.id)
           }
           if (itemProduct['Картинки']) {
@@ -849,11 +921,13 @@ export class ProductsService {
                 images[rawImagePath],
                 join(String(product.id), rawImagePath)
               )
-              const productImage = new ProductImage()
-              productImage.file = file
-              productImage.product = product
-              productImage.rank = product.images.length
-              this.productImageRepository.getEntityManager().persist(productImage)
+              const productImage = await this.prismaService.productImage.create({
+                data: {
+                  file: { connect: { id: file.id } },
+                  product: { connect: { id: product.id } },
+                  rank: 0 // TODO_PRISMA тут порядок не учитывает количество
+                }
+              })
             }
           }
 
@@ -1125,7 +1199,7 @@ export class ProductsService {
   }
 
   async orderByClick(id: number, dto: OrderByClickProductDto) {
-    const product = await this.productsRepository.findOneOrFail(id)
+    const product = await this.prismaService.product.findUniqueOrThrow({ where: { id } })
 
     const emailAdmin = this.configService.get('app.emailAdmin')
     if (emailAdmin) {

@@ -1,9 +1,8 @@
 import { PaginationQueryDto } from '@/lib/pagination-query.dto'
-import { QueryOrder } from '@mikro-orm/core'
 import { PartialType } from '@nestjs/mapped-types'
 import { Type } from 'class-transformer'
 import { IsArray, IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
-import { Option, OptionType } from '../entities/option.entity'
+import { $Enums, Option as PrismaOption } from '@prisma/client'
 
 export class CreateOptionDto {
   @Type(() => String)
@@ -14,8 +13,8 @@ export class CreateOptionDto {
   @IsString()
   caption: string
 
-  @IsEnum(OptionType)
-  type: OptionType
+  @IsEnum($Enums.OptionType)
+  type: $Enums.OptionType
 
   @Type(() => Boolean)
   @IsBoolean()
@@ -38,11 +37,11 @@ export class FindAllOptionDto extends PaginationQueryDto {
   @Type(() => String)
   @IsString()
   @IsOptional()
-  readonly sort: keyof Option = 'rank'
+  readonly sort: keyof PrismaOption = 'rank'
 
-  @IsEnum(QueryOrder)
+  @IsString()
   @IsOptional()
-  readonly dir: QueryOrder = QueryOrder.ASC
+  readonly dir: 'asc' | 'desc' = 'asc'
 }
 
 export class FindOneOptionDto {}

@@ -111,7 +111,7 @@ model Category {
   image             File?               @relation(fields: [image_id], references: [id], map: "category_image_id_foreign")
   parent            Category?           @relation("categoryTocategory", fields: [parent_id], references: [id], map: "category_parent_id_foreign")
   children          Category[]          @relation("categoryTocategory")
-  options           CategoryOptions[]
+  options           CategoriesOnOptions[]
   products          CategoryProducts[]
 
   @@map("category")
@@ -119,7 +119,7 @@ model Category {
   @@index([parent_id], map: "category_parent_id_index")
 }
 
-model CategoryOptions {
+model CategoriesOnOptions {
   category_id Int      @db.UnsignedInt
   option_id   Int      @db.UnsignedInt
   category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade, map: "category_options_category_id_foreign")
@@ -219,7 +219,7 @@ model Option {
   type             OptionType
   in_filter        Boolean            @default(false)
   rank             Int                @default(0)
-  categories       CategoryOptions[]
+  categories       CategoriesOnOptions[]
   values           OptionValue[]
 
   @@map("option")

@@ -2,8 +2,7 @@ import { Type } from 'class-transformer'
 import { IsEnum, IsOptional, IsString } from 'class-validator'
 import { PartialType } from '@nestjs/mapped-types'
 import { PaginationQueryDto } from '@/lib/pagination-query.dto'
-import { Brand } from '../entities/brand.entity'
-import { QueryOrder } from '@mikro-orm/core'
+import { Brand } from '@prisma/client'
 
 export class CreateBrandDto {
   @Type(() => String)
@@ -24,9 +23,9 @@ export class FindAllBrandQueryDto extends PaginationQueryDto {
   @IsOptional()
   sort: keyof Brand = 'id'
 
-  @IsEnum(QueryOrder)
+  @IsString()
   @IsOptional()
-  dir: QueryOrder = QueryOrder.ASC
+  dir: 'asc' | 'desc' = 'asc'
 }
 
 export class FindOneBrandQueryDto {}

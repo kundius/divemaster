@@ -1,5 +1,9 @@
-import { Enum, QueryOrder } from '@mikro-orm/core'
+import { PaginationQueryDto } from '@/lib/pagination-query.dto'
+import { ParseArray } from '@/lib/parse-array'
+import { ParseBoolean } from '@/lib/parse-boolean'
+import { ParseObject } from '@/lib/parse-object'
 import { PartialType } from '@nestjs/mapped-types'
+import { $Enums, BlogPost } from '@prisma/client'
 import { Type } from 'class-transformer'
 import {
   IsArray,
@@ -11,13 +15,6 @@ import {
   IsString
 } from 'class-validator'
 
-import { PaginationQueryDto } from '@/lib/pagination-query.dto'
-import { ParseArray } from '@/lib/parse-array'
-import { ParseObject } from '@/lib/parse-object'
-
-import { BlogPost, BlogPostStatusEnum } from '../entities/blog-post.entity'
-import { ParseBoolean } from '@/lib/parse-boolean'
-
 export class BlogPostCreateDto {
   @Type(() => String)
   @IsString()
@@ -26,7 +23,7 @@ export class BlogPostCreateDto {
   @Type(() => String)
   @IsString()
   @IsOptional()
-  longTitle?: string
+  long_title?: string
 
   @Type(() => String)
   @IsString()
@@ -41,11 +38,11 @@ export class BlogPostCreateDto {
   @Type(() => String)
   @IsString()
   @IsOptional()
-  readTime?: string
+  read_time?: string
 
-  @IsEnum(BlogPostStatusEnum)
+  @IsEnum($Enums.BlogPostStatus)
   @IsOptional()
-  status?: BlogPostStatusEnum
+  status?: $Enums.BlogPostStatus
 
   @ParseObject()
   @IsObject()
@@ -82,11 +79,11 @@ export class BlogPostFindAllDto extends PaginationQueryDto {
   @Type(() => String)
   @IsString()
   @IsOptional()
-  sort: keyof BlogPost = 'createdAt'
+  sort: keyof BlogPost = 'created_at'
 
-  @IsEnum(QueryOrder)
+  @IsString()
   @IsOptional()
-  dir: QueryOrder = QueryOrder.DESC
+  dir: 'asc' | 'desc' = 'asc'
 }
 
 export class BlogPostFindOneDto {}

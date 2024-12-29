@@ -1,53 +1,36 @@
+import { PrismaService } from '@/prisma.service'
 import { Injectable } from '@nestjs/common'
-import { Category } from '../entities/category.entity'
-import {
-  CreateRequestContext,
-  EntityRepository,
-  FilterOptions,
-  ObjectQuery,
-  OrderDefinition,
-  Populate,
-  QueryOrder
-} from '@mikro-orm/mariadb'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { StorageService } from '@/storage/services/storage.service'
+import { Prisma } from '@prisma/client'
 import {
   CreateCategoryDto,
   FindAllCategoryQueryDto,
   FindOneCategoryQueryDto,
   UpdateCategoryDto
 } from '../dto/categories.dto'
-import { PrismaService } from '@/prisma.service'
-import { Prisma } from '@prisma/client'
 
 @Injectable()
 export class CategoriesService {
-  constructor(
-    private readonly prismaService: PrismaService,
-    @InjectRepository(Category)
-    private categoriesRepository: EntityRepository<Category>,
-    private storageService: StorageService
-  ) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   async create({ parentId, imageId, ...fillable }: CreateCategoryDto) {
-    const category = new Category()
-
-    this.categoriesRepository.assign(category, fillable)
+    const data: Prisma.CategoryCreateArgs['data'] = fillable
 
     if (typeof parentId !== 'undefined') {
-      category.parent = parentId ? await this.categoriesRepository.findOneOrFail(parentId) : null
-    }
-    if (typeof imageId !== 'undefined') {
-      category.image = imageId ? await this.storageService.findOne(imageId) : null
+      data.parent = parentId ? { connect: { id: parentId } } : {}
     }
 
-    await this.categoriesRepository.getEntityManager().persistAndFlush(category)
+    if (typeof imageId !== 'undefined') {
+      data.image = imageId ? { connect: { id: imageId } } : {}
+    }
+
+    const category = await this.prismaService.category.create({ data })
 
     return category
   }
 
   async findAll(dto: FindAllCategoryQueryDto) {
     const args: Prisma.CategoryFindManyArgs = {}
+
     args.where = {}
     args.include = {}
 
@@ -88,110 +71,82 @@ export class CategoriesService {
   }
 
   async findOne(id: number, dto?: FindOneCategoryQueryDto) {
-    let exclude: 'description'[] = []
-    let populate: Populate<
-      Category,
-      'children' | 'children.children' | 'parent' | 'parent.parent'
-    > = []
-    let filters: FilterOptions = []
-    let populateOrderBy: OrderDefinition<Category> = {}
-    let populateWhere: ObjectQuery<Category> = {}
+    const args: Prisma.CategoryFindFirstArgs = {}
+
+    args.where = { id }
+    args.include = {}
 
     if (dto?.withChildren) {
       // HIERARCHY_DEPTH_LIMIT
-      populate = [...populate, 'children', 'children.children']
-      populateOrderBy = { ...populateOrderBy, children: { id: QueryOrder.ASC } }
-      if (dto?.active) {
-        populateWhere = { ...populateWhere, children: { active: true } }
-      }
+      args.include.children = true
     }
 
     if (dto?.withParent) {
       // HIERARCHY_DEPTH_LIMIT
-      populate = [...populate, 'parent', 'parent.parent']
+      args.include.parent = true
     }
 
     if (!dto?.withContent) {
-      exclude = [...exclude, 'description']
+      args.omit = { description: true }
     }
 
     if (dto?.active) {
-      filters = [...filters, 'active']
+      args.where.active = true
     }
 
-    return this.categoriesRepository.findOneOrFail(
-      { id },
-      {
-        filters,
-        exclude,
-        populate,
-        populateOrderBy,
-        populateWhere
-      }
-    )
+    const category = await this.prismaService.category.findFirst(args)
+
+    return category
   }
 
   async findOneByAlias(alias: string, dto?: FindOneCategoryQueryDto) {
-    let exclude: 'description'[] = []
-    let populate: Populate<
-      Category,
-      'children' | 'children.children' | 'parent' | 'parent.parent'
-    > = []
-    let filters: FilterOptions = []
-    let populateOrderBy: OrderDefinition<Category> = {}
-    let populateWhere: ObjectQuery<Category> = {}
+    const args: Prisma.CategoryFindFirstArgs = {}
+
+    args.where = { alias }
+    args.include = {}
 
     if (dto?.withChildren) {
       // HIERARCHY_DEPTH_LIMIT
-      populate = [...populate, 'children', 'children.children']
-      populateOrderBy = { ...populateOrderBy, children: { id: QueryOrder.ASC } }
-      if (dto?.active) {
-        populateWhere = { ...populateWhere, children: { active: true } }
-      }
+      args.include.children = true
     }
 
     if (dto?.withParent) {
       // HIERARCHY_DEPTH_LIMIT
-      populate = [...populate, 'parent', 'parent.parent']
+      args.include.parent = true
     }
 
     if (!dto?.withContent) {
-      exclude = [...exclude, 'description']
+      args.omit = { description: true }
     }
 
     if (dto?.active) {
-      filters = [...filters, 'active']
+      args.where.active = true
     }
 
-    return this.categoriesRepository.findOne(
-      { alias },
-      {
-        filters,
-        exclude,
-        populate,
-        populateOrderBy,
-        populateWhere
-      }
-    )
+    const category = await this.prismaService.category.findFirst(args)
+
+    return category
   }
 
   async update(id: number, { parentId, imageId, ...fillable }: UpdateCategoryDto) {
-    const category = await this.findOne(id)
-
-    this.categoriesRepository.assign(category, fillable)
+    const data: Prisma.CategoryUpdateArgs['data'] = fillable
 
     if (typeof parentId !== 'undefined') {
-      category.parent = parentId ? await this.categoriesRepository.findOneOrFail(parentId) : null
-    }
-    if (typeof imageId !== 'undefined') {
-      category.image = imageId ? await this.storageService.findOne(imageId) : null
+      data.parent = parentId ? { connect: { id: parentId } } : {}
     }
 
-    await this.categoriesRepository.getEntityManager().persistAndFlush(category)
+    if (typeof imageId !== 'undefined') {
+      data.image = imageId ? { connect: { id: imageId } } : {}
+    }
+
+    const category = await this.prismaService.category.update({ where: { id }, data })
+
+    return category
   }
 
   async remove(id: number) {
-    const category = await this.categoriesRepository.findOneOrFail({ id })
-    await this.categoriesRepository.getEntityManager().removeAndFlush(category)
+    const category = await this.prismaService.category.delete({ where: { id } })
+
+    return category
   }
 }

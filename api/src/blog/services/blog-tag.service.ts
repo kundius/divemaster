@@ -1,25 +1,19 @@
-import { EntityRepository, ObjectQuery } from '@mikro-orm/mariadb'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { Injectable } from '@nestjs/common'
-
-import { BlogTagCreateDto, BlogTagFindAllDto, BlogTagUpdateDto } from '../dto/blog-tag.dto'
-import { BlogTag } from '../entities/blog-tag.entity'
 import { slugify } from '@/lib/utils'
-import { BlogPost } from '../entities/blog-post.entity'
+import { PrismaService } from '@/prisma.service'
+import { Injectable } from '@nestjs/common'
+import { Prisma } from '@prisma/client'
+import { BlogTagCreateDto, BlogTagFindAllDto, BlogTagUpdateDto } from '../dto/blog-tag.dto'
 
 @Injectable()
 export class BlogTagService {
-  constructor(
-    @InjectRepository(BlogTag)
-    private repository: EntityRepository<BlogTag>
-  ) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   async makeUniqueAlias(from: string, n: number = 0) {
     let alias = slugify(from)
     if (n !== 0) {
       alias = `${alias}-${n}`
     }
-    const record = await this.repository.findOne({ alias })
+    const record = await this.prismaService.blogTag.findUnique({ where: { alias } })
     if (!record) {
       return alias
     } else {
@@ -27,69 +21,70 @@ export class BlogTagService {
     }
   }
 
-  async create({ alias, ...fillable }: BlogTagCreateDto) {
-    const record = new BlogTag()
+  async create({ alias, metadata, ...fillable }: BlogTagCreateDto) {
+    const data: Prisma.BlogTagCreateArgs['data'] = {
+      ...fillable,
+      alias: await this.makeUniqueAlias(alias || fillable.name)
+    }
 
-    this.repository.assign(record, fillable)
-
-    record.alias = await this.makeUniqueAlias(alias || fillable.name)
-
-    await this.repository.getEntityManager().persistAndFlush(record)
+    const record = await this.prismaService.blogTag.create({ data })
 
     return record
   }
 
+  // TODO_PRISMA добавить количество постов
   async findAll(dto: BlogTagFindAllDto) {
-    const qb = this.repository.createQueryBuilder('tag')
+    const args: Prisma.BlogTagFindManyArgs = {}
+
+    args.where = {}
+    args.include = {}
 
     if (dto.query) {
-      qb.andWhere({ title: { $like: '%' + dto.query + '%' } })
+      args.where.name = { contains: dto.query }
     }
 
-    const knex = this.repository.getEntityManager().getKnex()
-    const qbPostsTotal = this.repository
-      .getEntityManager()
-      .createQueryBuilder(BlogPost, 'post')
-      .where({ tags: knex.ref('tag.id') })
-      .count('post.id', true)
-      .as('posts_total')
+    args.orderBy = { [dto.sort]: dto.dir }
+    args.skip = dto.skip
+    args.take = dto.take
 
-    qb.select(['*', qbPostsTotal])
-    qb.limit(dto.take)
-    qb.offset(dto.skip)
-    qb.orderBy({ [dto.sort]: dto.dir })
-
-    const [rows, total] = await qb.getResultAndCount()
+    const rows = await this.prismaService.blogTag.findMany(args)
+    const total = await this.prismaService.blogTag.count({ where: args.where })
 
     return { rows, total }
   }
 
   async findOne(id: number) {
-    return this.repository.findOneOrFail({ id })
+    return this.prismaService.blogTag.findUniqueOrThrow({ where: { id } })
   }
 
   async findOneByAlias(alias: string) {
-    return this.repository.findOne({ alias })
+    return this.prismaService.blogTag.findUniqueOrThrow({ where: { alias } })
   }
 
   async findOneByName(name: string) {
-    return this.repository.findOne({ name })
+    return this.prismaService.blogTag.findFirstOrThrow({ where: { name } })
   }
 
   async update(id: number, { alias, ...fillable }: BlogTagUpdateDto) {
-    const record = await this.repository.findOneOrFail(id)
+    let record = await this.findOne(id)
 
-    this.repository.assign(record, fillable)
+    const data: Prisma.BlogTagUpdateArgs['data'] = fillable
 
     if (typeof alias !== 'undefined' && alias !== record.alias) {
-      record.alias = await this.makeUniqueAlias(alias || record.name)
+      data.alias = await this.makeUniqueAlias(alias || record.name)
     }
 
-    await this.repository.getEntityManager().persistAndFlush(record)
+    record = await this.prismaService.blogTag.update({
+      where: { id },
+      data
+    })
+
+    return record
   }
 
   async remove(id: number) {
-    const record = await this.repository.findOneOrFail({ id })
-    await this.repository.getEntityManager().removeAndFlush(record)
+    const record = await this.prismaService.blogTag.delete({ where: { id } })
+
+    return record
   }
 }

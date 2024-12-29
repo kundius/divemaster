@@ -1,10 +1,9 @@
 import { PaginationQueryDto } from '@/lib/pagination-query.dto'
 import { ParseBoolean } from '@/lib/parse-boolean'
-import { QueryOrder } from '@mikro-orm/core'
 import { PartialType } from '@nestjs/mapped-types'
+import { Product } from '@prisma/client'
 import { Type } from 'class-transformer'
 import { IsArray, IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
-import { Product } from '../entities/product.entity'
 
 export class UpdateProductImageDto {
   @Type(() => Boolean)
@@ -109,9 +108,9 @@ export class FindAllProductDto extends PaginationQueryDto {
   @IsOptional()
   sort: keyof Product = 'id'
 
-  @IsEnum(QueryOrder)
+  @IsString()
   @IsOptional()
-  dir: QueryOrder = QueryOrder.ASC
+  dir: 'asc' | 'desc' = 'asc'
 }
 
 export class CreateProductDto {

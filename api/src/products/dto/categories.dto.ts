@@ -1,9 +1,8 @@
 import { PaginationQueryDto } from '@/lib/pagination-query.dto'
 import { Type } from 'class-transformer'
 import { IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
-import { QueryOrder } from '@mikro-orm/core'
-import { Category } from '../entities/category.entity'
 import { PartialType } from '@nestjs/mapped-types'
+import { Category } from '@prisma/client'
 
 export class CreateCategoryDto {
   @Type(() => String)
@@ -73,9 +72,9 @@ export class FindAllCategoryQueryDto extends PaginationQueryDto {
   @IsOptional()
   sort: keyof Category = 'id'
 
-  @IsEnum(QueryOrder)
+  @IsString()
   @IsOptional()
-  dir: QueryOrder = QueryOrder.ASC
+  dir: 'asc' | 'desc' = 'asc'
 }
 
 export class FindOneCategoryQueryDto {

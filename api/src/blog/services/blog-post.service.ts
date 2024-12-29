@@ -1,42 +1,19 @@
-import { EntityRepository } from '@mikro-orm/mariadb'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { Injectable } from '@nestjs/common'
-
-import { StorageService } from '@/storage/services/storage.service'
 import { slugify } from '@/lib/utils'
-
+import { PrismaService } from '@/prisma.service'
+import { Injectable } from '@nestjs/common'
+import { Prisma } from '@prisma/client'
 import { BlogPostCreateDto, BlogPostFindAllDto, BlogPostUpdateDto } from '../dto/blog-post.dto'
-import { BlogPost } from '../entities/blog-post.entity'
-import { BlogTag } from '../entities/blog-tag.entity'
-import { BlogTagService } from './blog-tag.service'
 
 @Injectable()
 export class BlogPostService {
-  constructor(
-    private storageService: StorageService,
-    @InjectRepository(BlogPost)
-    private repository: EntityRepository<BlogPost>,
-    private blogTagService: BlogTagService
-  ) {}
-
-  fieldsWithoutExtraContent = [
-    'id',
-    'title',
-    'alias',
-    'readTime',
-    'status',
-    'createdAt',
-    'updatedAt',
-    'tags',
-    'image'
-  ]
+  constructor(private readonly prismaService: PrismaService) {}
 
   async makeUniqueAlias(from: string, n: number = 0) {
     let alias = slugify(from)
     if (n !== 0) {
       alias = `${alias}-${n}`
     }
-    const record = await this.repository.findOne({ alias })
+    const record = await this.prismaService.blogPost.findUnique({ where: { alias } })
     if (!record) {
       return alias
     } else {
@@ -45,123 +22,126 @@ export class BlogPostService {
   }
 
   async create({ imageId, tags, alias, ...fillable }: BlogPostCreateDto) {
-    const record = new BlogPost()
-
-    this.repository.assign(record, fillable)
-
-    record.alias = await this.makeUniqueAlias(alias || fillable.title)
+    const data: Prisma.BlogPostCreateArgs['data'] = {
+      ...fillable,
+      alias: await this.makeUniqueAlias(alias || fillable.title)
+    }
 
     if (typeof fillable.content !== 'undefined') {
-      record.readTime = String(Math.floor(fillable.content.length / 1000))
+      data.read_time = String(Math.floor(fillable.content.length / 1000))
     }
 
     if (typeof imageId !== 'undefined') {
-      record.image = imageId ? await this.storageService.findOne(imageId) : null
+      data.image = imageId ? { connect: { id: imageId } } : {}
     }
-
-    await this.repository.getEntityManager().persistAndFlush(record)
 
     if (typeof tags !== 'undefined') {
-      await this.setTags(record, tags)
+      data.tags = {
+        create: tags.map((tagId) => ({ blog_tag: { connect: { id: +tagId } } }))
+      }
     }
+
+    const record = await this.prismaService.blogPost.create({ data })
 
     return record
   }
 
   async findAll(dto: BlogPostFindAllDto) {
-    const qb = this.repository.createQueryBuilder('post')
+    const args: Prisma.BlogPostFindManyArgs = {}
 
-    // TODO: найти способ получить список полей автоматически
-    qb.select(this.fieldsWithoutExtraContent)
-
-    qb.leftJoinAndSelect('post.image', 'image')
-    qb.leftJoinAndSelect('post.tags', 'tags')
-
-    if (dto.withExtraContent) {
-      qb.addSelect(['content', 'metadata', 'longTitle'])
+    args.where = {}
+    args.include = {
+      image: true,
+      tags: true
     }
 
     if (dto.query) {
-      qb.andWhere({ title: { $like: '%' + dto.query + '%' } })
+      args.where.title = { contains: dto.query }
+    }
+
+    if (!dto.withExtraContent) {
+      args.omit = { metadata: true, content: true, long_title: true }
     }
 
     if (dto.tags) {
-      qb.andWhere('tags.name in (?)', [dto.tags])
+      args.where.tags = { some: { blog_tag: { name: { in: dto.tags } } } }
     }
 
-    qb.limit(dto.take)
-    qb.offset(dto.skip)
-    qb.orderBy({ [dto.sort]: dto.dir })
+    args.orderBy = { [dto.sort]: dto.dir }
+    args.skip = dto.skip
+    args.take = dto.take
 
-    const [rows, total] = await qb.getResultAndCount()
+    const rows = await this.prismaService.blogPost.findMany(args)
+    const total = await this.prismaService.blogPost.count({ where: args.where })
 
     return { rows, total }
   }
 
   async findOne(id: number) {
-    return this.repository.findOneOrFail({ id }, { populate: ['tags', 'image'] })
+    return this.prismaService.blogPost.findUniqueOrThrow({
+      where: { id },
+      include: { tags: true, image: true }
+    })
   }
 
   async findOneByAlias(alias: string) {
-    return this.repository.findOne({ alias }, { populate: ['tags', 'image'] })
+    return this.prismaService.blogPost.findUniqueOrThrow({
+      where: { alias },
+      include: { tags: true, image: true }
+    })
   }
 
   async update(id: number, { imageId, tags, alias, ...fillable }: BlogPostUpdateDto) {
-    const record = await this.repository.findOneOrFail(id)
+    let record = await this.findOne(id)
 
-    this.repository.assign(record, fillable)
+    const data: Prisma.BlogPostUpdateArgs['data'] = fillable
 
     if (typeof alias !== 'undefined' && alias !== record.alias) {
-      record.alias = await this.makeUniqueAlias(alias || record.title)
+      data.alias = await this.makeUniqueAlias(alias || record.title)
     }
 
     if (typeof fillable.content !== 'undefined') {
-      record.readTime = String(Math.ceil(fillable.content.length / 1000))
+      data.read_time = String(Math.ceil(fillable.content.length / 1000))
     }
 
     if (typeof imageId !== 'undefined') {
-      record.image = imageId ? await this.storageService.findOne(imageId) : null
+      data.image = imageId ? { connect: { id: imageId } } : {}
     }
-
-    await this.repository.getEntityManager().persistAndFlush(record)
 
     if (typeof tags !== 'undefined') {
-      await this.setTags(record, tags)
+      data.tags = {
+        deleteMany: {},
+        create: tags.map((tagId) => ({ blog_tag: { connect: { id: +tagId } } }))
+      }
     }
+
+    record = await this.prismaService.blogPost.update({
+      where: { id },
+      data,
+      include: { tags: true, image: true }
+    })
+
+    return record
   }
 
   async remove(id: number) {
-    const record = await this.repository.findOneOrFail({ id })
-    await this.repository.getEntityManager().removeAndFlush(record)
-  }
+    const record = await this.prismaService.blogPost.delete({ where: { id } })
 
-  async setTags(record: BlogPost, tagNames: string[]) {
-    const tags: BlogTag[] = []
-    for (const tagName of tagNames) {
-      let tag = await this.blogTagService.findOneByName(tagName)
-      if (!tag) {
-        tag = await this.blogTagService.create({ name: tagName })
-      }
-      tags.push(tag)
-    }
-    record.tags.set(tags)
-    await this.repository.getEntityManager().persistAndFlush(record)
+    return record
   }
 
   async findNeighbors(id: number) {
-    const qbTarget = this.repository.createQueryBuilder('a').select('a.createdAt').where({ id })
-    const qbNext = this.repository
-      .createQueryBuilder('b')
-      .select(this.fieldsWithoutExtraContent)
-      .where({ createdAt: { $gt: qbTarget.getKnexQuery() } })
-      .orderBy({ createdAt: 'ASC' })
-      .limit(1)
-    const qbPrevious = this.repository
-      .createQueryBuilder('b')
-      .select(this.fieldsWithoutExtraContent)
-      .where({ createdAt: { $lt: qbTarget.getKnexQuery() } })
-      .orderBy({ createdAt: 'DESC' })
-      .limit(1)
-    return Promise.all([qbPrevious.getSingleResult(), qbNext.getSingleResult()])
+    const target = await this.findOne(id)
+    const prev = this.prismaService.blogPost.findFirst({
+      where: { created_at: { lt: target.created_at } },
+      orderBy: { created_at: 'desc' },
+      omit: { metadata: true, content: true, long_title: true }
+    })
+    const next = this.prismaService.blogPost.findFirst({
+      where: { created_at: { gt: target.created_at } },
+      orderBy: { created_at: 'asc' },
+      omit: { metadata: true, content: true, long_title: true }
+    })
+    return Promise.all([prev, next])
   }
 }

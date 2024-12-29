@@ -15,12 +15,12 @@ model BlogPost {
   alias          String           @unique(map: "blog_post_alias_unique") @db.VarChar(255)
   content        String?          @db.Text
   read_time      String?          @db.VarChar(255)
-  metadata       String?          @db.LongText
-  created_at     DateTime         @db.DateTime(0)
-  updated_at     DateTime         @db.DateTime(0)
+  metadata       Json?
+  created_at     DateTime         @default(now())
+  updated_at     DateTime         @updatedAt
   image_id       Int?             @db.UnsignedInt
   status         BlogPostStatus @default(draft)
-  file           File?            @relation(fields: [image_id], references: [id], map: "blog_post_image_id_foreign")
+  image          File?            @relation(fields: [image_id], references: [id], map: "blog_post_image_id_foreign")
   tags           BlogTagPosts[]
 
   @@map("blog_post")
@@ -31,7 +31,7 @@ model BlogTag {
   id             Int              @id @default(autoincrement()) @db.UnsignedInt
   name           String           @db.VarChar(255)
   alias          String           @unique(map: "blog_tag_alias_unique") @db.VarChar(255)
-  metadata       String?          @db.LongText
+  metadata       Json?
   posts          BlogTagPosts[]
   
   @@map("blog_tag")

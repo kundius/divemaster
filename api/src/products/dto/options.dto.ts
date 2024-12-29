@@ -2,7 +2,7 @@ import { PaginationQueryDto } from '@/lib/pagination-query.dto'
 import { PartialType } from '@nestjs/mapped-types'
 import { Type } from 'class-transformer'
 import { IsArray, IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
-import { $Enums, Option as PrismaOption } from '@prisma/client'
+import { $Enums, Option } from '@prisma/client'
 
 export class CreateOptionDto {
   @Type(() => String)
@@ -37,7 +37,7 @@ export class FindAllOptionDto extends PaginationQueryDto {
   @Type(() => String)
   @IsString()
   @IsOptional()
-  readonly sort: keyof PrismaOption = 'rank'
+  readonly sort: keyof Option = 'rank'
 
   @IsString()
   @IsOptional()

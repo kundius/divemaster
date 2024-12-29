@@ -12,7 +12,6 @@ import {
 
 import { BlogPostCreateDto, BlogPostFindAllDto, BlogPostUpdateDto } from '../dto/blog-post.dto'
 import { BlogPostService } from '../services/blog-post.service'
-import { wrap } from '@mikro-orm/core'
 
 @Controller('blog/post')
 export class BlogPostController {

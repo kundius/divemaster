@@ -6,10 +6,10 @@ import { ConfigService } from '@nestjs/config'
 import { formatPrice, njk } from '@/lib/utils'
 import { NotificationsService } from '@/notifications/services/notifications.service'
 
-import { Order } from '../entities/order.entity'
-import { Payment, PaymentService, PaymentServiceEnum } from '../entities/payment.entity'
 import { UponCashService } from './uponcash.service'
 import { YookassaService } from './yookassa.service'
+import { PaymentService } from '../entities/payment.entity'
+import { $Enums, Order, Payment } from '@prisma/client'
 
 @Injectable()
 export class OrderService {
@@ -17,8 +17,6 @@ export class OrderService {
     private readonly entityManager: EntityManager,
     private notificationsService: NotificationsService,
     private configService: ConfigService,
-    @InjectRepository(Order)
-    private orderRepository: EntityRepository<Order>,
 
     private paymentUponCashService: UponCashService,
     private paymentYookassaService: YookassaService
@@ -33,9 +31,9 @@ export class OrderService {
   // Получение сервиса оплаты
   getPaymentService(payment: Payment): PaymentService {
     switch (payment.service) {
-      case PaymentServiceEnum.UponCash:
+      case $Enums.PaymentService.UponCash:
         return this.paymentUponCashService
-      case PaymentServiceEnum.Yookassa:
+      case $Enums.PaymentService.Yookassa:
         return this.paymentYookassaService
     }
   }

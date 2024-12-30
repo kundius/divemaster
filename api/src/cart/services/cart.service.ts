@@ -1,10 +1,6 @@
 import { EntityManager, EntityRepository, ObjectQuery, QueryOrder, wrap } from '@mikro-orm/mariadb'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { Injectable } from '@nestjs/common'
-import { CartProduct } from '../entities/cart-product.entity'
-import { Cart } from '../entities/cart.entity'
-import { User } from '@/users/entities/user.entity'
-import { Product } from '@/products/entities/product.entity'
 import { ConfigService } from '@nestjs/config'
 import {
   AddProductDto,
@@ -13,59 +9,72 @@ import {
   TemporaryCreateOrderDto,
   UpdateProductDto
 } from '../dto/cart.dto'
-import { Order } from '@/order/entities/order.entity'
-import { OrderProduct } from '@/order/entities/order-product.entity'
 import { content as letterNewToManager } from '@/notifications/templates/order/new-to-manager'
-import { Offer } from '@/products/entities/offer.entity'
-import { v4 } from 'uuid'
-import { Delivery, DeliveryService } from '@/order/entities/delivery.entity'
-import { Payment, PaymentServiceEnum } from '@/order/entities/payment.entity'
 import { LazyModuleLoader } from '@nestjs/core'
 import { OrderService } from '@/order/services/order.service'
 import { PickupPointService } from '@/order/services/pickup-point.service'
-import { PickupPointTypeEnum } from '@/order/entities/pickup-point.entity'
+import { PrismaService } from '@/prisma.service'
+import { v4 } from 'uuid'
+import { $Enums, CartProduct, Offer, User } from '@prisma/client'
+import { pluck } from '@/lib/utils'
+
+type ProductAssessment =
+  | {
+      active: false
+      price: undefined
+      oldPrice: undefined
+    }
+  | {
+      active: true
+      price: number
+      oldPrice?: number
+    }
 
 @Injectable()
 export class CartService {
   constructor(
+    private readonly prismaService: PrismaService,
     private orderService: OrderService,
     private pickupPointService: PickupPointService,
-    private configService: ConfigService,
-    private em: EntityManager,
-    @InjectRepository(Cart)
-    private cartRepository: EntityRepository<Cart>,
-    @InjectRepository(CartProduct)
-    private cartProductRepository: EntityRepository<CartProduct>,
-    @InjectRepository(Product)
-    private productRepository: EntityRepository<Product>
+    private configService: ConfigService
   ) {}
 
   async createCart(user?: User) {
-    if (user && user.cart) {
-      return user.cart
+    if (user) {
+      const cart = await this.prismaService.cart.findUnique({
+        where: { user_id: user.id }
+      })
+      if (cart) {
+        return cart
+      }
     }
 
-    const cart = new Cart()
-    cart.user = user || null
-
-    await this.cartRepository.getEntityManager().persistAndFlush(cart)
+    const cart = await this.prismaService.cart.create({
+      data: {
+        id: v4(),
+        user: user ? { connect: { id: user.id } } : undefined
+      }
+    })
 
     return cart
   }
 
   async authorizeCart(cartId: string, user: User) {
-    const cart = await this.cartRepository.findOneOrFail(cartId)
+    const cart = await this.prismaService.cart.findUniqueOrThrow({
+      where: { id: cartId },
+      include: { user: true }
+    })
 
     if (!cart.user) {
-      cart.user = user
-      await this.cartRepository.getEntityManager().persistAndFlush(cart)
+      await this.prismaService.cart.update({
+        where: { id: cartId },
+        data: { user: { connect: { id: user.id } } }
+      })
     }
   }
 
   async deleteCart(cartId: string) {
-    const cart = await this.cartRepository.findOneOrFail(cartId)
-
-    await this.cartRepository.getEntityManager().removeAndFlush(cart)
+    await this.prismaService.cart.delete({ where: { id: cartId } })
   }
 
   async applyProductAssessment(cartProduct: CartProduct) {
@@ -135,6 +144,83 @@ export class CartService {
     }
   }
 
+  async getCartProductAssessment(cartProductId: string): Promise<ProductAssessment> {
+    const cartProduct = await this.prismaService.cartProduct.findUniqueOrThrow({
+      where: { id: cartProductId },
+      include: {
+        optionValues: {
+          include: { optionValue: true }
+        },
+        product: {
+          include: {
+            offers: {
+              include: {
+                optionValues: {
+                  include: { optionValue: true }
+                }
+              }
+            }
+          }
+        }
+      }
+    })
+    const cartProductOptionValuesIds = cartProduct.optionValues.map((item) => item.optionValue.id)
+
+    // сортируем офферы по количеству опций
+    const sortedOffers = cartProduct.product.offers
+      .sort((a, b) => {
+        if (a.optionValues.length < b.optionValues.length) return -1
+        if (a.optionValues.length > b.optionValues.length) return 1
+        return 0
+      })
+      .reverse()
+    const basicOffer = sortedOffers.find(
+      (offer) => offer.optionValues && offer.optionValues.length === 0
+    )
+    const additionalOffers = sortedOffers.filter(
+      (offer) => offer.optionValues && offer.optionValues.length > 0
+    )
+
+    // Если дополнительных нет, то выбираем базовый независимо от выбранных опций
+    // Если есть дополнительные, то выбираем среди них соответствующий опциям
+    let selectedOffer: Offer | undefined = undefined
+    if (additionalOffers.length === 0) {
+      selectedOffer = basicOffer
+    } else {
+      selectedOffer = additionalOffers.find((offer) => {
+        const offerIds = offer.optionValues
+        return offerIds.every((item) => cartProductOptionValuesIds.includes(item.optionValue.id))
+      })
+    }
+
+    // если торговое предложение не найдено, то позицию в корзине помечаем неактивной,
+    // дальше считать стоимость нет смысла
+    if (!selectedOffer) {
+      return {
+        active: false,
+        price: undefined,
+        oldPrice: undefined
+      }
+    }
+
+    // считаем стоимость позиции с учетом скидок
+    // расчет скидок выполнить здесь
+    let price: number = selectedOffer.price
+    let oldPrice: number | undefined = undefined
+
+    // тут пока так, но с добавлением скидок нужно объединить в старую цену и скидки и статичное снижение стоимости
+    if (cartProduct.product.priceDecrease) {
+      oldPrice =
+        selectedOffer.price * (cartProduct.product.priceDecrease / 100) + selectedOffer.price
+    }
+
+    return {
+      active: true,
+      price,
+      oldPrice
+    }
+  }
+
   async findProducts(cartId: string) {
     const products = await this.cartProductRepository.find(
       {
@@ -154,74 +240,90 @@ export class CartService {
   }
 
   async addProduct(cartId: string, dto: AddProductDto) {
-    const cart = await this.cartRepository.findOneOrFail(cartId)
-    const product = await this.productRepository.findOneOrFail(dto.id)
-    const cartProducts = await this.cartProductRepository.find(
-      { cart, product },
-      { populate: ['optionValues'] }
-    )
+    const cartProducts = await this.prismaService.cartProduct.findMany({
+      where: {
+        cart_id: cartId,
+        product_id: dto.id
+      },
+      include: {
+        optionValues: true
+      }
+    })
 
     // Найти в корзине товар с такими же опциями
-    const cartProduct = cartProducts.find((cartProduct) => {
+    let cartProduct = cartProducts.find((cartProduct) => {
       if (dto.optionValues && dto.optionValues.length) {
-        const identifiers = cartProduct.optionValues.getIdentifiers()
+        const identifiers = cartProduct.optionValues.map((item) => item.option_value_id)
         return dto.optionValues.every((id) => identifiers.includes(id))
       }
-      return cartProduct.optionValues.isEmpty()
+      return cartProduct.optionValues.length === 0
     })
 
     // Увеличить количество, если найден, или добавить новый
     if (cartProduct) {
-      cartProduct.quantity += dto.quantity || 1
-      await this.cartProductRepository.getEntityManager().persistAndFlush(cartProduct)
-    } else {
-      const cartProduct = new CartProduct()
-      this.cartProductRepository.assign(cartProduct, {
-        product,
-        cart,
-        quantity: dto.quantity || 1,
-        optionValues: dto.optionValues || []
+      await this.prismaService.cartProduct.update({
+        where: { id: cartProduct.id },
+        data: { quantity: cartProduct.quantity + (dto.quantity || 1) },
+        include: { optionValues: true }
       })
-      await this.cartProductRepository.getEntityManager().persistAndFlush(cartProduct)
+    } else {
+      await this.prismaService.cartProduct.create({
+        data: {
+          id: v4(),
+          quantity: dto.quantity || 1,
+          cart: { connect: { id: cartId } },
+          product: { connect: { id: dto.id } },
+          optionValues: {
+            create: (dto.optionValues || []).map((id) => ({ optionValue: { connect: { id } } }))
+          }
+        }
+      })
     }
 
     return this.findProducts(cartId)
   }
 
-  async updateProduct(cartId: string, productId: string, dto: UpdateProductDto) {
-    const cartProduct = await this.cartProductRepository.findOneOrFail(productId)
-
+  async updateProduct(cartId: string, cartProductId: string, dto: UpdateProductDto) {
     if (dto.quantity) {
-      cartProduct.quantity = dto.quantity
+      await this.prismaService.cartProduct.update({
+        where: { id: cartProductId },
+        data: { quantity: dto.quantity }
+      })
     }
-
-    await this.cartProductRepository.getEntityManager().persistAndFlush(cartProduct)
 
     return this.findProducts(cartId)
   }
 
-  async deleteProduct(cartId: string, productId: string) {
-    const cartProduct = await this.cartProductRepository.findOneOrFail(productId)
-
-    await this.cartProductRepository.getEntityManager().removeAndFlush(cartProduct)
+  async deleteProduct(cartId: string, cartProductId: string) {
+    await this.prismaService.cartProduct.delete({
+      where: { id: cartProductId }
+    })
 
     return this.findProducts(cartId)
   }
 
   async getOrderCost(cartId: string, dto?: GetOrderCostDto) {
-    const cart = await this.cartRepository.findOneOrFail(cartId, {
-      populate: ['user', 'products']
+    const cart = await this.prismaService.cart.findUniqueOrThrow({
+      where: { id: cartId },
+      include: {
+        user: true,
+        cartProducts: true
+      }
     })
-    await Promise.all(cart.products.map(this.applyProductAssessment.bind(this)))
+
+    let quantity = 0
+    let cost = 0
+    let cartCost = 0
+    for (const cartProduct of cart.cartProducts) {
+      const { price, oldPrice, active } = await this.getCartProductAssessment(cartProduct.id)
+      if (active) {
+        quantity += cartProduct.quantity
+        cost += price * cartProduct.quantity
+        cartCost += (oldPrice || price) * cartProduct.quantity
+      }
+    }
 
     const composition: { caption: string; name: string; value: number }[] = []
-    const quantity = cart.products.reduce((sum, { quantity }) => sum + quantity, 0)
-    let cost = cart.products.reduce((sum, { price = 0, quantity }) => sum + price * quantity, 0)
-
-    const cartCost = cart.products.reduce(
-      (sum, { quantity, price = 0, oldPrice = 0 }) => sum + (oldPrice || price) * quantity,
-      0
-    )
 
     composition.push({
       name: 'goods',
@@ -253,8 +355,8 @@ export class CartService {
     // Стоимость доставки, пока примитивная
     if (dto?.deliveryService) {
       switch (dto.deliveryService) {
-        case DeliveryService.Shipping:
-        case DeliveryService.Pickup:
+        case $Enums.DeliveryService.Shipping:
+        case $Enums.DeliveryService.Pickup:
           console.log('deliveryProperties', dto.deliveryProperties?.pickupPointId)
           let inStore = false
           if (dto.deliveryProperties?.pickupPointId) {
@@ -262,7 +364,7 @@ export class CartService {
               String(dto.deliveryProperties.pickupPointId)
             )
             if (pickupPoint) {
-              inStore = pickupPoint.type === PickupPointTypeEnum.store
+              inStore = pickupPoint.type === $Enums.PickupPointType.store
             }
           }
           if (!inStore && cost < Number(this.configService.get('DELIVERY_FREE_LIMIT', '0'))) {
@@ -283,8 +385,8 @@ export class CartService {
     // Стоимость оплаты, вынести в сервис
     if (dto?.paymentService) {
       switch (dto.paymentService) {
-        case PaymentServiceEnum.UponCash:
-        case PaymentServiceEnum.Yookassa:
+        case $Enums.PaymentService.UponCash:
+        case $Enums.PaymentService.Yookassa:
           break
         default:
           throw new Error(`Non-existent payment service: ${dto.deliveryService}`)
@@ -295,19 +397,9 @@ export class CartService {
   }
 
   async createOrder(cartId: string, dto: CreateOrderDto) {
-    // получить корзину с необходимыми отношениями
-    const cart = await this.cartRepository.findOneOrFail(cartId, {
-      populate: [
-        'user',
-        'products',
-        'products.optionValues',
-        'products.optionValues.option',
-        'products.product'
-      ]
+    const cart = await this.prismaService.cart.findUniqueOrThrow({
+      where: { id: cartId }
     })
-
-    // получить стоимость товаров корзины, понадобится для создания товаров заказа
-    await Promise.all(cart.products.map(this.applyProductAssessment.bind(this)))
 
     // получить стоимость заказа
     const orderCost = await this.getOrderCost(cartId, {
@@ -316,58 +408,80 @@ export class CartService {
       paymentService: dto.paymentService
     })
 
+    // создать заказ
+    const order = await this.prismaService.order.create({
+      data: {
+        hash: v4(),
+        cost: orderCost.cost,
+        composition: orderCost.composition,
+        user: cart.user_id ? { connect: { id: cart.user_id } } : {}
+      }
+    })
+
     // создать оплату
-    const payment = new Payment()
-    payment.service = dto.paymentService
-    this.em.persist(payment)
+    const payment = await this.prismaService.payment.create({
+      data: {
+        service: dto.paymentService,
+        order: { connect: { id: order.id } }
+      }
+    })
 
     // создать доставку
-    const delivery = new Delivery()
-    delivery.service = dto.deliveryService
-    delivery.address = dto.deliveryAddress
-    delivery.recipient = {
-      name: dto.recipientName,
-      email: dto.recipientEmail,
-      phone: dto.recipientPhone
-    }
-    this.em.persist(delivery)
-
-    // создать заказ
-    const order = new Order()
-    order.hash = v4()
-    order.cost = orderCost.cost
-    order.composition = orderCost.composition
-    order.delivery = delivery
-    order.payment = payment
-    order.user = cart.user
-    this.em.persist(order)
+    const delivery = await this.prismaService.delivery.create({
+      data: {
+        service: dto.deliveryService,
+        address: dto.deliveryAddress,
+        recipient: {
+          name: dto.recipientName,
+          email: dto.recipientEmail,
+          phone: dto.recipientPhone
+        },
+        order: { connect: { id: order.id } }
+      }
+    })
 
     // добавить к заказу товары из корзины
-    for (const cartProduct of cart.products) {
-      if (typeof cartProduct.price === 'undefined' || !cartProduct.active) continue
-
-      const options = cartProduct.optionValues.reduce<Record<string, string>>(
-        (options, optionValue) => {
-          return {
-            ...options,
-            [optionValue.option.caption]: optionValue.content
+    const cartProducts = await this.prismaService.cartProduct.findMany({
+      where: { cart: { id: cartId } },
+      include: {
+        product: {
+          select: {
+            id: true,
+            title: true
           }
         },
-        {}
-      )
+        optionValues: {
+          include: {
+            optionValue: {
+              include: { option: true }
+            }
+          }
+        }
+      }
+    })
+    for (const cartProduct of cartProducts) {
+      const productAssessment = await this.getCartProductAssessment(cartProduct.id)
 
-      const orderProduct = new OrderProduct()
-      orderProduct.order = order
-      orderProduct.options = options
-      orderProduct.quantity = cartProduct.quantity
-      orderProduct.price = cartProduct.price
-      orderProduct.title = cartProduct.product.title
-      orderProduct.product = cartProduct.product
-      this.em.persist(orderProduct)
+      if (typeof productAssessment.price === 'undefined' || !productAssessment.active) continue
+
+      const options = cartProduct.optionValues.reduce<Record<string, string>>((options, item) => {
+        return {
+          ...options,
+          [item.optionValue.option.caption]: item.optionValue.content
+        }
+      }, {})
+
+      await this.prismaService.orderProduct.create({
+        data: {
+          order: { connect: { id: order.id } },
+          product: { connect: { id: cartProduct.product.id } },
+          options: options,
+          quantity: cartProduct.quantity,
+          price: productAssessment.price,
+          title: cartProduct.product.title
+        }
+      })
     }
-
-    // записать изменения
-    await this.em.flush()
 
     // получить ссылку на оплату
     await this.orderService.processPayment(payment)
@@ -375,8 +489,10 @@ export class CartService {
     // отправить письмо
     await this.orderService.sendEmails(order)
 
-    return wrap(order).serialize({
-      populate: ['payment', 'delivery']
-    })
+    return {
+      ...order,
+      payment,
+      delivery
+    }
   }
 }

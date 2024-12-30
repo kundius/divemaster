@@ -11,13 +11,14 @@ import { CartProduct } from './entities/cart-product.entity'
 import { Cart } from './entities/cart.entity'
 import { CartService } from './services/cart.service'
 import { OrderModule } from '@/order/order.module'
+import { PrismaService } from '@/prisma.service'
 
 @Module({
   imports: [
     OrderModule,
     MikroOrmModule.forFeature([Cart, CartProduct, Product, Order, OrderProduct, Delivery, Payment])
   ],
-  providers: [CartService],
+  providers: [CartService, PrismaService],
   controllers: [CartController],
   exports: [CartService]
 })

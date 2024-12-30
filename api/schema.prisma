@@ -61,10 +61,10 @@ model Brand {
 model Cart {
   id           String         @id @db.VarChar(36)
   user_id      Int?           @unique(map: "cart_user_id_unique") @db.UnsignedInt
-  created_at   DateTime       @db.DateTime(0)
-  updated_at   DateTime       @db.DateTime(0)
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt
   user         User?          @relation(fields: [user_id], references: [id], map: "cart_user_id_foreign")
-  products     CartProduct[]
+  cartProducts     CartProduct[]
   
   @@map("cart")
 }
@@ -74,8 +74,8 @@ model CartProduct {
   cart_id                    String                       @db.VarChar(36)
   product_id                 Int                          @db.UnsignedInt
   quantity                   Int                          @default(1) @db.UnsignedInt
-  created_at                 DateTime                     @db.DateTime(0)
-  updated_at                 DateTime                     @db.DateTime(0)
+  created_at                 DateTime                     @default(now())
+  updated_at                 DateTime                     @updatedAt
   cart                       Cart                         @relation(fields: [cart_id], references: [id], onDelete: Cascade, map: "cart_product_cart_id_foreign")
   product                    Product                      @relation(fields: [product_id], references: [id], onDelete: Cascade, map: "cart_product_product_id_foreign")
   optionValues               CartProductOptionValues[]
@@ -88,8 +88,8 @@ model CartProduct {
 model CartProductOptionValues {
   cart_product_id String       @db.VarChar(36)
   option_value_id Int          @db.UnsignedInt
-  product         CartProduct @relation(fields: [cart_product_id], references: [id], onDelete: Cascade, map: "cart_product_option_values_cart_product_id_foreign")
-  optionValue     OptionValue @relation(fields: [option_value_id], references: [id], onDelete: Cascade, map: "cart_product_option_values_option_value_id_foreign")
+  cartProduct     CartProduct  @relation(fields: [cart_product_id], references: [id], onDelete: Cascade, map: "cart_product_option_values_cart_product_id_foreign")
+  optionValue     OptionValue  @relation(fields: [option_value_id], references: [id], onDelete: Cascade, map: "cart_product_option_values_option_value_id_foreign")
 
   @@map("cart_product_option_values")
   @@id([cart_product_id, option_value_id])
@@ -160,10 +160,10 @@ model Delivery {
   service      DeliveryService
   delivered    Int?             @db.TinyInt
   address      String           @db.VarChar(255)
-  recipient    String?          @db.LongText
+  recipient    Json?
   order_id     Int              @unique(map: "delivery_order_id_unique") @db.UnsignedInt
-  created_at   DateTime         @db.DateTime(0)
-  delivered_at DateTime         @db.DateTime(0)
+  created_at   DateTime         @default(now())
+  delivered_at DateTime         @updatedAt
   order        Order            @relation(fields: [order_id], references: [id], map: "delivery_order_id_foreign")
 
   @@map("delivery")
@@ -177,8 +177,8 @@ model File {
   type          String          @db.VarChar(255)
   size          Int
   metadata      String?         @db.LongText
-  created_at    DateTime        @db.DateTime(0)
-  updated_at    DateTime        @db.DateTime(0)
+  created_at    DateTime        @default(now())
+  updated_at    DateTime        @updatedAt
   blog_post     BlogPost[]
   category      Category[]
   product_image ProductImage[]
@@ -204,7 +204,7 @@ model OfferOptionValues {
   offer_id        Int          @db.UnsignedInt
   option_value_id Int          @db.UnsignedInt
   offer           Offer        @relation(fields: [offer_id], references: [id], onDelete: Cascade, map: "offer_option_values_offer_id_foreign")
-  option_value    OptionValue  @relation(fields: [option_value_id], references: [id], onDelete: Cascade, map: "offer_option_values_option_value_id_foreign")
+  optionValue     OptionValue  @relation(fields: [option_value_id], references: [id], onDelete: Cascade, map: "offer_option_values_option_value_id_foreign")
 
   @@map("offer_option_values")
   @@id([offer_id, option_value_id])
@@ -231,7 +231,7 @@ model OptionValue {
   option_id                  Int                          @db.UnsignedInt
   product_id                 Int                          @db.UnsignedInt
   rank                       Int                          @default(0)
-  properties                 String?                      @db.LongText
+  properties                 Json?
   cart_product_option_values CartProductOptionValues[]
   offer_option_values        OfferOptionValues[]
   option                     Option                       @relation(fields: [option_id], references: [id], map: "option_value_option_id_foreign")
@@ -246,9 +246,9 @@ model Order {
   id            Int             @id @default(autoincrement()) @db.UnsignedInt
   hash          String          @unique(map: "order_hash_unique") @db.VarChar(255)
   cost          Int             @db.UnsignedInt
-  composition   String?         @db.LongText
+  composition   Json?
   user_id       Int?            @db.UnsignedInt
-  created_at    DateTime        @db.DateTime(0)
+  created_at    DateTime        @default(now())
   delivery      Delivery?
   user          User?           @relation(fields: [user_id], references: [id], map: "order_user_id_foreign")
   products      OrderProduct[]
@@ -265,7 +265,7 @@ model OrderProduct {
   quantity   Int      @db.UnsignedInt
   price      Int      @db.UnsignedInt
   title      String   @db.VarChar(255)
-  options    String?  @db.LongText
+  options    Json?
   order      Order    @relation(fields: [order_id], references: [id], onDelete: Cascade, map: "order_product_order_id_foreign")
   product    Product? @relation(fields: [product_id], references: [id], map: "order_product_product_id_foreign")
 
@@ -281,7 +281,7 @@ model Payment {
   link       String?         @db.VarChar(255)
   remote_id  String?         @db.VarChar(255)
   order_id   Int             @unique(map: "payment_order_id_unique") @db.UnsignedInt
-  created_at DateTime        @db.DateTime(0)
+  created_at DateTime        @default(now())
   paid_at    DateTime?       @db.DateTime(0)
   order      Order           @relation(fields: [order_id], references: [id], map: "payment_order_id_foreign")
 

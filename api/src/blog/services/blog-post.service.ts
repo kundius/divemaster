@@ -52,7 +52,11 @@ export class BlogPostService {
     args.where = {}
     args.include = {
       image: true,
-      tags: true
+      tags: {
+        include: {
+          blog_tag: true
+        }
+      }
     }
 
     if (dto.query) {

@@ -77,73 +77,6 @@ export class CartService {
     await this.prismaService.cart.delete({ where: { id: cartId } })
   }
 
-  async applyProductAssessment(cartProduct: CartProduct) {
-    // TODO
-    // инициализированные здесь отношения не попадают в итоговый результат,
-    // то есть в тот массив, откуда пришел cartProduct
-    // непонятно почему так, надо будет разобраться
-    await wrap(cartProduct).init({
-      populate: ['optionValues', 'product', 'product.offers', 'product.offers.optionValues']
-    })
-
-    const cartProductIds = cartProduct.optionValues.getIdentifiers()
-
-    // сортируем офферы по количеству опций
-    const sortedOffers = cartProduct.product.offers
-      .getItems()
-      .sort((a, b) => {
-        if (a.optionValues.length < b.optionValues.length) return -1
-        if (a.optionValues.length > b.optionValues.length) return 1
-        return 0
-      })
-      .reverse()
-    const basicOffer = sortedOffers.find(
-      (offer) => offer.optionValues && offer.optionValues.length === 0
-    )
-    const additionalOffers = sortedOffers.filter(
-      (offer) => offer.optionValues && offer.optionValues.length > 0
-    )
-
-    // Если дополнительных нет, то выбираем базовый независимо от выбранных опций
-    // Если есть дополнительные, то выбираем среди них соответствующий опциям
-    let selectedOffer: Offer | undefined = undefined
-    if (additionalOffers.length === 0) {
-      selectedOffer = basicOffer
-    } else {
-      selectedOffer = additionalOffers.find((offer) => {
-        const offerIds = offer.optionValues.getIdentifiers()
-        return offerIds.every((id) => cartProductIds.includes(id))
-      })
-    }
-
-    // если торговое предложение не найдено, то позицию в корзине помечаем неактивной,
-    // дальше считать стоимость нет смысла
-    if (!selectedOffer) {
-      this.cartProductRepository.assign(cartProduct, {
-        active: false
-      })
-      return
-    }
-
-    this.cartProductRepository.assign(cartProduct, {
-      active: true
-    })
-
-    // считаем стоимость позиции с учетом скидок
-    // расчет скидок выполнить здесь
-    this.cartProductRepository.assign(cartProduct, {
-      price: selectedOffer.price
-    })
-
-    // тут пока так, но с добавлением скидок нужно объеденить в старую цену и скидки и статичное снижение стоимости
-    if (cartProduct.product.priceDecrease) {
-      this.cartProductRepository.assign(cartProduct, {
-        oldPrice:
-          selectedOffer.price * (cartProduct.product.priceDecrease / 100) + selectedOffer.price
-      })
-    }
-  }
-
   async getCartProductAssessment(cartProductId: string): Promise<ProductAssessment> {
     const cartProduct = await this.prismaService.cartProduct.findUniqueOrThrow({
       where: { id: cartProductId },
@@ -222,21 +155,34 @@ export class CartService {
   }
 
   async findProducts(cartId: string) {
-    const products = await this.cartProductRepository.find(
-      {
-        cart: cartId
+    const products = await this.prismaService.cartProduct.findMany({
+      where: { cart_id: cartId },
+      include: {
+        product: {
+          include: {
+            images: {
+              orderBy: { rank: 'asc' },
+              where: { active: true }
+            }
+          }
+        },
+        optionValues: {
+          include: {
+            optionValue: {
+              include: { option: true }
+            }
+          }
+        }
       },
-      {
-        populate: ['product', 'product.images', 'optionValues', 'optionValues.option'],
-        populateOrderBy: { product: { images: { rank: QueryOrder.ASC } } },
-        populateWhere: { product: { images: { active: true } } },
-        orderBy: { createdAt: 'DESC' }
-      }
+      orderBy: { created_at: 'desc' }
+    })
+
+    return Promise.all(
+      products.map(async (item) => {
+        const assessment = await this.getCartProductAssessment(item.id)
+        return { ...item, ...assessment }
+      })
     )
-
-    await Promise.all(products.map(this.applyProductAssessment.bind(this)))
-
-    return products
   }
 
   async addProduct(cartId: string, dto: AddProductDto) {

@@ -10,9 +10,9 @@ import {
   Query
 } from '@nestjs/common'
 import { CartService } from '../services/cart.service'
-import { User } from '@/users/entities/user.entity'
 import { CurrentUser } from '@/auth/decorators/current-user.decorator'
 import { AddProductDto, CreateOrderDto, GetOrderCostDto, UpdateProductDto } from '../dto/cart.dto'
+import { User } from '@prisma/client'
 
 @Controller('cart')
 export class CartController {

@@ -1,16 +1,11 @@
-import { EntityRepository } from '@mikro-orm/mariadb'
-import { InjectRepository } from '@mikro-orm/nestjs'
+import { PrismaService } from '@/prisma.service'
 import { Injectable } from '@nestjs/common'
-import { File } from '../entities/file.entity'
 
 @Injectable()
 export class FilesService {
-  constructor(
-    @InjectRepository(File)
-    private filesRepository: EntityRepository<File>
-  ) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   async findOne(id: number) {
-    return await this.filesRepository.findOneOrFail({ id })
+    return this.prismaService.file.findUniqueOrThrow({ where: { id } })
   }
 }

@@ -1,9 +1,8 @@
-import { Transform, Type } from 'class-transformer'
-import { IsArray, IsEnum, IsOptional, IsString } from 'class-validator'
 import { PaginationQueryDto } from '@/lib/pagination-query.dto'
-import { Role } from '../entities/role.entity'
-import { FilterQuery, QueryOrder, raw } from '@mikro-orm/core'
 import { PartialType } from '@nestjs/mapped-types'
+import { Role } from '@prisma/client'
+import { Transform, Type } from 'class-transformer'
+import { IsArray, IsOptional, IsString } from 'class-validator'
 
 export class CreateRoleDto {
   @Type(() => String)
@@ -34,7 +33,7 @@ export class FindAllRoleQueryDto extends PaginationQueryDto {
   @IsOptional()
   sort: keyof Role = 'id'
 
-  @IsEnum(QueryOrder)
+  @IsString()
   @IsOptional()
-  dir: QueryOrder = QueryOrder.ASC
+  dir: 'asc' | 'desc' = 'asc'
 }

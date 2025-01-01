@@ -1,6 +1,8 @@
+import { PrismaService } from '@/prisma.service'
 import { BadRequestException, Injectable } from '@nestjs/common'
-import { Payment, PaymentService } from '../entities/payment.entity'
 import { ConfigService } from '@nestjs/config'
+import { Payment } from '@prisma/client'
+import { PaymentService } from './payment.service'
 
 export interface YookassaServiceCheckoutDto {
   type: string
@@ -21,7 +23,10 @@ export interface YookassaServiceCheckoutDto {
 
 @Injectable()
 export class YookassaService implements PaymentService {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly configService: ConfigService
+  ) {}
 
   getAuthorizationHeader() {
     const arr = [
@@ -33,12 +38,17 @@ export class YookassaService implements PaymentService {
   }
 
   async process(payment: Payment) {
+    const order = await this.prismaService.order.findFirstOrThrow({
+      where: {
+        payment: { id: payment.id }
+      }
+    })
     const returnUrl = await this.getSuccessUrl(payment)
 
     const params = {
       // Стоимость заказа
       amount: {
-        value: payment.order.cost,
+        value: order.cost,
         currency: 'RUB'
       },
       // Тип подтверждения от юзера вместе с url возврата
@@ -52,7 +62,7 @@ export class YookassaService implements PaymentService {
       // description: payment.order.cost,
       metadata: {
         paymentId: payment.id,
-        orderId: payment.order.id
+        orderId: order.id
       }
     }
 
@@ -60,7 +70,7 @@ export class YookassaService implements PaymentService {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Idempotence-Key': payment.order.hash,
+        'Idempotence-Key': order.hash,
         Authorization: this.getAuthorizationHeader()
       },
       body: JSON.stringify(params)
@@ -68,8 +78,13 @@ export class YookassaService implements PaymentService {
 
     const data = await response.json()
 
-    payment.link = data.confirmation.confirmation_url
-    payment.remoteId = data.id
+    await this.prismaService.payment.update({
+      where: { id: payment.id },
+      data: {
+        link: data.confirmation.confirmation_url,
+        remote_id: data.id
+      }
+    })
   }
 
   async checkout(payment: Payment, dto: YookassaServiceCheckoutDto) {
@@ -80,33 +95,55 @@ export class YookassaService implements PaymentService {
     }
 
     if (dto.object.status === 'succeeded') {
-      payment.paid = true
-      payment.paidAt = new Date()
+      await this.prismaService.payment.update({
+        where: { id: payment.id },
+        data: {
+          paid: 1,
+          paid_at: new Date()
+        }
+      })
     }
 
     if (dto.object.status === 'canceled') {
-      payment.paid = false
-      payment.paidAt = new Date()
+      await this.prismaService.payment.update({
+        where: { id: payment.id },
+        data: {
+          paid: 0,
+          paid_at: new Date()
+        }
+      })
     }
   }
 
   async getSuccessUrl(payment: Payment) {
-    return `${this.configService.get('app.url')}/order/details/${payment.order.hash}`
+    const order = await this.prismaService.order.findFirstOrThrow({
+      where: {
+        payment: { id: payment.id }
+      }
+    })
+
+    return `${this.configService.get('app.url')}/order/details/${order.hash}`
   }
 
   async getStatus(payment: Payment): Promise<string | null> {
-    if (!payment.remoteId) {
+    if (!payment.remote_id) {
       return null
     }
 
+    const order = await this.prismaService.order.findFirstOrThrow({
+      where: {
+        payment: { id: payment.id }
+      }
+    })
+
     try {
       const response = await fetch(
-        `${this.configService.get('yookassa.endpoint')}payments/${payment.remoteId}`,
+        `${this.configService.get('yookassa.endpoint')}payments/${payment.remote_id}`,
         {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Idempotence-Key': payment.order.hash,
+            'Idempotence-Key': order.hash,
             Authorization: this.getAuthorizationHeader()
           }
         }

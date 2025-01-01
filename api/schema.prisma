@@ -33,7 +33,7 @@ model BlogTag {
   alias          String           @unique(map: "blog_tag_alias_unique") @db.VarChar(255)
   metadata       Json?
   posts          BlogTagPosts[]
-  
+
   @@map("blog_tag")
 }
 
@@ -65,7 +65,7 @@ model Cart {
   updated_at   DateTime       @updatedAt
   user         User?          @relation(fields: [user_id], references: [id], map: "cart_user_id_foreign")
   cartProducts     CartProduct[]
-  
+
   @@map("cart")
 }
 
@@ -317,16 +317,16 @@ model Product {
   id                Int                 @id @default(autoincrement()) @db.UnsignedInt
   remote_id         String?             @db.VarChar(255)
   title             String              @db.VarChar(255)
-  longTitle         String?             @db.VarChar(255)
+  long_title        String?             @db.VarChar(255)
   alias             String              @unique(map: "product_alias_unique") @db.VarChar(255)
   sku               String?             @db.VarChar(255)
   rank              Int                 @default(0)
-  priceDecrease     Int?
+  price_decrease    Int?
   description       String?             @db.Text
   specifications    String?             @db.Text
   exploitation      String?             @db.Text
   active            Boolean             @default(true)
-  inStock           Boolean             @default(true)
+  in_stock          Boolean             @default(true)
   recent            Boolean             @default(false)
   favorite          Boolean             @default(false)
   brand_id          Int?                @db.UnsignedInt
@@ -359,7 +359,7 @@ model ProductImage {
 model Role {
   id    Int     @id @default(autoincrement()) @db.UnsignedInt
   title String  @unique(map: "role_title_unique") @db.VarChar(255)
-  scope String? @db.LongText
+  scope Json?
   user  User[]
 
   @@map("role")

@@ -18,7 +18,7 @@ export class OrderController {
   @Post('checkout/yookassa')
   async checkoutYookassa(@Body() dto: YookassaServiceCheckoutDto) {
     const order = await this.orderService.findOneById(+dto.object.metadata.orderId)
-    if (!order) {
+    if (!order || !order.payment) {
       throw new NotFoundException()
     }
     await this.orderService.checkoutPayment(order.payment, dto)

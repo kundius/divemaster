@@ -1,22 +1,11 @@
-import { EntityManager, EntityRepository, ObjectQuery, QueryOrder, wrap } from '@mikro-orm/mariadb'
-import { InjectRepository } from '@mikro-orm/nestjs'
-import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
-import {
-  AddProductDto,
-  CreateOrderDto,
-  GetOrderCostDto,
-  TemporaryCreateOrderDto,
-  UpdateProductDto
-} from '../dto/cart.dto'
-import { content as letterNewToManager } from '@/notifications/templates/order/new-to-manager'
-import { LazyModuleLoader } from '@nestjs/core'
 import { OrderService } from '@/order/services/order.service'
 import { PickupPointService } from '@/order/services/pickup-point.service'
 import { PrismaService } from '@/prisma.service'
+import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import { $Enums, Offer, User } from '@prisma/client'
 import { v4 } from 'uuid'
-import { $Enums, CartProduct, Offer, User } from '@prisma/client'
-import { pluck } from '@/lib/utils'
+import { AddProductDto, CreateOrderDto, GetOrderCostDto, UpdateProductDto } from '../dto/cart.dto'
 
 type ProductAssessment =
   | {
@@ -138,13 +127,13 @@ export class CartService {
 
     // считаем стоимость позиции с учетом скидок
     // расчет скидок выполнить здесь
-    let price: number = selectedOffer.price
+    const price: number = selectedOffer.price
     let oldPrice: number | undefined = undefined
 
     // тут пока так, но с добавлением скидок нужно объединить в старую цену и скидки и статичное снижение стоимости
-    if (cartProduct.product.priceDecrease) {
+    if (cartProduct.product.price_decrease) {
       oldPrice =
-        selectedOffer.price * (cartProduct.product.priceDecrease / 100) + selectedOffer.price
+        selectedOffer.price * (cartProduct.product.price_decrease / 100) + selectedOffer.price
     }
 
     return {
@@ -197,7 +186,7 @@ export class CartService {
     })
 
     // Найти в корзине товар с такими же опциями
-    let cartProduct = cartProducts.find((cartProduct) => {
+    const cartProduct = cartProducts.find((cartProduct) => {
       if (dto.optionValues && dto.optionValues.length) {
         const identifiers = cartProduct.optionValues.map((item) => item.option_value_id)
         return dto.optionValues.every((id) => identifiers.includes(id))

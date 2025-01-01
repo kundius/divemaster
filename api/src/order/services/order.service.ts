@@ -1,32 +1,22 @@
-import { EntityManager, EntityRepository, wrap } from '@mikro-orm/mariadb'
-import { InjectRepository } from '@mikro-orm/nestjs'
+import { njk } from '@/lib/utils'
+import { NotificationsService } from '@/notifications/services/notifications.service'
+import { PrismaService } from '@/prisma.service'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-
-import { formatPrice, njk } from '@/lib/utils'
-import { NotificationsService } from '@/notifications/services/notifications.service'
-
+import { $Enums, Order, Payment } from '@prisma/client'
+import { PaymentService } from './payment.service'
 import { UponCashService } from './uponcash.service'
 import { YookassaService } from './yookassa.service'
-import { PaymentService } from '../entities/payment.entity'
-import { $Enums, Order, Payment } from '@prisma/client'
 
 @Injectable()
 export class OrderService {
   constructor(
-    private readonly entityManager: EntityManager,
+    private readonly prismaService: PrismaService,
     private notificationsService: NotificationsService,
     private configService: ConfigService,
-
     private paymentUponCashService: UponCashService,
     private paymentYookassaService: YookassaService
   ) {}
-
-  private contextEntityManager: EntityManager | null = null
-
-  getEntityManager() {
-    return this.contextEntityManager || this.entityManager
-  }
 
   // Получение сервиса оплаты
   getPaymentService(payment: Payment): PaymentService {
@@ -39,44 +29,53 @@ export class OrderService {
   }
 
   async findOneByHash(hash: string): Promise<Order | null> {
-    return await this.orderRepository.findOne(
-      { hash },
-      { populate: ['products', 'payment', 'delivery'] }
-    )
+    return this.prismaService.order.findFirst({
+      where: { hash },
+      include: {
+        products: true,
+        payment: true,
+        delivery: true
+      }
+    })
   }
 
-  async findOneById(id: number): Promise<Order | null> {
-    return await this.orderRepository.findOne(
-      { id },
-      { populate: ['products', 'payment', 'delivery'] }
-    )
+  async findOneById(id: number) {
+    return this.prismaService.order.findUnique({
+      where: { id },
+      include: {
+        products: true,
+        payment: true,
+        delivery: true
+      }
+    })
   }
 
   async processPayment(payment: Payment) {
-    await wrap(payment).init({ populate: ['order'] })
-
     const service = this.getPaymentService(payment)
     await service.process(payment)
-    await this.getEntityManager().flush()
   }
 
   async checkoutPayment(payment: Payment, dto: any) {
-    await wrap(payment).init({ populate: ['order'] })
-
     const service = this.getPaymentService(payment)
     await service.checkout(payment, dto)
-    await this.getEntityManager().flush()
   }
 
   async sendEmails(order: Order) {
-    const orderEntity = wrap(order)
-
-    await orderEntity.init({
-      populate: ['products', 'products.product', 'products.product.images', 'payment', 'delivery']
-    })
-
-    const data = orderEntity.serialize({
-      populate: ['products', 'products.product', 'products.product.images', 'payment', 'delivery']
+    const data = await this.prismaService.order.findUniqueOrThrow({
+      where: { id: order.id },
+      include: {
+        payment: true,
+        delivery: true,
+        products: {
+          include: {
+            product: {
+              include: {
+                images: true
+              }
+            }
+          }
+        }
+      }
     })
 
     const emailAdmin = this.configService.get('app.emailAdmin')
@@ -88,7 +87,7 @@ export class OrderService {
       })
     }
 
-    const emailUser = data.delivery.recipient?.['email']
+    const emailUser = data.delivery?.recipient?.['email']
     if (emailUser) {
       await this.notificationsService.sendMail({
         to: emailUser,

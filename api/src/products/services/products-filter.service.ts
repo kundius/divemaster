@@ -86,7 +86,7 @@ export class ProductsFilterService {
         id: product.id,
         title: product.title,
         price: product.offers.map((offer) => offer.price),
-        inStock: product.inStock,
+        inStock: product.in_stock,
         recent: product.recent,
         favorite: product.favorite
       }

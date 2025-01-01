@@ -1,6 +1,5 @@
 import { CurrentUser } from '@/auth/decorators/current-user.decorator'
 import { nanoid } from '@/lib/utils'
-import { User } from '@/users/entities/user.entity'
 import {
   BadRequestException,
   Controller,
@@ -18,6 +17,7 @@ import { Response } from 'express'
 import { diskStorage } from 'multer'
 import { unlink } from 'node:fs/promises'
 import { StorageService } from '../services/storage.service'
+import { User } from '@prisma/client'
 
 @Controller('storage')
 export class StorageController {

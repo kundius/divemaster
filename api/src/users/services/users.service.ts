@@ -1,93 +1,86 @@
+import { PrismaService } from '@/prisma.service'
 import { Injectable } from '@nestjs/common'
-import { verify, hash } from 'argon2'
-import { User } from '../entities/user.entity'
-import { RolesService } from './roles.service'
-import { EntityRepository, FilterQuery } from '@mikro-orm/mariadb'
-import { InjectRepository } from '@mikro-orm/nestjs'
+import { Prisma, User } from '@prisma/client'
+import { hash, verify } from 'argon2'
 import { CreateUserDto, FindAllUserQueryDto, UpdateUserDto } from '../dto/users.dto'
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectRepository(User)
-    private usersRepository: EntityRepository<User>,
-    private rolesService: RolesService
-  ) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   async create({ roleId, password, ...fillable }: CreateUserDto) {
-    const user = new User()
-
-    this.usersRepository.assign(user, fillable)
-
-    user.password = await this.generatePasswordHash(password)
-    user.role = await this.rolesService.findOne(roleId)
-
-    await this.usersRepository.getEntityManager().persistAndFlush(user)
-
+    const user = await this.prismaService.user.create({
+      data: {
+        ...fillable,
+        role_id: roleId,
+        password: await this.generatePasswordHash(password)
+      }
+    })
     return user
   }
 
   findOneByEmail(email: string): Promise<User> {
-    return this.usersRepository.findOneOrFail({ email })
+    return this.prismaService.user.findUniqueOrThrow({ where: { email } })
   }
 
   async findAll(dto: FindAllUserQueryDto) {
-    const qb = this.usersRepository.createQueryBuilder('user')
+    const where: Prisma.UserWhereInput = {}
 
     if (dto.query) {
-      qb.andWhere({
-        $or: [
-          { name: { $like: '%' + dto.query + '%' } },
-          { email: { $like: '%' + dto.query + '%' } }
-        ]
-      })
+      where.OR = [{ name: { contains: dto.query } }, { email: { contains: dto.query } }]
     }
 
     if (dto.roles) {
-      qb.andWhere({ role: { title: { $in: dto.roles } } })
+      where.role = { title: { in: dto.roles } }
     }
 
-    qb.leftJoinAndSelect('user.role', 'role')
-    qb.limit(dto.take)
-    qb.offset(dto.skip)
-    qb.orderBy({ [dto.sort]: dto.dir })
-
-    const [rows, total] = await qb.getResultAndCount()
+    const rows = await this.prismaService.user.findMany({
+      where,
+      orderBy: { [dto.sort]: dto.dir },
+      take: dto.take,
+      skip: dto.skip,
+      include: { role: true }
+    })
+    const total = await this.prismaService.user.count({ where })
 
     return { rows, total }
   }
 
   async findOne(id: number) {
-    return this.usersRepository.findOneOrFail({ id }, { populate: ['role', 'cart'] })
+    return this.prismaService.user.findUniqueOrThrow({
+      where: { id },
+      include: { role: true, cart: true }
+    })
   }
 
   async update(id: number, { roleId, password, ...fillable }: UpdateUserDto) {
-    const user = await this.findOne(id)
-
-    this.usersRepository.assign(user, fillable)
+    const data: Prisma.UserUpdateInput = { ...fillable }
 
     if (typeof roleId !== 'undefined') {
-      user.role = await this.rolesService.findOne(roleId)
-    }
-    if (typeof password !== 'undefined') {
-      user.password = await this.generatePasswordHash(password)
+      data.role = { connect: { id: roleId } }
     }
 
-    await this.usersRepository.getEntityManager().persistAndFlush(user)
+    if (typeof password !== 'undefined') {
+      data.password = await this.generatePasswordHash(password)
+    }
+
+    await this.prismaService.user.update({
+      where: { id },
+      data
+    })
   }
 
   async remove(id: number) {
-    const user = await this.usersRepository.findOneOrFail({ id })
-    await this.usersRepository.getEntityManager().remove(user).flush()
+    await this.prismaService.user.delete({ where: { id } })
   }
 
   async generatePasswordHash(password: string): Promise<string> {
-    return await hash(password)
+    return hash(password)
   }
 
   async checkPasswordHash(password: string, hash: string): Promise<boolean> {
     try {
-      return await verify(hash, password)
+      return verify(hash, password)
     } catch (e) {
       return false
     }

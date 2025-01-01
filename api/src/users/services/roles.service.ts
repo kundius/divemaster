@@ -1,60 +1,59 @@
+import { PrismaService } from '@/prisma.service'
 import { Injectable } from '@nestjs/common'
-import { Role } from '../entities/role.entity'
-import { EntityRepository, FilterQuery, ObjectQuery, raw } from '@mikro-orm/mariadb'
-import { InjectRepository } from '@mikro-orm/nestjs'
+import { Prisma, Role } from '@prisma/client'
 import { CreateRoleDto, FindAllRoleQueryDto, UpdateRoleDto } from '../dto/roles.dto'
 
 @Injectable()
 export class RolesService {
-  constructor(
-    @InjectRepository(Role)
-    private rolesRepository: EntityRepository<Role>
-  ) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
-  async create(createRoleDto: CreateRoleDto): Promise<Role> {
-    const role = new Role()
-    role.title = createRoleDto.title
-    role.scope = createRoleDto.scope
-    await this.rolesRepository.getEntityManager().persistAndFlush(role)
+  async create(dto: CreateRoleDto): Promise<Role> {
+    const role = await this.prismaService.role.create({
+      data: {
+        title: dto.title,
+        scope: dto.scope
+      }
+    })
     return role
   }
 
   async findAll(dto: FindAllRoleQueryDto) {
-    let where: ObjectQuery<Role> = {}
+    const where: Prisma.RoleWhereInput = {}
+
     if (dto.query) {
-      where = {
-        ...where,
-        title: {
-          $like: '%' + dto.query + '%'
-        }
-      }
+      where.title = { contains: dto.query }
     }
+
     if (dto.scope) {
-      where = {
-        ...where,
-        [raw(`JSON_CONTAINS(scope, '${JSON.stringify(dto.scope)}', '$')`)]: 1
+      where.scope = {
+        array_contains: dto.scope
       }
     }
-    const rows = await this.rolesRepository.find(where, {
-      limit: dto.take,
-      offset: dto.skip,
+
+    const rows = await this.prismaService.role.findMany({
+      where,
+      take: dto.take,
+      skip: dto.skip,
       orderBy: { [dto.sort]: dto.dir }
     })
-    return { rows, total: 0 }
+    const total = await this.prismaService.role.count({ where })
+
+    return { rows, total }
   }
 
   async findOne(id: number) {
-    return await this.rolesRepository.findOneOrFail({ id })
+    return this.prismaService.role.findUniqueOrThrow({ where: { id } })
   }
 
   async update(id: number, updateRoleDto: UpdateRoleDto) {
-    const role = await this.rolesRepository.findOneOrFail({ id })
-    this.rolesRepository.assign(role, updateRoleDto)
-    await this.rolesRepository.getEntityManager().persistAndFlush(role)
+    const role = await this.prismaService.role.update({
+      where: { id },
+      data: updateRoleDto
+    })
+    return role
   }
 
   async remove(id: number) {
-    const role = await this.rolesRepository.findOneOrFail({ id })
-    await this.rolesRepository.getEntityManager().remove(role).flush()
+    await this.prismaService.role.delete({ where: { id } })
   }
 }

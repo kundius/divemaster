@@ -1,4 +1,3 @@
-import { EntityManager } from '@mikro-orm/mariadb'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Attachment } from 'nodemailer/lib/mailer'
@@ -14,16 +13,13 @@ interface SendMailArgs {
 
 @Injectable()
 export class NotificationsService {
-  constructor(
-    private readonly em: EntityManager,
-    private readonly configService: ConfigService
-  ) {}
+  constructor(private readonly configService: ConfigService) {}
 
   async sendMail(args: SendMailArgs) {
     if (!this.configService.get('smtp.user')) throw new Error()
 
-    let testAccount = await nodemailer.createTestAccount()
-    let transporter = nodemailer.createTransport({
+    const testAccount = await nodemailer.createTestAccount()
+    const transporter = nodemailer.createTransport({
       host: this.configService.get('smtp.host', 'smtp.ethereal.email'),
       port: this.configService.get('smtp.port', 587),
       secure: this.configService.get('smtp.secure', false),

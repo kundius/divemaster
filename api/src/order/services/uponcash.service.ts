@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common'
-
-import { PaymentService } from '../entities/payment.entity'
+import { PaymentService } from './payment.service'
 
 @Injectable()
 export class UponCashService implements PaymentService {

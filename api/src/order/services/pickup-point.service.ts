@@ -1,14 +1,13 @@
-import { EntityManager, EntityRepository, ObjectQuery } from '@mikro-orm/mariadb'
-import { InjectRepository } from '@mikro-orm/nestjs'
+import { PrismaService } from '@/prisma.service'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Cron, CronExpression } from '@nestjs/schedule'
+import { $Enums, PickupPoint, Prisma } from '@prisma/client'
 import fetch from 'node-fetch'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-
+import { v4 } from 'uuid'
 import { FindAllPickupPointQueryDto } from '../dto/pickup-point.dto'
-import { PickupPoint, PickupPointTypeEnum } from '../entities/pickup-point.entity'
 
 type DataSubjects = {
   district: string
@@ -93,26 +92,24 @@ interface ServicePointsResult {
 @Injectable()
 export class PickupPointService {
   constructor(
-    private readonly em: EntityManager,
-    @InjectRepository(PickupPoint)
-    private pickupPointRepository: EntityRepository<PickupPoint>,
+    private readonly prismaService: PrismaService,
     private configService: ConfigService
   ) {}
 
   async findOne(id: string): Promise<PickupPoint | null> {
-    return await this.pickupPointRepository.findOne(id)
+    return this.prismaService.pickupPoint.findUnique({ where: { id } })
   }
 
   async findAll(dto: FindAllPickupPointQueryDto) {
-    let where: ObjectQuery<PickupPoint> = {}
+    const where: Prisma.PickupPointWhereInput = {}
+
     if (dto.subject) {
-      where = { ...where, subjectName: dto.subject }
+      where.subject_name = { equals: dto.subject }
     }
-    return await this.pickupPointRepository.find(where, {
-      groupBy: 'shortAddress',
-      orderBy: {
-        type: 'DESC'
-      }
+
+    return this.prismaService.pickupPoint.groupBy({
+      where,
+      by: 'short_address'
     })
   }
 
@@ -129,13 +126,11 @@ export class PickupPointService {
     const countryFilter = 'filter[2][type]=eq&filter[2][field]=country&filter[2][value]=28' // только по России
     const activeFilter = 'filter[3][type]=eq&filter[3][field]=state&filter[3][value]=active' // только активные
 
-    this.em.remove(
-      await this.pickupPointRepository.findAll({
-        where: {
-          type: PickupPointTypeEnum.cdek
-        }
-      })
-    )
+    await this.prismaService.pickupPoint.deleteMany({
+      where: {
+        type: $Enums.PickupPointType.cdek
+      }
+    })
 
     let count = 0
     let repeat = 0
@@ -167,17 +162,18 @@ export class PickupPointService {
             continue
           }
 
-          this.em.persist(
-            this.pickupPointRepository.create({
-              type: PickupPointTypeEnum.cdek,
+          await this.prismaService.pickupPoint.create({
+            data: {
+              id: v4(),
+              type: $Enums.PickupPointType.cdek,
 
               // регион из базы регионов
-              districtName: subject.district,
-              subjectName: subject.name,
+              district_name: subject.district,
+              subject_name: subject.name,
 
               // поля города
-              cityType: locality.type.toLowerCase(),
-              cityName: locality.name,
+              city_type: locality.type.toLowerCase(),
+              city_name: locality.name,
 
               // необязательные поля
               email: raw.email,
@@ -185,21 +181,21 @@ export class PickupPointService {
               phone: raw.phone,
 
               // булевые поля
-              allowedCod: raw.allowedCod,
-              haveCash: raw.haveCash,
-              haveCashless: raw.haveCashless,
-              isDressingRoom: raw.isDressingRoom,
-              isReception: raw.isReception,
+              allowed_cod: raw.allowedCod,
+              have_cash: raw.haveCash,
+              have_cashless: raw.haveCashless,
+              is_dressing_room: raw.isDressingRoom,
+              is_reception: raw.isReception,
 
               // остальное
               name: raw.name,
               lat: Number(raw.coordY),
               lon: Number(raw.coordX),
-              fullAddress: raw.fullAddress,
-              shortAddress: raw.address,
-              workTime: raw.workTime
-            })
-          )
+              full_address: raw.fullAddress,
+              short_address: raw.address,
+              work_time: raw.workTime
+            }
+          })
           count++
         }
 
@@ -219,8 +215,6 @@ export class PickupPointService {
     }
 
     await load(`${baseUrl}?${sdekFilter}&${countryFilter}&${activeFilter}`)
-
-    await this.em.flush()
 
     console.log('Добавлено:', count)
   }

@@ -522,7 +522,7 @@ export class ProductsService {
         price: dto.price,
         title: dto.title,
         optionValues: {
-          create: dto.optionValues.map((id) => ({ option_value: { connect: { id } } }))
+          create: dto.optionValues.map((id) => ({ option_value_id: id }))
         }
       }
     })

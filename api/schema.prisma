@@ -1,122 +1,123 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["omitApi"]
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model BlogPost {
-  id             Int              @id @default(autoincrement()) @db.UnsignedInt
-  title          String           @db.VarChar(255)
-  long_title     String?          @db.VarChar(255)
-  alias          String           @unique(map: "blog_post_alias_unique") @db.VarChar(255)
-  content        String?          @db.Text
-  read_time      String?          @db.VarChar(255)
-  metadata       Json?
-  created_at     DateTime         @default(now())
-  updated_at     DateTime         @updatedAt
-  image_id       Int?             @db.UnsignedInt
-  status         BlogPostStatus @default(draft)
-  image          File?            @relation(fields: [image_id], references: [id], map: "blog_post_image_id_foreign")
-  tags           BlogTagPosts[]
+  id         Int            @id @default(autoincrement()) @db.UnsignedInt
+  title      String         @db.VarChar(255)
+  longTitle  String?        @db.VarChar(255)
+  alias      String         @unique(map: "blog_post_alias_unique") @db.VarChar(255)
+  content    String?        @db.Text
+  readTime   String?        @db.VarChar(255)
+  metadata   Json?
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+  image_id   Int?           @db.UnsignedInt
+  status     BlogPostStatus @default(draft)
+  image      File?          @relation(fields: [image_id], references: [id], map: "blog_post_image_id_foreign")
+  tags       BlogTagPosts[]
 
-  @@map("blog_post")
   @@index([image_id], map: "blog_post_image_id_index")
+  @@map("blog_post")
 }
 
 model BlogTag {
-  id             Int              @id @default(autoincrement()) @db.UnsignedInt
-  name           String           @db.VarChar(255)
-  alias          String           @unique(map: "blog_tag_alias_unique") @db.VarChar(255)
-  metadata       Json?
-  posts          BlogTagPosts[]
+  id       Int            @id @default(autoincrement()) @db.UnsignedInt
+  name     String         @db.VarChar(255)
+  alias    String         @unique(map: "blog_tag_alias_unique") @db.VarChar(255)
+  metadata Json?
+  posts    BlogTagPosts[]
 
   @@map("blog_tag")
 }
 
 model BlogTagPosts {
-  blog_tag_id  Int       @db.UnsignedInt
-  blog_post_id Int       @db.UnsignedInt
+  blog_tag_id  Int      @db.UnsignedInt
+  blog_post_id Int      @db.UnsignedInt
   blog_post    BlogPost @relation(fields: [blog_post_id], references: [id], onDelete: Cascade, map: "blog_tag_posts_blog_post_id_foreign")
   blog_tag     BlogTag  @relation(fields: [blog_tag_id], references: [id], onDelete: Cascade, map: "blog_tag_posts_blog_tag_id_foreign")
 
-  @@map("blog_tag_posts")
   @@id([blog_tag_id, blog_post_id])
   @@index([blog_post_id], map: "blog_tag_posts_blog_post_id_index")
   @@index([blog_tag_id], map: "blog_tag_posts_blog_tag_id_index")
+  @@map("blog_tag_posts")
 }
 
 model Brand {
-  id             Int              @id @default(autoincrement()) @db.UnsignedInt
-  remote_id      String?          @db.VarChar(255)
-  title          String           @db.VarChar(255)
-  products       Product[]
+  id        Int       @id @default(autoincrement()) @db.UnsignedInt
+  remote_id String?   @db.VarChar(255)
+  title     String    @db.VarChar(255)
+  products  Product[]
 
   @@map("brand")
 }
 
 model Cart {
-  id           String         @id @db.VarChar(36)
-  user_id      Int?           @unique(map: "cart_user_id_unique") @db.UnsignedInt
-  created_at   DateTime       @default(now())
-  updated_at   DateTime       @updatedAt
-  user         User?          @relation(fields: [user_id], references: [id], map: "cart_user_id_foreign")
-  cartProducts     CartProduct[]
+  id           String        @id @db.VarChar(36)
+  user_id      Int?          @unique(map: "cart_user_id_unique") @db.UnsignedInt
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  user         User?         @relation(fields: [user_id], references: [id], map: "cart_user_id_foreign")
+  cartProducts CartProduct[]
 
   @@map("cart")
 }
 
 model CartProduct {
-  id                         String                       @id @db.VarChar(36)
-  cart_id                    String                       @db.VarChar(36)
-  product_id                 Int                          @db.UnsignedInt
-  quantity                   Int                          @default(1) @db.UnsignedInt
-  created_at                 DateTime                     @default(now())
-  updated_at                 DateTime                     @updatedAt
-  cart                       Cart                         @relation(fields: [cart_id], references: [id], onDelete: Cascade, map: "cart_product_cart_id_foreign")
-  product                    Product                      @relation(fields: [product_id], references: [id], onDelete: Cascade, map: "cart_product_product_id_foreign")
-  optionValues               CartProductOptionValues[]
+  id           String                    @id @db.VarChar(36)
+  cart_id      String                    @db.VarChar(36)
+  product_id   Int                       @db.UnsignedInt
+  quantity     Int                       @default(1) @db.UnsignedInt
+  createdAt    DateTime                  @default(now())
+  updatedAt    DateTime                  @updatedAt
+  cart         Cart                      @relation(fields: [cart_id], references: [id], onDelete: Cascade, map: "cart_product_cart_id_foreign")
+  product      Product                   @relation(fields: [product_id], references: [id], onDelete: Cascade, map: "cart_product_product_id_foreign")
+  optionValues CartProductOptionValues[]
 
-  @@map("cart_product")
   @@index([cart_id], map: "cart_product_cart_id_index")
   @@index([product_id], map: "cart_product_product_id_index")
+  @@map("cart_product")
 }
 
 model CartProductOptionValues {
-  cart_product_id String       @db.VarChar(36)
-  option_value_id Int          @db.UnsignedInt
-  cartProduct     CartProduct  @relation(fields: [cart_product_id], references: [id], onDelete: Cascade, map: "cart_product_option_values_cart_product_id_foreign")
-  optionValue     OptionValue  @relation(fields: [option_value_id], references: [id], onDelete: Cascade, map: "cart_product_option_values_option_value_id_foreign")
+  cart_product_id String      @db.VarChar(36)
+  option_value_id Int         @db.UnsignedInt
+  cartProduct     CartProduct @relation(fields: [cart_product_id], references: [id], onDelete: Cascade, map: "cart_product_option_values_cart_product_id_foreign")
+  optionValue     OptionValue @relation(fields: [option_value_id], references: [id], onDelete: Cascade, map: "cart_product_option_values_option_value_id_foreign")
 
-  @@map("cart_product_option_values")
   @@id([cart_product_id, option_value_id])
   @@index([cart_product_id], map: "cart_product_option_values_cart_product_id_index")
   @@index([option_value_id], map: "cart_product_option_values_option_value_id_index")
+  @@map("cart_product_option_values")
 }
 
 model Category {
-  id                Int                 @id @default(autoincrement()) @db.UnsignedInt
-  remote_id         String?             @db.VarChar(255)
-  title             String              @db.VarChar(255)
-  long_title        String?             @db.VarChar(255)
-  alias             String              @unique(map: "category_alias_unique") @db.VarChar(255)
-  rank              Int                 @default(0)
-  description       String?             @db.Text
-  active            Boolean             @default(true)
-  image_id          Int?                @db.UnsignedInt
-  parent_id         Int?                @db.UnsignedInt
-  image             File?               @relation(fields: [image_id], references: [id], map: "category_image_id_foreign")
-  parent            Category?           @relation("categoryTocategory", fields: [parent_id], references: [id], map: "category_parent_id_foreign")
-  children          Category[]          @relation("categoryTocategory")
-  options           CategoriesOnOptions[]
-  products          CategoryProducts[]
+  id          Int                   @id @default(autoincrement()) @db.UnsignedInt
+  remote_id   String?               @db.VarChar(255)
+  title       String                @db.VarChar(255)
+  longTitle   String?               @db.VarChar(255)
+  alias       String                @unique(map: "category_alias_unique") @db.VarChar(255)
+  rank        Int                   @default(0)
+  description String?               @db.Text
+  active      Boolean               @default(true)
+  image_id    Int?                  @db.UnsignedInt
+  parent_id   Int?                  @db.UnsignedInt
+  image       File?                 @relation(fields: [image_id], references: [id], map: "category_image_id_foreign")
+  parent      Category?             @relation("categoryTocategory", fields: [parent_id], references: [id], map: "category_parent_id_foreign")
+  children    Category[]            @relation("categoryTocategory")
+  options     CategoriesOnOptions[]
+  products    CategoryProducts[]
 
-  @@map("category")
   @@index([image_id], map: "category_image_id_index")
   @@index([parent_id], map: "category_parent_id_index")
+  @@map("category")
 }
 
 model CategoriesOnOptions {
@@ -125,10 +126,10 @@ model CategoriesOnOptions {
   category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade, map: "category_options_category_id_foreign")
   option      Option   @relation(fields: [option_id], references: [id], onDelete: Cascade, map: "category_options_option_id_foreign")
 
-  @@map("category_options")
   @@id([category_id, option_id])
   @@index([category_id], map: "category_options_category_id_index")
   @@index([option_id], map: "category_options_option_id_index")
+  @@map("category_options")
 }
 
 model CategoryProducts {
@@ -137,10 +138,10 @@ model CategoryProducts {
   category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade, map: "category_products_category_id_foreign")
   product     Product  @relation(fields: [product_id], references: [id], onDelete: Cascade, map: "category_products_product_id_foreign")
 
-  @@map("category_products")
   @@id([category_id, product_id])
   @@index([category_id], map: "category_products_category_id_index")
   @@index([product_id], map: "category_products_product_id_index")
+  @@map("category_products")
 }
 
 model City {
@@ -156,29 +157,29 @@ model City {
 }
 
 model Delivery {
-  id           Int              @id @default(autoincrement()) @db.UnsignedInt
+  id           Int             @id @default(autoincrement()) @db.UnsignedInt
   service      DeliveryService
-  delivered    Int?             @db.TinyInt
-  address      String           @db.VarChar(255)
+  delivered    Int?            @db.TinyInt
+  address      String          @db.VarChar(255)
   recipient    Json?
-  order_id     Int              @unique(map: "delivery_order_id_unique") @db.UnsignedInt
-  created_at   DateTime         @default(now())
-  delivered_at DateTime         @updatedAt
-  order        Order            @relation(fields: [order_id], references: [id], map: "delivery_order_id_foreign")
+  order_id     Int             @unique(map: "delivery_order_id_unique") @db.UnsignedInt
+  createdAt    DateTime        @default(now())
+  deliveredAt  DateTime        @updatedAt
+  order        Order           @relation(fields: [order_id], references: [id], map: "delivery_order_id_foreign")
 
   @@map("delivery")
 }
 
 model File {
-  id            Int             @id @default(autoincrement()) @db.UnsignedInt
-  file          String          @db.VarChar(255)
-  path          String          @db.VarChar(255)
-  hash          String          @db.VarChar(255)
-  type          String          @db.VarChar(255)
+  id            Int            @id @default(autoincrement()) @db.UnsignedInt
+  file          String         @db.VarChar(255)
+  path          String         @db.VarChar(255)
+  hash          String         @db.VarChar(255)
+  type          String         @db.VarChar(255)
   size          Int
-  metadata      String?         @db.LongText
-  created_at    DateTime        @default(now())
-  updated_at    DateTime        @updatedAt
+  metadata      String?        @db.LongText
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   blog_post     BlogPost[]
   category      Category[]
   product_image ProductImage[]
@@ -187,75 +188,75 @@ model File {
 }
 
 model Offer {
-  id                  Int                   @id @default(autoincrement()) @db.UnsignedInt
-  remote_id           String?               @db.VarChar(255)
-  title               String?               @db.VarChar(255)
-  price               Int
-  rank                Int                   @default(0)
-  product_id          Int                   @db.UnsignedInt
-  product             Product               @relation(fields: [product_id], references: [id], map: "offer_product_id_foreign")
-  optionValues        OfferOptionValues[]
+  id           Int                 @id @default(autoincrement()) @db.UnsignedInt
+  remote_id    String?             @db.VarChar(255)
+  title        String?             @db.VarChar(255)
+  price        Int
+  rank         Int                 @default(0)
+  product_id   Int                 @db.UnsignedInt
+  product      Product             @relation(fields: [product_id], references: [id], map: "offer_product_id_foreign")
+  optionValues OfferOptionValues[]
 
-  @@map("offer")
   @@index([product_id], map: "offer_product_id_index")
+  @@map("offer")
 }
 
 model OfferOptionValues {
-  offer_id        Int          @db.UnsignedInt
-  option_value_id Int          @db.UnsignedInt
-  offer           Offer        @relation(fields: [offer_id], references: [id], onDelete: Cascade, map: "offer_option_values_offer_id_foreign")
-  optionValue     OptionValue  @relation(fields: [option_value_id], references: [id], onDelete: Cascade, map: "offer_option_values_option_value_id_foreign")
+  offer_id        Int         @db.UnsignedInt
+  option_value_id Int         @db.UnsignedInt
+  offer           Offer       @relation(fields: [offer_id], references: [id], onDelete: Cascade, map: "offer_option_values_offer_id_foreign")
+  optionValue     OptionValue @relation(fields: [option_value_id], references: [id], onDelete: Cascade, map: "offer_option_values_option_value_id_foreign")
 
-  @@map("offer_option_values")
   @@id([offer_id, option_value_id])
   @@index([offer_id], map: "offer_option_values_offer_id_index")
   @@index([option_value_id], map: "offer_option_values_option_value_id_index")
+  @@map("offer_option_values")
 }
 
 model Option {
-  id               Int                @id @default(autoincrement()) @db.UnsignedInt
-  key              String             @unique(map: "option_key_unique") @db.VarChar(255)
-  caption          String             @db.VarChar(255)
-  type             OptionType
-  in_filter        Boolean            @default(false)
-  rank             Int                @default(0)
-  categories       CategoriesOnOptions[]
-  values           OptionValue[]
+  id         Int                   @id @default(autoincrement()) @db.UnsignedInt
+  key        String                @unique(map: "option_key_unique") @db.VarChar(255)
+  caption    String                @db.VarChar(255)
+  type       OptionType
+  inFilter   Boolean               @default(false)
+  rank       Int                   @default(0)
+  categories CategoriesOnOptions[]
+  values     OptionValue[]
 
   @@map("option")
 }
 
 model OptionValue {
-  id                         Int                          @id @default(autoincrement()) @db.UnsignedInt
-  content                    String                       @db.VarChar(255)
-  option_id                  Int                          @db.UnsignedInt
-  product_id                 Int                          @db.UnsignedInt
-  rank                       Int                          @default(0)
+  id                         Int                       @id @default(autoincrement()) @db.UnsignedInt
+  content                    String                    @db.VarChar(255)
+  option_id                  Int                       @db.UnsignedInt
+  product_id                 Int                       @db.UnsignedInt
+  rank                       Int                       @default(0)
   properties                 Json?
   cart_product_option_values CartProductOptionValues[]
   offer_option_values        OfferOptionValues[]
-  option                     Option                       @relation(fields: [option_id], references: [id], map: "option_value_option_id_foreign")
-  product                    Product                      @relation(fields: [product_id], references: [id], map: "option_value_product_id_foreign")
+  option                     Option                    @relation(fields: [option_id], references: [id], map: "option_value_option_id_foreign")
+  product                    Product                   @relation(fields: [product_id], references: [id], map: "option_value_product_id_foreign")
 
-  @@map("option_value")
   @@index([option_id], map: "option_value_option_id_index")
   @@index([product_id], map: "option_value_product_id_index")
+  @@map("option_value")
 }
 
 model Order {
-  id            Int             @id @default(autoincrement()) @db.UnsignedInt
-  hash          String          @unique(map: "order_hash_unique") @db.VarChar(255)
-  cost          Int             @db.UnsignedInt
-  composition   Json?
-  user_id       Int?            @db.UnsignedInt
-  created_at    DateTime        @default(now())
-  delivery      Delivery?
-  user          User?           @relation(fields: [user_id], references: [id], map: "order_user_id_foreign")
-  products      OrderProduct[]
-  payment       Payment?
+  id          Int            @id @default(autoincrement()) @db.UnsignedInt
+  hash        String         @unique(map: "order_hash_unique") @db.VarChar(255)
+  cost        Int            @db.UnsignedInt
+  composition Json?
+  user_id     Int?           @db.UnsignedInt
+  createdAt   DateTime       @default(now())
+  delivery    Delivery?
+  user        User?          @relation(fields: [user_id], references: [id], map: "order_user_id_foreign")
+  products    OrderProduct[]
+  payment     Payment?
 
-  @@map("order")
   @@index([user_id], map: "order_user_id_index")
+  @@map("order")
 }
 
 model OrderProduct {
@@ -269,77 +270,77 @@ model OrderProduct {
   order      Order    @relation(fields: [order_id], references: [id], onDelete: Cascade, map: "order_product_order_id_foreign")
   product    Product? @relation(fields: [product_id], references: [id], map: "order_product_product_id_foreign")
 
-  @@map("order_product")
   @@index([order_id], map: "order_product_order_id_index")
   @@index([product_id], map: "order_product_product_id_index")
+  @@map("order_product")
 }
 
 model Payment {
-  id         Int             @id @default(autoincrement()) @db.UnsignedInt
+  id         Int            @id @default(autoincrement()) @db.UnsignedInt
   service    PaymentService
-  paid       Int?            @db.TinyInt
-  link       String?         @db.VarChar(255)
-  remote_id  String?         @db.VarChar(255)
-  order_id   Int             @unique(map: "payment_order_id_unique") @db.UnsignedInt
-  created_at DateTime        @default(now())
-  paid_at    DateTime?       @db.DateTime(0)
-  order      Order           @relation(fields: [order_id], references: [id], map: "payment_order_id_foreign")
+  paid       Int?           @db.TinyInt
+  link       String?        @db.VarChar(255)
+  remote_id  String?        @db.VarChar(255)
+  order_id   Int            @unique(map: "payment_order_id_unique") @db.UnsignedInt
+  createdAt  DateTime       @default(now())
+  paidAt     DateTime?      @db.DateTime(0)
+  order      Order          @relation(fields: [order_id], references: [id], map: "payment_order_id_foreign")
 
   @@map("payment")
 }
 
 model PickupPoint {
-  id               String            @id @db.VarChar(36)
-  name             String            @db.VarChar(255)
-  district_name    String            @db.VarChar(255)
-  subject_name     String            @db.VarChar(255)
-  city_type        String            @db.VarChar(255)
-  city_name        String            @db.VarChar(255)
-  full_address     String            @db.VarChar(255)
-  short_address    String            @db.VarChar(255)
-  phone            String?           @db.VarChar(255)
-  email            String?           @db.VarChar(255)
-  work_time        String            @db.VarChar(255)
-  lat              Float             @db.Float
-  lon              Float             @db.Float
-  note             String?           @db.VarChar(255)
-  is_reception     Boolean           @default(false)
-  is_dressing_room Boolean           @default(false)
-  allowed_cod      Boolean           @default(false)
-  have_cash        Boolean           @default(false)
-  have_cashless    Boolean           @default(false)
+  id               String          @id @db.VarChar(36)
+  name             String          @db.VarChar(255)
+  districtName     String          @db.VarChar(255)
+  subjectName      String          @db.VarChar(255)
+  cityType         String          @db.VarChar(255)
+  cityName         String          @db.VarChar(255)
+  fullAddress      String          @db.VarChar(255)
+  shortAddress     String          @db.VarChar(255)
+  phone            String?         @db.VarChar(255)
+  email            String?         @db.VarChar(255)
+  workTime         String          @db.VarChar(255)
+  lat              Float           @db.Float
+  lon              Float           @db.Float
+  note             String?         @db.VarChar(255)
+  isReception      Boolean         @default(false)
+  isDressingRoom   Boolean         @default(false)
+  allowedCod       Boolean         @default(false)
+  haveCash         Boolean         @default(false)
+  haveCashless     Boolean         @default(false)
   type             PickupPointType
 
   @@map("pickup_point")
 }
 
 model Product {
-  id                Int                 @id @default(autoincrement()) @db.UnsignedInt
-  remote_id         String?             @db.VarChar(255)
-  title             String              @db.VarChar(255)
-  long_title        String?             @db.VarChar(255)
-  alias             String              @unique(map: "product_alias_unique") @db.VarChar(255)
-  sku               String?             @db.VarChar(255)
-  rank              Int                 @default(0)
-  price_decrease    Int?
-  description       String?             @db.Text
-  specifications    String?             @db.Text
-  exploitation      String?             @db.Text
-  active            Boolean             @default(true)
-  in_stock          Boolean             @default(true)
-  recent            Boolean             @default(false)
-  favorite          Boolean             @default(false)
-  brand_id          Int?                @db.UnsignedInt
-  carts             CartProduct[]
-  categories        CategoryProducts[]
-  offers            Offer[]
-  optionValues      OptionValue[]
-  orders            OrderProduct[]
-  brand             Brand?              @relation(fields: [brand_id], references: [id], map: "product_brand_id_foreign")
-  images            ProductImage[]
+  id             Int                @id @default(autoincrement()) @db.UnsignedInt
+  remote_id      String?            @db.VarChar(255)
+  title          String             @db.VarChar(255)
+  longTitle      String?            @db.VarChar(255)
+  alias          String             @unique(map: "product_alias_unique") @db.VarChar(255)
+  sku            String?            @db.VarChar(255)
+  rank           Int                @default(0)
+  priceDecrease  Int?
+  description    String?            @db.Text
+  specifications String?            @db.Text
+  exploitation   String?            @db.Text
+  active         Boolean            @default(true)
+  inStock        Boolean            @default(true)
+  recent         Boolean            @default(false)
+  favorite       Boolean            @default(false)
+  brand_id       Int?               @db.UnsignedInt
+  carts          CartProduct[]
+  categories     CategoryProducts[]
+  offers         Offer[]
+  optionValues   OptionValue[]
+  orders         OrderProduct[]
+  brand          Brand?             @relation(fields: [brand_id], references: [id], map: "product_brand_id_foreign")
+  images         ProductImage[]
 
-  @@map("product")
   @@index([brand_id], map: "product_brand_id_index")
+  @@map("product")
 }
 
 model ProductImage {
@@ -350,15 +351,15 @@ model ProductImage {
   file       File    @relation(fields: [file_id], references: [id], map: "product_image_file_id_foreign")
   product    Product @relation(fields: [product_id], references: [id], map: "product_image_product_id_foreign")
 
-  @@map("product_image")
   @@id([file_id, product_id])
   @@index([file_id], map: "product_image_file_id_index")
   @@index([product_id], map: "product_image_product_id_index")
+  @@map("product_image")
 }
 
 model Role {
-  id    Int     @id @default(autoincrement()) @db.UnsignedInt
-  title String  @unique(map: "role_title_unique") @db.VarChar(255)
+  id    Int    @id @default(autoincrement()) @db.UnsignedInt
+  title String @unique(map: "role_title_unique") @db.VarChar(255)
   scope Json?
   user  User[]
 
@@ -377,8 +378,8 @@ model User {
   order    Order[]
   role     Role    @relation(fields: [role_id], references: [id], map: "user_role_id_foreign")
 
-  @@map("user")
   @@index([role_id], map: "user_role_id_index")
+  @@map("user")
 }
 
 enum DeliveryService {

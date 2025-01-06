@@ -31,7 +31,7 @@ export class CartService {
   async createCart(user?: User) {
     if (user) {
       const cart = await this.prismaService.cart.findUnique({
-        where: { user_id: user.id }
+        where: { userId: user.id }
       })
       if (cart) {
         return cart
@@ -131,9 +131,9 @@ export class CartService {
     let oldPrice: number | undefined = undefined
 
     // тут пока так, но с добавлением скидок нужно объединить в старую цену и скидки и статичное снижение стоимости
-    if (cartProduct.product.price_decrease) {
+    if (cartProduct.product.priceDecrease) {
       oldPrice =
-        selectedOffer.price * (cartProduct.product.price_decrease / 100) + selectedOffer.price
+        selectedOffer.price * (cartProduct.product.priceDecrease / 100) + selectedOffer.price
     }
 
     return {
@@ -145,7 +145,7 @@ export class CartService {
 
   async findProducts(cartId: string) {
     const products = await this.prismaService.cartProduct.findMany({
-      where: { cart_id: cartId },
+      where: { cartId },
       include: {
         product: {
           include: {
@@ -163,7 +163,7 @@ export class CartService {
           }
         }
       },
-      orderBy: { created_at: 'desc' }
+      orderBy: { createdAt: 'desc' }
     })
 
     return Promise.all(
@@ -177,8 +177,8 @@ export class CartService {
   async addProduct(cartId: string, dto: AddProductDto) {
     const cartProducts = await this.prismaService.cartProduct.findMany({
       where: {
-        cart_id: cartId,
-        product_id: dto.id
+        cartId,
+        productId: dto.id
       },
       include: {
         optionValues: true
@@ -188,7 +188,7 @@ export class CartService {
     // Найти в корзине товар с такими же опциями
     const cartProduct = cartProducts.find((cartProduct) => {
       if (dto.optionValues && dto.optionValues.length) {
-        const identifiers = cartProduct.optionValues.map((item) => item.option_value_id)
+        const identifiers = cartProduct.optionValues.map((item) => item.optionValueId)
         return dto.optionValues.every((id) => identifiers.includes(id))
       }
       return cartProduct.optionValues.length === 0
@@ -349,7 +349,7 @@ export class CartService {
         hash: v4(),
         cost: orderCost.cost,
         composition: orderCost.composition,
-        user: cart.user_id ? { connect: { id: cart.user_id } } : {}
+        user: cart.userId ? { connect: { id: cart.userId } } : {}
       }
     })
 

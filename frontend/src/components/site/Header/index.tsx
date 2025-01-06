@@ -15,6 +15,7 @@ import { TopMenu } from './TopMenu'
 import styles from './index.module.scss'
 import { SecondaryContainer } from './SecondaryContainer'
 import { LoginDialog } from '@/components/LoginDialog'
+import { Garland } from './Garland'
 
 export function Header() {
   return (
@@ -103,6 +104,7 @@ export function Header() {
         </Container>
       </div>
       <Sticky>
+        <Garland />
         <Container>
           <div className={styles['primary-container']} data-header-primary="">
             <div className={styles.logo}>

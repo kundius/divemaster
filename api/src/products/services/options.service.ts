@@ -57,7 +57,7 @@ export class OptionsService {
 
   async findAllCategories(optionId: number, query?: FindAllOptionCategoriesDto) {
     const categories = await this.prismaService.category.findMany({
-      where: { options: { some: { option_id: optionId } } }
+      where: { options: { some: { optionId } } }
     })
     return categories
   }

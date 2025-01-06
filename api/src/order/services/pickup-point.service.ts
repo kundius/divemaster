@@ -104,12 +104,12 @@ export class PickupPointService {
     const where: Prisma.PickupPointWhereInput = {}
 
     if (dto.subject) {
-      where.subject_name = { equals: dto.subject }
+      where.subjectName = { equals: dto.subject }
     }
 
     return this.prismaService.pickupPoint.groupBy({
       where,
-      by: 'short_address'
+      by: 'shortAddress'
     })
   }
 
@@ -168,12 +168,12 @@ export class PickupPointService {
               type: $Enums.PickupPointType.cdek,
 
               // регион из базы регионов
-              district_name: subject.district,
-              subject_name: subject.name,
+              districtName: subject.district,
+              subjectName: subject.name,
 
               // поля города
-              city_type: locality.type.toLowerCase(),
-              city_name: locality.name,
+              cityType: locality.type.toLowerCase(),
+              cityName: locality.name,
 
               // необязательные поля
               email: raw.email,
@@ -181,19 +181,19 @@ export class PickupPointService {
               phone: raw.phone,
 
               // булевые поля
-              allowed_cod: raw.allowedCod,
-              have_cash: raw.haveCash,
-              have_cashless: raw.haveCashless,
-              is_dressing_room: raw.isDressingRoom,
-              is_reception: raw.isReception,
+              allowedCod: raw.allowedCod,
+              haveCash: raw.haveCash,
+              haveCashless: raw.haveCashless,
+              isDressingRoom: raw.isDressingRoom,
+              isReception: raw.isReception,
 
               // остальное
               name: raw.name,
               lat: Number(raw.coordY),
               lon: Number(raw.coordX),
-              full_address: raw.fullAddress,
-              short_address: raw.address,
-              work_time: raw.workTime
+              fullAddress: raw.fullAddress,
+              shortAddress: raw.address,
+              workTime: raw.workTime
             }
           })
           count++

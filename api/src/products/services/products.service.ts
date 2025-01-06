@@ -115,7 +115,7 @@ export class ProductsService {
       // товары выбираются без учета подкатегорий
       args.where.categories = {
         some: {
-          category_id: dto.category
+          categoryId: dto.category
         }
       }
     }
@@ -299,7 +299,7 @@ export class ProductsService {
 
   async findOneProductImage(productId: number, fileId: number) {
     const productImage = await this.prismaService.productImage.findUniqueOrThrow({
-      where: { file_id_product_id: { product_id: productId, file_id: fileId } }
+      where: { fileId_productId: { productId: productId, fileId: fileId } }
     })
     return productImage
   }
@@ -310,7 +310,7 @@ export class ProductsService {
     { ...fillable }: UpdateProductImageDto
   ) {
     const productImage = await this.prismaService.productImage.update({
-      where: { file_id_product_id: { product_id: productId, file_id: fileId } },
+      where: { fileId_productId: { productId: productId, fileId: fileId } },
       data: { ...fillable }
     })
     return productImage
@@ -319,7 +319,7 @@ export class ProductsService {
   async sortProductImage(productId: number, { files }: SortProductImageDto) {
     for (const fileId of Object.keys(files)) {
       await this.prismaService.productImage.update({
-        where: { file_id_product_id: { product_id: productId, file_id: +fileId } },
+        where: { fileId_productId: { productId: productId, fileId: +fileId } },
         data: { rank: files[fileId] }
       })
     }
@@ -327,7 +327,7 @@ export class ProductsService {
 
   async removeProductImage(productId: number, fileId: number) {
     const productImage = await this.prismaService.productImage.delete({
-      where: { file_id_product_id: { file_id: fileId, product_id: productId } }
+      where: { fileId_productId: { fileId: fileId, productId: productId } }
     })
     return productImage
   }
@@ -346,7 +346,7 @@ export class ProductsService {
       data: {
         categories: {
           set: categories.map((categoryId) => ({
-            category_id_product_id: { category_id: +categoryId, product_id: productId }
+            categoryId_productId: { categoryId: +categoryId, productId: productId }
           }))
         }
       }
@@ -356,11 +356,11 @@ export class ProductsService {
 
   async findProductOptions(productId: number) {
     const categories = await this.prismaService.category.findMany({
-      where: { products: { some: { product_id: productId } } }
+      where: { products: { some: { productId: productId } } }
     })
     const categoryIds = categories.map((category) => category.id) || []
     const options = await this.prismaService.option.findMany({
-      where: { categories: { some: { category_id: { in: categoryIds } } } },
+      where: { categories: { some: { categoryId: { in: categoryIds } } } },
       orderBy: { rank: 'asc' }
     })
     return options
@@ -509,7 +509,7 @@ export class ProductsService {
     })
     const existOffer = currentOffers.find(
       (currentOffer) =>
-        JSON.stringify(pluck(currentOffer.optionValues, 'option_value_id').sort()) ===
+        JSON.stringify(pluck(currentOffer.optionValues, 'optionValueId').sort()) ===
         JSON.stringify(dto.optionValues.sort())
     )
     if (existOffer) {
@@ -522,7 +522,7 @@ export class ProductsService {
         price: dto.price,
         title: dto.title,
         optionValues: {
-          create: dto.optionValues.map((id) => ({ option_value_id: id }))
+          create: dto.optionValues.map((id) => ({ optionValueId: id }))
         }
       }
     })
@@ -546,7 +546,7 @@ export class ProductsService {
     })
     const existOffer = currentOffers.find(
       (currentOffer) =>
-        JSON.stringify(pluck(currentOffer.optionValues, 'option_value_id').sort()) ===
+        JSON.stringify(pluck(currentOffer.optionValues, 'optionValueId').sort()) ===
         JSON.stringify(dto.optionValues.sort())
     )
     if (existOffer) {
@@ -560,7 +560,7 @@ export class ProductsService {
         title: dto.title,
         optionValues: {
           set: dto.optionValues.map((id) => ({
-            offer_id_option_value_id: { offer_id: id, option_value_id: id }
+            offerId_optionValueId: { offerId: id, optionValueId: id }
           }))
         }
       }
@@ -621,7 +621,7 @@ export class ProductsService {
           for (const group of data) {
             const localAlias = slugify(group['Наименование'])
             const localData: Prisma.CategoryCreateArgs['data'] = {
-              remote_id: group['Ид'],
+              remoteId: group['Ид'],
               title: group['Наименование'],
               alias: parent ? `${parent.alias}-${localAlias}` : localAlias,
               active: true,
@@ -635,7 +635,7 @@ export class ProductsService {
             }
 
             let localCategory = await this.prismaService.category.findFirst({
-              where: { remote_id: group['Ид'] }
+              where: { remoteId: group['Ид'] }
             })
             if (localCategory) {
               localCategory = await this.prismaService.category.update({
@@ -700,11 +700,11 @@ export class ProductsService {
 
           for (const itemBrand of itemProperty['ВариантыЗначений']['Справочник']) {
             const brandData: Prisma.BrandCreateArgs['data'] = {
-              remote_id: itemBrand['ИдЗначения'],
+              remoteId: itemBrand['ИдЗначения'],
               title: itemBrand['Значение']
             }
             let brand = await this.prismaService.brand.findFirst({
-              where: { remote_id: itemBrand['ИдЗначения'] }
+              where: { remoteId: itemBrand['ИдЗначения'] }
             })
             if (!brand) {
               brand = await this.prismaService.brand.create({ data: brandData })
@@ -744,7 +744,7 @@ export class ProductsService {
             caption: caption,
             key: slugify(caption),
             rank: 2,
-            in_filter: true,
+            inFilter: true,
             type: $Enums.OptionType.combo_options
           }
 
@@ -762,7 +762,7 @@ export class ProductsService {
 
           // добавляем категории товара в категории опции
           const productCategories = await this.prismaService.category.findMany({
-            where: { products: { some: { product_id: product.id } } }
+            where: { products: { some: { productId: product.id } } }
           })
           for (const productCategory of productCategories) {
             // TODO_PRISMA: тут скорее всегонеправильно connectOrCreate описан
@@ -772,13 +772,13 @@ export class ProductsService {
                 categories: {
                   connectOrCreate: {
                     where: {
-                      category_id_option_id: {
-                        category_id: productCategory.id,
-                        option_id: option.id
+                      categoryId_optionId: {
+                        categoryId: productCategory.id,
+                        optionId: option.id
                       }
                     },
                     create: {
-                      category_id: productCategory.id
+                      categoryId: productCategory.id
                     }
                   }
                 }
@@ -835,7 +835,7 @@ export class ProductsService {
           i++
 
           const productData: Prisma.ProductCreateArgs['data'] = {
-            remote_id: itemProduct['Ид'],
+            remoteId: itemProduct['Ид'],
             sku: itemProduct['Артикул'],
             alias: slugify(itemProduct['Наименование']),
             title: itemProduct['Наименование'],
@@ -843,7 +843,7 @@ export class ProductsService {
           }
 
           let product = await this.prismaService.product.findFirst({
-            where: { remote_id: itemProduct['Ид'] }
+            where: { remoteId: itemProduct['Ид'] }
           })
 
           if (!product) {
@@ -867,13 +867,13 @@ export class ProductsService {
 
           // удаляем все файлы, загружаем новые
           const productImages = await this.prismaService.productImage.findMany({
-            where: { product_id: product.id },
+            where: { productId: product.id },
             include: { file: true }
           })
           for (const productImage of productImages) {
             await this.prismaService.productImage.delete({
               where: {
-                file_id_product_id: { file_id: productImage.file.id, product_id: product.id }
+                fileId_productId: { fileId: productImage.file.id, productId: product.id }
               }
             })
             await this.storageService.remove(productImage.file.id)
@@ -906,7 +906,7 @@ export class ProductsService {
               data: {
                 categories: {
                   set: itemProductGroups.map((categoryId) => ({
-                    category_id_product_id: { category_id: +categoryId, product_id: productId }
+                    categoryId_productId: { categoryId: +categoryId, productId: productId }
                   }))
                 }
               }
@@ -935,7 +935,7 @@ export class ProductsService {
                       caption: 'Цвет',
                       key: 'color',
                       rank: 0,
-                      in_filter: true,
+                      inFilter: true,
                       type: $Enums.OptionType.combo_colors
                     }
                   })
@@ -944,14 +944,14 @@ export class ProductsService {
                 // добавляем категории товара в категории опции
                 const optionId = option.id
                 const productCategories = await this.prismaService.category.findMany({
-                  where: { products: { some: { product_id: product.id } } }
+                  where: { products: { some: { productId: product.id } } }
                 })
                 await this.prismaService.option.update({
                   where: { id: optionId },
                   data: {
                     categories: {
                       set: productCategories.map((categoryId) => ({
-                        category_id_option_id: { category_id: +categoryId, option_id: optionId }
+                        categoryId_optionId: { categoryId: +categoryId, optionId: optionId }
                       }))
                     }
                   }
@@ -999,7 +999,7 @@ export class ProductsService {
                       caption: 'Материал',
                       key: 'material',
                       rank: 1,
-                      in_filter: true,
+                      inFilter: true,
                       type: $Enums.OptionType.combo_options
                     }
                   })
@@ -1008,14 +1008,14 @@ export class ProductsService {
                 // добавляем категории товара в категории опции
                 const optionId = option.id
                 const productCategories = await this.prismaService.category.findMany({
-                  where: { products: { some: { product_id: product.id } } }
+                  where: { products: { some: { productId: product.id } } }
                 })
                 await this.prismaService.option.update({
                   where: { id: optionId },
                   data: {
                     categories: {
                       set: productCategories.map((categoryId) => ({
-                        category_id_option_id: { category_id: +categoryId, option_id: optionId }
+                        categoryId_optionId: { categoryId: +categoryId, optionId: optionId }
                       }))
                     }
                   }
@@ -1067,14 +1067,14 @@ export class ProductsService {
             if (!item?.['Цены']?.['Цена']?.['ЦенаЗаЕдиницу']) continue
 
             const offerData: Prisma.OfferCreateArgs['data'] = {
-              remote_id: item['Ид'],
+              remoteId: item['Ид'],
               title: item['Наименование'],
               price: item['Цены']['Цена']['ЦенаЗаЕдиницу'],
               product: { connect: { id: product.id } }
             }
 
             let offer = await this.prismaService.offer.findFirst({
-              where: { remote_id: item['Ид'] }
+              where: { remoteId: item['Ид'] }
             })
             if (!offer) {
               offer = await this.prismaService.offer.create({ data: offerData })
@@ -1112,12 +1112,12 @@ export class ProductsService {
                     optionValues: {
                       connectOrCreate: {
                         create: {
-                          option_value_id: optionValue.id
+                          optionValueId: optionValue.id
                         },
                         where: {
-                          offer_id_option_value_id: {
-                            offer_id: offer.id,
-                            option_value_id: optionValue.id
+                          offerId_optionValueId: {
+                            offerId: offer.id,
+                            optionValueId: optionValue.id
                           }
                         }
                       }
@@ -1131,7 +1131,7 @@ export class ProductsService {
           // удаляем торговые предложения, отсутствующие в выгрузке
           await this.prismaService.offer.deleteMany({
             where: {
-              remote_id: { notIn: productOfferIds },
+              remoteId: { notIn: productOfferIds },
               product: { id: product.id }
             }
           })
@@ -1150,7 +1150,7 @@ export class ProductsService {
       const updateCategoryImage = async () => {
         for (const category of Object.values(categories)) {
           const firstProduct = await this.prismaService.product.findFirst({
-            where: { categories: { some: { category_id: category.id } } },
+            where: { categories: { some: { categoryId: category.id } } },
             include: { images: true }
           })
           if (firstProduct) {
@@ -1158,7 +1158,7 @@ export class ProductsService {
             if (image) {
               await this.prismaService.category.update({
                 where: { id: category.id },
-                data: { image: { connect: { id: image.file_id } } }
+                data: { image: { connect: { id: image.fileId } } }
               })
             }
           }
@@ -1168,7 +1168,7 @@ export class ProductsService {
       const updateCategoryActivity = async () => {
         for (const category of Object.values(categories)) {
           const productsCount = await this.prismaService.product.count({
-            where: { categories: { some: { category_id: category.id } } }
+            where: { categories: { some: { categoryId: category.id } } }
           })
           let active = true
           if (productsCount === 0) {

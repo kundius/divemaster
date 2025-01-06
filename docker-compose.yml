@@ -1,6 +1,6 @@
 version: "3.9"
 services:
-  mariadb:
+  db:
     image: mariadb:${MARIADB_VERSION:-11.4.3}
     environment:
       - MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=yes
@@ -9,26 +9,20 @@ services:
       - MARIADB_PASSWORD=${MARIADB_PASSWORD:-divemaster}
       - TZ=${TZ:-Europe/Moscow}
     volumes:
-      - ./docker/mariadb:/var/lib/mysql
+      - ./docker/db:/var/lib/mysql
     restart: unless-stopped
 
-  shadow:
+  shadowdb:
     image: mariadb:${MARIADB_VERSION:-11.4.3}
     environment:
       - MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=yes
-      - MARIADB_DATABASE=${MARIADB_DATABASE:-shadow}
-      - MARIADB_USER=${MARIADB_USERNAME:-shadow}
-      - MARIADB_PASSWORD=${MARIADB_PASSWORD:-shadow}
+      - MARIADB_DATABASE=${MARIADB_DATABASE:-divemaster}
+      - MARIADB_USER=${MARIADB_USERNAME:-divemaster}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD:-divemaster}
       - TZ=${TZ:-Europe/Moscow}
     volumes:
-      - ./docker/shadow:/var/lib/mysql
+      - ./docker/shadowdb:/var/lib/mysql
     restart: unless-stopped
-
-  adminer:
-    image: adminer
-    restart: unless-stopped
-    ports:
-      - ${ADMINER_PORT:-8070}:8080
 
   nginx:
     image: nginx:${NGINX_VERSION:-1.25}
@@ -47,7 +41,7 @@ services:
       - ${NGINX_HOST:-127.0.0.1}:${NGINX_API_PORT:-8090}:${NGINX_API_PORT:-8090}
     restart: unless-stopped
     depends_on:
-      - mariadb
+      - db
 
   api:
     image: node:${NODE_VERSION:-21}
@@ -55,7 +49,7 @@ services:
       - ./frontend:/divemaster/frontend
       - ./api:/divemaster/api
     depends_on:
-      - mariadb
+      - db
     environment:
       - TZ=${TZ:-Europe/Moscow}
     network_mode: "service:nginx"

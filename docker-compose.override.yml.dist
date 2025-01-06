@@ -1,10 +1,13 @@
 version: '3.9'
 services:
 
-  mariadb:
+  db:
     restart: no
     ports:
       - ${MARIADB_PORT:-3333}:3306
+
+  shadowdb:
+    restart: no
 
   nginx:
     restart: no

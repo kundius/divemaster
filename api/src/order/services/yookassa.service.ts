@@ -82,7 +82,7 @@ export class YookassaService implements PaymentService {
       where: { id: payment.id },
       data: {
         link: data.confirmation.confirmation_url,
-        remote_id: data.id
+        remoteId: data.id
       }
     })
   }
@@ -99,7 +99,7 @@ export class YookassaService implements PaymentService {
         where: { id: payment.id },
         data: {
           paid: 1,
-          paid_at: new Date()
+          paidAt: new Date()
         }
       })
     }
@@ -109,7 +109,7 @@ export class YookassaService implements PaymentService {
         where: { id: payment.id },
         data: {
           paid: 0,
-          paid_at: new Date()
+          paidAt: new Date()
         }
       })
     }
@@ -126,7 +126,7 @@ export class YookassaService implements PaymentService {
   }
 
   async getStatus(payment: Payment): Promise<string | null> {
-    if (!payment.remote_id) {
+    if (!payment.remoteId) {
       return null
     }
 
@@ -138,7 +138,7 @@ export class YookassaService implements PaymentService {
 
     try {
       const response = await fetch(
-        `${this.configService.get('yookassa.endpoint')}payments/${payment.remote_id}`,
+        `${this.configService.get('yookassa.endpoint')}payments/${payment.remoteId}`,
         {
           method: 'GET',
           headers: {

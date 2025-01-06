@@ -57,7 +57,7 @@ export class CategoriesService {
     }
 
     if (typeof dto.parent !== 'undefined') {
-      args.where.parent_id = dto.parent === 0 ? null : dto.parent
+      args.where.parentId = dto.parent === 0 ? null : dto.parent
     }
 
     args.orderBy = { [dto.sort]: dto.dir.toLowerCase() }

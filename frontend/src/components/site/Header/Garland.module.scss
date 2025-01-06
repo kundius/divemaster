@@ -1,0 +1,71 @@
+.garland {
+  --vkui--color_icon_tertiary: #aeb7c2;
+  
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  overflow: hidden;
+  
+  :global([data-header-sticky="true"]) & {
+    top: 10px;
+  }
+}
+
+.node {
+  display: flex;
+  position: relative;
+}
+
+.GarlandParts__item {
+  z-index: 1;
+  overflow: visible;
+  color: var(--vkui--color_icon_tertiary);
+}
+
+.GarlandParts__item1 {
+  margin-top: -5px;
+  margin-left: -9px;
+  .GarlandParts__lamp,
+  .GarlandParts__shadow {
+    color: #2787f5;
+  }
+}
+
+.GarlandParts__item2 {
+  margin-top: -3px;
+  margin-left: -8px;
+  .GarlandParts__lamp,
+  .GarlandParts__shadow {
+    color: #f679ff;
+  }
+}
+
+.GarlandParts__item3 {
+  margin-top: -8px;
+  margin-left: -8px;
+  .GarlandParts__lamp,
+  .GarlandParts__shadow {
+    color: #17d685;
+  }
+}
+
+.GarlandParts__item4 {
+  margin-top: -6px;
+  margin-left: -8px;
+  .GarlandParts__lamp,
+  .GarlandParts__shadow {
+    color: #ffd91d;
+  }
+}
+
+.GarlandParts__item5 {
+  margin-top: -7px;
+  margin-left: -10px;
+  .GarlandParts__lamp,
+  .GarlandParts__shadow {
+    color: #ab47e9;
+  }
+}
+

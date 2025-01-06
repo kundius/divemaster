@@ -61,10 +61,10 @@ export class CityService {
     const points = await this.prismaService.pickupPoint.findMany()
     const tmpAdded: string[] = []
     for (const point of points) {
-      const tmpKey = `${point.subject_name}/${point.city_name}`
+      const tmpKey = `${point.subjectName}/${point.cityName}`
       if (
         !cities.find(
-          (item) => item.subject === point.subject_name && item.name === point.city_name
+          (item) => item.subject === point.subjectName && item.name === point.cityName
         ) &&
         !tmpAdded.includes(tmpKey)
       ) {
@@ -72,12 +72,12 @@ export class CityService {
         await this.prismaService.city.create({
           data: {
             id: v4(),
-            name: point.city_name,
-            type: point.city_type,
+            name: point.cityName,
+            type: point.cityType,
             lat: Number(point.lat),
             lon: Number(point.lon),
-            subject: point.subject_name,
-            district: point.district_name
+            subject: point.subjectName,
+            district: point.districtName
           }
         })
         count2++

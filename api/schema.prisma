@@ -9,29 +9,33 @@ datasource db {
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
+generator prismaClassGenerator {
+    provider = "prisma-class-generator"
+}
+
 model BlogPost {
   id         Int            @id @default(autoincrement()) @db.UnsignedInt
   title      String         @db.VarChar(255)
   longTitle  String?        @db.VarChar(255)
-  alias      String         @unique(map: "blog_post_alias_unique") @db.VarChar(255)
+  alias      String         @unique() @db.VarChar(255)
   content    String?        @db.Text
   readTime   String?        @db.VarChar(255)
   metadata   Json?
   createdAt  DateTime       @default(now())
   updatedAt  DateTime       @updatedAt
-  image_id   Int?           @db.UnsignedInt
+  imageId    Int?           @db.UnsignedInt
   status     BlogPostStatus @default(draft)
-  image      File?          @relation(fields: [image_id], references: [id], map: "blog_post_image_id_foreign")
+  image      File?          @relation(fields: [imageId], references: [id])
   tags       BlogTagPosts[]
 
-  @@index([image_id], map: "blog_post_image_id_index")
+  @@index([imageId])
   @@map("blog_post")
 }
 
 model BlogTag {
   id       Int            @id @default(autoincrement()) @db.UnsignedInt
   name     String         @db.VarChar(255)
-  alias    String         @unique(map: "blog_tag_alias_unique") @db.VarChar(255)
+  alias    String         @unique() @db.VarChar(255)
   metadata Json?
   posts    BlogTagPosts[]
 
@@ -39,20 +43,20 @@ model BlogTag {
 }
 
 model BlogTagPosts {
-  blog_tag_id  Int      @db.UnsignedInt
-  blog_post_id Int      @db.UnsignedInt
-  blog_post    BlogPost @relation(fields: [blog_post_id], references: [id], onDelete: Cascade, map: "blog_tag_posts_blog_post_id_foreign")
-  blog_tag     BlogTag  @relation(fields: [blog_tag_id], references: [id], onDelete: Cascade, map: "blog_tag_posts_blog_tag_id_foreign")
+  blogTagId    Int      @db.UnsignedInt
+  blogPostId   Int      @db.UnsignedInt
+  blogPost     BlogPost @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
+  blogTag      BlogTag  @relation(fields: [blogTagId], references: [id], onDelete: Cascade)
 
-  @@id([blog_tag_id, blog_post_id])
-  @@index([blog_post_id], map: "blog_tag_posts_blog_post_id_index")
-  @@index([blog_tag_id], map: "blog_tag_posts_blog_tag_id_index")
+  @@id([blogTagId, blogPostId])
+  @@index([blogPostId])
+  @@index([blogTagId])
   @@map("blog_tag_posts")
 }
 
 model Brand {
   id        Int       @id @default(autoincrement()) @db.UnsignedInt
-  remote_id String?   @db.VarChar(255)
+  remoteId  String?   @db.VarChar(255)
   title     String    @db.VarChar(255)
   products  Product[]
 
@@ -61,10 +65,10 @@ model Brand {
 
 model Cart {
   id           String        @id @db.VarChar(36)
-  user_id      Int?          @unique(map: "cart_user_id_unique") @db.UnsignedInt
+  userId       Int?          @unique() @db.UnsignedInt
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
-  user         User?         @relation(fields: [user_id], references: [id], map: "cart_user_id_foreign")
+  user         User?         @relation(fields: [userId], references: [id])
   cartProducts CartProduct[]
 
   @@map("cart")
@@ -72,75 +76,75 @@ model Cart {
 
 model CartProduct {
   id           String                    @id @db.VarChar(36)
-  cart_id      String                    @db.VarChar(36)
-  product_id   Int                       @db.UnsignedInt
+  cartId       String                    @db.VarChar(36)
+  productId    Int                       @db.UnsignedInt
   quantity     Int                       @default(1) @db.UnsignedInt
   createdAt    DateTime                  @default(now())
   updatedAt    DateTime                  @updatedAt
-  cart         Cart                      @relation(fields: [cart_id], references: [id], onDelete: Cascade, map: "cart_product_cart_id_foreign")
-  product      Product                   @relation(fields: [product_id], references: [id], onDelete: Cascade, map: "cart_product_product_id_foreign")
+  cart         Cart                      @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product      Product                   @relation(fields: [productId], references: [id], onDelete: Cascade)
   optionValues CartProductOptionValues[]
 
-  @@index([cart_id], map: "cart_product_cart_id_index")
-  @@index([product_id], map: "cart_product_product_id_index")
+  @@index([cartId])
+  @@index([productId])
   @@map("cart_product")
 }
 
 model CartProductOptionValues {
-  cart_product_id String      @db.VarChar(36)
-  option_value_id Int         @db.UnsignedInt
-  cartProduct     CartProduct @relation(fields: [cart_product_id], references: [id], onDelete: Cascade, map: "cart_product_option_values_cart_product_id_foreign")
-  optionValue     OptionValue @relation(fields: [option_value_id], references: [id], onDelete: Cascade, map: "cart_product_option_values_option_value_id_foreign")
+  cartProductId   String      @db.VarChar(36)
+  optionValueId   Int         @db.UnsignedInt
+  cartProduct     CartProduct @relation(fields: [cartProductId], references: [id], onDelete: Cascade)
+  optionValue     OptionValue @relation(fields: [optionValueId], references: [id], onDelete: Cascade)
 
-  @@id([cart_product_id, option_value_id])
-  @@index([cart_product_id], map: "cart_product_option_values_cart_product_id_index")
-  @@index([option_value_id], map: "cart_product_option_values_option_value_id_index")
+  @@id([cartProductId, optionValueId])
+  @@index([cartProductId])
+  @@index([optionValueId])
   @@map("cart_product_option_values")
 }
 
 model Category {
   id          Int                   @id @default(autoincrement()) @db.UnsignedInt
-  remote_id   String?               @db.VarChar(255)
+  remoteId    String?               @db.VarChar(255)
   title       String                @db.VarChar(255)
   longTitle   String?               @db.VarChar(255)
-  alias       String                @unique(map: "category_alias_unique") @db.VarChar(255)
+  alias       String                @unique() @db.VarChar(255)
   rank        Int                   @default(0)
   description String?               @db.Text
   active      Boolean               @default(true)
-  image_id    Int?                  @db.UnsignedInt
-  parent_id   Int?                  @db.UnsignedInt
-  image       File?                 @relation(fields: [image_id], references: [id], map: "category_image_id_foreign")
-  parent      Category?             @relation("categoryTocategory", fields: [parent_id], references: [id], map: "category_parent_id_foreign")
-  children    Category[]            @relation("categoryTocategory")
+  imageId     Int?                  @db.UnsignedInt
+  parentId    Int?                  @db.UnsignedInt
+  image       File?                 @relation(fields: [imageId], references: [id])
+  parent      Category?             @relation("children", fields: [parentId], references: [id])
+  children    Category[]            @relation("children")
   options     CategoriesOnOptions[]
   products    CategoryProducts[]
 
-  @@index([image_id], map: "category_image_id_index")
-  @@index([parent_id], map: "category_parent_id_index")
+  @@index([imageId])
+  @@index([parentId])
   @@map("category")
 }
 
 model CategoriesOnOptions {
-  category_id Int      @db.UnsignedInt
-  option_id   Int      @db.UnsignedInt
-  category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade, map: "category_options_category_id_foreign")
-  option      Option   @relation(fields: [option_id], references: [id], onDelete: Cascade, map: "category_options_option_id_foreign")
+  categoryId  Int      @db.UnsignedInt
+  optionId    Int      @db.UnsignedInt
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  option      Option   @relation(fields: [optionId], references: [id], onDelete: Cascade)
 
-  @@id([category_id, option_id])
-  @@index([category_id], map: "category_options_category_id_index")
-  @@index([option_id], map: "category_options_option_id_index")
+  @@id([categoryId, optionId])
+  @@index([categoryId])
+  @@index([optionId])
   @@map("category_options")
 }
 
 model CategoryProducts {
-  category_id Int      @db.UnsignedInt
-  product_id  Int      @db.UnsignedInt
-  category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade, map: "category_products_category_id_foreign")
-  product     Product  @relation(fields: [product_id], references: [id], onDelete: Cascade, map: "category_products_product_id_foreign")
+  categoryId  Int      @db.UnsignedInt
+  productId   Int      @db.UnsignedInt
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  @@id([category_id, product_id])
-  @@index([category_id], map: "category_products_category_id_index")
-  @@index([product_id], map: "category_products_product_id_index")
+  @@id([categoryId, productId])
+  @@index([categoryId])
+  @@index([productId])
   @@map("category_products")
 }
 
@@ -162,10 +166,10 @@ model Delivery {
   delivered    Int?            @db.TinyInt
   address      String          @db.VarChar(255)
   recipient    Json?
-  order_id     Int             @unique(map: "delivery_order_id_unique") @db.UnsignedInt
+  orderId      Int             @unique() @db.UnsignedInt
   createdAt    DateTime        @default(now())
   deliveredAt  DateTime        @updatedAt
-  order        Order           @relation(fields: [order_id], references: [id], map: "delivery_order_id_foreign")
+  order        Order           @relation(fields: [orderId], references: [id])
 
   @@map("delivery")
 }
@@ -180,42 +184,42 @@ model File {
   metadata      String?        @db.LongText
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
-  blog_post     BlogPost[]
+  blogPost     BlogPost[]
   category      Category[]
-  product_image ProductImage[]
+  productImage ProductImage[]
 
   @@map("file")
 }
 
 model Offer {
   id           Int                 @id @default(autoincrement()) @db.UnsignedInt
-  remote_id    String?             @db.VarChar(255)
+  remoteId     String?             @db.VarChar(255)
   title        String?             @db.VarChar(255)
   price        Int
   rank         Int                 @default(0)
-  product_id   Int                 @db.UnsignedInt
-  product      Product             @relation(fields: [product_id], references: [id], map: "offer_product_id_foreign")
+  productId    Int                 @db.UnsignedInt
+  product      Product             @relation(fields: [productId], references: [id])
   optionValues OfferOptionValues[]
 
-  @@index([product_id], map: "offer_product_id_index")
+  @@index([productId])
   @@map("offer")
 }
 
 model OfferOptionValues {
-  offer_id        Int         @db.UnsignedInt
-  option_value_id Int         @db.UnsignedInt
-  offer           Offer       @relation(fields: [offer_id], references: [id], onDelete: Cascade, map: "offer_option_values_offer_id_foreign")
-  optionValue     OptionValue @relation(fields: [option_value_id], references: [id], onDelete: Cascade, map: "offer_option_values_option_value_id_foreign")
+  offerId         Int         @db.UnsignedInt
+  optionValueId   Int         @db.UnsignedInt
+  offer           Offer       @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  optionValue     OptionValue @relation(fields: [optionValueId], references: [id], onDelete: Cascade)
 
-  @@id([offer_id, option_value_id])
-  @@index([offer_id], map: "offer_option_values_offer_id_index")
-  @@index([option_value_id], map: "offer_option_values_option_value_id_index")
+  @@id([offerId, optionValueId])
+  @@index([offerId])
+  @@index([optionValueId])
   @@map("offer_option_values")
 }
 
 model Option {
   id         Int                   @id @default(autoincrement()) @db.UnsignedInt
-  key        String                @unique(map: "option_key_unique") @db.VarChar(255)
+  key        String                @unique() @db.VarChar(255)
   caption    String                @db.VarChar(255)
   type       OptionType
   inFilter   Boolean               @default(false)
@@ -229,49 +233,49 @@ model Option {
 model OptionValue {
   id                         Int                       @id @default(autoincrement()) @db.UnsignedInt
   content                    String                    @db.VarChar(255)
-  option_id                  Int                       @db.UnsignedInt
-  product_id                 Int                       @db.UnsignedInt
+  optionId                   Int                       @db.UnsignedInt
+  productId                  Int                       @db.UnsignedInt
   rank                       Int                       @default(0)
   properties                 Json?
-  cart_product_option_values CartProductOptionValues[]
-  offer_option_values        OfferOptionValues[]
-  option                     Option                    @relation(fields: [option_id], references: [id], map: "option_value_option_id_foreign")
-  product                    Product                   @relation(fields: [product_id], references: [id], map: "option_value_product_id_foreign")
+  cartProductOptionValues    CartProductOptionValues[]
+  offerOptionValues          OfferOptionValues[]
+  option                     Option                    @relation(fields: [optionId], references: [id])
+  product                    Product                   @relation(fields: [productId], references: [id])
 
-  @@index([option_id], map: "option_value_option_id_index")
-  @@index([product_id], map: "option_value_product_id_index")
+  @@index([optionId])
+  @@index([productId])
   @@map("option_value")
 }
 
 model Order {
   id          Int            @id @default(autoincrement()) @db.UnsignedInt
-  hash        String         @unique(map: "order_hash_unique") @db.VarChar(255)
+  hash        String         @unique() @db.VarChar(255)
   cost        Int            @db.UnsignedInt
   composition Json?
-  user_id     Int?           @db.UnsignedInt
+  userId      Int?           @db.UnsignedInt
   createdAt   DateTime       @default(now())
   delivery    Delivery?
-  user        User?          @relation(fields: [user_id], references: [id], map: "order_user_id_foreign")
+  user        User?          @relation(fields: [userId], references: [id])
   products    OrderProduct[]
   payment     Payment?
 
-  @@index([user_id], map: "order_user_id_index")
+  @@index([userId])
   @@map("order")
 }
 
 model OrderProduct {
   id         Int      @id @default(autoincrement()) @db.UnsignedInt
-  order_id   Int      @db.UnsignedInt
-  product_id Int?     @db.UnsignedInt
+  orderId    Int      @db.UnsignedInt
+  productId  Int?     @db.UnsignedInt
   quantity   Int      @db.UnsignedInt
   price      Int      @db.UnsignedInt
   title      String   @db.VarChar(255)
   options    Json?
-  order      Order    @relation(fields: [order_id], references: [id], onDelete: Cascade, map: "order_product_order_id_foreign")
-  product    Product? @relation(fields: [product_id], references: [id], map: "order_product_product_id_foreign")
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product    Product? @relation(fields: [productId], references: [id])
 
-  @@index([order_id], map: "order_product_order_id_index")
-  @@index([product_id], map: "order_product_product_id_index")
+  @@index([orderId])
+  @@index([productId])
   @@map("order_product")
 }
 
@@ -280,11 +284,11 @@ model Payment {
   service    PaymentService
   paid       Int?           @db.TinyInt
   link       String?        @db.VarChar(255)
-  remote_id  String?        @db.VarChar(255)
-  order_id   Int            @unique(map: "payment_order_id_unique") @db.UnsignedInt
+  remoteId   String?        @db.VarChar(255)
+  orderId    Int            @unique() @db.UnsignedInt
   createdAt  DateTime       @default(now())
   paidAt     DateTime?      @db.DateTime(0)
-  order      Order          @relation(fields: [order_id], references: [id], map: "payment_order_id_foreign")
+  order      Order          @relation(fields: [orderId], references: [id])
 
   @@map("payment")
 }
@@ -316,10 +320,10 @@ model PickupPoint {
 
 model Product {
   id             Int                @id @default(autoincrement()) @db.UnsignedInt
-  remote_id      String?            @db.VarChar(255)
+  remoteId       String?            @db.VarChar(255)
   title          String             @db.VarChar(255)
   longTitle      String?            @db.VarChar(255)
-  alias          String             @unique(map: "product_alias_unique") @db.VarChar(255)
+  alias          String             @unique() @db.VarChar(255)
   sku            String?            @db.VarChar(255)
   rank           Int                @default(0)
   priceDecrease  Int?
@@ -330,36 +334,36 @@ model Product {
   inStock        Boolean            @default(true)
   recent         Boolean            @default(false)
   favorite       Boolean            @default(false)
-  brand_id       Int?               @db.UnsignedInt
+  brandId        Int?               @db.UnsignedInt
   carts          CartProduct[]
   categories     CategoryProducts[]
   offers         Offer[]
   optionValues   OptionValue[]
   orders         OrderProduct[]
-  brand          Brand?             @relation(fields: [brand_id], references: [id], map: "product_brand_id_foreign")
+  brand          Brand?             @relation(fields: [brandId], references: [id])
   images         ProductImage[]
 
-  @@index([brand_id], map: "product_brand_id_index")
+  @@index([brandId])
   @@map("product")
 }
 
 model ProductImage {
-  file_id    Int     @db.UnsignedInt
-  product_id Int     @db.UnsignedInt
+  fileId     Int     @db.UnsignedInt
+  productId  Int     @db.UnsignedInt
   rank       Int     @default(0)
   active     Boolean @default(true)
-  file       File    @relation(fields: [file_id], references: [id], map: "product_image_file_id_foreign")
-  product    Product @relation(fields: [product_id], references: [id], map: "product_image_product_id_foreign")
+  file       File    @relation(fields: [fileId], references: [id])
+  product    Product @relation(fields: [productId], references: [id])
 
-  @@id([file_id, product_id])
-  @@index([file_id], map: "product_image_file_id_index")
-  @@index([product_id], map: "product_image_product_id_index")
+  @@id([fileId, productId])
+  @@index([fileId])
+  @@index([productId])
   @@map("product_image")
 }
 
 model Role {
   id    Int    @id @default(autoincrement()) @db.UnsignedInt
-  title String @unique(map: "role_title_unique") @db.VarChar(255)
+  title String @unique() @db.VarChar(255)
   scope Json?
   user  User[]
 
@@ -368,17 +372,17 @@ model Role {
 
 model User {
   id       Int     @id @default(autoincrement()) @db.UnsignedInt
-  email    String  @unique(map: "user_email_unique") @db.VarChar(255)
+  email    String  @unique() @db.VarChar(255)
   name     String  @db.VarChar(255)
   password String  @db.VarChar(255)
   active   Boolean @default(true)
   discount Int     @default(0)
-  role_id  Int     @db.UnsignedInt
+  roleId   Int     @db.UnsignedInt
   cart     Cart?
   order    Order[]
-  role     Role    @relation(fields: [role_id], references: [id], map: "user_role_id_foreign")
+  role     Role    @relation(fields: [roleId], references: [id])
 
-  @@index([role_id], map: "user_role_id_index")
+  @@index([roleId])
   @@map("user")
 }
 

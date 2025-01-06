@@ -61,13 +61,7 @@ export class ProductsFilterService {
     // TODO: HIERARCHY_DEPTH_LIMIT
     const products = await this.prismaService.product.findMany({
       where: {
-        categories: categoryId
-          ? {
-              some: {
-                category_id: categoryId
-              }
-            }
-          : undefined
+        categories: categoryId ? { some: { categoryId } } : undefined
       },
       include: {
         brand: true,
@@ -86,7 +80,7 @@ export class ProductsFilterService {
         id: product.id,
         title: product.title,
         price: product.offers.map((offer) => offer.price),
-        inStock: product.in_stock,
+        inStock: product.inStock,
         recent: product.recent,
         favorite: product.favorite
       }
@@ -131,13 +125,7 @@ export class ProductsFilterService {
     // TODO: HIERARCHY_DEPTH_LIMIT
     const options = await this.prismaService.option.findMany({
       where: {
-        categories: categoryId
-          ? {
-              some: {
-                category_id: categoryId
-              }
-            }
-          : undefined
+        categories: categoryId ? { some: { categoryId } } : undefined
       },
       orderBy: {
         rank: 'asc'

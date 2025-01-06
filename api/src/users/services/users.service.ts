@@ -12,7 +12,7 @@ export class UsersService {
     const user = await this.prismaService.user.create({
       data: {
         ...fillable,
-        role_id: roleId,
+        roleId,
         password: await this.generatePasswordHash(password)
       }
     })

@@ -28,7 +28,7 @@ export class BlogPostService {
     }
 
     if (typeof fillable.content !== 'undefined') {
-      data.read_time = String(Math.floor(fillable.content.length / 1000))
+      data.readTime = String(Math.floor(fillable.content.length / 1000))
     }
 
     if (typeof imageId !== 'undefined') {
@@ -37,7 +37,7 @@ export class BlogPostService {
 
     if (typeof tags !== 'undefined') {
       data.tags = {
-        create: tags.map((tagId) => ({ blog_tag: { connect: { id: +tagId } } }))
+        create: tags.map((tagId) => ({ blogTag: { connect: { id: +tagId } } }))
       }
     }
 
@@ -54,7 +54,7 @@ export class BlogPostService {
       image: true,
       tags: {
         include: {
-          blog_tag: true
+          blogTag: true
         }
       }
     }
@@ -64,11 +64,11 @@ export class BlogPostService {
     }
 
     if (!dto.withExtraContent) {
-      args.omit = { metadata: true, content: true, long_title: true }
+      args.omit = { metadata: true, content: true, longTitle: true }
     }
 
     if (dto.tags) {
-      args.where.tags = { some: { blog_tag: { name: { in: dto.tags } } } }
+      args.where.tags = { some: { blogTag: { name: { in: dto.tags } } } }
     }
 
     args.orderBy = { [dto.sort]: dto.dir }
@@ -105,7 +105,7 @@ export class BlogPostService {
     }
 
     if (typeof fillable.content !== 'undefined') {
-      data.read_time = String(Math.ceil(fillable.content.length / 1000))
+      data.readTime = String(Math.ceil(fillable.content.length / 1000))
     }
 
     if (typeof imageId !== 'undefined') {
@@ -115,7 +115,7 @@ export class BlogPostService {
     if (typeof tags !== 'undefined') {
       data.tags = {
         deleteMany: {},
-        create: tags.map((tagId) => ({ blog_tag: { connect: { id: +tagId } } }))
+        create: tags.map((tagId) => ({ blogTag: { connect: { id: +tagId } } }))
       }
     }
 
@@ -137,14 +137,14 @@ export class BlogPostService {
   async findNeighbors(id: number) {
     const target = await this.findOne(id)
     const prev = this.prismaService.blogPost.findFirst({
-      where: { created_at: { lt: target.created_at } },
-      orderBy: { created_at: 'desc' },
-      omit: { metadata: true, content: true, long_title: true }
+      where: { createdAt: { lt: target.createdAt } },
+      orderBy: { createdAt: 'desc' },
+      omit: { metadata: true, content: true, longTitle: true }
     })
     const next = this.prismaService.blogPost.findFirst({
-      where: { created_at: { gt: target.created_at } },
-      orderBy: { created_at: 'asc' },
-      omit: { metadata: true, content: true, long_title: true }
+      where: { createdAt: { gt: target.createdAt } },
+      orderBy: { createdAt: 'asc' },
+      omit: { metadata: true, content: true, longTitle: true }
     })
     return Promise.all([prev, next])
   }

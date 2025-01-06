@@ -79,7 +79,7 @@ export class BlogPostFindAllDto extends PaginationQueryDto {
   @Type(() => String)
   @IsString()
   @IsOptional()
-  sort: keyof BlogPost = 'created_at'
+  sort: keyof BlogPost = 'createdAt'
 
   @IsString()
   @IsOptional()

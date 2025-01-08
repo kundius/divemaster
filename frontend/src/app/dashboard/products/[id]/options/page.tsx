@@ -1,8 +1,7 @@
 import { apiGet } from '@/lib/api'
 import { withServerAuth } from '@/lib/api/with-server-auth'
-import { OptionEntity, OptionType, ProductEntity } from '@/types'
+import { OptionType, ProductEntity } from '@/types'
 import { ProductOptions, ValuesType } from '../../_components/ProductOptions'
-import { getEntityId } from '@/lib/utils'
 
 export default async function Page({ params }: { params: { id: number } }) {
   const [product] = await Promise.all([
@@ -11,9 +10,7 @@ export default async function Page({ params }: { params: { id: number } }) {
 
   const initialValues: ValuesType = {}
   for (const option of product.options || []) {
-    option.values = (product.optionValues || []).filter(
-      (ov) => getEntityId(ov.option) === option.id
-    )
+    option.values = (product.optionValues || []).filter((ov) => ov.optionId === option.id)
 
     if (!option.values || option.values.length === 0) continue
 

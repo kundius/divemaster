@@ -1,55 +1,45 @@
-import {
-  Collection,
-  Entity,
-  Filter,
-  ManyToMany,
-  ManyToOne,
-  OneToMany,
-  PrimaryKey,
-  Property
-} from '@mikro-orm/core'
 import { Product } from './product.entity'
 import { File } from '@/storage/entities/file.entity'
 import { Option } from './option.entity'
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity()
-@Filter({ name: 'active', cond: { active: { $eq: true } } })
 export class Category {
-  @PrimaryKey()
+  @PrimaryGeneratedColumn()
   id: number
 
-  @Property({ nullable: true, type: 'varchar' })
+  @Column({ nullable: true, type: 'varchar' })
   remoteId?: string | null = null
 
-  @Property()
+  @Column()
   title: string
 
-  @Property({ nullable: true, type: 'varchar' })
+  @Column({ nullable: true, type: 'varchar' })
   longTitle?: string | null = null
 
-  @Property({ unique: true })
+  @Column({ unique: true })
   alias: string
 
-  @Property({ default: 0 })
+  @Column({ default: 0 })
   rank: number = 0
 
-  @Property({ nullable: true, type: 'text' })
+  @Column({ nullable: true, type: 'text' })
   description: string | null = null
 
-  @Property({ default: true })
+  @Column({ default: true })
   active: boolean
 
   @ManyToOne(() => File, { nullable: true })
   image: File | null = null
 
   @ManyToMany(() => Product)
-  products = new Collection<Product>(this)
+  products: Product[]
 
   @ManyToMany(() => Option)
-  options = new Collection<Option>(this)
+  options: Option[]
 
   @OneToMany(() => Category, (category) => category.parent)
-  children = new Collection<Category>(this)
+  children: Category[]
 
   @ManyToOne(() => Category, { nullable: true })
   parent: Category | null = null

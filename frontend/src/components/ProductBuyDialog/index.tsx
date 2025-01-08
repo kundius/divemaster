@@ -31,7 +31,7 @@ export function ProductBuyDialog({ children, title }: PropsWithChildren<{ title:
       return '/noimage.png'
     }
 
-    return getFileUrl(image.file)
+    return getFileUrl(image.fileId)
   }, [product])
 
   const submitHandler = (formData: FormData) => {

@@ -44,7 +44,7 @@ export function UserForm({ record }: UserFormProps) {
     defaultValues: record
       ? {
           email: record.email || '',
-          roleId: record.role.id,
+          roleId: record.roleId,
           name: record.name,
           password: '',
           active: record.active

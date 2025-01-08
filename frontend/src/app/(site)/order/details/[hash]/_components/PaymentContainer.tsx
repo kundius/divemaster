@@ -43,7 +43,9 @@ export function PaymentContainer({ hash }: PaymentContainerProps) {
   }
 
   const renderPaid = (): JSX.Element | null => {
-    console.log(data.payment.paid)
+    if (!data.payment) {
+      throw new Error('payment not defined')
+    }
     switch (data.payment.paid) {
       case null:
         return <PaidPeending onRefresh={refetch} />
@@ -55,6 +57,10 @@ export function PaymentContainer({ hash }: PaymentContainerProps) {
   }
 
   const renderPayment = (): JSX.Element | null => {
+    if (!data.payment) {
+      throw new Error('payment not defined')
+    }
+
     if (data.payment.paid !== null) return null
 
     switch (data.payment.service) {

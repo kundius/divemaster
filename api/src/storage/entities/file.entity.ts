@@ -1,31 +1,31 @@
-import { Entity, PrimaryKey, Property } from '@mikro-orm/core'
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
 
 @Entity()
 export class File {
-  @PrimaryKey()
+  @PrimaryGeneratedColumn()
   id: number
 
-  @Property()
+  @Column()
   file: string
 
-  @Property()
+  @Column()
   path: string
 
-  @Property()
+  @Column()
   hash: string
 
-  @Property()
+  @Column()
   type: string
 
-  @Property()
+  @Column()
   size: number
 
-  @Property({ nullable: true, type: 'json' })
+  @Column({ nullable: true, type: 'json' })
   metadata?: Record<string, any>
 
-  @Property()
-  createdAt = new Date()
+  @CreateDateColumn()
+  createdAt: Date
 
-  @Property({ onUpdate: () => new Date() })
-  updatedAt = new Date()
+  @UpdateDateColumn()
+  updatedAt: Date
 }

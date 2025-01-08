@@ -41,7 +41,7 @@ export function AddToCartDialog({
       return '/noimage.png'
     }
 
-    return getFileUrl(image.file)
+    return getFileUrl(image.fileId)
   }, [productStore.product])
 
   const addHandler = () => {

@@ -16,7 +16,7 @@ export default function Page() {
     <Layout>
       <LayoutContent>
         <div className="mb-6">
-          <Headline title="Способ получения" back={{ href: '/order', title: 'Назад' }} />
+          <Headline title="Способ получения" back={{ action: '/order', title: 'Назад' }} />
         </div>
         <TabMarker
           items={[

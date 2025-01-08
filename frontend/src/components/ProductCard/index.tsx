@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useMemo, useRef, useState } from 'react'
 
 import { colorsObject } from '@/lib/colors'
-import { getEntityId, getFileUrl, pluck } from '@/lib/utils'
+import { getFileUrl, pluck } from '@/lib/utils'
 import { useProductStore } from '@/providers/product-store-provider'
 
 import { AddToCart } from './AddToCart'
@@ -27,7 +27,7 @@ export function ProductCard() {
     if (!product.images || product.images.length === 0) {
       return ['/noimage.png']
     }
-    return product.images.map((item) => getFileUrl(item.file))
+    return product.images.map((item) => getFileUrl(item.fileId))
   }, [product])
 
   const colors = useMemo(() => {
@@ -41,7 +41,7 @@ export function ProductCard() {
     }
 
     option.values = (product.optionValues || []).filter(
-      (ov) => getEntityId(ov.option) === option.id
+      (ov) => ov.optionId === option.id
     )
     if (option.values.length < 2) {
       return []

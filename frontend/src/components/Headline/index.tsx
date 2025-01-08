@@ -3,7 +3,7 @@ import { Breadcrumbs, BreadcrumbsProps } from '../site/Breadcrumbs'
 import css from './index.module.scss'
 import { ChevronLeftIcon } from '@heroicons/react/24/outline'
 import { cn } from '@/lib/utils'
-import { ReactNode } from 'react'
+import { MouseEventHandler, ReactNode } from 'react'
 import { diving } from '../site/Header/menu'
 
 export interface HeadlineProps {
@@ -14,7 +14,7 @@ export interface HeadlineProps {
   actions?: ReactNode
   separator?: boolean
   back?: {
-    href: string
+    action: string | MouseEventHandler<HTMLButtonElement>
     title: string
   }
 }
@@ -49,9 +49,15 @@ export function Headline({
       </div>
       {back && (
         <div className={css.back}>
-          <Link href={back.href} className={css.backLink}>
-            <span>{back.title}</span>
-          </Link>
+          {typeof back.action === 'string' ? (
+            <Link href={back.action} className={css.backLink}>
+              <span>{back.title}</span>
+            </Link>
+          ) : (
+            <button onClick={back.action} className={css.backLink}>
+              <span>{back.title}</span>
+            </button>
+          )}
         </div>
       )}
       {separator && <div className={css.separator} />}

@@ -1,14 +1,6 @@
-import {
-  Collection,
-  Entity,
-  Enum,
-  ManyToMany,
-  OneToMany,
-  PrimaryKey,
-  Property
-} from '@mikro-orm/core'
 import { Category } from './category.entity'
 import { OptionValue } from './option-value.entity'
+import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 
 export enum OptionType {
   // STRING = 'string',
@@ -31,27 +23,30 @@ export enum OptionType {
 
 @Entity()
 export class Option {
-  @PrimaryKey()
+  @PrimaryGeneratedColumn()
   id!: number
 
-  @Property({ unique: true })
+  @Column({ unique: true })
   key!: string
 
-  @Property()
+  @Column()
   caption!: string
 
-  @Enum(() => OptionType)
+  @Column({
+    type: 'enum',
+    enum: OptionType
+  })
   type!: OptionType
 
-  @Property({ default: false })
+  @Column({ default: false })
   inFilter: boolean = false
 
-  @Property({ default: 0 })
+  @Column({ default: 0 })
   rank: number = 0
 
   @ManyToMany(() => Category, (category) => category.options)
-  categories = new Collection<Category>(this)
+  categories: Category[]
 
   @OneToMany(() => OptionValue, (value) => value.option)
-  values = new Collection<OptionValue>(this)
+  values: OptionValue[]
 }

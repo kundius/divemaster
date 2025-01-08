@@ -66,7 +66,7 @@ export function ProductList({ fallbackData }: ProductListProps) {
       formatter: (title, record) => {
         let image: null | string = null
         if (record.images && record.images[0]) {
-          image = getFileUrl(record.images[0].file)
+          image = getFileUrl(record.images[0].fileId)
         }
         return (
           <div className="flex gap-3 items-center">
@@ -79,11 +79,16 @@ export function ProductList({ fallbackData }: ProductListProps) {
               <div className="text-balance">{title}</div>
               {record.categories && record.categories.length > 0 && (
                 <div className="flex gap-1.5 flex-wrap">
-                  {record.categories.map((category) => (
-                    <Badge variant="outline" className="font-normal" key={category.id}>
-                      {category.title}
-                    </Badge>
-                  ))}
+                  {record.categories.map(({ category }) => {
+                    if (!category) {
+                      throw new Error('category not included')
+                    }
+                    return (
+                      <Badge variant="outline" className="font-normal" key={category.id}>
+                        {category.title}
+                      </Badge>
+                    )
+                  })}
                 </div>
               )}
             </div>

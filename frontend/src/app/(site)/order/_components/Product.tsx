@@ -15,11 +15,15 @@ export interface ProductProps {
 
 export function Product({ cartProduct }: ProductProps) {
   const thumbnail = useMemo(() => {
-    if (!cartProduct.product.images || cartProduct.product.images.length === 0) {
+    if (!cartProduct.product || !cartProduct.product.images || cartProduct.product.images.length === 0) {
       return '/noimage.png'
     }
-    return cartProduct.product.images.map((item) => getFileUrl(item.file))[0]
+    return cartProduct.product.images.map((item) => getFileUrl(item.fileId))[0]
   }, [cartProduct.product])
+
+  if (!cartProduct.product) {
+    throw new Error('Product not defined')
+  }
 
   return (
     <TooltipProvider>

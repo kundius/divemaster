@@ -121,15 +121,14 @@ export const createProductStore = (product: ProductEntity) => {
   const selectableOptions = (product.options || []).filter((option) => {
     if (!SELECTABLE_OPTION_TYPES.includes(option.type)) return false
 
-    option.values = (product.optionValues || []).filter(
-      (ov) => getEntityId(ov.option) === option.id
-    )
+    option.values = (product.optionValues || []).filter((ov) => ov.optionId === option.id)
     if (!option.values || option.values.length === 0) return false
 
     // если значение только одно и оно не принадлежит торг. предл., то предлагать его не нужно
     if (option.values.length === 1) {
       return !!sortedOffers.find(
-        (offer) => !!offer.optionValues?.find((value) => option?.values?.[0].id === value.id)
+        (offer) =>
+          !!offer.optionValues?.find((value) => option?.values?.[0].id === value.optionValueId)
       )
     }
     return true
@@ -175,7 +174,7 @@ export const createProductStore = (product: ProductEntity) => {
           } else {
             selectedOffer = state.additionalOffers.find((offer) => {
               if (!offer.optionValues) return false
-              return pluck(offer.optionValues, 'id').every((id) =>
+              return pluck(offer.optionValues, 'optionValueId').every((id) =>
                 pluck(selectedValues, 'id').includes(id)
               )
             })

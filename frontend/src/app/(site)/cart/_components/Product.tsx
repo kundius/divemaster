@@ -34,10 +34,14 @@ export function Product({ cartProduct }: ProductProps) {
   const [showDeleteDialog, toggleDeleteDialog] = useToggle(false)
 
   const images = useMemo(() => {
-    if (!cartProduct.product.images || cartProduct.product.images.length === 0) {
+    if (
+      !cartProduct.product ||
+      !cartProduct.product.images ||
+      cartProduct.product.images.length === 0
+    ) {
       return ['/noimage.png']
     }
-    return cartProduct.product.images.map((item) => getFileUrl(item.file))
+    return cartProduct.product.images.map((item) => getFileUrl(item.fileId))
   }, [cartProduct.product])
 
   const quantityMinusHandler = () => {
@@ -69,6 +73,10 @@ export function Product({ cartProduct }: ProductProps) {
       return <span className={styles.optionColor} style={{ backgroundColor: color.color }}></span>
     }
     return null
+  }
+
+  if (!cartProduct.product) {
+    throw new Error('Product not defined')
   }
 
   return (
@@ -163,17 +171,20 @@ export function Product({ cartProduct }: ProductProps) {
         {cartProduct.optionValues && cartProduct.optionValues.length > 0 && (
           <div className={styles.layouOptions}>
             <div className={styles.options}>
-              {cartProduct.optionValues?.map((optionValue) => (
-                <div key={optionValue.id} className={styles.option}>
-                  {typeof optionValue.option !== 'number' && (
-                    <div className={styles.optionLabel}>{optionValue.option.caption}:</div>
-                  )}
-                  {typeof optionValue.option !== 'number' &&
-                    optionValue.option.type === OptionType.COMBOCOLORS &&
-                    renderColor(optionValue.content)}
-                  <div className={styles.optionValue}>{optionValue.content}</div>
-                </div>
-              ))}
+              {cartProduct.optionValues?.map(({ optionValue }) => {
+                if (!optionValue) return null
+                return (
+                  <div key={optionValue.id} className={styles.option}>
+                    {optionValue.option && (
+                      <div className={styles.optionLabel}>{optionValue.option.caption}:</div>
+                    )}
+                    {optionValue.option &&
+                      optionValue.option.type === OptionType.COMBOCOLORS &&
+                      renderColor(optionValue.content)}
+                    <div className={styles.optionValue}>{optionValue.content}</div>
+                  </div>
+                )
+              })}
             </div>
           </div>
         )}

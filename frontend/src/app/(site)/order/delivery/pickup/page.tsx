@@ -18,20 +18,7 @@ export default function Page() {
     <PointsQuery>
       <Layout>
         <LayoutContent>
-          <div className="mb-6">
-            <Headline title="Способ получения" back={{ href: '/order', title: 'Назад' }} />
-          </div>
-          <TabMarker
-            items={[
-              { title: 'Самовывоз', name: DeliveryService.Pickup },
-              { title: 'Доставка', name: DeliveryService.Shipping }
-            ]}
-            size="lg"
-            selected={DeliveryService.Pickup}
-          />
-          <div className="mt-6 flex-grow overflow-auto">
-            <PointsList />
-          </div>
+          <PointsList />
         </LayoutContent>
         <LayoutMap>
           <PointsMap />

@@ -58,9 +58,6 @@ export class ProductsService {
 
     if (dto.withImages) {
       args.include.images = {
-        include: {
-          file: true
-        },
         where: {
           active: true
         },
@@ -136,16 +133,16 @@ export class ProductsService {
     args.skip = dto.skip
     args.take = dto.take
 
-    const rows = await this.prismaService.product.findMany(args)
+    let rows = await this.prismaService.product.findMany(args)
     const total = await this.prismaService.product.count({ where: args.where })
 
-    // if (dto.withOptions) {
-    //   await Promise.all(
-    //     rows.map(async (item) =>
-    //       wrap(item).assign({ options: await this.findProductOptions(item.id) })
-    //     )
-    //   )
-    // }
+    if (dto.withOptions) {
+      rows = await Promise.all(
+        rows.map(async (item) =>
+          Object.assign({}, item, { options: await this.findProductOptions(item.id) })
+        )
+      )
+    }
 
     return { rows, total, filters: this.productsFilterService.filters }
   }
@@ -189,11 +186,11 @@ export class ProductsService {
       args.where.active = true
     }
 
-    const product = await this.prismaService.product.findUnique(args)
+    let product = await this.prismaService.product.findUniqueOrThrow(args)
 
-    // if (dto?.withOptions) {
-    //   wrap(product).assign({ options: await this.findProductOptions(product.id) })
-    // }
+    if (dto?.withOptions) {
+      product = Object.assign({}, product, { options: await this.findProductOptions(product.id) })
+    }
 
     return product
   }
@@ -237,11 +234,11 @@ export class ProductsService {
       args.where.active = true
     }
 
-    const product = await this.prismaService.product.findUnique(args)
+    let product = await this.prismaService.product.findUniqueOrThrow(args)
 
-    // if (dto?.withOptions) {
-    //   wrap(product).assign({ options: await this.findProductOptions(product.id) })
-    // }
+    if (dto?.withOptions) {
+      product = Object.assign({}, product, { options: await this.findProductOptions(product.id) })
+    }
 
     return product
   }

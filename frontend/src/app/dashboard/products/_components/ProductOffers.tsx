@@ -50,7 +50,12 @@ export function ProductOffers({ productId, options }: ProductOffersProps) {
               {/* <TableCell className="font-medium">{offer.title}</TableCell> */}
               {options.map((option) => (
                 <TableCell key={option.id}>
-                  {offer.optionValues?.find((item) => item.option === option.id)?.content || '-'}
+                  {offer.optionValues?.find(({ optionValue }) => {
+                    if (!optionValue) {
+                      throw new Error('optionValue not included')
+                    }
+                    return optionValue.optionId === option.id
+                  })?.optionValue?.content || '-'}
                 </TableCell>
               ))}
               <TableCell>{offer.price}</TableCell>

@@ -1,87 +1,74 @@
-import {
-  Collection,
-  Entity,
-  Filter,
-  ManyToMany,
-  ManyToOne,
-  OneToMany,
-  PrimaryKey,
-  Property
-} from '@mikro-orm/core'
 import { Brand } from './brand.entity'
 import { Category } from './category.entity'
 import { Option } from './option.entity'
 import { ProductImage } from './product-image.entity'
 import { OptionValue } from './option-value.entity'
 import { Offer } from './offer.entity'
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity()
-@Filter({ name: 'active', cond: { active: { $eq: true } } })
-@Filter({ name: 'recent', cond: { recent: { $eq: true } } })
-@Filter({ name: 'favorite', cond: { favorite: { $eq: true } } })
-@Filter({ name: 'inStock', cond: { inStock: { $eq: true } } })
 export class Product {
-  @PrimaryKey()
+  @PrimaryGeneratedColumn()
   id: number
 
-  @Property({ nullable: true, type: 'varchar' })
+  @Column({ nullable: true, type: 'varchar' })
   remoteId?: string | null = null
 
-  @Property()
+  @Column()
   title: string
 
-  @Property({ nullable: true, type: 'varchar' })
+  @Column({ nullable: true, type: 'varchar' })
   longTitle?: string | null = null
 
-  @Property({ unique: true })
+  @Column({ unique: true })
   alias: string
 
-  @Property({ nullable: true, type: 'varchar' })
+  @Column({ nullable: true, type: 'varchar' })
   sku?: string | null = null
 
-  @Property({ default: 0 })
+  @Column({ default: 0 })
   rank: number = 0
 
-  @Property({ nullable: true, type: 'int' })
+  @Column({ nullable: true, type: 'int' })
   priceDecrease: number | null = null
 
-  @Property({ nullable: true, type: 'text' })
+  @Column({ nullable: true, type: 'text' })
   description: string | null = null
 
-  @Property({ nullable: true, type: 'text' })
+  @Column({ nullable: true, type: 'text' })
   specifications: string | null = null
 
-  @Property({ nullable: true, type: 'text' })
+  @Column({ nullable: true, type: 'text' })
   exploitation: string | null = null
 
-  @Property({ default: true })
+  @Column({ default: true })
   active: boolean = true
 
-  @Property({ default: true })
+  @Column({ default: true })
   inStock: boolean = true
 
-  @Property({ default: false })
+  @Column({ default: false })
   recent: boolean = false
 
-  @Property({ default: false })
+  @Column({ default: false })
   favorite: boolean = false
 
   @ManyToMany(() => Category, (category) => category.products)
-  categories = new Collection<Category>(this)
+  categories: Category[]
 
   @OneToMany(() => ProductImage, (image) => image.product)
-  images = new Collection<ProductImage>(this)
+  images: ProductImage[]
 
   @OneToMany(() => OptionValue, (optionValue) => optionValue.product)
-  optionValues = new Collection<OptionValue>(this)
+  optionValues: OptionValue[]
 
   @OneToMany(() => Offer, (offer) => offer.product)
-  offers = new Collection<Offer>(this)
+  offers: Offer[]
 
   @ManyToOne(() => Brand, { nullable: true })
   brand: Brand | null = null
 
   // для ручной подготовки опций товаров
-  @Property({ persist: false })
-  options?: Option[]
+  // @Column({ persist: false })
+  // options?: Option[]
 }

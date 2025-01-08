@@ -22,6 +22,9 @@ const DeliveryServiceNames: Record<DeliveryService, string> = {
 
 export default async function Page({ params: { hash } }: { params: { hash: string } }) {
   const order = await apiGet<OrderEntity>(`order/hash:${hash}`)
+  if (!order.delivery) {
+    throw new Error('delivery not defined')
+  }
   return (
     <SectionPage>
       <div className="max-w-7xl mx-auto">

@@ -101,15 +101,15 @@ export class PickupPointService {
   }
 
   async findAll(dto: FindAllPickupPointQueryDto) {
-    const where: Prisma.PickupPointWhereInput = {}
+    const where: Prisma.PickupPointFindManyArgs['where'] = {}
 
     if (dto.subject) {
       where.subjectName = { equals: dto.subject }
     }
 
-    return this.prismaService.pickupPoint.groupBy({
+    return this.prismaService.pickupPoint.findMany({
       where,
-      by: 'shortAddress'
+      orderBy: { type: 'desc' }
     })
   }
 

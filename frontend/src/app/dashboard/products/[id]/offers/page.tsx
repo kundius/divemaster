@@ -1,8 +1,7 @@
 import { apiGet } from '@/lib/api'
 import { withServerAuth } from '@/lib/api/with-server-auth'
-import { OfferEntity, OptionEntity, OptionType, ProductEntity } from '@/types'
+import { OptionType, ProductEntity } from '@/types'
 import { ProductOffers } from '../../_components/ProductOffers'
-import { getEntityId } from '@/lib/utils'
 
 export default async function Page({ params }: { params: { id: number } }) {
   const product = await apiGet<ProductEntity>(
@@ -16,9 +15,7 @@ export default async function Page({ params }: { params: { id: number } }) {
   )
 
   for (const option of comboOptions) {
-    option.values = (product.optionValues || []).filter(
-      (ov) => getEntityId(ov.option) === option.id
-    )
+    option.values = (product.optionValues || []).filter((ov) => ov.optionId === option.id)
   }
 
   return <ProductOffers productId={params.id} options={comboOptions} />

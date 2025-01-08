@@ -1,17 +1,17 @@
-import { Collection, Entity, ManyToMany, PrimaryKey, Property } from '@mikro-orm/core'
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany } from 'typeorm';
 import { Product } from './product.entity'
 
 @Entity()
 export class Brand {
-  @PrimaryKey()
+  @PrimaryGeneratedColumn()
   id: number
 
-  @Property({ nullable: true, type: 'varchar' })
+  @Column({ nullable: true, type: 'varchar' })
   remoteId?: string | null = null
 
-  @Property()
+  @Column()
   title: string
 
   @ManyToMany(() => Product)
-  products = new Collection<Product>(this)
+  products: Product[]
 }

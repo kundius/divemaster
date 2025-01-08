@@ -1,26 +1,26 @@
-import { Collection, Entity, ManyToMany, ManyToOne, PrimaryKey, Property } from '@mikro-orm/core'
+import { Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { OptionValue } from './option-value.entity'
 import { Product } from './product.entity'
 
 @Entity()
 export class Offer {
-  @PrimaryKey()
+  @PrimaryGeneratedColumn()
   id: number
 
-  @Property({ nullable: true, type: 'varchar' })
+  @Column({ nullable: true, type: 'varchar' })
   remoteId?: string | null = null
 
-  @Property({ nullable: true, type: 'varchar' })
+  @Column({ nullable: true, type: 'varchar' })
   title: string | null = null
 
-  @Property()
+  @Column()
   price: number
 
-  @Property({ default: 0 })
+  @Column({ default: 0 })
   rank: number = 0
 
   @ManyToMany(() => OptionValue)
-  optionValues = new Collection<OptionValue>(this)
+  optionValues: OptionValue[]
 
   @ManyToOne(() => Product)
   product!: Product

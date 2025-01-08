@@ -3,7 +3,7 @@ import { Container } from '@/components/site/Container'
 import { ApiTableData } from '@/lib/ApiTable/types'
 import { apiGet } from '@/lib/api'
 import { cn, getFileUrl } from '@/lib/utils'
-import { CategoryEntity, ProductEntity } from '@/types'
+import { CategoryEntity, CategoryProducts, ProductEntity } from '@/types'
 import { AddToCart } from './_components/AddToCart'
 import { DeliveryInfo } from './_components/DeliveryInfo'
 import { Description } from './_components/Description'
@@ -71,8 +71,9 @@ export default async function Page({ params: { alias } }: { params: { alias: str
   ]
 
   // TODO: вынести на сервер, что-то вроде parents или сразу breadcrumbs
-  const addParents = (categories: CategoryEntity[], parent: number | null) => {
-    for (const category of categories) {
+  const addParents = (categories: CategoryProducts[], parent: number | null) => {
+    for (const { category } of categories) {
+      if (!category) continue
       if (category.parent === parent) {
         crumbs.push({
           title: category.title,
@@ -96,7 +97,7 @@ export default async function Page({ params: { alias } }: { params: { alias: str
         </div>
         <div className={cn(styles.layout, 'mb-40')}>
           <div className={styles.layoutGallery}>
-            <Gallery items={product.images?.map((item) => getFileUrl(item.file)) || []} />
+            <Gallery items={product.images?.map((item) => getFileUrl(item.fileId)) || []} />
           </div>
           <div className={styles.layoutInfo}>
             <div className="flex items-center justify-between mb-2 max-md:mb-1">

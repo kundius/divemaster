@@ -71,10 +71,10 @@ export default async function Page({ params: { alias } }: { params: { alias: str
   ]
 
   // TODO: вынести на сервер, что-то вроде parents или сразу breadcrumbs
-  const addParents = (categories: CategoryProducts[], parent: number | null) => {
+  const addParents = (categories: CategoryProducts[], parentId: number | null) => {
     for (const { category } of categories) {
       if (!category) continue
-      if (category.parent === parent) {
+      if (category.parentId === parentId) {
         crumbs.push({
           title: category.title,
           href: `/category/${category.alias}`

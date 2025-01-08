@@ -136,7 +136,8 @@ export class CategoriesService {
     }
 
     if (typeof imageId !== 'undefined') {
-      data.image = imageId ? { connect: { id: imageId } } : {}
+      console.log(imageId)
+      data.image = imageId ? { connect: { id: imageId } } : { disconnect: true }
     }
 
     const category = await this.prismaService.category.update({ where: { id }, data })

@@ -21,8 +21,7 @@ export function ProductUpdate({ initialData }: ProductUpdateProps) {
       longTitle: initialData.longTitle,
       sku: initialData.sku,
       rank: initialData.rank,
-      brandId:
-        typeof initialData.brand === 'number' ? initialData.brand : initialData.brand?.id || null,
+      brandId: initialData.brandId || null,
       active: initialData.active,
       recent: initialData.recent,
       favorite: initialData.favorite,

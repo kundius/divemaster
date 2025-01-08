@@ -335,11 +335,11 @@ model Product {
   recent         Boolean            @default(false)
   favorite       Boolean            @default(false)
   brandId        Int?               @db.UnsignedInt
-  carts          CartProduct[]
+  cartProducts   CartProduct[]
   categories     CategoryProducts[]
   offers         Offer[]
   optionValues   OptionValue[]
-  orders         OrderProduct[]
+  orderProducts  OrderProduct[]
   brand          Brand?             @relation(fields: [brandId], references: [id])
   images         ProductImage[]
 

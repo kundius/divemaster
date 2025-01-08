@@ -48,26 +48,9 @@ export function ProductCategories({ productId }: ProductCategoriesProps) {
     return fn(categoriesQuery.data?.rows || [])
   }, [categoriesQuery.data])
 
-  // const nodes = useMemo(() => {
-  //   const list = categoriesQuery.data?.rows || []
-  //   const fn = (parentId: number | null): NodeType[] => {
-  //     return list
-  //       .filter((item) => item.parent === parentId)
-  //       .map((item) => {
-  //         const children = fn(item.id)
-  //         return {
-  //           label: item.title,
-  //           value: String(item.id),
-  //           children: children.length > 0 ? children : undefined
-  //         }
-  //       })
-  //   }
-  //   return fn(null)
-  // }, [categoriesQuery.data?.rows])
-
   useEffect(() => {
     setChecked(productCategoriesQuery.data?.map((item) => String(item.id)) || [])
-    setExpanded(productCategoriesQuery.data?.map((item) => String(item.parent)) || [])
+    setExpanded(productCategoriesQuery.data?.map((item) => String(item.parentId)) || [])
   }, [productCategoriesQuery.data])
 
   const checkTree = (value: string) => {
@@ -80,8 +63,8 @@ export function ProductCategories({ productId }: ProductCategoriesProps) {
           const item = arr[i]
           if (item.id === key) {
             res.push(String(item.id))
-            if (item.parent) {
-              forFn(data, typeof item.parent === 'number' ? item.parent : item.parent.id)
+            if (item.parentId) {
+              forFn(data, item.parentId)
             }
             break
           } else if (item.children) {
@@ -101,6 +84,7 @@ export function ProductCategories({ productId }: ProductCategoriesProps) {
     if (targetNode.checked) {
       next = [...next, ...checkTree(targetNode.value)]
     }
+    next = next.filter((v, i, s) => s.indexOf(v) === i)
     setChecked(next)
     await apiPatch(`products/${productId}/categories`, { categories: next }, withClientAuth())
   }

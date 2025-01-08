@@ -8,23 +8,27 @@ import { BlogTagCreateDto, BlogTagFindAllDto, BlogTagUpdateDto } from '../dto/bl
 export class BlogTagService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async makeUniqueAlias(from: string, n: number = 0) {
+  async makeAlias(from: string, unique: boolean = false) {
     let alias = slugify(from)
-    if (n !== 0) {
-      alias = `${alias}-${n}`
+
+    if (unique) {
+      const fn = async (n: number) => {
+        const tmp = n !== 0 ? `${alias}-${n}` : alias
+        const record = await this.prismaService.blogTag.findUnique({
+          where: { alias: tmp }
+        })
+        return record ? fn(n + 1) : tmp
+      }
+      alias = await fn(0)
     }
-    const record = await this.prismaService.blogTag.findUnique({ where: { alias } })
-    if (!record) {
-      return alias
-    } else {
-      return this.makeUniqueAlias(from, n + 1)
-    }
+
+    return alias
   }
 
   async create({ alias, metadata, ...fillable }: BlogTagCreateDto) {
     const data: Prisma.BlogTagCreateArgs['data'] = {
       ...fillable,
-      alias: await this.makeUniqueAlias(alias || fillable.name)
+      alias: await this.makeAlias(alias || fillable.name, true)
     }
 
     const record = await this.prismaService.blogTag.create({ data })
@@ -71,7 +75,7 @@ export class BlogTagService {
     const data: Prisma.BlogTagUpdateArgs['data'] = fillable
 
     if (typeof alias !== 'undefined' && alias !== record.alias) {
-      data.alias = await this.makeUniqueAlias(alias || record.name)
+      data.alias = await this.makeAlias(alias || record.name, true)
     }
 
     record = await this.prismaService.blogTag.update({
@@ -86,5 +90,24 @@ export class BlogTagService {
     const record = await this.prismaService.blogTag.delete({ where: { id } })
 
     return record
+  }
+
+  async findOrCreateTagsByName(names: string[]) {
+    return Promise.all(
+      names.map(async (name) => {
+        return await this.prismaService.blogTag.upsert({
+          where: {
+            alias: await this.makeAlias(name)
+          },
+          update: {
+            name
+          },
+          create: {
+            alias: await this.makeAlias(name, true),
+            name
+          }
+        })
+      })
+    )
   }
 }

@@ -5,14 +5,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryStates } from 'nuqs'
 import useSWR from 'swr'
-
 import { DataTable, DataTableColumn, DataTableFilterField } from '@/components/DataTable'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ApiRemoveDialog } from '@/lib/ApiRemoveDialog'
 import { clearEmpty, getFileUrl } from '@/lib/utils'
 import { BlogPostEntity, BlogTagEntity, FindAllResult } from '@/types'
-
 import { BlogPostStatusColors, BlogPostStatusIcons, BlogPostStatusLabels } from '../data'
 
 export interface BlogPostListProps {
@@ -81,11 +79,14 @@ export function BlogPostList({ fallbackData }: BlogPostListProps) {
               <div className="text-balance">{title}</div>
               {record.tags.length > 0 && (
                 <div className="flex gap-1.5 flex-wrap">
-                  {record.tags.map((tag) => (
-                    <Badge variant="outline" key={tag.id}>
-                      {tag.name}
-                    </Badge>
-                  ))}
+                  {record.tags.map(({ blogTag }) => {
+                    if (!blogTag) return
+                    return (
+                      <Badge variant="outline" key={blogTag.id}>
+                        {blogTag.name}
+                      </Badge>
+                    )
+                  })}
                 </div>
               )}
             </div>

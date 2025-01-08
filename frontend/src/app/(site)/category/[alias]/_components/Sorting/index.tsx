@@ -30,14 +30,14 @@ export function Sorting() {
   const changeHandler = (value: string) => {
     const arr = value.split(':')
     const sort = arr[0] || 'id'
-    const dir = arr[1] || 'ASC'
+    const dir = arr[1] || 'asc'
     onChangeSort(sort, dir)
   }
 
   const labels = {
-    'id:ASC': 'По популярности',
-    'price:ASC': 'Дешевле',
-    'price:DESC': 'Дороже'
+    'id:asc': 'По популярности',
+    'price:asc': 'Дешевле',
+    'price:desc': 'Дороже'
   }
   const labelKey = `${sort}:${dir}` as keyof typeof labels
 
@@ -49,9 +49,9 @@ export function Sorting() {
             <SelectValue placeholder={labels[labelKey]} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="id:ASC">{labels['id:ASC']}</SelectItem>
-            <SelectItem value="price:ASC">{labels['price:ASC']}</SelectItem>
-            <SelectItem value="price:DESC">{labels['price:DESC']}</SelectItem>
+            <SelectItem value="id:asc">{labels['id:asc']}</SelectItem>
+            <SelectItem value="price:asc">{labels['price:asc']}</SelectItem>
+            <SelectItem value="price:desc">{labels['price:desc']}</SelectItem>
           </SelectContent>
         </Select>
       </div>

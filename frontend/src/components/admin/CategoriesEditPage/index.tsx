@@ -23,12 +23,8 @@ export function CategoriesEditPage({ initialData }: CategoriesEditPageProps) {
       return values
     },
     defaultValues: {
-      parentId:
-        typeof initialData.parent === 'number'
-          ? initialData.parent
-          : initialData.parent?.id || null,
-      imageId:
-        typeof initialData.image === 'number' ? initialData.image : initialData.image?.id || null,
+      parentId: initialData.parentId,
+      imageId: initialData.imageId,
       active: initialData.active,
       rank: initialData.rank,
       description: initialData.description,

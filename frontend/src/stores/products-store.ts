@@ -49,7 +49,7 @@ export const defaultProductsStore = {
   limit: 24,
   filter: '{}',
   sort: 'id',
-  dir: 'ASC'
+  dir: 'asc'
 }
 
 export const createProductsStore = (options?: { categoryId?: number; favorite?: boolean }) => {

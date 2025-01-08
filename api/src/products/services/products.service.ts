@@ -84,7 +84,9 @@ export class ProductsService {
     }
 
     if (dto?.withCategories) {
-      args.include.categories = true
+      args.include.categories = {
+        include: { category: true }
+      }
     }
 
     if (!dto.withContent) {
@@ -175,7 +177,9 @@ export class ProductsService {
     }
 
     if (dto?.withCategories) {
-      args.include.categories = true
+      args.include.categories = {
+        include: { category: true }
+      }
     }
 
     if (!dto?.withContent) {
@@ -223,7 +227,9 @@ export class ProductsService {
     }
 
     if (dto?.withCategories) {
-      args.include.categories = true
+      args.include.categories = {
+        include: { category: true }
+      }
     }
 
     if (!dto?.withContent) {
@@ -330,25 +336,24 @@ export class ProductsService {
   }
 
   async findAllCategory(productId: number) {
-    const product = await this.prismaService.product.findUniqueOrThrow({
-      where: { id: productId },
-      include: { categories: true }
+    const categories = await this.prismaService.category.findMany({
+      where: { products: { some: { productId } } }
     })
-    return product.categories
+    return categories
   }
 
   async updateCategory(productId: number, { categories }: UpdateProductCategoryDto) {
-    const product = await this.prismaService.product.update({
+    await this.prismaService.product.update({
       where: { id: productId },
       data: {
         categories: {
-          set: categories.map((categoryId) => ({
-            categoryId_productId: { categoryId: +categoryId, productId: productId }
+          deleteMany: {},
+          create: categories.map((categoryId) => ({
+            category: { connect: { id: +categoryId } }
           }))
         }
       }
     })
-    return product
   }
 
   async findProductOptions(productId: number) {
@@ -495,7 +500,13 @@ export class ProductsService {
       orderBy: {
         rank: 'asc'
       },
-      include: { optionValues: true }
+      include: {
+        optionValues: {
+          include: {
+            optionValue: true
+          }
+        }
+      }
     })
   }
 

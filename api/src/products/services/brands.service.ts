@@ -25,6 +25,10 @@ export class BrandsService {
       args.where.title = { contains: dto.query }
     }
 
+    args.orderBy = { [dto.sort]: dto.dir.toLowerCase() }
+    args.skip = dto.skip
+    args.take = dto.take
+
     const rows = await this.prismaService.brand.findMany(args)
     const total = await this.prismaService.brand.count({ where: args.where })
 

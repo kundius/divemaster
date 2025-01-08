@@ -318,9 +318,9 @@ export interface OptionValueEntity {
 export enum OptionType {
   // CHECKBOX = 'checkbox',
   // COMBOMULTIPLE = 'combo-multiple',
-  COMBOBOOLEAN = 'combo-boolean',
-  COMBOCOLORS = 'combo-colors',
-  COMBOOPTIONS = 'combo-options',
+  COMBOBOOLEAN = 'combo_boolean',
+  COMBOCOLORS = 'combo_colors',
+  COMBOOPTIONS = 'combo_options',
   // COMBOBOX = 'combobox',
   // DATEFIELD = 'datefield',
   NUMBERFIELD = 'numberfield',
@@ -378,7 +378,7 @@ export interface BlogPostEntity {
   metadata: Record<string, string> | null
   createdAt: string
   updatedAt: string
-  tags: BlogTagEntity[]
+  tags: BlogTagPosts[]
   image: FileEntity | null
 }
 

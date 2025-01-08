@@ -3,28 +3,36 @@ import { PrismaService } from '@/prisma.service'
 import { Injectable } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { BlogPostCreateDto, BlogPostFindAllDto, BlogPostUpdateDto } from '../dto/blog-post.dto'
+import { BlogTagService } from './blog-tag.service'
 
 @Injectable()
 export class BlogPostService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly blogTagService: BlogTagService
+  ) {}
 
-  async makeUniqueAlias(from: string, n: number = 0) {
+  async makeAlias(from: string, unique: boolean = false) {
     let alias = slugify(from)
-    if (n !== 0) {
-      alias = `${alias}-${n}`
+
+    if (unique) {
+      const fn = async (n: number) => {
+        const tmp = n !== 0 ? `${alias}-${n}` : alias
+        const record = await this.prismaService.blogPost.findUnique({
+          where: { alias: tmp }
+        })
+        return record ? fn(n + 1) : tmp
+      }
+      alias = await fn(0)
     }
-    const record = await this.prismaService.blogPost.findUnique({ where: { alias } })
-    if (!record) {
-      return alias
-    } else {
-      return this.makeUniqueAlias(from, n + 1)
-    }
+
+    return alias
   }
 
   async create({ imageId, tags, alias, ...fillable }: BlogPostCreateDto) {
     const data: Prisma.BlogPostCreateArgs['data'] = {
       ...fillable,
-      alias: await this.makeUniqueAlias(alias || fillable.title)
+      alias: await this.makeAlias(alias || fillable.title, true)
     }
 
     if (typeof fillable.content !== 'undefined') {
@@ -36,8 +44,9 @@ export class BlogPostService {
     }
 
     if (typeof tags !== 'undefined') {
+      const tagEntities = await this.blogTagService.findOrCreateTagsByName(tags)
       data.tags = {
-        create: tags.map((tagId) => ({ blogTag: { connect: { id: +tagId } } }))
+        create: tagEntities.map((tag) => ({ blogTag: { connect: { id: tag.id } } }))
       }
     }
 
@@ -84,14 +93,28 @@ export class BlogPostService {
   async findOne(id: number) {
     return this.prismaService.blogPost.findUniqueOrThrow({
       where: { id },
-      include: { tags: true, image: true }
+      include: {
+        image: true,
+        tags: {
+          include: {
+            blogTag: true
+          }
+        }
+      }
     })
   }
 
   async findOneByAlias(alias: string) {
     return this.prismaService.blogPost.findUniqueOrThrow({
       where: { alias },
-      include: { tags: true, image: true }
+      include: {
+        image: true,
+        tags: {
+          include: {
+            blogTag: true
+          }
+        }
+      }
     })
   }
 
@@ -101,7 +124,7 @@ export class BlogPostService {
     const data: Prisma.BlogPostUpdateArgs['data'] = fillable
 
     if (typeof alias !== 'undefined' && alias !== record.alias) {
-      data.alias = await this.makeUniqueAlias(alias || record.title)
+      data.alias = await this.makeAlias(alias || record.title, true)
     }
 
     if (typeof fillable.content !== 'undefined') {
@@ -113,16 +136,24 @@ export class BlogPostService {
     }
 
     if (typeof tags !== 'undefined') {
+      const tagEntities = await this.blogTagService.findOrCreateTagsByName(tags)
       data.tags = {
         deleteMany: {},
-        create: tags.map((tagId) => ({ blogTag: { connect: { id: +tagId } } }))
+        create: tagEntities.map((tag) => ({ blogTag: { connect: { id: tag.id } } }))
       }
     }
 
     record = await this.prismaService.blogPost.update({
       where: { id },
       data,
-      include: { tags: true, image: true }
+      include: {
+        image: true,
+        tags: {
+          include: {
+            blogTag: true
+          }
+        }
+      }
     })
 
     return record

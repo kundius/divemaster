@@ -67,7 +67,7 @@ export function BlogPostForm({ record }: BlogPostFormProps) {
           alias: record.alias,
           title: record.title,
           imageId: record.image?.id || null,
-          tags: record.tags.map((item) => item.name)
+          tags: record.tags.map(({blogTag}) => blogTag.name)
         }
       : {
           status: BlogPostStatusEnum.Draft,

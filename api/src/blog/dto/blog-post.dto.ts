@@ -83,7 +83,7 @@ export class BlogPostFindAllDto extends PaginationQueryDto {
 
   @IsString()
   @IsOptional()
-  dir: 'asc' | 'desc' = 'asc'
+  dir: 'asc' | 'desc' = 'desc'
 }
 
 export class BlogPostFindOneDto {}

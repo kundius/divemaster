@@ -55,7 +55,7 @@ services:
     network_mode: "service:nginx"
     restart: unless-stopped
     working_dir: /divemaster/api
-    command: sh -c 'npm i && npm run build && npx mikro-orm migration:up && npm run start'
+    command: sh -c 'npm i && npm run build && npx prisma generate && npm run start'
 
   frontend:
     image: node:${NODE_VERSION:-21}

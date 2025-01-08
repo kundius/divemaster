@@ -91,13 +91,6 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.3.3"
   },
-  "mikro-orm": {
-    "useTsNode": true,
-    "configPaths": [
-      "./src/db/mikro-orm.config.ts",
-      "./dist/db/mikro-orm.config.js"
-    ]
-  },
   "jest": {
     "moduleFileExtensions": [
       "js",

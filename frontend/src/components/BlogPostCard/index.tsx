@@ -37,11 +37,14 @@ export function BlogPostCard({ record }: BlogPostCardProps) {
           {record.title}
         </Link>
         <div className={css.tags}>
-          {record.tags.map((tag) => (
-            <Link href={`/blog/tag/${tag.alias}`} key={tag.id} className={css.tag}>
-              {tag.name}
-            </Link>
-          ))}
+          {record.tags.map(({ blogTag }) => {
+            if (!blogTag) return
+            return (
+              <Link href={`/blog/tag/${blogTag.alias}`} key={blogTag.id} className={css.tag}>
+                {blogTag.name}
+              </Link>
+            )
+          })}
         </div>
       </div>
     </div>

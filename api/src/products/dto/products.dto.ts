@@ -1,9 +1,9 @@
 import { PaginationQueryDto } from '@/lib/pagination-query.dto'
 import { ParseBoolean } from '@/lib/parse-boolean'
 import { PartialType } from '@nestjs/mapped-types'
-import { Product } from '@prisma/client'
 import { Type } from 'class-transformer'
 import { IsArray, IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
+import { Product } from '../entities/product.entity'
 
 export class UpdateProductImageDto {
   @Type(() => Boolean)

@@ -2,7 +2,7 @@ import { PaginationQueryDto } from '@/lib/pagination-query.dto'
 import { PartialType } from '@nestjs/mapped-types'
 import { Type } from 'class-transformer'
 import { IsArray, IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
-import { $Enums, Option } from '@prisma/client'
+import { Option, OptionType } from '../entities/option.entity'
 
 export class CreateOptionDto {
   @Type(() => String)
@@ -13,8 +13,8 @@ export class CreateOptionDto {
   @IsString()
   caption: string
 
-  @IsEnum($Enums.OptionType)
-  type: $Enums.OptionType
+  @IsEnum(OptionType)
+  type: OptionType
 
   @Type(() => Boolean)
   @IsBoolean()

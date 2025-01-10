@@ -171,8 +171,7 @@ export function Product({ cartProduct }: ProductProps) {
         {cartProduct.optionValues && cartProduct.optionValues.length > 0 && (
           <div className={styles.layouOptions}>
             <div className={styles.options}>
-              {cartProduct.optionValues?.map(({ optionValue }) => {
-                if (!optionValue) return null
+              {cartProduct.optionValues?.map((optionValue) => {
                 return (
                   <div key={optionValue.id} className={styles.option}>
                     {optionValue.option && (

@@ -1,12 +1,16 @@
 import { slugify } from '@/lib/utils'
-import { PrismaService } from '@/prisma.service'
 import { Injectable } from '@nestjs/common'
-import { Prisma } from '@prisma/client'
 import { BlogTagCreateDto, BlogTagFindAllDto, BlogTagUpdateDto } from '../dto/blog-tag.dto'
+import { InjectRepository } from '@nestjs/typeorm'
+import { FindOptionsRelations, FindOptionsWhere, Like, Repository } from 'typeorm'
+import { BlogTag } from '../entities/blog-tag.entity'
 
 @Injectable()
 export class BlogTagService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    @InjectRepository(BlogTag)
+    private blogTagRepository: Repository<BlogTag>
+  ) {}
 
   async makeAlias(from: string, unique: boolean = false) {
     let alias = slugify(from)
@@ -14,7 +18,7 @@ export class BlogTagService {
     if (unique) {
       const fn = async (n: number) => {
         const tmp = n !== 0 ? `${alias}-${n}` : alias
-        const record = await this.prismaService.blogTag.findUnique({
+        const record = await this.blogTagRepository.findOne({
           where: { alias: tmp }
         })
         return record ? fn(n + 1) : tmp
@@ -26,87 +30,83 @@ export class BlogTagService {
   }
 
   async create({ alias, metadata, ...fillable }: BlogTagCreateDto) {
-    const data: Prisma.BlogTagCreateArgs['data'] = {
-      ...fillable,
-      alias: await this.makeAlias(alias || fillable.name, true)
-    }
+    const record = new BlogTag()
 
-    const record = await this.prismaService.blogTag.create({ data })
+    this.blogTagRepository.merge(record, fillable)
+
+    record.alias = await this.makeAlias(alias || fillable.name, true)
+
+    await this.blogTagRepository.save(record)
 
     return record
   }
 
-  // TODO_PRISMA добавить количество постов
+  // TODO добавить количество постов
   async findAll(dto: BlogTagFindAllDto) {
-    const args: Prisma.BlogTagFindManyArgs = {}
-
-    args.where = {}
-    args.include = {}
+    const where: FindOptionsWhere<BlogTag> = {}
+    const relations: FindOptionsRelations<BlogTag> = {}
 
     if (dto.query) {
-      args.where.name = { contains: dto.query }
+      where.name = Like(dto.query)
     }
 
-    args.orderBy = { [dto.sort]: dto.dir }
-    args.skip = dto.skip
-    args.take = dto.take
-
-    const rows = await this.prismaService.blogTag.findMany(args)
-    const total = await this.prismaService.blogTag.count({ where: args.where })
+    const [rows, total] = await this.blogTagRepository.findAndCount({
+      where,
+      relations,
+      order: { [dto.sort]: dto.dir },
+      skip: dto.skip,
+      take: dto.take
+    })
 
     return { rows, total }
   }
 
   async findOne(id: number) {
-    return this.prismaService.blogTag.findUniqueOrThrow({ where: { id } })
+    return this.blogTagRepository.findOneOrFail({ where: { id } })
   }
 
   async findOneByAlias(alias: string) {
-    return this.prismaService.blogTag.findUniqueOrThrow({ where: { alias } })
+    return this.blogTagRepository.findOneOrFail({ where: { alias } })
   }
 
   async findOneByName(name: string) {
-    return this.prismaService.blogTag.findFirstOrThrow({ where: { name } })
+    return this.blogTagRepository.findOneOrFail({ where: { name } })
   }
 
   async update(id: number, { alias, ...fillable }: BlogTagUpdateDto) {
-    let record = await this.findOne(id)
+    const record = await this.blogTagRepository.findOneOrFail({
+      where: { id }
+    })
 
-    const data: Prisma.BlogTagUpdateArgs['data'] = fillable
+    this.blogTagRepository.merge(record, fillable)
 
     if (typeof alias !== 'undefined' && alias !== record.alias) {
-      data.alias = await this.makeAlias(alias || record.name, true)
+      record.alias = await this.makeAlias(alias || record.name, true)
     }
 
-    record = await this.prismaService.blogTag.update({
-      where: { id },
-      data
-    })
+    await this.blogTagRepository.save(record)
 
     return record
   }
 
   async remove(id: number) {
-    const record = await this.prismaService.blogTag.delete({ where: { id } })
-
-    return record
+    await this.blogTagRepository.delete({ id })
   }
 
   async findOrCreateTagsByName(names: string[]) {
     return Promise.all(
       names.map(async (name) => {
-        return await this.prismaService.blogTag.upsert({
-          where: {
-            alias: await this.makeAlias(name)
-          },
-          update: {
-            name
-          },
-          create: {
-            alias: await this.makeAlias(name, true),
-            name
-          }
-        })
+        const alias = await this.makeAlias(name)
+        let record = await this.blogTagRepository.findOneBy({ alias })
+        if (record) {
+          record.name = name
+        } else {
+          record = new BlogTag()
+          record.name = name
+          record.alias = alias
+        }
+        await this.blogTagRepository.save(record)
+        return record
       })
     )
   }

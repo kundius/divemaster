@@ -1,77 +1,86 @@
-import { PrismaService } from '@/prisma.service'
 import { Injectable } from '@nestjs/common'
-import { Prisma, User } from '@prisma/client'
 import { hash, verify } from 'argon2'
 import { CreateUserDto, FindAllUserQueryDto, UpdateUserDto } from '../dto/users.dto'
+import { InjectRepository } from '@nestjs/typeorm'
+import { FindOptionsRelations, FindOptionsWhere, In, Like, Repository } from 'typeorm'
+import { User } from '../entities/user.entity'
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    @InjectRepository(User)
+    private userRepository: Repository<User>
+  ) {}
 
   async create({ roleId, password, ...fillable }: CreateUserDto) {
-    const user = await this.prismaService.user.create({
-      data: {
-        ...fillable,
-        roleId,
-        password: await this.generatePasswordHash(password)
-      }
-    })
-    return user
+    const record = new User()
+
+    this.userRepository.merge(record, fillable)
+
+    record.roleId = roleId
+    record.password = await this.generatePasswordHash(password)
+
+    await this.userRepository.save(record)
+
+    return record
   }
 
   findOneByEmail(email: string): Promise<User> {
-    return this.prismaService.user.findUniqueOrThrow({ where: { email } })
+    return this.userRepository.findOneByOrFail({ email })
   }
 
   async findAll(dto: FindAllUserQueryDto) {
-    const where: Prisma.UserWhereInput = {}
+    const where: FindOptionsWhere<User> = {}
+    const relations: FindOptionsRelations<User> = {}
+
+    relations.role = true
 
     if (dto.query) {
-      where.OR = [{ name: { contains: dto.query } }, { email: { contains: dto.query } }]
+      where.name = dto.query
     }
 
     if (dto.roles) {
-      where.role = { title: { in: dto.roles } }
+      where.role = { title: In(dto.roles) }
     }
 
-    const rows = await this.prismaService.user.findMany({
+    const [rows, total] = await this.userRepository.findAndCount({
       where,
-      orderBy: { [dto.sort]: dto.dir },
-      take: dto.take,
+      relations,
+      order: { [dto.sort]: dto.dir },
       skip: dto.skip,
-      include: { role: true }
+      take: dto.take
     })
-    const total = await this.prismaService.user.count({ where })
 
     return { rows, total }
   }
 
   async findOne(id: number) {
-    return this.prismaService.user.findUniqueOrThrow({
+    return this.userRepository.findOneOrFail({
       where: { id },
-      include: { role: true, cart: true }
+      relations: { role: true, cart: true }
     })
   }
 
   async update(id: number, { roleId, password, ...fillable }: UpdateUserDto) {
-    const data: Prisma.UserUpdateInput = { ...fillable }
+    const record = await this.userRepository.findOneByOrFail({ id })
+
+    this.userRepository.merge(record, fillable)
 
     if (typeof roleId !== 'undefined') {
-      data.role = { connect: { id: roleId } }
+      record.roleId = roleId
     }
 
     if (typeof password !== 'undefined') {
-      data.password = await this.generatePasswordHash(password)
+      record.password = await this.generatePasswordHash(password)
     }
 
-    await this.prismaService.user.update({
-      where: { id },
-      data
-    })
+    await this.userRepository.save(record)
+
+    return record
   }
 
   async remove(id: number) {
-    await this.prismaService.user.delete({ where: { id } })
+    await this.userRepository.delete({ id })
   }
 
   async generatePasswordHash(password: string): Promise<string> {

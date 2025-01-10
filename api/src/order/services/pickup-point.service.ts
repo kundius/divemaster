@@ -1,13 +1,14 @@
-import { PrismaService } from '@/prisma.service'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { $Enums, PickupPoint, Prisma } from '@prisma/client'
 import fetch from 'node-fetch'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { v4 } from 'uuid'
 import { FindAllPickupPointQueryDto } from '../dto/pickup-point.dto'
+import { InjectRepository } from '@nestjs/typeorm'
+import { FindOptionsWhere, Repository } from 'typeorm'
+import { PickupPoint, PickupPointTypeEnum } from '../entities/pickup-point.entity'
 
 type DataSubjects = {
   district: string
@@ -92,24 +93,25 @@ interface ServicePointsResult {
 @Injectable()
 export class PickupPointService {
   constructor(
-    private readonly prismaService: PrismaService,
+    @InjectRepository(PickupPoint)
+    private pickupPointRepository: Repository<PickupPoint>,
     private configService: ConfigService
   ) {}
 
   async findOne(id: string): Promise<PickupPoint | null> {
-    return this.prismaService.pickupPoint.findUnique({ where: { id } })
+    return this.pickupPointRepository.findOne({ where: { id } })
   }
 
   async findAll(dto: FindAllPickupPointQueryDto) {
-    const where: Prisma.PickupPointFindManyArgs['where'] = {}
+    const where: FindOptionsWhere<PickupPoint> = {}
 
     if (dto.subject) {
-      where.subjectName = { equals: dto.subject }
+      where.subjectName = dto.subject
     }
 
-    return this.prismaService.pickupPoint.findMany({
+    return this.pickupPointRepository.find({
       where,
-      orderBy: { type: 'desc' }
+      order: { type: 'desc' }
     })
   }
 
@@ -126,10 +128,8 @@ export class PickupPointService {
     const countryFilter = 'filter[2][type]=eq&filter[2][field]=country&filter[2][value]=28' // только по России
     const activeFilter = 'filter[3][type]=eq&filter[3][field]=state&filter[3][value]=active' // только активные
 
-    await this.prismaService.pickupPoint.deleteMany({
-      where: {
-        type: $Enums.PickupPointType.cdek
-      }
+    await this.pickupPointRepository.delete({
+      type: PickupPointTypeEnum.cdek
     })
 
     let count = 0
@@ -162,40 +162,39 @@ export class PickupPointService {
             continue
           }
 
-          await this.prismaService.pickupPoint.create({
-            data: {
-              id: v4(),
-              type: $Enums.PickupPointType.cdek,
+          const record = new PickupPoint()
+          this.pickupPointRepository.merge(record, {
+            type: PickupPointTypeEnum.cdek,
 
-              // регион из базы регионов
-              districtName: subject.district,
-              subjectName: subject.name,
+            // регион из базы регионов
+            districtName: subject.district,
+            subjectName: subject.name,
 
-              // поля города
-              cityType: locality.type.toLowerCase(),
-              cityName: locality.name,
+            // поля города
+            cityType: locality.type.toLowerCase(),
+            cityName: locality.name,
 
-              // необязательные поля
-              email: raw.email,
-              note: raw.note,
-              phone: raw.phone,
+            // необязательные поля
+            email: raw.email,
+            note: raw.note,
+            phone: raw.phone,
 
-              // булевые поля
-              allowedCod: raw.allowedCod,
-              haveCash: raw.haveCash,
-              haveCashless: raw.haveCashless,
-              isDressingRoom: raw.isDressingRoom,
-              isReception: raw.isReception,
+            // булевые поля
+            allowedCod: raw.allowedCod,
+            haveCash: raw.haveCash,
+            haveCashless: raw.haveCashless,
+            isDressingRoom: raw.isDressingRoom,
+            isReception: raw.isReception,
 
-              // остальное
-              name: raw.name,
-              lat: Number(raw.coordY),
-              lon: Number(raw.coordX),
-              fullAddress: raw.fullAddress,
-              shortAddress: raw.address,
-              workTime: raw.workTime
-            }
+            // остальное
+            name: raw.name,
+            lat: Number(raw.coordY),
+            lon: Number(raw.coordX),
+            fullAddress: raw.fullAddress,
+            shortAddress: raw.address,
+            workTime: raw.workTime
           })
+          await this.pickupPointRepository.save(record)
           count++
         }
 

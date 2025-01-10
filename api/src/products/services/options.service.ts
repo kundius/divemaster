@@ -1,6 +1,4 @@
-import { PrismaService } from '@/prisma.service'
 import { Injectable } from '@nestjs/common'
-import { Prisma } from '@prisma/client'
 import {
   CreateOptionDto,
   FindAllOptionCategoriesDto,
@@ -9,80 +7,102 @@ import {
   UpdateOptionCategoriesDto,
   UpdateOptionDto
 } from '../dto/options.dto'
+import { InjectRepository } from '@nestjs/typeorm'
+import { FindOptionsRelations, FindOptionsWhere, Like, Repository } from 'typeorm'
+import { Option } from '../entities/option.entity'
+import { Category } from '../entities/category.entity'
 
 @Injectable()
 export class OptionsService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    @InjectRepository(Option)
+    private optionRepository: Repository<Option>,
+    @InjectRepository(Category)
+    private categoryRepository: Repository<Category>
+  ) {}
 
   async create({ ...fillable }: CreateOptionDto) {
-    const option = await this.prismaService.option.create({ data: { ...fillable } })
-    return option
+    const record = new Option()
+
+    this.optionRepository.merge(record, fillable)
+
+    await this.optionRepository.save(record)
+
+    return record
   }
 
   async findAll(dto: FindAllOptionDto) {
-    const args: Prisma.OptionFindManyArgs = {}
-    args.where = {}
+    const where: FindOptionsWhere<Option> = {}
+    const relations: FindOptionsRelations<Option> = {}
 
     if (dto.query) {
-      args.where.caption = { contains: dto.query }
+      where.caption = Like(dto.query)
     }
 
-    args.take = dto.take
-    args.skip = dto.skip
-    args.orderBy = { [dto.sort]: dto.dir }
-
-    const rows = await this.prismaService.option.findMany(args)
-    const total = await this.prismaService.option.count({ where: args.where })
+    const [rows, total] = await this.optionRepository.findAndCount({
+      where,
+      relations,
+      order: { [dto.sort]: dto.dir },
+      skip: dto.skip,
+      take: dto.take
+    })
 
     return { rows, total }
   }
 
   async findOne(id: number, dto?: FindOneOptionDto) {
-    const option = await this.prismaService.option.findUniqueOrThrow({ where: { id } })
-    return option
+    return this.optionRepository.findOneByOrFail({ id })
   }
 
   async update(id: number, { ...fillable }: UpdateOptionDto) {
-    const option = await this.prismaService.option.update({
-      where: { id },
-      data: { ...fillable }
-    })
-    return option
+    const record = await this.optionRepository.findOneByOrFail({ id })
+
+    this.optionRepository.merge(record, fillable)
+
+    await this.optionRepository.save(record)
+
+    return record
   }
 
   async remove(id: number) {
-    const option = await this.prismaService.option.delete({ where: { id } })
-    return option
+    await this.optionRepository.delete({ id })
   }
 
   async findAllCategories(optionId: number, query?: FindAllOptionCategoriesDto) {
-    const categories = await this.prismaService.category.findMany({
-      where: { options: { some: { optionId } } }
+    const record = await this.optionRepository.findOneOrFail({
+      where: { id: optionId },
+      relations: {
+        categories: true
+      }
     })
-    return categories
+    return record.categories
   }
 
-  async updateCategories(optionId: number, { categories }: UpdateOptionCategoriesDto) {
-    const option = await this.prismaService.option.update({
-      where: { id: optionId },
-      data: {
-        categories: {
-          deleteMany: {},
-          create: categories.map((id) => ({
-            category: { connect: { id: +id } }
-          }))
-        }
-      },
-      include: { categories: { include: { category: true } } }
+  async updateCategories(id: number, { categories }: UpdateOptionCategoriesDto) {
+    const record = await this.optionRepository.findOneOrFail({
+      where: { id },
+      relations: {
+        categories: true
+      }
     })
-    return option.categories.map((item) => item.category)
+
+    record.categories = await Promise.all(
+      categories.map(async (cat) => this.categoryRepository.findOneByOrFail({ id: +cat }))
+    )
+
+    await this.optionRepository.save(record)
+
+    return record.categories
   }
 
   async findAllValues(optionId: number) {
-    const optionValues = await this.prismaService.optionValue.groupBy({
-      by: ['content'],
-      where: { option: { id: optionId } }
+    // TODO: make query builder and group by
+    const record = await this.optionRepository.findOneOrFail({
+      where: { id: optionId },
+      relations: { values: true }
     })
-    return optionValues.map((item) => item.content)
+    const contents = record.values.map((item) => item.content)
+    const values = contents.filter((v, i, a) => a.indexOf(v) === i)
+    return values
   }
 }

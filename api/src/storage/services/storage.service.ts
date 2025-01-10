@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import { InjectRepository } from '@nestjs/typeorm'
 import {
   createReadStream,
   createWriteStream,
@@ -11,24 +12,25 @@ import {
 import { sync as md5FileSync } from 'md5-file'
 import * as stream from 'node:stream'
 import { basename, dirname, join } from 'path'
-import { PrismaService } from '@/prisma.service'
-import { File } from '@prisma/client'
+import { Repository } from 'typeorm'
+import { File } from '../entities/file.entity'
 
 const mime = require('mime-types')
 
 @Injectable()
 export class StorageService {
   constructor(
-    private readonly prismaService: PrismaService,
+    @InjectRepository(File)
+    private fileRepository: Repository<File>,
     private configService: ConfigService
   ) {}
 
   async findOne(id: number): Promise<File | null> {
-    return this.prismaService.file.findUnique({ where: { id } })
+    return this.fileRepository.findOne({ where: { id } })
   }
 
   async findOneOrFail(id: number): Promise<File> {
-    return this.prismaService.file.findUniqueOrThrow({ where: { id } })
+    return this.fileRepository.findOneOrFail({ where: { id } })
   }
 
   fullPath(path: string) {
@@ -56,15 +58,15 @@ export class StorageService {
 
     await this.fsMove(upload.path, path)
 
-    const file = await this.prismaService.file.create({
-      data: {
-        file: upload.originalname,
-        path: path,
-        size: upload.size,
-        type: upload.mimetype,
-        hash: md5FileSync(upload.path)
-      }
+    const file = new File()
+    this.fileRepository.merge(file, {
+      file: upload.originalname,
+      path: path,
+      size: upload.size,
+      type: upload.mimetype,
+      hash: md5FileSync(upload.path)
     })
+    await this.fileRepository.save(file)
 
     return file
   }
@@ -72,15 +74,15 @@ export class StorageService {
   async createFromBuffer(data: Buffer, path: string): Promise<File> {
     await this.uploadBuffer(data, path)
 
-    const file = await this.prismaService.file.create({
-      data: {
-        file: basename(path),
-        path: path,
-        size: Buffer.byteLength(data),
-        type: mime.lookup(path),
-        hash: md5FileSync(this.fullPath(path))
-      }
+    const file = new File()
+    this.fileRepository.merge(file, {
+      file: basename(path),
+      path: path,
+      size: Buffer.byteLength(data),
+      type: mime.lookup(path),
+      hash: md5FileSync(this.fullPath(path))
     })
+    await this.fileRepository.save(file)
 
     return file
   }
@@ -115,7 +117,7 @@ export class StorageService {
     const file = await this.findOne(fileId)
     if (file) {
       await this.unlink(file)
-      await this.prismaService.file.delete({ where: { id: file.id } })
+      await this.fileRepository.delete({ id: file.id })
     }
   }
 

@@ -15,14 +15,11 @@ export function PostFooter({ record }: PostFooterProps) {
     <div className={css.footer}>
       {record.tags.length > 0 && (
         <div className={css.tags}>
-          {record.tags.map(({ blogTag }) => {
-            if (!blogTag) return
-            return (
-              <Link href={`/blog/tag/${blogTag.alias}`} key={blogTag.id}>
-                <Badge variant="outline">{blogTag.name}</Badge>
-              </Link>
-            )
-          })}
+          {record.tags.map((blogTag) => (
+            <Link href={`/blog/tag/${blogTag.alias}`} key={blogTag.id}>
+              <Badge variant="outline">{blogTag.name}</Badge>
+            </Link>
+          ))}
         </div>
       )}
       <div className={css.share}>

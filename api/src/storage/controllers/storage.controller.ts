@@ -17,7 +17,7 @@ import { Response } from 'express'
 import { diskStorage } from 'multer'
 import { unlink } from 'node:fs/promises'
 import { StorageService } from '../services/storage.service'
-import { User } from '@prisma/client'
+import { User } from '@/users/entities/user.entity'
 
 @Controller('storage')
 export class StorageController {

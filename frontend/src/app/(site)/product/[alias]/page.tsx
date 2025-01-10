@@ -3,7 +3,7 @@ import { Container } from '@/components/site/Container'
 import { ApiTableData } from '@/lib/ApiTable/types'
 import { apiGet } from '@/lib/api'
 import { cn, getFileUrl } from '@/lib/utils'
-import { CategoryEntity, CategoryProducts, ProductEntity } from '@/types'
+import { CategoryEntity, ProductEntity } from '@/types'
 import { AddToCart } from './_components/AddToCart'
 import { DeliveryInfo } from './_components/DeliveryInfo'
 import { Description } from './_components/Description'
@@ -71,8 +71,8 @@ export default async function Page({ params: { alias } }: { params: { alias: str
   ]
 
   // TODO: вынести на сервер, что-то вроде parents или сразу breadcrumbs
-  const addParents = (categories: CategoryProducts[], parentId: number | null) => {
-    for (const { category } of categories) {
+  const addParents = (categories: CategoryEntity[], parentId: number | null) => {
+    for (const category of categories) {
       if (!category) continue
       if (category.parentId === parentId) {
         crumbs.push({

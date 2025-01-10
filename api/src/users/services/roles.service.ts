@@ -1,59 +1,64 @@
-import { PrismaService } from '@/prisma.service'
 import { Injectable } from '@nestjs/common'
-import { Prisma, Role } from '@prisma/client'
 import { CreateRoleDto, FindAllRoleQueryDto, UpdateRoleDto } from '../dto/roles.dto'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Role } from '../entities/role.entity'
+import { ArrayContains, FindOptionsRelations, FindOptionsWhere, Like, Repository } from 'typeorm'
 
 @Injectable()
 export class RolesService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    @InjectRepository(Role)
+    private roleRepository: Repository<Role>
+  ) {}
 
-  async create(dto: CreateRoleDto): Promise<Role> {
-    const role = await this.prismaService.role.create({
-      data: {
-        title: dto.title,
-        scope: dto.scope
-      }
-    })
-    return role
+  async create(fillable: CreateRoleDto): Promise<Role> {
+    const record = new Role()
+
+    this.roleRepository.merge(record, fillable)
+
+    await this.roleRepository.save(record)
+
+    return record
   }
 
   async findAll(dto: FindAllRoleQueryDto) {
-    const where: Prisma.RoleWhereInput = {}
+    const where: FindOptionsWhere<Role> = {}
+    const relations: FindOptionsRelations<Role> = {}
 
     if (dto.query) {
-      where.title = { contains: dto.query }
+      where.title = Like(dto.query)
     }
 
     if (dto.scope) {
-      where.scope = {
-        array_contains: dto.scope
-      }
+      where.scope = ArrayContains(dto.scope)
     }
 
-    const rows = await this.prismaService.role.findMany({
+    const [rows, total] = await this.roleRepository.findAndCount({
       where,
-      take: dto.take,
+      relations,
+      order: { [dto.sort]: dto.dir },
       skip: dto.skip,
-      orderBy: { [dto.sort]: dto.dir }
+      take: dto.take
     })
-    const total = await this.prismaService.role.count({ where })
 
     return { rows, total }
   }
 
   async findOne(id: number) {
-    return this.prismaService.role.findUniqueOrThrow({ where: { id } })
+    return this.roleRepository.findOneByOrFail({ id })
   }
 
-  async update(id: number, updateRoleDto: UpdateRoleDto) {
-    const role = await this.prismaService.role.update({
-      where: { id },
-      data: updateRoleDto
-    })
-    return role
+  async update(id: number, fillable: UpdateRoleDto) {
+    const record = await this.roleRepository.findOneByOrFail({ id })
+
+    this.roleRepository.merge(record, fillable)
+
+    await this.roleRepository.save(record)
+
+    return record
   }
 
   async remove(id: number) {
-    await this.prismaService.role.delete({ where: { id } })
+    await this.roleRepository.delete({ id })
   }
 }

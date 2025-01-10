@@ -1,9 +1,9 @@
 import { PaginationQueryDto } from '@/lib/pagination-query.dto'
 import { ParseObject } from '@/lib/parse-object'
 import { PartialType } from '@nestjs/mapped-types'
-import { BlogTag } from '@prisma/client'
 import { Type } from 'class-transformer'
 import { IsObject, IsOptional, IsString } from 'class-validator'
+import { BlogTag } from '../entities/blog-tag.entity'
 
 export class BlogTagCreateDto {
   @Type(() => String)

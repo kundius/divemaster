@@ -79,14 +79,11 @@ export function BlogPostList({ fallbackData }: BlogPostListProps) {
               <div className="text-balance">{title}</div>
               {record.tags.length > 0 && (
                 <div className="flex gap-1.5 flex-wrap">
-                  {record.tags.map(({ blogTag }) => {
-                    if (!blogTag) return
-                    return (
-                      <Badge variant="outline" key={blogTag.id}>
-                        {blogTag.name}
-                      </Badge>
-                    )
-                  })}
+                  {record.tags.map((blogTag) => (
+                    <Badge variant="outline" key={blogTag.id}>
+                      {blogTag.name}
+                    </Badge>
+                  ))}
                 </div>
               )}
             </div>

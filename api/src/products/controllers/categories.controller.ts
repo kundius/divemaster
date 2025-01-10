@@ -16,14 +16,10 @@ import {
   FindOneCategoryQueryDto,
   UpdateCategoryDto
 } from '../dto/categories.dto'
-import { ProductsFilterService } from '../services/products-filter.service'
 
 @Controller('categories')
 export class CategoriesController {
-  constructor(
-    private readonly categoriesService: CategoriesService,
-    private readonly productsFilterService: ProductsFilterService
-  ) {}
+  constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
   create(@Body() dto: CreateCategoryDto) {

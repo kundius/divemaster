@@ -1,8 +1,10 @@
-import { PrismaService } from '@/prisma.service'
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { Payment } from '@prisma/client'
 import { PaymentService } from './payment.service'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
+import { Order } from '../entities/order.entity'
+import { Payment } from '../entities/payment.entity'
 
 export interface YookassaServiceCheckoutDto {
   type: string
@@ -24,7 +26,10 @@ export interface YookassaServiceCheckoutDto {
 @Injectable()
 export class YookassaService implements PaymentService {
   constructor(
-    private readonly prismaService: PrismaService,
+    @InjectRepository(Order)
+    private orderRepository: Repository<Order>,
+    @InjectRepository(Payment)
+    private paymentRepository: Repository<Payment>,
     private readonly configService: ConfigService
   ) {}
 
@@ -38,7 +43,7 @@ export class YookassaService implements PaymentService {
   }
 
   async process(payment: Payment) {
-    const order = await this.prismaService.order.findFirstOrThrow({
+    const order = await this.orderRepository.findOneOrFail({
       where: {
         payment: { id: payment.id }
       }
@@ -78,13 +83,13 @@ export class YookassaService implements PaymentService {
 
     const data = await response.json()
 
-    await this.prismaService.payment.update({
-      where: { id: payment.id },
-      data: {
+    await this.paymentRepository.update(
+      { id: payment.id },
+      {
         link: data.confirmation.confirmation_url,
         remoteId: data.id
       }
-    })
+    )
   }
 
   async checkout(payment: Payment, dto: YookassaServiceCheckoutDto) {
@@ -95,28 +100,28 @@ export class YookassaService implements PaymentService {
     }
 
     if (dto.object.status === 'succeeded') {
-      await this.prismaService.payment.update({
-        where: { id: payment.id },
-        data: {
-          paid: 1,
+      await this.paymentRepository.update(
+        { id: payment.id },
+        {
+          paid: true,
           paidAt: new Date()
         }
-      })
+      )
     }
 
     if (dto.object.status === 'canceled') {
-      await this.prismaService.payment.update({
-        where: { id: payment.id },
-        data: {
-          paid: 0,
+      await this.paymentRepository.update(
+        { id: payment.id },
+        {
+          paid: false,
           paidAt: new Date()
         }
-      })
+      )
     }
   }
 
   async getSuccessUrl(payment: Payment) {
-    const order = await this.prismaService.order.findFirstOrThrow({
+    const order = await this.orderRepository.findOneOrFail({
       where: {
         payment: { id: payment.id }
       }
@@ -130,7 +135,7 @@ export class YookassaService implements PaymentService {
       return null
     }
 
-    const order = await this.prismaService.order.findFirstOrThrow({
+    const order = await this.orderRepository.findOneOrFail({
       where: {
         payment: { id: payment.id }
       }

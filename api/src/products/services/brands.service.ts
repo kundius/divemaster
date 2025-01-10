@@ -1,62 +1,62 @@
-import { PrismaService } from '@/prisma.service'
 import { Injectable } from '@nestjs/common'
-import { Prisma } from '@prisma/client'
+import { InjectRepository } from '@nestjs/typeorm'
+import { FindOptionsRelations, FindOptionsWhere, Like, Repository } from 'typeorm'
 import { CreateBrandDto, FindAllBrandQueryDto, UpdateBrandDto } from '../dto/brands.dto'
+import { Brand } from '../entities/brand.entity'
 
 @Injectable()
 export class BrandsService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    @InjectRepository(Brand)
+    private brandRepository: Repository<Brand>
+  ) {}
 
   async create({ ...fillable }: CreateBrandDto) {
-    const data: Prisma.BrandCreateArgs['data'] = fillable
+    const record = new Brand()
 
-    const brand = await this.prismaService.brand.create({ data })
+    this.brandRepository.merge(record, fillable)
 
-    return brand
+    await this.brandRepository.save(record)
+
+    return record
   }
 
   async findAll(dto: FindAllBrandQueryDto) {
-    const args: Prisma.BrandFindManyArgs = {}
-
-    args.where = {}
-    args.include = {}
+    const where: FindOptionsWhere<Brand> = {}
+    const relations: FindOptionsRelations<Brand> = {}
 
     if (dto.query) {
-      args.where.title = { contains: dto.query }
+      where.title = Like(dto.query)
     }
 
-    args.orderBy = { [dto.sort]: dto.dir.toLowerCase() }
-    args.skip = dto.skip
-    args.take = dto.take
-
-    const rows = await this.prismaService.brand.findMany(args)
-    const total = await this.prismaService.brand.count({ where: args.where })
+    const [rows, total] = await this.brandRepository.findAndCount({
+      where,
+      relations,
+      order: { [dto.sort]: dto.dir },
+      skip: dto.skip,
+      take: dto.take
+    })
 
     return { rows, total }
   }
 
   async findOne(id: number) {
-    const args: Prisma.BrandFindFirstArgs = {}
-
-    args.where = { id }
-    args.include = {}
-
-    const brand = await this.prismaService.brand.findFirst(args)
-
-    return brand
+    return this.brandRepository.findOneBy({ id })
   }
 
   async update(id: number, { ...fillable }: UpdateBrandDto) {
-    const data: Prisma.BrandUpdateArgs['data'] = fillable
+    const record = await this.brandRepository.findOneOrFail({
+      where: { id }
+    })
 
-    const brand = await this.prismaService.brand.update({ where: { id }, data })
+    this.brandRepository.merge(record, fillable)
 
-    return brand
+    await this.brandRepository.save(record)
+
+    return record
   }
 
   async remove(id: number) {
-    const brand = await this.prismaService.brand.delete({ where: { id } })
-
-    return brand
+    return this.brandRepository.delete({ id })
   }
 }

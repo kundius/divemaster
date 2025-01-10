@@ -22,7 +22,7 @@ export default () => ({
     password: process.env.PAYMENT_YOOKASSA_PASSWORD || ''
   },
   database: {
-    host: process.env.DATABASE_HOST || 'mariadb',
+    host: process.env.DATABASE_HOST || 'db',
     port: process.env.DATABASE_PORT || '3306',
     name: process.env.DATABASE_NAME || 'divemaster',
     user: process.env.DATABASE_USER || 'divemaster',

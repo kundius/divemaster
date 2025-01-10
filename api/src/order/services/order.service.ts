@@ -1,17 +1,20 @@
 import { njk } from '@/lib/utils'
 import { NotificationsService } from '@/notifications/services/notifications.service'
-import { PrismaService } from '@/prisma.service'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { $Enums, Order, Payment } from '@prisma/client'
 import { PaymentService } from './payment.service'
 import { UponCashService } from './uponcash.service'
 import { YookassaService } from './yookassa.service'
+import { Payment, PaymentServiceEnum } from '../entities/payment.entity'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Order } from '../entities/order.entity'
+import { Repository } from 'typeorm'
 
 @Injectable()
 export class OrderService {
   constructor(
-    private readonly prismaService: PrismaService,
+    @InjectRepository(Order)
+    private orderRepository: Repository<Order>,
     private notificationsService: NotificationsService,
     private configService: ConfigService,
     private paymentUponCashService: UponCashService,
@@ -21,17 +24,17 @@ export class OrderService {
   // Получение сервиса оплаты
   getPaymentService(payment: Payment): PaymentService {
     switch (payment.service) {
-      case $Enums.PaymentService.UponCash:
+      case PaymentServiceEnum.UponCash:
         return this.paymentUponCashService
-      case $Enums.PaymentService.Yookassa:
+      case PaymentServiceEnum.Yookassa:
         return this.paymentYookassaService
     }
   }
 
   async findOneByHash(hash: string): Promise<Order | null> {
-    return this.prismaService.order.findFirst({
+    return this.orderRepository.findOne({
       where: { hash },
-      include: {
+      relations: {
         products: true,
         payment: true,
         delivery: true
@@ -40,9 +43,9 @@ export class OrderService {
   }
 
   async findOneById(id: number) {
-    return this.prismaService.order.findUnique({
+    return this.orderRepository.findOne({
       where: { id },
-      include: {
+      relations: {
         products: true,
         payment: true,
         delivery: true
@@ -61,20 +64,12 @@ export class OrderService {
   }
 
   async sendEmails(order: Order) {
-    const data = await this.prismaService.order.findUniqueOrThrow({
+    const data = await this.orderRepository.findOneOrFail({
       where: { id: order.id },
-      include: {
+      relations: {
         payment: true,
         delivery: true,
-        products: {
-          include: {
-            product: {
-              include: {
-                images: true
-              }
-            }
-          }
-        }
+        products: { product: { images: true } }
       }
     })
 

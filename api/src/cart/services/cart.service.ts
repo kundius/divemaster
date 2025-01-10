@@ -1,11 +1,21 @@
 import { OrderService } from '@/order/services/order.service'
 import { PickupPointService } from '@/order/services/pickup-point.service'
-import { PrismaService } from '@/prisma.service'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { $Enums, Offer, User } from '@prisma/client'
 import { v4 } from 'uuid'
 import { AddProductDto, CreateOrderDto, GetOrderCostDto, UpdateProductDto } from '../dto/cart.dto'
+import { Cart } from '../entities/cart.entity'
+import { CartProduct } from '../entities/cart-product.entity'
+import { Repository } from 'typeorm'
+import { InjectRepository } from '@nestjs/typeorm'
+import { User } from '@/users/entities/user.entity'
+import { Offer } from '@/products/entities/offer.entity'
+import { OptionValue } from '@/products/entities/option-value.entity'
+import { Delivery, DeliveryService } from '@/order/entities/delivery.entity'
+import { PickupPointTypeEnum } from '@/order/entities/pickup-point.entity'
+import { Payment, PaymentServiceEnum } from '@/order/entities/payment.entity'
+import { Order } from '@/order/entities/order.entity'
+import { OrderProduct } from '@/order/entities/order-product.entity'
 
 type ProductAssessment =
   | {
@@ -22,7 +32,20 @@ type ProductAssessment =
 @Injectable()
 export class CartService {
   constructor(
-    private readonly prismaService: PrismaService,
+    @InjectRepository(Cart)
+    private cartRepository: Repository<Cart>,
+    @InjectRepository(CartProduct)
+    private cartProductRepository: Repository<CartProduct>,
+    @InjectRepository(OptionValue)
+    private optionValueRepository: Repository<OptionValue>,
+    @InjectRepository(Order)
+    private orderRepository: Repository<Order>,
+    @InjectRepository(Payment)
+    private paymentRepository: Repository<Payment>,
+    @InjectRepository(Delivery)
+    private deliveryRepository: Repository<Delivery>,
+    @InjectRepository(OrderProduct)
+    private orderProductRepository: Repository<OrderProduct>,
     private orderService: OrderService,
     private pickupPointService: PickupPointService,
     private configService: ConfigService
@@ -30,63 +53,48 @@ export class CartService {
 
   async createCart(user?: User) {
     if (user) {
-      const cart = await this.prismaService.cart.findUnique({
-        where: { userId: user.id }
-      })
-      if (cart) {
-        return cart
+      const userCart = await this.cartRepository.findOne({ where: { userId: user.id } })
+      if (userCart) {
+        return userCart
       }
     }
 
-    const cart = await this.prismaService.cart.create({
-      data: {
-        id: v4(),
-        user: user ? { connect: { id: user.id } } : undefined
-      }
-    })
+    const cart = new Cart()
+
+    if (user) {
+      cart.userId = user.id
+    }
+
+    await this.cartRepository.save(cart)
 
     return cart
   }
 
   async authorizeCart(cartId: string, user: User) {
-    const cart = await this.prismaService.cart.findUniqueOrThrow({
+    const cart = await this.cartRepository.findOneOrFail({
       where: { id: cartId },
-      include: { user: true }
+      relations: { user: true }
     })
 
     if (!cart.user) {
-      await this.prismaService.cart.update({
-        where: { id: cartId },
-        data: { user: { connect: { id: user.id } } }
-      })
+      cart.userId = user.id
+      await this.cartRepository.save(cart)
     }
   }
 
   async deleteCart(cartId: string) {
-    await this.prismaService.cart.delete({ where: { id: cartId } })
+    await this.cartRepository.delete({ id: cartId })
   }
 
   async getCartProductAssessment(cartProductId: string): Promise<ProductAssessment> {
-    const cartProduct = await this.prismaService.cartProduct.findUniqueOrThrow({
+    const cartProduct = await this.cartProductRepository.findOneOrFail({
       where: { id: cartProductId },
-      include: {
-        optionValues: {
-          include: { optionValue: true }
-        },
-        product: {
-          include: {
-            offers: {
-              include: {
-                optionValues: {
-                  include: { optionValue: true }
-                }
-              }
-            }
-          }
-        }
+      relations: {
+        optionValues: true,
+        product: { offers: { optionValues: true } }
       }
     })
-    const cartProductOptionValuesIds = cartProduct.optionValues.map((item) => item.optionValue.id)
+    const cartProductOptionValuesIds = cartProduct.optionValues.map((item) => item.id)
 
     // сортируем офферы по количеству опций
     const sortedOffers = cartProduct.product.offers
@@ -111,7 +119,7 @@ export class CartService {
     } else {
       selectedOffer = additionalOffers.find((offer) => {
         const offerIds = offer.optionValues
-        return offerIds.every((item) => cartProductOptionValuesIds.includes(item.optionValue.id))
+        return offerIds.every((item) => cartProductOptionValuesIds.includes(item.id))
       })
     }
 
@@ -144,51 +152,48 @@ export class CartService {
   }
 
   async findProducts(cartId: string) {
-    const products = await this.prismaService.cartProduct.findMany({
-      where: { cartId },
-      include: {
-        product: {
-          include: {
-            images: {
-              orderBy: { rank: 'asc' },
-              where: { active: true }
-            }
-          }
-        },
-        optionValues: {
-          include: {
-            optionValue: {
-              include: { option: true }
-            }
-          }
-        }
+    const products = await this.cartProductRepository.find({
+      where: {
+        product: { images: { active: true } },
+        cartId
       },
-      orderBy: { createdAt: 'desc' }
+      relations: {
+        product: { images: true },
+        optionValues: { option: true }
+      },
+      order: {
+        product: { images: { rank: 'asc' } },
+        createdAt: 'desc'
+      }
     })
 
-    return Promise.all(
+    await Promise.all(
       products.map(async (item) => {
         const assessment = await this.getCartProductAssessment(item.id)
-        return { ...item, ...assessment }
+        item.active = assessment.active
+        item.oldPrice = assessment.oldPrice
+        item.price = assessment.price
       })
     )
+
+    return products
   }
 
   async addProduct(cartId: string, dto: AddProductDto) {
-    const cartProducts = await this.prismaService.cartProduct.findMany({
+    const cartProducts = await this.cartProductRepository.find({
       where: {
         cartId,
         productId: dto.id
       },
-      include: {
+      relations: {
         optionValues: true
       }
     })
 
     // Найти в корзине товар с такими же опциями
-    const cartProduct = cartProducts.find((cartProduct) => {
+    let cartProduct = cartProducts.find((cartProduct) => {
       if (dto.optionValues && dto.optionValues.length) {
-        const identifiers = cartProduct.optionValues.map((item) => item.optionValueId)
+        const identifiers = cartProduct.optionValues.map((item) => item.id)
         return dto.optionValues.every((id) => identifiers.includes(id))
       }
       return cartProduct.optionValues.length === 0
@@ -196,60 +201,51 @@ export class CartService {
 
     // Увеличить количество, если найден, или добавить новый
     if (cartProduct) {
-      await this.prismaService.cartProduct.update({
-        where: { id: cartProduct.id },
-        data: { quantity: cartProduct.quantity + (dto.quantity || 1) },
-        include: { optionValues: true }
-      })
+      cartProduct.quantity = cartProduct.quantity + (dto.quantity || 1)
+      await this.cartProductRepository.save(cartProduct)
     } else {
-      await this.prismaService.cartProduct.create({
-        data: {
-          id: v4(),
-          quantity: dto.quantity || 1,
-          cart: { connect: { id: cartId } },
-          product: { connect: { id: dto.id } },
-          optionValues: {
-            create: (dto.optionValues || []).map((id) => ({ optionValue: { connect: { id } } }))
-          }
-        }
-      })
+      cartProduct = new CartProduct()
+      cartProduct.quantity = dto.quantity || 1
+      cartProduct.cartId = cartId
+      cartProduct.productId = dto.id
+      cartProduct.optionValues = await Promise.all(
+        (dto.optionValues || []).map(async (id) =>
+          this.optionValueRepository.findOneByOrFail({ id })
+        )
+      )
+      await this.cartProductRepository.save(cartProduct)
     }
 
     return this.findProducts(cartId)
   }
 
-  async updateProduct(cartId: string, cartProductId: string, dto: UpdateProductDto) {
+  async updateProduct(cartId: string, id: string, dto: UpdateProductDto) {
     if (dto.quantity) {
-      await this.prismaService.cartProduct.update({
-        where: { id: cartProductId },
-        data: { quantity: dto.quantity }
-      })
+      await this.cartProductRepository.update({ id }, { quantity: dto.quantity })
     }
 
     return this.findProducts(cartId)
   }
 
-  async deleteProduct(cartId: string, cartProductId: string) {
-    await this.prismaService.cartProduct.delete({
-      where: { id: cartProductId }
-    })
+  async deleteProduct(cartId: string, id: string) {
+    await this.cartProductRepository.delete({ id })
 
     return this.findProducts(cartId)
   }
 
   async getOrderCost(cartId: string, dto?: GetOrderCostDto) {
-    const cart = await this.prismaService.cart.findUniqueOrThrow({
+    const cart = await this.cartRepository.findOneOrFail({
       where: { id: cartId },
-      include: {
+      relations: {
         user: true,
-        cartProducts: true
+        products: true
       }
     })
 
     let quantity = 0
     let cost = 0
     let cartCost = 0
-    for (const cartProduct of cart.cartProducts) {
+    for (const cartProduct of cart.products) {
       const { price, oldPrice, active } = await this.getCartProductAssessment(cartProduct.id)
       if (active) {
         quantity += cartProduct.quantity
@@ -290,16 +286,15 @@ export class CartService {
     // Стоимость доставки, пока примитивная
     if (dto?.deliveryService) {
       switch (dto.deliveryService) {
-        case $Enums.DeliveryService.Shipping:
-        case $Enums.DeliveryService.Pickup:
-          console.log('deliveryProperties', dto.deliveryProperties?.pickupPointId)
+        case DeliveryService.Shipping:
+        case DeliveryService.Pickup:
           let inStore = false
           if (dto.deliveryProperties?.pickupPointId) {
             const pickupPoint = await this.pickupPointService.findOne(
               String(dto.deliveryProperties.pickupPointId)
             )
             if (pickupPoint) {
-              inStore = pickupPoint.type === $Enums.PickupPointType.store
+              inStore = pickupPoint.type === PickupPointTypeEnum.store
             }
           }
           if (!inStore && cost < Number(this.configService.get('DELIVERY_FREE_LIMIT', '0'))) {
@@ -320,8 +315,8 @@ export class CartService {
     // Стоимость оплаты, вынести в сервис
     if (dto?.paymentService) {
       switch (dto.paymentService) {
-        case $Enums.PaymentService.UponCash:
-        case $Enums.PaymentService.Yookassa:
+        case PaymentServiceEnum.UponCash:
+        case PaymentServiceEnum.Yookassa:
           break
         default:
           throw new Error(`Non-existent payment service: ${dto.deliveryService}`)
@@ -332,8 +327,11 @@ export class CartService {
   }
 
   async createOrder(cartId: string, dto: CreateOrderDto) {
-    const cart = await this.prismaService.cart.findUniqueOrThrow({
-      where: { id: cartId }
+    const cart = await this.cartRepository.findOneOrFail({
+      where: { id: cartId },
+      relations: {
+        user: true
+      }
     })
 
     // получить стоимость заказа
@@ -344,54 +342,43 @@ export class CartService {
     })
 
     // создать заказ
-    const order = await this.prismaService.order.create({
-      data: {
-        hash: v4(),
-        cost: orderCost.cost,
-        composition: orderCost.composition,
-        user: cart.userId ? { connect: { id: cart.userId } } : {}
-      }
+    const order = new Order()
+    this.orderRepository.merge(order, {
+      hash: v4(),
+      cost: orderCost.cost,
+      composition: orderCost.composition,
+      user: cart.user
     })
+    await this.orderRepository.save(order)
 
     // создать оплату
-    const payment = await this.prismaService.payment.create({
-      data: {
-        service: dto.paymentService,
-        order: { connect: { id: order.id } }
-      }
+    const payment = new Payment()
+    this.paymentRepository.merge(payment, {
+      service: dto.paymentService,
+      order
     })
+    await this.paymentRepository.save(payment)
 
     // создать доставку
-    const delivery = await this.prismaService.delivery.create({
-      data: {
-        service: dto.deliveryService,
-        address: dto.deliveryAddress,
-        recipient: {
-          name: dto.recipientName,
-          email: dto.recipientEmail,
-          phone: dto.recipientPhone
-        },
-        order: { connect: { id: order.id } }
-      }
+    const delivery = new Delivery()
+    this.deliveryRepository.merge(delivery, {
+      service: dto.deliveryService,
+      address: dto.deliveryAddress,
+      recipient: {
+        name: dto.recipientName,
+        email: dto.recipientEmail,
+        phone: dto.recipientPhone
+      },
+      order
     })
+    await this.deliveryRepository.save(delivery)
 
     // добавить к заказу товары из корзины
-    const cartProducts = await this.prismaService.cartProduct.findMany({
-      where: { cart: { id: cartId } },
-      include: {
-        product: {
-          select: {
-            id: true,
-            title: true
-          }
-        },
-        optionValues: {
-          include: {
-            optionValue: {
-              include: { option: true }
-            }
-          }
-        }
+    const cartProducts = await this.cartProductRepository.find({
+      where: { cartId },
+      relations: {
+        product: true,
+        optionValues: { option: true }
       }
     })
     for (const cartProduct of cartProducts) {
@@ -402,20 +389,20 @@ export class CartService {
       const options = cartProduct.optionValues.reduce<Record<string, string>>((options, item) => {
         return {
           ...options,
-          [item.optionValue.option.caption]: item.optionValue.content
+          [item.option.caption]: item.content
         }
       }, {})
 
-      await this.prismaService.orderProduct.create({
-        data: {
-          order: { connect: { id: order.id } },
-          product: { connect: { id: cartProduct.product.id } },
-          options: options,
-          quantity: cartProduct.quantity,
-          price: productAssessment.price,
-          title: cartProduct.product.title
-        }
+      const record = new OrderProduct()
+      this.orderProductRepository.merge(record, {
+        order,
+        product: cartProduct.product,
+        options: options,
+        quantity: cartProduct.quantity,
+        price: productAssessment.price,
+        title: cartProduct.product.title
       })
+      await this.orderProductRepository.save(record)
     }
 
     // получить ссылку на оплату

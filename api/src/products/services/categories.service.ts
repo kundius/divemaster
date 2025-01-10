@@ -1,153 +1,150 @@
-import { PrismaService } from '@/prisma.service'
 import { Injectable } from '@nestjs/common'
-import { Prisma } from '@prisma/client'
 import {
   CreateCategoryDto,
   FindAllCategoryQueryDto,
   FindOneCategoryQueryDto,
   UpdateCategoryDto
 } from '../dto/categories.dto'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Category } from '../entities/category.entity'
+import { FindOptionsRelations, FindOptionsWhere, IsNull, Like, Repository } from 'typeorm'
 
 @Injectable()
 export class CategoriesService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    @InjectRepository(Category)
+    private categoryRepository: Repository<Category>
+  ) {}
 
   async create({ parentId, imageId, ...fillable }: CreateCategoryDto) {
-    const data: Prisma.CategoryCreateArgs['data'] = fillable
+    const record = new Category()
+
+    this.categoryRepository.merge(record, fillable)
 
     if (typeof parentId !== 'undefined') {
-      data.parent = parentId ? { connect: { id: parentId } } : {}
+      record.parentId = parentId
     }
 
     if (typeof imageId !== 'undefined') {
-      data.image = imageId ? { connect: { id: imageId } } : {}
+      record.imageId = imageId
     }
 
-    const category = await this.prismaService.category.create({ data })
+    await this.categoryRepository.save(record)
 
-    return category
+    return record
   }
 
   async findAll(dto: FindAllCategoryQueryDto) {
-    const args: Prisma.CategoryFindManyArgs = {}
-
-    args.where = {}
-    args.include = {}
+    const where: FindOptionsWhere<Category> = {}
+    const relations: FindOptionsRelations<Category> = {}
 
     if (dto.withChildren) {
       // HIERARCHY_DEPTH_LIMIT
-      args.include.children = true
+      relations.children = true
     }
 
     if (dto.withParent) {
       // HIERARCHY_DEPTH_LIMIT
-      args.include.parent = true
-    }
-
-    if (!dto.withContent) {
-      args.omit = { description: true }
+      relations.parent = true
     }
 
     if (dto.active) {
-      args.where.active = true
+      where.active = true
     }
 
     if (dto.query) {
-      args.where.title = { contains: dto.query }
+      where.title = Like(dto.query)
     }
 
     if (typeof dto.parent !== 'undefined') {
-      args.where.parentId = dto.parent === 0 ? null : dto.parent
+      where.parentId = dto.parent === 0 ? IsNull() : dto.parent
     }
 
-    args.orderBy = { [dto.sort]: dto.dir.toLowerCase() }
-    args.skip = dto.skip
-    args.take = dto.take
-
-    const rows = await this.prismaService.category.findMany(args)
-    const total = await this.prismaService.category.count({ where: args.where })
+    const [rows, total] = await this.categoryRepository.findAndCount({
+      where,
+      skip: dto.skip,
+      take: dto.take,
+      order: { [dto.sort]: dto.dir }
+    })
 
     return { rows, total }
   }
 
   async findOne(id: number, dto?: FindOneCategoryQueryDto) {
-    const args: Prisma.CategoryFindFirstArgs = {}
+    const where: FindOptionsWhere<Category> = {}
+    const relations: FindOptionsRelations<Category> = {}
 
-    args.where = { id }
-    args.include = {}
+    where.id = id
 
     if (dto?.withChildren) {
       // HIERARCHY_DEPTH_LIMIT
-      args.include.children = true
+      relations.children = true
     }
 
     if (dto?.withParent) {
       // HIERARCHY_DEPTH_LIMIT
-      args.include.parent = true
-    }
-
-    if (!dto?.withContent) {
-      args.omit = { description: true }
+      relations.parent = true
     }
 
     if (dto?.active) {
-      args.where.active = true
+      where.active = true
     }
 
-    const category = await this.prismaService.category.findFirst(args)
+    const record = await this.categoryRepository.findOne({
+      where,
+      relations
+    })
 
-    return category
+    return record
   }
 
   async findOneByAlias(alias: string, dto?: FindOneCategoryQueryDto) {
-    const args: Prisma.CategoryFindFirstArgs = {}
+    const where: FindOptionsWhere<Category> = {}
+    const relations: FindOptionsRelations<Category> = {}
 
-    args.where = { alias }
-    args.include = {}
+    where.alias = alias
 
     if (dto?.withChildren) {
       // HIERARCHY_DEPTH_LIMIT
-      args.include.children = true
+      relations.children = true
     }
 
     if (dto?.withParent) {
       // HIERARCHY_DEPTH_LIMIT
-      args.include.parent = true
-    }
-
-    if (!dto?.withContent) {
-      args.omit = { description: true }
+      relations.parent = true
     }
 
     if (dto?.active) {
-      args.where.active = true
+      where.active = true
     }
 
-    const category = await this.prismaService.category.findFirst(args)
+    const record = await this.categoryRepository.findOne({
+      where,
+      relations
+    })
 
-    return category
+    return record
   }
 
   async update(id: number, { parentId, imageId, ...fillable }: UpdateCategoryDto) {
-    const data: Prisma.CategoryUpdateArgs['data'] = fillable
+    const record = await this.categoryRepository.findOneByOrFail({ id })
+
+    this.categoryRepository.merge(record, fillable)
 
     if (typeof parentId !== 'undefined') {
-      data.parent = parentId ? { connect: { id: parentId } } : {}
+      record.parentId = parentId
     }
 
     if (typeof imageId !== 'undefined') {
-      console.log(imageId)
-      data.image = imageId ? { connect: { id: imageId } } : { disconnect: true }
+      record.imageId = imageId
     }
 
-    const category = await this.prismaService.category.update({ where: { id }, data })
+    await this.categoryRepository.save(record)
 
-    return category
+    return record
   }
 
   async remove(id: number) {
-    const category = await this.prismaService.category.delete({ where: { id } })
-
-    return category
+    return this.categoryRepository.delete({ id })
   }
 }

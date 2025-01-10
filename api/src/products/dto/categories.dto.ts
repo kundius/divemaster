@@ -2,7 +2,7 @@ import { PaginationQueryDto } from '@/lib/pagination-query.dto'
 import { Type } from 'class-transformer'
 import { IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
 import { PartialType } from '@nestjs/mapped-types'
-import { Category } from '@prisma/client'
+import { Category } from '../entities/category.entity'
 
 export class CreateCategoryDto {
   @Type(() => String)

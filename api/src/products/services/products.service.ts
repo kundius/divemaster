@@ -1,18 +1,9 @@
 import { nanoid, njk, pluck, slugify } from '@/lib/utils'
 import { NotificationsService } from '@/notifications/services/notifications.service'
-import { PrismaService } from '@/prisma.service'
 import { StorageService } from '@/storage/services/storage.service'
 import { isArray, isBoolean, isNumber, isString, isUndefined } from '@modyqyw/utils'
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import {
-  $Enums,
-  Prisma,
-  Brand as PrismaBrand,
-  Category as PrismaCategory,
-  Option as PrismaOption,
-  Product as PrismaProduct
-} from '@prisma/client'
 import { join } from 'path'
 import {
   CreateOfferDto,
@@ -27,12 +18,42 @@ import {
   UpdateProductImageDto,
   UpdateProductOptions
 } from '../dto/products.dto'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Product } from '../entities/product.entity'
+import {
+  FindOptionsOrder,
+  FindOptionsRelations,
+  FindOptionsWhere,
+  In,
+  Like,
+  Not,
+  Repository
+} from 'typeorm'
+import { Option, OptionType } from '../entities/option.entity'
+import { Category } from '../entities/category.entity'
 import { ProductsFilterService } from './products-filter.service'
+import { ProductImage } from '../entities/product-image.entity'
+import { OptionValue } from '../entities/option-value.entity'
+import { Offer } from '../entities/offer.entity'
+import { Brand } from '../entities/brand.entity'
 
 @Injectable()
 export class ProductsService {
   constructor(
-    private readonly prismaService: PrismaService,
+    @InjectRepository(Product)
+    private productRepository: Repository<Product>,
+    @InjectRepository(ProductImage)
+    private productImageRepository: Repository<ProductImage>,
+    @InjectRepository(Option)
+    private optionRepository: Repository<Option>,
+    @InjectRepository(OptionValue)
+    private optionValueRepository: Repository<OptionValue>,
+    @InjectRepository(Category)
+    private categoryRepository: Repository<Category>,
+    @InjectRepository(Offer)
+    private offerRepository: Repository<Offer>,
+    @InjectRepository(Brand)
+    private brandRepository: Repository<Brand>,
     private readonly notificationsService: NotificationsService,
     private readonly storageService: StorageService,
     private readonly productsFilterService: ProductsFilterService,
@@ -40,83 +61,68 @@ export class ProductsService {
   ) {}
 
   async create({ brandId, rank, ...fillable }: CreateProductDto) {
-    const product = await this.prismaService.product.create({
-      data: {
-        ...fillable,
-        rank: rank || 0,
-        brand: brandId ? { connect: { id: +brandId } } : undefined
-      }
-    })
-    return product
+    const record = new Product()
+
+    this.productRepository.merge(record, fillable)
+
+    record.rank = rank || 0
+
+    if (typeof brandId !== 'undefined') {
+      record.brandId = brandId
+    }
+
+    await this.productRepository.save(record)
+
+    return record
   }
 
   async findAll(dto: FindAllProductDto) {
-    const args: Prisma.ProductFindManyArgs = {}
-
-    args.where = {}
-    args.include = {}
+    const where: FindOptionsWhere<Product> = {}
+    const relations: FindOptionsRelations<Product> = {}
+    const order: FindOptionsOrder<Product> = {}
 
     if (dto.withImages) {
-      args.include.images = {
-        where: {
-          active: true
-        },
-        orderBy: {
-          rank: 'asc'
-        }
-      }
+      relations.images = true
+      where.images = { active: true }
+      order.images = { rank: 'asc' }
     }
 
     if (dto?.withOffers) {
-      args.include.offers = {
-        include: {
-          optionValues: true
-        }
-      }
+      relations.offers = { optionValues: true }
     }
 
     if (dto?.withOptions) {
-      args.include.optionValues = true
+      relations.optionValues = true
     }
 
     if (dto?.withBrand) {
-      args.include.brand = true
+      relations.brand = true
     }
 
     if (dto?.withCategories) {
-      args.include.categories = {
-        include: { category: true }
-      }
-    }
-
-    if (!dto.withContent) {
-      args.omit = { description: true, specifications: true, exploitation: true }
-    }
-
-    if (dto.active) {
-      args.where.active = true
+      relations.categories = true
     }
 
     if (dto.favorite) {
-      args.where.favorite = true
+      where.favorite = true
     }
 
     if (dto.recent) {
-      args.where.recent = true
+      where.recent = true
+    }
+
+    if (dto.active) {
+      where.active = true
     }
 
     if (dto.query) {
-      args.where.title = { contains: dto.query }
+      where.title = Like(dto.query)
     }
 
     if (typeof dto.category !== 'undefined') {
       // TODO: HIERARCHY_DEPTH_LIMIT
       // товары выбираются без учета подкатегорий
-      args.where.categories = {
-        some: {
-          categoryId: dto.category
-        }
-      }
+      where.categories = { id: dto.category }
     }
 
     if (dto.filter) {
@@ -125,24 +131,25 @@ export class ProductsService {
         filter = JSON.parse(dto.filter)
       } catch {}
       await this.productsFilterService.init(dto.category)
-      const ids = await this.productsFilterService.search(filter)
-      args.where.id = {
-        in: ids
-      }
+      where.id = In(await this.productsFilterService.search(filter))
     }
 
-    args.orderBy = { [dto.sort]: dto.dir.toLowerCase() }
-    args.skip = dto.skip
-    args.take = dto.take
-
-    let rows = await this.prismaService.product.findMany(args)
-    const total = await this.prismaService.product.count({ where: args.where })
+    const [rows, total] = await this.productRepository.findAndCount({
+      where,
+      relations,
+      order: {
+        ...order,
+        [dto.sort]: dto.dir
+      },
+      skip: dto.skip,
+      take: dto.take
+    })
 
     if (dto.withOptions) {
-      rows = await Promise.all(
-        rows.map(async (item) =>
-          Object.assign({}, item, { options: await this.findProductOptions(item.id) })
-        )
+      await Promise.all(
+        rows.map(async (item) => {
+          item.options = await this.findProductOptions(item.id)
+        })
       )
     }
 
@@ -150,127 +157,123 @@ export class ProductsService {
   }
 
   async findOne(id: number, dto?: FindOneProductDto) {
-    const args: Prisma.ProductFindUniqueArgs = { where: { id } }
+    const where: FindOptionsWhere<Product> = {}
+    const relations: FindOptionsRelations<Product> = {}
+    const order: FindOptionsOrder<Product> = {}
 
-    args.include = {}
+    where.id = id
 
     if (dto?.withOffers) {
-      args.include.offers = {
-        include: { optionValues: true }
+      relations.offers = {
+        optionValues: true
       }
     }
 
     if (dto?.withOptions) {
-      args.include.optionValues = true
+      relations.optionValues = true
     }
 
     if (dto?.withImages) {
-      args.include.images = {
-        include: { file: true },
-        where: { active: true },
-        orderBy: { rank: 'asc' }
-      }
+      relations.images = true
+      where.images = { active: true }
+      order.images = { rank: 'asc' }
     }
 
     if (dto?.withBrand) {
-      args.include.brand = true
+      relations.brand = true
     }
 
     if (dto?.withCategories) {
-      args.include.categories = {
-        include: { category: true }
-      }
-    }
-
-    if (!dto?.withContent) {
-      args.omit = { description: true, specifications: true, exploitation: true }
+      relations.categories = true
     }
 
     if (dto?.active) {
-      args.where.active = true
+      where.active = true
     }
 
-    let product = await this.prismaService.product.findUniqueOrThrow(args)
+    const product = await this.productRepository.findOneOrFail({
+      where,
+      relations,
+      order
+    })
 
     if (dto?.withOptions) {
-      product = Object.assign({}, product, { options: await this.findProductOptions(product.id) })
+      product.options = await this.findProductOptions(product.id)
     }
 
     return product
   }
 
   async findOneByAlias(alias: string, dto?: FindOneProductDto) {
-    const args: Prisma.ProductFindUniqueArgs = { where: { alias } }
+    const where: FindOptionsWhere<Product> = {}
+    const relations: FindOptionsRelations<Product> = {}
+    const order: FindOptionsOrder<Product> = {}
 
-    args.include = {}
+    where.alias = alias
 
     if (dto?.withOffers) {
-      args.include.offers = {
-        include: { optionValues: true }
+      relations.offers = {
+        optionValues: true
       }
     }
 
     if (dto?.withOptions) {
-      args.include.optionValues = true
+      relations.optionValues = true
     }
 
     if (dto?.withImages) {
-      args.include.images = {
-        include: { file: true },
-        where: { active: true },
-        orderBy: { rank: 'asc' }
-      }
+      relations.images = true
+      where.images = { active: true }
+      order.images = { rank: 'asc' }
     }
 
     if (dto?.withBrand) {
-      args.include.brand = true
+      relations.brand = true
     }
 
     if (dto?.withCategories) {
-      args.include.categories = {
-        include: { category: true }
-      }
-    }
-
-    if (!dto?.withContent) {
-      args.omit = { description: true, specifications: true, exploitation: true }
+      relations.categories = true
     }
 
     if (dto?.active) {
-      args.where.active = true
+      where.active = true
     }
 
-    let product = await this.prismaService.product.findUniqueOrThrow(args)
+    const product = await this.productRepository.findOneOrFail({
+      where,
+      relations,
+      order
+    })
 
     if (dto?.withOptions) {
-      product = Object.assign({}, product, { options: await this.findProductOptions(product.id) })
+      product.options = await this.findProductOptions(product.id)
     }
 
     return product
   }
 
   async update(id: number, { brandId, ...fillable }: UpdateProductDto) {
-    const product = await this.prismaService.product.update({
-      where: { id },
-      data: {
-        ...fillable,
-        brand: brandId ? { connect: { id: +brandId } } : undefined
-      }
-    })
-    return product
+    const record = await this.productRepository.findOneByOrFail({ id })
+
+    this.productRepository.merge(record, fillable)
+
+    if (typeof brandId !== 'undefined') {
+      record.brandId = brandId
+    }
+
+    await this.productRepository.save(record)
+
+    return record
   }
 
   async remove(id: number) {
-    const product = await this.prismaService.product.delete({
-      where: { id }
-    })
-    return product
+    await this.productRepository.delete({ id })
   }
 
   async createProductImage(productId: number, upload: Express.Multer.File) {
-    const product = await this.prismaService.product.findUniqueOrThrow({
+    const product = await this.productRepository.findOneOrFail({
       where: { id: productId },
-      include: { images: true }
+      relations: { images: true }
     })
 
     const file = await this.storageService.upload(
@@ -278,33 +281,30 @@ export class ProductsService {
       join(String(productId), `${nanoid()}-${upload.originalname}`)
     )
 
-    const productImage = await this.prismaService.productImage.create({
-      data: {
-        rank: product.images.length || 0,
-        file: {
-          connect: { id: file.id }
-        },
-        product: {
-          connect: { id: product.id }
-        }
-      }
+    const productImage = new ProductImage()
+
+    this.productImageRepository.merge(productImage, {
+      rank: product.images.length || 0,
+      fileId: file.id,
+      productId: product.id
     })
+
+    await this.productImageRepository.save(productImage)
+
     return productImage
   }
 
   async findAllProductImage(productId: number) {
-    const productImages = await this.prismaService.productImage.findMany({
+    return this.productImageRepository.find({
       where: { product: { id: productId } },
-      orderBy: { rank: 'asc' }
+      order: { rank: 'asc' }
     })
-    return productImages
   }
 
   async findOneProductImage(productId: number, fileId: number) {
-    const productImage = await this.prismaService.productImage.findUniqueOrThrow({
-      where: { fileId_productId: { productId: productId, fileId: fileId } }
+    return this.productImageRepository.findOneOrFail({
+      where: { productId: productId, fileId: fileId }
     })
-    return productImage
   }
 
   async updateProductImage(
@@ -312,101 +312,85 @@ export class ProductsService {
     fileId: number,
     { ...fillable }: UpdateProductImageDto
   ) {
-    const productImage = await this.prismaService.productImage.update({
-      where: { fileId_productId: { productId: productId, fileId: fileId } },
-      data: { ...fillable }
-    })
-    return productImage
+    await this.productImageRepository.update({ productId, fileId }, fillable)
   }
 
   async sortProductImage(productId: number, { files }: SortProductImageDto) {
+    // TODO: make parallel update
     for (const fileId of Object.keys(files)) {
-      await this.prismaService.productImage.update({
-        where: { fileId_productId: { productId: productId, fileId: +fileId } },
-        data: { rank: files[fileId] }
-      })
+      await this.productImageRepository.update(
+        { productId, fileId: +fileId },
+        { rank: files[fileId] }
+      )
     }
   }
 
   async removeProductImage(productId: number, fileId: number) {
-    const productImage = await this.prismaService.productImage.delete({
-      where: { fileId_productId: { fileId: fileId, productId: productId } }
-    })
-    return productImage
+    await this.productImageRepository.delete({ fileId, productId })
   }
 
   async findAllCategory(productId: number) {
-    const categories = await this.prismaService.category.findMany({
-      where: { products: { some: { productId } } }
+    return this.categoryRepository.find({
+      where: { products: { id: productId } }
     })
-    return categories
   }
 
   async updateCategory(productId: number, { categories }: UpdateProductCategoryDto) {
-    await this.prismaService.product.update({
-      where: { id: productId },
-      data: {
-        categories: {
-          deleteMany: {},
-          create: categories.map((categoryId) => ({
-            category: { connect: { id: +categoryId } }
-          }))
-        }
-      }
+    const record = await this.productRepository.findOneOrFail({
+      where: { id: productId }
     })
+
+    record.categories = await Promise.all(
+      categories.map(async (cat) => this.categoryRepository.findOneByOrFail({ id: +cat }))
+    )
+
+    await this.productRepository.save(record)
   }
 
   async findProductOptions(productId: number) {
-    const categories = await this.prismaService.category.findMany({
-      where: { products: { some: { productId: productId } } }
+    return this.optionRepository.find({
+      where: { categories: { products: { id: productId } } },
+      order: { rank: 'asc' }
     })
-    const categoryIds = categories.map((category) => category.id) || []
-    const options = await this.prismaService.option.findMany({
-      where: { categories: { some: { categoryId: { in: categoryIds } } } },
-      orderBy: { rank: 'asc' }
-    })
-    return options
   }
 
   async updateOptions(productId: number, values: UpdateProductOptions) {
     const product = await this.findOne(productId)
     const options = await this.findProductOptions(productId)
 
-    const findOptionValues = async (option: PrismaOption) => {
-      return this.prismaService.optionValue.findMany({
+    const findOptionValues = async (option: Option) => {
+      return this.optionValueRepository.find({
         where: { option: { id: option.id }, product: { id: product?.id } },
-        orderBy: { rank: 'asc' }
+        order: { rank: 'asc' }
       })
     }
 
-    const findOrCreateOptionValue = async (option: PrismaOption) => {
-      const variant = await this.prismaService.optionValue.findFirst({
+    const findOrCreateOptionValue = async (option: Option) => {
+      let variant = await this.optionValueRepository.findOne({
         where: { option: { id: option.id }, product: { id: product?.id } },
-        orderBy: { rank: 'asc' }
+        order: { rank: 'asc' }
       })
 
       if (!variant) {
-        return await this.prismaService.optionValue.create({
-          data: {
-            option: { connect: { id: option.id } },
-            product: { connect: { id: product?.id } },
-            content: '',
-            rank: 0
-          }
-        })
+        variant = new OptionValue()
+        variant.option = option
+        variant.product = product
+        variant.content = ''
+        variant.rank = 0
+        await this.optionValueRepository.save(variant)
       }
 
       return variant
     }
 
-    const multipleUpdater = async (option: PrismaOption) => {
+    const multipleUpdater = async (option: Option) => {
       const value = values[option.key]
 
       const optionValues = await findOptionValues(option)
 
       if (isUndefined(value)) {
         for (const optionValue of optionValues) {
-          await this.prismaService.optionValue.delete({ where: { id: optionValue.id } })
+          await this.optionValueRepository.delete({ id: optionValue.id })
         }
         return
       }
@@ -416,24 +400,19 @@ export class ProductsService {
         for (const optionValue of optionValues) {
           const index = value.indexOf(optionValue.content)
           if (index === -1) {
-            await this.prismaService.optionValue.delete({ where: { id: optionValue.id } })
+            await this.optionValueRepository.delete({ id: optionValue.id })
             continue
           }
-          await this.prismaService.optionValue.update({
-            where: { id: optionValue.id },
-            data: { rank: index }
-          })
+          await this.optionValueRepository.update({ id: optionValue.id }, { rank: index })
           delete value[index]
         }
         // добавляем новые варианты
         for (const key in value) {
-          await this.prismaService.optionValue.create({
-            data: {
-              option: { connect: { id: option.id } },
-              product: { connect: { id: product?.id } },
-              content: value[key],
-              rank: Number(key)
-            }
+          await this.optionValueRepository.insert({
+            option,
+            product,
+            content: value[key],
+            rank: Number(key)
           })
         }
         return
@@ -442,37 +421,31 @@ export class ProductsService {
       throw new Error('Invalid value type')
     }
 
-    const singleUpdater = async (option: PrismaOption) => {
+    const singleUpdater = async (option: Option) => {
       const value = values[option.key]
 
       const optionValue = await findOrCreateOptionValue(option)
 
       if (isUndefined(value)) {
-        await this.prismaService.optionValue.delete({ where: { id: optionValue.id } })
+        await this.optionValueRepository.delete({ id: optionValue.id })
         return
       }
 
       if (isNumber(value)) {
-        await this.prismaService.optionValue.update({
-          where: { id: optionValue.id },
-          data: { content: String(value) }
-        })
+        await this.optionValueRepository.update({ id: optionValue.id }, { content: String(value) })
         return
       }
 
       if (isBoolean(value)) {
-        await this.prismaService.optionValue.update({
-          where: { id: optionValue.id },
-          data: { content: value ? '1' : '0' }
-        })
+        await this.optionValueRepository.update(
+          { id: optionValue.id },
+          { content: value ? '1' : '0' }
+        )
         return
       }
 
       if (isString(value)) {
-        await this.prismaService.optionValue.update({
-          where: { id: optionValue.id },
-          data: { content: value }
-        })
+        await this.optionValueRepository.update({ id: optionValue.id }, { content: value })
         return
       }
 
@@ -480,13 +453,13 @@ export class ProductsService {
     }
 
     const updaters = {
-      [$Enums.OptionType.combo_boolean]: singleUpdater,
+      [OptionType.COMBOBOOLEAN]: singleUpdater,
       // [OptionType.COMBOBOX]: singleUpdater,
-      [$Enums.OptionType.combo_colors]: multipleUpdater,
-      [$Enums.OptionType.combo_options]: multipleUpdater,
-      [$Enums.OptionType.numberfield]: singleUpdater,
+      [OptionType.COMBOCOLORS]: multipleUpdater,
+      [OptionType.COMBOOPTIONS]: multipleUpdater,
+      [OptionType.NUMBERFIELD]: singleUpdater,
       // [OptionType.TEXTAREA]: singleUpdater,
-      [$Enums.OptionType.textfield]: singleUpdater
+      [OptionType.TEXTFIELD]: singleUpdater
     }
 
     for (const option of options) {
@@ -495,86 +468,74 @@ export class ProductsService {
   }
 
   async findAllOffers(productId: number) {
-    return await this.prismaService.offer.findMany({
+    return this.offerRepository.find({
       where: { product: { id: productId } },
-      orderBy: {
-        rank: 'asc'
-      },
-      include: {
-        optionValues: {
-          include: {
-            optionValue: true
-          }
-        }
-      }
+      order: { rank: 'asc' },
+      relations: { optionValues: true }
     })
   }
 
   async createOffer(productId: number, dto: CreateOfferDto) {
-    const currentOffers = await this.prismaService.offer.findMany({
+    const currentOffers = await this.offerRepository.find({
       where: { product: { id: productId } },
-      include: { optionValues: true }
+      relations: { optionValues: true }
     })
     const existOffer = currentOffers.find(
       (currentOffer) =>
-        JSON.stringify(pluck(currentOffer.optionValues, 'optionValueId').sort()) ===
+        JSON.stringify(pluck(currentOffer.optionValues, 'id').sort()) ===
         JSON.stringify(dto.optionValues.sort())
     )
     if (existOffer) {
       throw new BadRequestException('Торговое предложение с указанными опциями уже сущесивует')
     }
 
-    const offer = await this.prismaService.offer.create({
-      data: {
-        product: { connect: { id: productId } },
-        price: dto.price,
-        title: dto.title,
-        optionValues: {
-          create: dto.optionValues.map((id) => ({ optionValueId: id }))
-        }
-      }
+    // TODO: попробовать заменить на productId
+    const offer = this.offerRepository.create({
+      product: await this.productRepository.findOneByOrFail({ id: productId }),
+      price: dto.price,
+      title: dto.title,
+      optionValues: await Promise.all(
+        dto.optionValues.map(async (id) => this.optionValueRepository.findOneByOrFail({ id }))
+      )
     })
+
+    await this.offerRepository.save(offer)
 
     return offer
   }
 
   async removeOffer(id: number) {
-    const offer = await this.prismaService.offer.delete({ where: { id } })
-    return offer
+    await this.offerRepository.delete({ id })
   }
 
   async updateOffer(id: number, dto: UpdateOfferDto) {
-    const currentOffer = await this.prismaService.offer.findUniqueOrThrow({
+    const currentOffer = await this.offerRepository.findOneOrFail({
       where: { id },
-      include: { product: true }
+      relations: { product: true }
     })
-    const currentOffers = await this.prismaService.offer.findMany({
-      where: { product: { id: currentOffer.product.id }, id: { not: currentOffer.id } },
-      include: { optionValues: true }
+    const currentOffers = await this.offerRepository.find({
+      where: { product: { id: currentOffer.product.id }, id: Not(currentOffer.id) },
+      relations: { optionValues: true }
     })
     const existOffer = currentOffers.find(
       (currentOffer) =>
-        JSON.stringify(pluck(currentOffer.optionValues, 'optionValueId').sort()) ===
+        JSON.stringify(pluck(currentOffer.optionValues, 'id').sort()) ===
         JSON.stringify(dto.optionValues.sort())
     )
     if (existOffer) {
       throw new BadRequestException('Торговое предложение с указанными опциями уже сущесивует')
     }
 
-    const offer = await this.prismaService.offer.update({
-      where: { id },
-      data: {
+    await this.offerRepository.update(
+      { id },
+      {
         price: dto.price,
         title: dto.title,
-        optionValues: {
-          set: dto.optionValues.map((id) => ({
-            offerId_optionValueId: { offerId: id, optionValueId: id }
-          }))
-        }
+        optionValues: await Promise.all(
+          dto.optionValues.map(async (id) => this.optionValueRepository.findOneByOrFail({ id }))
+        )
       }
-    })
-
-    return offer
+    )
   }
 
   async import(upload: Express.Multer.File) {
@@ -608,7 +569,7 @@ export class ProductsService {
       const offersParsed = parser.parse(offersFile.data)
 
       const getUniqueProductAlias = async (alias: string, n: number = 0) => {
-        const product = await this.prismaService.product.findUnique({ where: { alias } })
+        const product = await this.productRepository.findOneBy({ alias })
         if (!product) {
           return alias
         } else {
@@ -623,36 +584,26 @@ export class ProductsService {
         return input
       }
 
-      const parseCategories = async (): Promise<Record<string, PrismaCategory>> => {
-        const rqs = async (data: any, parent: PrismaCategory | null) => {
+      const parseCategories = async (): Promise<Record<string, Category>> => {
+        const rqs = async (data: any, parent: Category | null) => {
           let output = {}
           for (const group of data) {
             const localAlias = slugify(group['Наименование'])
-            const localData: Prisma.CategoryCreateArgs['data'] = {
-              remoteId: group['Ид'],
-              title: group['Наименование'],
-              alias: parent ? `${parent.alias}-${localAlias}` : localAlias,
-              active: true,
-              parent: parent
-                ? {
-                    connect: {
-                      id: parent.id
-                    }
-                  }
-                : undefined
-            }
 
-            let localCategory = await this.prismaService.category.findFirst({
+            let localCategory = await this.categoryRepository.findOne({
               where: { remoteId: group['Ид'] }
             })
-            if (localCategory) {
-              localCategory = await this.prismaService.category.update({
-                data: localData,
-                where: { id: localCategory.id }
-              })
-            } else {
-              localCategory = await this.prismaService.category.create({ data: localData })
+            if (!localCategory) {
+              localCategory = new Category()
+              localCategory.remoteId = group['Ид']
             }
+            localCategory.title = group['Наименование']
+            localCategory.alias = parent ? `${parent.alias}-${localAlias}` : localAlias
+            localCategory.active = true
+            localCategory.parent = parent
+
+            await this.categoryRepository.save(localCategory)
+
             output[group['Ид']] = localCategory
 
             if (Array.isArray(group?.['Группы']?.['Группа'])) {
@@ -699,7 +650,7 @@ export class ProductsService {
         return output
       }
 
-      const parseBrands = async (): Promise<{ [key: string]: PrismaBrand }> => {
+      const parseBrands = async (): Promise<{ [key: string]: Brand }> => {
         const data =
           productsParsed['КоммерческаяИнформация']['Классификатор']['Свойства']['Свойство']
         let output = {}
@@ -707,29 +658,25 @@ export class ProductsService {
           if (itemProperty['Наименование'] !== 'Бренд') continue
 
           for (const itemBrand of itemProperty['ВариантыЗначений']['Справочник']) {
-            const brandData: Prisma.BrandCreateArgs['data'] = {
-              remoteId: itemBrand['ИдЗначения'],
-              title: itemBrand['Значение']
-            }
-            let brand = await this.prismaService.brand.findFirst({
+            let brand = await this.brandRepository.findOne({
               where: { remoteId: itemBrand['ИдЗначения'] }
             })
             if (!brand) {
-              brand = await this.prismaService.brand.create({ data: brandData })
-            } else {
-              brand = await this.prismaService.brand.update({
-                where: { id: brand.id },
-                data: brandData
-              })
+              brand = new Brand()
+              brand.remoteId = itemBrand['ИдЗначения']
             }
+            brand.title = itemBrand['Значение']
+
+            await this.brandRepository.save(brand)
+
             output[itemBrand['ИдЗначения']] = brand
           }
         }
         return output
       }
 
-      const createOptionsFromOffers = async (productOffers, product: PrismaProduct) => {
-        const output: Record<string, PrismaOption> = {}
+      const createOptionsFromOffers = async (productOffers, product: Product) => {
+        const output: Record<string, Option> = {}
         const tmp: Record<string, string[]> = {}
         for (const productOffer of productOffers) {
           if (productOffer['ХарактеристикиТовара']) {
@@ -748,55 +695,31 @@ export class ProductsService {
 
         // добавляем значения опций, присутствующие в выгрузке
         for (const [caption, strValues] of Object.entries(tmp)) {
-          const optionData: Prisma.OptionCreateArgs['data'] = {
-            caption: caption,
-            key: slugify(caption),
-            rank: 2,
-            inFilter: true,
-            type: $Enums.OptionType.combo_options
-          }
-
-          let option = await this.prismaService.option.findFirst({
+          let option = await this.optionRepository.findOne({
             where: { caption }
           })
-
           if (!option) {
-            option = await this.prismaService.option.create({
-              data: optionData
-            })
+            option = new Option()
+            option.caption = caption
           }
+          option.key = slugify(caption)
+          option.rank = 2
+          option.inFilter = true
+          option.type = OptionType.COMBOOPTIONS
+          await this.optionRepository.save(option)
 
           output[caption] = option
 
           // добавляем категории товара в категории опции
-          const productCategories = await this.prismaService.category.findMany({
-            where: { products: { some: { productId: product.id } } }
+          const productCategories = await this.categoryRepository.find({
+            where: { products: { id: product.id } }
           })
-          for (const productCategory of productCategories) {
-            // TODO_PRISMA: тут скорее всегонеправильно connectOrCreate описан
-            option = await this.prismaService.option.update({
-              where: { id: option.id },
-              data: {
-                categories: {
-                  connectOrCreate: {
-                    where: {
-                      categoryId_optionId: {
-                        categoryId: productCategory.id,
-                        optionId: option.id
-                      }
-                    },
-                    create: {
-                      categoryId: productCategory.id
-                    }
-                  }
-                }
-              }
-            })
-          }
+          await this.optionRepository.update({ id: option.id }, { categories: productCategories })
 
+          // TODO: переделать на upsert или параллельную обработку
           for (const strValue of strValues) {
             // создаем значения опции товара, присутствующие в выгрузке
-            let optionValue = await this.prismaService.optionValue.findFirst({
+            let optionValue = await this.optionValueRepository.findOne({
               where: {
                 option: { id: option.id },
                 product: { id: product.id },
@@ -804,29 +727,25 @@ export class ProductsService {
               }
             })
             if (!optionValue) {
-              optionValue = await this.prismaService.optionValue.create({
-                data: {
-                  option: { connect: { id: option.id } },
-                  product: { connect: { id: product.id } },
-                  content: strValue
-                }
-              })
+              optionValue = new OptionValue()
+              optionValue.option = option
+              optionValue.product = product
+              optionValue.content = strValue
             }
+            await this.optionValueRepository.save(optionValue)
           }
         }
 
         // удаляем значения опций, отсутствующие в выгрузке
         for (const [caption, strValues] of Object.entries(tmp)) {
-          const option = await this.prismaService.option.findFirst({ where: { caption } })
+          const option = await this.optionRepository.findOne({ where: { caption } })
 
           if (!option) continue
 
-          await this.prismaService.optionValue.deleteMany({
-            where: {
-              option: { id: option.id },
-              product: { id: product.id },
-              content: { notIn: strValues }
-            }
+          await this.optionValueRepository.delete({
+            option: { id: option.id },
+            product: { id: product.id },
+            content: Not(In(strValues))
           })
         }
 
@@ -835,54 +754,38 @@ export class ProductsService {
 
       const parseProducts = async (limit: number) => {
         const data = productsParsed['КоммерческаяИнформация']['Каталог']['Товары']['Товар']
-        let output: Record<string, PrismaProduct> = {}
+        let output: Record<string, Product> = {}
         let i = 0
         for (const itemProduct of data) {
           if (i === limit) break
 
           i++
 
-          const productData: Prisma.ProductCreateArgs['data'] = {
-            remoteId: itemProduct['Ид'],
-            sku: itemProduct['Артикул'],
-            alias: slugify(itemProduct['Наименование']),
-            title: itemProduct['Наименование'],
-            description: itemProduct['Описание']
-          }
-
-          let product = await this.prismaService.product.findFirst({
+          let product = await this.productRepository.findOne({
             where: { remoteId: itemProduct['Ид'] }
           })
-
           if (!product) {
-            product = await this.prismaService.product.create({
-              data: productData
-            })
-          } else {
-            product = await this.prismaService.product.update({
-              where: { id: product.id },
-              data: {
-                ...productData,
-                alias:
-                  productData['alias'] === product.alias
-                    ? productData['alias']
-                    : await getUniqueProductAlias(productData['alias'])
-              }
-            })
+            product = new Product()
+            product.remoteId = itemProduct['Ид']
+            product.alias = await getUniqueProductAlias(itemProduct['Наименование'])
           }
+          product.sku = itemProduct['Артикул']
+          product.title = itemProduct['Наименование']
+          product.description = itemProduct['Описание']
+
+          await this.productRepository.save(product)
 
           output[itemProduct['Ид']] = product
 
           // удаляем все файлы, загружаем новые
-          const productImages = await this.prismaService.productImage.findMany({
+          const productImages = await this.productImageRepository.find({
             where: { productId: product.id },
-            include: { file: true }
+            relations: { file: true }
           })
           for (const productImage of productImages) {
-            await this.prismaService.productImage.delete({
-              where: {
-                fileId_productId: { fileId: productImage.file.id, productId: product.id }
-              }
+            await this.productImageRepository.delete({
+              fileId: productImage.file.id,
+              productId: product.id
             })
             await this.storageService.remove(productImage.file.id)
           }
@@ -895,78 +798,59 @@ export class ProductsService {
                 images[rawImagePath],
                 join(String(product.id), rawImagePath)
               )
-              await this.prismaService.productImage.create({
-                data: {
-                  file: { connect: { id: file.id } },
-                  product: { connect: { id: product.id } },
-                  rank: 0 // TODO_PRISMA тут порядок не учитывает количество
-                }
-              })
+              const productImage = new ProductImage()
+              productImage.rank = 0 // TODO: тут порядок не учитывает количество
+              productImage.file = file
+              productImage.product = product
+              await this.productImageRepository.save(productImage)
             }
           }
 
           // отвязываем все категории и привязываем новые
           if (itemProduct['Группы']) {
-            const productId = product.id
             const itemProductGroups = arrayField(itemProduct['Группы']['Ид'])
-            await this.prismaService.product.update({
-              where: { id: productId },
-              data: {
-                categories: {
-                  set: itemProductGroups.map((categoryId) => ({
-                    categoryId_productId: { categoryId: +categoryId, productId: productId }
-                  }))
-                }
-              }
-            })
+            product.categories = await Promise.all(
+              itemProductGroups.map(async (categoryId) =>
+                this.categoryRepository.findOneByOrFail({ id: +categoryId })
+              )
+            )
+            await this.productRepository.save(product)
           }
 
           if (itemProduct['ЗначенияСвойств']) {
             for (const rawProperty of itemProduct['ЗначенияСвойств']['ЗначенияСвойства']) {
-              const productData: Prisma.ProductUpdateArgs['data'] = {}
               if (rawProperty['Ид'] === propertiesByName['Бренд']) {
-                productData.brand = { connect: { id: brands[rawProperty['Значение']].id } }
+                product.brand = brands[rawProperty['Значение']]
               }
               if (rawProperty['Ид'] === propertiesByName['Новинки']) {
-                productData.recent = rawProperty['Значение'] === true
+                product.recent = rawProperty['Значение'] === true
               }
               if (rawProperty['Ид'] === propertiesByName['ХитПродаж']) {
-                productData.favorite = rawProperty['Значение'] === true
+                product.favorite = rawProperty['Значение'] === true
               }
               if (rawProperty['Ид'] === propertiesByName['Цвет']) {
-                let option = await this.prismaService.option.findFirst({
+                let option = await this.optionRepository.findOne({
                   where: { caption: 'Цвет' }
                 })
                 if (!option) {
-                  option = await this.prismaService.option.create({
-                    data: {
-                      caption: 'Цвет',
-                      key: 'color',
-                      rank: 0,
-                      inFilter: true,
-                      type: $Enums.OptionType.combo_colors
-                    }
-                  })
+                  option = new Option()
+                  ;(option.caption = 'Цвет'),
+                    (option.key = 'color'),
+                    (option.rank = 0),
+                    (option.inFilter = true),
+                    (option.type = OptionType.COMBOCOLORS)
+                  await this.optionRepository.save(option)
                 }
 
                 // добавляем категории товара в категории опции
-                const optionId = option.id
-                const productCategories = await this.prismaService.category.findMany({
-                  where: { products: { some: { productId: product.id } } }
+                const productCategories = await this.categoryRepository.find({
+                  where: { products: { id: product.id } }
                 })
-                await this.prismaService.option.update({
-                  where: { id: optionId },
-                  data: {
-                    categories: {
-                      set: productCategories.map((categoryId) => ({
-                        categoryId_optionId: { categoryId: +categoryId, optionId: optionId }
-                      }))
-                    }
-                  }
-                })
+                option.categories = productCategories
+                await this.optionRepository.save(option)
 
                 // добавляем значение опции если такого нет, остальные удаляем
-                const productOptionValues = await this.prismaService.optionValue.findMany({
+                const productOptionValues = await this.optionValueRepository.find({
                   where: {
                     option: { id: option.id },
                     product: { id: product.id }
@@ -980,57 +864,45 @@ export class ProductsService {
                     (item) => item.content === propertyValues[rawProperty['Значение']]
                   )
                   if (!productOptionValue) {
-                    productOptionValue = await this.prismaService.optionValue.create({
-                      data: {
-                        content: propertyValues[rawProperty['Значение']],
-                        product: { connect: { id: product.id } },
-                        option: { connect: { id: option.id } }
-                      }
-                    })
+                    productOptionValue = new OptionValue()
+                    productOptionValue.content = propertyValues[rawProperty['Значение']]
+                    productOptionValue.product = product
+                    productOptionValue.option = option
+                    await this.optionValueRepository.save(productOptionValue)
                   }
-                  await this.prismaService.optionValue.deleteMany({
-                    where: { id: { in: orphanProductOptionValues.map((item) => item.id) } }
+                  await this.optionValueRepository.delete({
+                    id: In(orphanProductOptionValues.map((item) => item.id))
                   })
                 } else {
-                  await this.prismaService.optionValue.deleteMany({
-                    where: { id: { in: productOptionValues.map((item) => item.id) } }
+                  await this.optionValueRepository.delete({
+                    id: In(productOptionValues.map((item) => item.id))
                   })
                 }
               }
               if (rawProperty['Ид'] === propertiesByName['Материал']) {
-                let option = await this.prismaService.option.findFirst({
+                let option = await this.optionRepository.findOne({
                   where: { caption: 'Материал' }
                 })
                 if (!option) {
-                  option = await this.prismaService.option.create({
-                    data: {
-                      caption: 'Материал',
-                      key: 'material',
-                      rank: 1,
-                      inFilter: true,
-                      type: $Enums.OptionType.combo_options
-                    }
-                  })
+                  option = new Option()
+                  option.caption = 'Материал'
+                  option.key = 'material'
+                  option.rank = 1
+                  option.inFilter = true
+                  option.type = OptionType.COMBOOPTIONS
+                  await this.optionRepository.save(option)
                 }
 
                 // добавляем категории товара в категории опции
                 const optionId = option.id
-                const productCategories = await this.prismaService.category.findMany({
-                  where: { products: { some: { productId: product.id } } }
+                const productCategories = await this.categoryRepository.find({
+                  where: { products: { id: product.id } }
                 })
-                await this.prismaService.option.update({
-                  where: { id: optionId },
-                  data: {
-                    categories: {
-                      set: productCategories.map((categoryId) => ({
-                        categoryId_optionId: { categoryId: +categoryId, optionId: optionId }
-                      }))
-                    }
-                  }
-                })
+                option.categories = productCategories
+                await this.optionRepository.save(option)
 
                 // добавляем значение опции если такого нет, остальные удаляем
-                const productOptionValues = await this.prismaService.optionValue.findMany({
+                const productOptionValues = await this.optionValueRepository.find({
                   where: { option: { id: option.id }, product: { id: product.id } }
                 })
                 if (rawProperty['Значение']) {
@@ -1041,25 +913,25 @@ export class ProductsService {
                     (item) => item.content === propertyValues[rawProperty['Значение']]
                   )
                   if (!productOptionValue) {
-                    productOptionValue = await this.prismaService.optionValue.create({
-                      data: {
-                        content: propertyValues[rawProperty['Значение']],
-                        product: { connect: { id: product.id } },
-                        option: { connect: { id: option.id } }
-                      }
-                    })
+                    productOptionValue = new OptionValue()
+                    productOptionValue.content = propertyValues[rawProperty['Значение']]
+                    productOptionValue.product = product
+                    productOptionValue.option = option
+                    await this.optionValueRepository.save(productOptionValue)
                   }
-                  await this.prismaService.optionValue.deleteMany({
-                    where: { id: { in: orphanProductOptionValues.map((item) => item.id) } }
+                  await this.optionValueRepository.delete({
+                    id: In(orphanProductOptionValues.map((item) => item.id))
                   })
                 } else {
-                  await this.prismaService.optionValue.deleteMany({
-                    where: { id: { in: productOptionValues.map((item) => item.id) } }
+                  await this.optionValueRepository.delete({
+                    id: In(productOptionValues.map((item) => item.id))
                   })
                 }
               }
             }
           }
+
+          await this.productRepository.save(product)
 
           // добавляем или обновляем торговые предложения присутствующие в выгрузке
           const productOffers = offersParsed['КоммерческаяИнформация']['ПакетПредложений'][
@@ -1074,27 +946,19 @@ export class ProductsService {
           for (const item of productOffers) {
             if (!item?.['Цены']?.['Цена']?.['ЦенаЗаЕдиницу']) continue
 
-            const offerData: Prisma.OfferCreateArgs['data'] = {
-              remoteId: item['Ид'],
-              title: item['Наименование'],
-              price: item['Цены']['Цена']['ЦенаЗаЕдиницу'],
-              product: { connect: { id: product.id } }
-            }
-
-            let offer = await this.prismaService.offer.findFirst({
+            let offer = await this.offerRepository.findOne({
               where: { remoteId: item['Ид'] }
             })
             if (!offer) {
-              offer = await this.prismaService.offer.create({ data: offerData })
-            } else {
-              offer = await this.prismaService.offer.update({
-                where: { id: offer.id },
-                data: {
-                  ...offerData,
-                  optionValues: { set: [] }
-                }
-              })
+              offer = new Offer()
+              offer.remoteId = item['Ид']
             }
+            offer.title = item['Наименование']
+            offer.price = item['Цены']['Цена']['ЦенаЗаЕдиницу']
+            offer.product = product
+            offer.optionValues = []
+
+            await this.offerRepository.save(offer)
 
             if (item['ХарактеристикиТовара']) {
               const rawProperties = arrayField(item['ХарактеристикиТовара']['ХарактеристикаТовара'])
@@ -1103,7 +967,7 @@ export class ProductsService {
 
                 if (!option) continue
 
-                const optionValue = await this.prismaService.optionValue.findFirst({
+                const optionValue = await this.optionValueRepository.findOne({
                   where: {
                     product: { id: product.id },
                     option: { id: option.id },
@@ -1113,35 +977,17 @@ export class ProductsService {
 
                 if (!optionValue) continue
 
-                // TODO_PRISMA вероятно не прикрепляется
-                await this.prismaService.offer.update({
-                  where: { id: offer.id },
-                  data: {
-                    optionValues: {
-                      connectOrCreate: {
-                        create: {
-                          optionValueId: optionValue.id
-                        },
-                        where: {
-                          offerId_optionValueId: {
-                            offerId: offer.id,
-                            optionValueId: optionValue.id
-                          }
-                        }
-                      }
-                    }
-                  }
-                })
+                offer.optionValues = [...offer.optionValues, optionValue]
+
+                await this.offerRepository.save(offer)
               }
             }
           }
 
           // удаляем торговые предложения, отсутствующие в выгрузке
-          await this.prismaService.offer.deleteMany({
-            where: {
-              remoteId: { notIn: productOfferIds },
-              product: { id: product.id }
-            }
+          await this.offerRepository.delete({
+            remoteId: Not(In(productOfferIds)),
+            product: { id: product.id }
           })
         }
         return output
@@ -1157,17 +1003,15 @@ export class ProductsService {
 
       const updateCategoryImage = async () => {
         for (const category of Object.values(categories)) {
-          const firstProduct = await this.prismaService.product.findFirst({
-            where: { categories: { some: { categoryId: category.id } } },
-            include: { images: true }
+          const firstProduct = await this.productRepository.findOne({
+            where: { categories: { id: category.id } },
+            relations: { images: { file: true } }
           })
           if (firstProduct) {
             const image = firstProduct.images[0]
             if (image) {
-              await this.prismaService.category.update({
-                where: { id: category.id },
-                data: { image: { connect: { id: image.fileId } } }
-              })
+              category.image = image.file
+              await this.categoryRepository.save(category)
             }
           }
         }
@@ -1175,8 +1019,8 @@ export class ProductsService {
 
       const updateCategoryActivity = async () => {
         for (const category of Object.values(categories)) {
-          const productsCount = await this.prismaService.product.count({
-            where: { categories: { some: { categoryId: category.id } } }
+          const productsCount = await this.productRepository.count({
+            where: { categories: { id: category.id } }
           })
           let active = true
           if (productsCount === 0) {
@@ -1184,10 +1028,8 @@ export class ProductsService {
           } else if (category.title === 'Архив') {
             active = false
           }
-          await this.prismaService.category.update({
-            where: { id: category.id },
-            data: { active }
-          })
+          category.active = active
+          await this.categoryRepository.save(category)
         }
       }
 
@@ -1242,7 +1084,7 @@ export class ProductsService {
   }
 
   async orderByClick(id: number, dto: OrderByClickProductDto) {
-    const product = await this.prismaService.product.findUniqueOrThrow({ where: { id } })
+    const product = await this.productRepository.findOneByOrFail({ id })
 
     const emailAdmin = this.configService.get('app.emailAdmin')
     if (emailAdmin) {

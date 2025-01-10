@@ -1,5 +1,4 @@
 import { Controller, Get, Query } from '@nestjs/common'
-
 import { FindAllPickupPointQueryDto } from '../dto/pickup-point.dto'
 import { PickupPointService } from '../services/pickup-point.service'
 

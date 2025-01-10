@@ -1,9 +1,9 @@
 import { PaginationQueryDto } from '@/lib/pagination-query.dto'
 import { Type } from 'class-transformer'
 import { IsArray, IsBoolean, IsEmail, IsNumber, IsOptional, IsString } from 'class-validator'
-import { User } from '../entities/user.entity'
 import { PartialType } from '@nestjs/mapped-types'
 import { ParseArray } from '@/lib/parse-array'
+import { User } from '../entities/user.entity'
 
 export class CreateUserDto {
   @Type(() => String)

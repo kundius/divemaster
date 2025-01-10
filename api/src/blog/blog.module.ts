@@ -6,11 +6,13 @@ import { BlogController } from './controllers/blog.controller'
 import { BlogPostService } from './services/blog-post.service'
 import { BlogTagService } from './services/blog-tag.service'
 import { BlogService } from './services/blog.service'
-import { PrismaService } from '@/prisma.service'
+import { BlogTag } from './entities/blog-tag.entity'
+import { BlogPost } from './entities/blog-post.entity'
+import { TypeOrmModule } from '@nestjs/typeorm'
 
 @Module({
-  imports: [StorageModule],
-  providers: [BlogService, BlogPostService, BlogTagService, PrismaService],
+  imports: [TypeOrmModule.forFeature([BlogTag, BlogPost]), StorageModule],
+  providers: [BlogService, BlogPostService, BlogTagService],
   controllers: [BlogController, BlogPostController, BlogTagController],
   exports: [BlogService, BlogPostService, BlogTagService]
 })

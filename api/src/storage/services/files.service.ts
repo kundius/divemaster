@@ -1,11 +1,16 @@
-import { PrismaService } from '@/prisma.service'
 import { Injectable } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
+import { File } from '../entities/file.entity'
 
 @Injectable()
 export class FilesService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    @InjectRepository(File)
+    private fileRepository: Repository<File>
+  ) {}
 
   async findOne(id: number) {
-    return this.prismaService.file.findUniqueOrThrow({ where: { id } })
+    return this.fileRepository.findOneByOrFail({ id })
   }
 }

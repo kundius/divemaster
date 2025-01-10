@@ -3,7 +3,6 @@ import { ParseArray } from '@/lib/parse-array'
 import { ParseBoolean } from '@/lib/parse-boolean'
 import { ParseObject } from '@/lib/parse-object'
 import { PartialType } from '@nestjs/mapped-types'
-import { $Enums, BlogPost } from '@prisma/client'
 import { Type } from 'class-transformer'
 import {
   IsArray,
@@ -14,6 +13,7 @@ import {
   IsOptional,
   IsString
 } from 'class-validator'
+import { BlogPost, BlogPostStatusEnum } from '../entities/blog-post.entity'
 
 export class BlogPostCreateDto {
   @Type(() => String)
@@ -40,9 +40,9 @@ export class BlogPostCreateDto {
   @IsOptional()
   read_time?: string
 
-  @IsEnum($Enums.BlogPostStatus)
+  @IsEnum(BlogPostStatusEnum)
   @IsOptional()
-  status?: $Enums.BlogPostStatus
+  status?: BlogPostStatusEnum
 
   @ParseObject()
   @IsObject()

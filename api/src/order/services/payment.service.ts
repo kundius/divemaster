@@ -1,4 +1,4 @@
-import { Payment } from '@prisma/client'
+import { Payment } from '../entities/payment.entity'
 
 export interface PaymentService {
   process(payment: Payment): Promise<void>

@@ -12,18 +12,6 @@ services:
       - ./docker/db:/var/lib/mysql
     restart: unless-stopped
 
-  shadowdb:
-    image: mariadb:${MARIADB_VERSION:-11.4.3}
-    environment:
-      - MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=yes
-      - MARIADB_DATABASE=${MARIADB_DATABASE:-divemaster}
-      - MARIADB_USER=${MARIADB_USERNAME:-divemaster}
-      - MARIADB_PASSWORD=${MARIADB_PASSWORD:-divemaster}
-      - TZ=${TZ:-Europe/Moscow}
-    volumes:
-      - ./docker/shadowdb:/var/lib/mysql
-    restart: unless-stopped
-
   nginx:
     image: nginx:${NGINX_VERSION:-1.25}
     environment:

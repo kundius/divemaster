@@ -1,6 +1,7 @@
 import { ParseBoolean } from '@/lib/parse-boolean'
 import { ParseObject } from '@/lib/parse-object'
-import { $Enums } from '@prisma/client'
+import { DeliveryService } from '@/order/entities/delivery.entity'
+import { PaymentServiceEnum } from '@/order/entities/payment.entity'
 import { Type } from 'class-transformer'
 import {
   IsArray,
@@ -18,18 +19,18 @@ export class GetOrderCostDto {
   @IsOptional()
   personalDiscount?: boolean
 
-  @IsEnum($Enums.DeliveryService)
+  @IsEnum(DeliveryService)
   @IsOptional()
-  deliveryService?: $Enums.DeliveryService
+  deliveryService?: DeliveryService
 
   @ParseObject()
   @IsObject()
   @IsOptional()
   deliveryProperties?: Record<string, unknown>
 
-  @IsEnum($Enums.PaymentService)
+  @IsEnum(PaymentServiceEnum)
   @IsOptional()
-  paymentService?: $Enums.PaymentService
+  paymentService?: PaymentServiceEnum
 }
 
 export class CreateOrderDto {
@@ -45,11 +46,11 @@ export class CreateOrderDto {
   @IsBoolean()
   personalDiscount: boolean
 
-  @IsEnum($Enums.PaymentService)
-  paymentService: $Enums.PaymentService
+  @IsEnum(PaymentServiceEnum)
+  paymentService: PaymentServiceEnum
 
-  @IsEnum($Enums.DeliveryService)
-  deliveryService: $Enums.DeliveryService
+  @IsEnum(DeliveryService)
+  deliveryService: DeliveryService
 
   @Type(() => String)
   @IsString()

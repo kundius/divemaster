@@ -2,7 +2,7 @@ import { UsersService } from '@/users/services/users.service'
 import { Body, Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common'
 import { CurrentUser } from '../decorators/current-user.decorator'
 import { AuthService } from '../services/auth.service'
-import { User } from '@prisma/client'
+import { User } from '@/users/entities/user.entity'
 
 @Controller('auth')
 export class AuthController {

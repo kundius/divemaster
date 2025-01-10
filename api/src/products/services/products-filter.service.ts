@@ -1,7 +1,9 @@
 import { isArray, isBoolean, isNull, isNumber, isString, isUndefined } from '@modyqyw/utils'
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from '@/prisma.service'
-import { $Enums, Prisma } from '@prisma/client'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Product } from '../entities/product.entity'
+import { FindOptionsWhere, Repository } from 'typeorm'
+import { Option, OptionType } from '../entities/option.entity'
 
 export interface BaseFilter {
   name: string
@@ -35,11 +37,10 @@ export type SelectedRecord = Record<string, string | number | boolean | string[]
 @Injectable()
 export class ProductsFilterService {
   constructor(
-    private readonly prismaService: PrismaService
-    // @InjectRepository(Option)
-    // private optionsRepository: EntityRepository<Option>,
-    // @InjectRepository(Product)
-    // private productsRepository: EntityRepository<Product>
+    @InjectRepository(Product)
+    private productRepository: Repository<Product>,
+    @InjectRepository(Option)
+    private optionRepository: Repository<Option>
   ) {}
 
   filters: Filter[] = []
@@ -58,18 +59,16 @@ export class ProductsFilterService {
   // colors: string[]
   // toggle: boolean
   async loadData(categoryId?: number): Promise<DataRecord[]> {
+    const where: FindOptionsWhere<Product> = {}
     // TODO: HIERARCHY_DEPTH_LIMIT
-    const products = await this.prismaService.product.findMany({
-      where: {
-        categories: categoryId ? { some: { categoryId } } : undefined
-      },
-      include: {
+    if (categoryId) {
+      where.categories = { id: categoryId }
+    }
+    const products = await this.productRepository.find({
+      where,
+      relations: {
         brand: true,
-        optionValues: {
-          include: {
-            option: true
-          }
-        },
+        optionValues: { option: true },
         offers: true
       }
     })
@@ -91,19 +90,19 @@ export class ProductsFilterService {
 
       for (const value of product.optionValues) {
         switch (value.option.type) {
-          case $Enums.OptionType.textfield:
+          case OptionType.TEXTFIELD:
             // case OptionType.TEXTAREA:
             // case OptionType.COMBOBOX:
             record[value.option.key] = value.content
             break
-          case $Enums.OptionType.combo_boolean:
+          case OptionType.COMBOBOOLEAN:
             record[value.option.key] = value.content === '1'
             break
-          case $Enums.OptionType.numberfield:
+          case OptionType.NUMBERFIELD:
             record[value.option.key] = Number(value.content)
             break
-          case $Enums.OptionType.combo_colors:
-          case $Enums.OptionType.combo_options:
+          case OptionType.COMBOCOLORS:
+          case OptionType.COMBOOPTIONS:
             const field = record[value.option.key]
             if (isArray(field, isString)) {
               field.push(value.content)
@@ -122,15 +121,16 @@ export class ProductsFilterService {
 
   // по умолчанию фильтры имеют не заполненные варианты
   async loadFilters(categoryId?: number): Promise<Filter[]> {
+    const where: FindOptionsWhere<Option> = {}
     // TODO: HIERARCHY_DEPTH_LIMIT
-    const options = await this.prismaService.option.findMany({
-      where: {
-        categories: categoryId ? { some: { categoryId } } : undefined
-      },
-      orderBy: {
-        rank: 'asc'
-      }
+    if (categoryId) {
+      where.categories = { id: categoryId }
+    }
+    const options = await this.optionRepository.find({
+      where,
+      order: { rank: 'asc' }
     })
+
     const filters: Filter[] = []
     filters.push({
       type: 'toggle',
@@ -157,7 +157,7 @@ export class ProductsFilterService {
         // case OptionType.TEXTAREA:
         //   // не фильтруется
         //   break
-        case $Enums.OptionType.textfield:
+        case OptionType.TEXTFIELD:
           // case OptionType.COMBOBOX:
           filters.push({
             ...base,
@@ -167,20 +167,20 @@ export class ProductsFilterService {
             variant: 'default'
           })
           break
-        case $Enums.OptionType.combo_boolean:
+        case OptionType.COMBOBOOLEAN:
           filters.push({ ...base, type: 'toggle' })
           break
-        case $Enums.OptionType.numberfield:
+        case OptionType.NUMBERFIELD:
           filters.push({ ...base, type: 'range', range: [undefined, undefined] })
           break
-        case $Enums.OptionType.combo_colors:
-        case $Enums.OptionType.combo_options:
+        case OptionType.COMBOCOLORS:
+        case OptionType.COMBOOPTIONS:
           filters.push({
             ...base,
             type: 'options',
             conjunction: false,
             options: [],
-            variant: option.type === $Enums.OptionType.combo_colors ? 'colors' : 'default'
+            variant: option.type === OptionType.COMBOCOLORS ? 'colors' : 'default'
           })
           break
       }

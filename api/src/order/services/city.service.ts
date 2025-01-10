@@ -3,8 +3,11 @@ import { ConfigService } from '@nestjs/config'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { PrismaService } from '@/prisma.service'
 import { v4 } from 'uuid'
+import { City } from '../entities/city.entity'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
+import { PickupPoint } from '../entities/pickup-point.entity'
 
 type DataCities = {
   coords: {
@@ -20,12 +23,15 @@ type DataCities = {
 @Injectable()
 export class CityService {
   constructor(
-    private readonly prismaService: PrismaService,
+    @InjectRepository(City)
+    private cityRepository: Repository<City>,
+    @InjectRepository(PickupPoint)
+    private pickupPointRepository: Repository<PickupPoint>,
     private configService: ConfigService
   ) {}
 
   async findAll() {
-    return this.prismaService.city.findMany()
+    return this.cityRepository.find()
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
@@ -37,28 +43,25 @@ export class CityService {
     const cities = JSON.parse(citiesContent) as DataCities
 
     // удалить все города
-    await this.prismaService.city.deleteMany()
+    await this.cityRepository.delete({})
 
     // добавить города из файла
     let count1 = 0
     for (const city of cities) {
-      await this.prismaService.city.create({
-        data: {
-          id: v4(),
-          name: city.name,
-          type: 'город',
-          lat: Number(city.coords.lat),
-          lon: Number(city.coords.lon),
-          subject: city.subject,
-          district: city.district
-        }
-      })
+      const record = new City()
+      ;(record.name = city.name),
+        (record.type = 'город'),
+        (record.lat = Number(city.coords.lat)),
+        (record.lon = Number(city.coords.lon)),
+        (record.subject = city.subject),
+        (record.district = city.district)
+      await this.cityRepository.save(record)
       count1++
     }
 
     // добавить к городам населенные пункты, в которых есть ПВЗ
     let count2 = 0
-    const points = await this.prismaService.pickupPoint.findMany()
+    const points = await this.pickupPointRepository.find()
     const tmpAdded: string[] = []
     for (const point of points) {
       const tmpKey = `${point.subjectName}/${point.cityName}`
@@ -69,17 +72,14 @@ export class CityService {
         !tmpAdded.includes(tmpKey)
       ) {
         tmpAdded.push(tmpKey)
-        await this.prismaService.city.create({
-          data: {
-            id: v4(),
-            name: point.cityName,
-            type: point.cityType,
-            lat: Number(point.lat),
-            lon: Number(point.lon),
-            subject: point.subjectName,
-            district: point.districtName
-          }
-        })
+        const record = new City()
+        ;(record.name = point.cityName),
+          (record.type = point.cityType),
+          (record.lat = Number(point.lat)),
+          (record.lon = Number(point.lon)),
+          (record.subject = point.subjectName),
+          (record.district = point.districtName)
+        await this.cityRepository.save(record)
         count2++
       }
     }

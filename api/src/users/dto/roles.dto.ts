@@ -1,8 +1,8 @@
 import { PaginationQueryDto } from '@/lib/pagination-query.dto'
 import { PartialType } from '@nestjs/mapped-types'
-import { Role } from '@prisma/client'
 import { Transform, Type } from 'class-transformer'
 import { IsArray, IsOptional, IsString } from 'class-validator'
+import { Role } from '../entities/role.entity'
 
 export class CreateRoleDto {
   @Type(() => String)

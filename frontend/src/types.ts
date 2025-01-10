@@ -181,34 +181,13 @@ export interface BrandEntity {
   title: string
 }
 
-export interface OfferOptionValues {
-  offerId: number
-  optionValueId: number
-  offer?: OfferEntity
-  optionValue?: OptionValueEntity
-}
-
 export interface OfferEntity {
   id: number
   title: string | null
   price: number
   productId: number
   product?: ProductEntity
-  optionValues?: OfferOptionValues[]
-}
-
-export interface CategoriesOnOptions {
-  categoryId: number
-  optionId: number
-  category?: CategoryEntity
-  option?: OptionEntity
-}
-
-export interface CategoryProducts {
-  categoryId: number
-  productId: number
-  category?: CategoryEntity
-  product?: ProductEntity
+  optionValues?: OptionValueEntity[]
 }
 
 export interface CategoryEntity {
@@ -224,8 +203,8 @@ export interface CategoryEntity {
   active: boolean
   rank: number
   children?: CategoryEntity[]
-  options?: CategoriesOnOptions[]
-  products?: CategoryProducts[]
+  options?: OptionEntity[]
+  products?: ProductEntity[]
 }
 
 export interface ProductEntity {
@@ -248,7 +227,7 @@ export interface ProductEntity {
   favorite: boolean
   inStock: boolean
   images?: ProductImageEntity[]
-  categories?: CategoryProducts[]
+  categories?: CategoryEntity[]
   descriptions?: ProductDescription[]
   options?: OptionEntity[]
   offers?: OfferEntity[]
@@ -298,7 +277,7 @@ export interface OptionEntity {
   inFilter: boolean
   type: OptionType
   rank: number
-  categories?: CategoriesOnOptions[]
+  categories?: CategoryEntity[]
   values?: OptionValueEntity[]
 }
 
@@ -311,8 +290,6 @@ export interface OptionValueEntity {
   product?: ProductEntity
   rank: number
   properties?: string
-  cartProductOptionValues: CartProductOptionValues[]
-  offerOptionValues: OfferOptionValues[]
 }
 
 export enum OptionType {
@@ -345,13 +322,6 @@ export interface CartEntity {
   updatedAt: string
 }
 
-export interface CartProductOptionValues {
-  cartProductId: string
-  optionValueId: number
-  cartProduct?: CartProductEntity
-  optionValue?: OptionValueEntity
-}
-
 export interface CartProductEntity {
   id: string
   cartId: CartEntity['id']
@@ -361,7 +331,7 @@ export interface CartProductEntity {
   quantity: number
   createdAt: string
   updatedAt: string
-  optionValues?: CartProductOptionValues[]
+  optionValues?: OptionValueEntity[]
   oldPrice?: number
   price?: number
   active?: boolean
@@ -378,7 +348,7 @@ export interface BlogPostEntity {
   metadata: Record<string, string> | null
   createdAt: string
   updatedAt: string
-  tags: BlogTagPosts[]
+  tags: BlogTagEntity[]
   image: FileEntity | null
 }
 
@@ -387,15 +357,8 @@ export interface BlogTagEntity {
   name: string
   alias: string
   metadata: Record<string, string> | null
-  posts: BlogTagPosts[]
+  posts: BlogPostEntity[]
   postsTotal?: number
-}
-
-export interface BlogTagPosts {
-  blogTagId: number
-  blogPostId: number
-  blogPost?: BlogPostEntity
-  blogTag?: BlogTagEntity
 }
 
 export enum BlogPostStatusEnum {

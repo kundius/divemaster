@@ -62,15 +62,10 @@ export function ProductOffersUpdateDialog({
       price: String(offer.price),
       title: offer.title || '',
       options: options.reduce((previousValue, currentValue) => {
-        const foundValue = offer.optionValues?.find(({ optionValue }) => {
-          if (!optionValue) {
-            throw new Error('optionValue not included')
-          }
-          return optionValue.optionId === currentValue.id
-        })
+        const foundValue = offer.optionValues?.find(({optionId}) => optionId === currentValue.id)
         return {
           ...previousValue,
-          [currentValue.key]: foundValue ? String(foundValue.optionValueId) : undefined
+          [currentValue.key]: foundValue ? String(foundValue.id) : undefined
         }
       }, {})
     }

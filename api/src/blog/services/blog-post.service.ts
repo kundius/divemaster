@@ -1,14 +1,24 @@
 import { slugify } from '@/lib/utils'
-import { PrismaService } from '@/prisma.service'
 import { Injectable } from '@nestjs/common'
-import { Prisma } from '@prisma/client'
 import { BlogPostCreateDto, BlogPostFindAllDto, BlogPostUpdateDto } from '../dto/blog-post.dto'
 import { BlogTagService } from './blog-tag.service'
+import { BlogPost } from '../entities/blog-post.entity'
+import { InjectRepository } from '@nestjs/typeorm'
+import {
+  FindOptionsRelations,
+  FindOptionsWhere,
+  In,
+  LessThan,
+  Like,
+  MoreThan,
+  Repository
+} from 'typeorm'
 
 @Injectable()
 export class BlogPostService {
   constructor(
-    private readonly prismaService: PrismaService,
+    @InjectRepository(BlogPost)
+    private blogPostRepository: Repository<BlogPost>,
     private readonly blogTagService: BlogTagService
   ) {}
 
@@ -18,7 +28,7 @@ export class BlogPostService {
     if (unique) {
       const fn = async (n: number) => {
         const tmp = n !== 0 ? `${alias}-${n}` : alias
-        const record = await this.prismaService.blogPost.findUnique({
+        const record = await this.blogPostRepository.findOne({
           where: { alias: tmp }
         })
         return record ? fn(n + 1) : tmp
@@ -30,152 +40,120 @@ export class BlogPostService {
   }
 
   async create({ imageId, tags, alias, ...fillable }: BlogPostCreateDto) {
-    const data: Prisma.BlogPostCreateArgs['data'] = {
-      ...fillable,
-      alias: await this.makeAlias(alias || fillable.title, true)
-    }
+    const record = new BlogPost()
+
+    this.blogPostRepository.merge(record, fillable)
+
+    record.alias = await this.makeAlias(alias || fillable.title, true)
 
     if (typeof fillable.content !== 'undefined') {
-      data.readTime = String(Math.floor(fillable.content.length / 1000))
+      record.readTime = String(Math.floor(fillable.content.length / 1000))
     }
 
     if (typeof imageId !== 'undefined') {
-      data.image = imageId ? { connect: { id: imageId } } : {}
+      record.imageId = imageId
     }
 
     if (typeof tags !== 'undefined') {
-      const tagEntities = await this.blogTagService.findOrCreateTagsByName(tags)
-      data.tags = {
-        create: tagEntities.map((tag) => ({ blogTag: { connect: { id: tag.id } } }))
-      }
+      record.tags = await this.blogTagService.findOrCreateTagsByName(tags)
     }
 
-    const record = await this.prismaService.blogPost.create({ data })
+    await this.blogPostRepository.save(record)
 
     return record
   }
 
   async findAll(dto: BlogPostFindAllDto) {
-    const args: Prisma.BlogPostFindManyArgs = {}
+    const where: FindOptionsWhere<BlogPost> = {}
+    const relations: FindOptionsRelations<BlogPost> = {}
 
-    args.where = {}
-    args.include = {
-      image: true,
-      tags: {
-        include: {
-          blogTag: true
-        }
-      }
-    }
+    relations.image = true
+    relations.tags = true
 
     if (dto.query) {
-      args.where.title = { contains: dto.query }
-    }
-
-    if (!dto.withExtraContent) {
-      args.omit = { metadata: true, content: true, longTitle: true }
+      where.title = Like(dto.query)
     }
 
     if (dto.tags) {
-      args.where.tags = { some: { blogTag: { name: { in: dto.tags } } } }
+      where.tags = { name: In(dto.tags) }
     }
 
-    args.orderBy = { [dto.sort]: dto.dir }
-    args.skip = dto.skip
-    args.take = dto.take
-
-    const rows = await this.prismaService.blogPost.findMany(args)
-    const total = await this.prismaService.blogPost.count({ where: args.where })
+    const [rows, total] = await this.blogPostRepository.findAndCount({
+      where,
+      relations,
+      order: { [dto.sort]: dto.dir },
+      skip: dto.skip,
+      take: dto.take
+    })
 
     return { rows, total }
   }
 
   async findOne(id: number) {
-    return this.prismaService.blogPost.findUniqueOrThrow({
+    return this.blogPostRepository.findOneOrFail({
       where: { id },
-      include: {
+      relations: {
         image: true,
-        tags: {
-          include: {
-            blogTag: true
-          }
-        }
+        tags: true
       }
     })
   }
 
   async findOneByAlias(alias: string) {
-    return this.prismaService.blogPost.findUniqueOrThrow({
+    return this.blogPostRepository.findOne({
       where: { alias },
-      include: {
+      relations: {
         image: true,
-        tags: {
-          include: {
-            blogTag: true
-          }
-        }
+        tags: true
       }
     })
   }
 
   async update(id: number, { imageId, tags, alias, ...fillable }: BlogPostUpdateDto) {
-    let record = await this.findOne(id)
+    const record = await this.blogPostRepository.findOneOrFail({
+      where: { id },
+      relations: {
+        image: true,
+        tags: true
+      }
+    })
 
-    const data: Prisma.BlogPostUpdateArgs['data'] = fillable
+    this.blogPostRepository.merge(record, fillable)
 
     if (typeof alias !== 'undefined' && alias !== record.alias) {
-      data.alias = await this.makeAlias(alias || record.title, true)
+      record.alias = await this.makeAlias(alias || record.title, true)
     }
 
     if (typeof fillable.content !== 'undefined') {
-      data.readTime = String(Math.ceil(fillable.content.length / 1000))
+      record.readTime = String(Math.ceil(fillable.content.length / 1000))
     }
 
     if (typeof imageId !== 'undefined') {
-      data.image = imageId ? { connect: { id: imageId } } : {}
+      record.imageId = imageId
     }
 
     if (typeof tags !== 'undefined') {
-      const tagEntities = await this.blogTagService.findOrCreateTagsByName(tags)
-      data.tags = {
-        deleteMany: {},
-        create: tagEntities.map((tag) => ({ blogTag: { connect: { id: tag.id } } }))
-      }
+      record.tags = await this.blogTagService.findOrCreateTagsByName(tags)
     }
 
-    record = await this.prismaService.blogPost.update({
-      where: { id },
-      data,
-      include: {
-        image: true,
-        tags: {
-          include: {
-            blogTag: true
-          }
-        }
-      }
-    })
+    await this.blogPostRepository.save(record)
 
     return record
   }
 
   async remove(id: number) {
-    const record = await this.prismaService.blogPost.delete({ where: { id } })
-
-    return record
+    await this.blogPostRepository.delete({ id })
   }
 
   async findNeighbors(id: number) {
-    const target = await this.findOne(id)
-    const prev = this.prismaService.blogPost.findFirst({
-      where: { createdAt: { lt: target.createdAt } },
-      orderBy: { createdAt: 'desc' },
-      omit: { metadata: true, content: true, longTitle: true }
+    const target = await this.blogPostRepository.findOneByOrFail({ id })
+    const prev = this.blogPostRepository.findOne({
+      where: { createdAt: LessThan(target.createdAt) },
+      order: { createdAt: 'desc' }
     })
-    const next = this.prismaService.blogPost.findFirst({
-      where: { createdAt: { gt: target.createdAt } },
-      orderBy: { createdAt: 'asc' },
-      omit: { metadata: true, content: true, longTitle: true }
+    const next = this.blogPostRepository.findOne({
+      where: { createdAt: MoreThan(target.createdAt) },
+      order: { createdAt: 'asc' }
     })
     return Promise.all([prev, next])
   }

@@ -127,8 +127,7 @@ export const createProductStore = (product: ProductEntity) => {
     // если значение только одно и оно не принадлежит торг. предл., то предлагать его не нужно
     if (option.values.length === 1) {
       return !!sortedOffers.find(
-        (offer) =>
-          !!offer.optionValues?.find((value) => option?.values?.[0].id === value.optionValueId)
+        (offer) => !!offer.optionValues?.find((value) => option?.values?.[0].id === value.id)
       )
     }
     return true
@@ -174,7 +173,7 @@ export const createProductStore = (product: ProductEntity) => {
           } else {
             selectedOffer = state.additionalOffers.find((offer) => {
               if (!offer.optionValues) return false
-              return pluck(offer.optionValues, 'optionValueId').every((id) =>
+              return pluck(offer.optionValues, 'id').every((id) =>
                 pluck(selectedValues, 'id').includes(id)
               )
             })

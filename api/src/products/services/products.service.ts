@@ -526,16 +526,12 @@ export class ProductsService {
       throw new BadRequestException('Торговое предложение с указанными опциями уже сущесивует')
     }
 
-    await this.offerRepository.update(
-      { id },
-      {
-        price: dto.price,
-        title: dto.title,
-        optionValues: await Promise.all(
-          dto.optionValues.map(async (id) => this.optionValueRepository.findOneByOrFail({ id }))
-        )
-      }
+    currentOffer.price = dto.price
+    currentOffer.title = dto.title
+    currentOffer.optionValues = await Promise.all(
+      dto.optionValues.map(async (id) => this.optionValueRepository.findOneByOrFail({ id }))
     )
+    await this.offerRepository.save(currentOffer)
   }
 
   async import(upload: Express.Multer.File) {
@@ -714,7 +710,8 @@ export class ProductsService {
           const productCategories = await this.categoryRepository.find({
             where: { products: { id: product.id } }
           })
-          await this.optionRepository.update({ id: option.id }, { categories: productCategories })
+          option.categories = productCategories
+          await this.optionRepository.save(option)
 
           // TODO: переделать на upsert или параллельную обработку
           for (const strValue of strValues) {

@@ -1,22 +1,22 @@
 import { ApiTableData } from '@/lib/ApiTable/types'
 import { apiGet } from '@/lib/api'
-import { cn } from '@/lib/utils'
+import { arrayToTree, cn } from '@/lib/utils'
 import { CategoryEntity } from '@/types'
 import Link from 'next/link'
 import styles from './CatalogMenu.module.scss'
 
 export async function CatalogMenu() {
   const data = await apiGet<ApiTableData<CategoryEntity>>('categories', {
-    parent: 0,
     limit: 100,
     active: true,
-    sort: 'rank',
-    withChildren: true
+    sort: 'rank'
   })
+
+  const categories = arrayToTree<CategoryEntity>(data.rows)
 
   return (
     <ul className={styles.first}>
-      {data.rows.map((item) => (
+      {categories.map((item) => (
         <li className={styles['first-item']} key={item.id}>
           <Link href={`/category/${item.alias}`} className={styles['first-link']}>
             {item.title}

@@ -295,9 +295,9 @@ export interface OptionValueEntity {
 export enum OptionType {
   // CHECKBOX = 'checkbox',
   // COMBOMULTIPLE = 'combo-multiple',
-  COMBOBOOLEAN = 'combo_boolean',
-  COMBOCOLORS = 'combo_colors',
-  COMBOOPTIONS = 'combo_options',
+  COMBOBOOLEAN = 'combo-boolean',
+  COMBOCOLORS = 'combo-colors',
+  COMBOOPTIONS = 'combo-options',
   // COMBOBOX = 'combobox',
   // DATEFIELD = 'datefield',
   NUMBERFIELD = 'numberfield',

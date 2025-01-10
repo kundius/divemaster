@@ -25,18 +25,19 @@ import { ApiTableData } from '@/lib/ApiTable/types'
 import { CategoryEntity } from '@/types'
 import Link from 'next/link'
 import { SmallCard } from './_components/SmallCard'
+import { arrayToTree } from '@/lib/utils'
 
 export default async function Page() {
   const data = await apiGet<ApiTableData<CategoryEntity>>(`categories`, {
-    parent: 0,
     limit: 100,
-    active: true,
-    withChildren: true
+    active: true
   })
+  
+  const categories = arrayToTree<CategoryEntity>(data.rows)
 
-  const spearfishing = data.rows.find((item) => item.alias === 'vsyo-dlya-podvodnoj-ohoty')
-  const diving = data.rows.find((item) => item.alias === 'vsyo-dlya-dajvinga')
-  const swimming = data.rows.find((item) => item.alias === 'vsyo-dlya-plavaniya')
+  const spearfishing = categories.find((item) => item.alias === 'vsyo-dlya-podvodnoj-ohoty')
+  const diving = categories.find((item) => item.alias === 'vsyo-dlya-dajvinga')
+  const swimming = categories.find((item) => item.alias === 'vsyo-dlya-plavaniya')
 
   const crumbs: BreadcrumbsProps['items'] = [
     {

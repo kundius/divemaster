@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   JoinTable,
   OneToMany,
   OneToOne,
@@ -21,7 +22,7 @@ export class Cart {
   userId: number | null
 
   @OneToOne(() => User, (user) => user.cart, { nullable: true, onDelete: 'SET NULL' })
-  @JoinTable()
+  @JoinColumn()
   user: User | null
 
   @OneToMany(() => CartProduct, (cartProduct) => cartProduct.cart)

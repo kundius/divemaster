@@ -1,6 +1,7 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { Option } from './option.entity'
 import { Product } from './product.entity'
+import { Offer } from './offer.entity'
 
 @Entity()
 export class OptionValue {
@@ -27,4 +28,7 @@ export class OptionValue {
 
   @Column({ type: 'simple-json', nullable: true })
   properties: Record<string, string> | null
+
+  @ManyToMany(() => Offer, offer => offer.optionValues)
+  offers: Offer[]
 }

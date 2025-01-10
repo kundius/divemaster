@@ -1,7 +1,7 @@
 'use client'
 
 import { ApiTableData } from '@/lib/ApiTable/types'
-import { cn } from '@/lib/utils'
+import { arrayToTree, cn } from '@/lib/utils'
 import { CategoryEntity } from '@/types'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -14,16 +14,16 @@ export default function CatalogButtonContent() {
   const query = useSWR<ApiTableData<CategoryEntity>>([
     `categories`,
     {
-      parent: 0,
       limit: 100,
-      active: true,
-      withChildren: true
+      active: true
     }
   ])
 
-  const spearfishing = query.data?.rows.find((item) => item.alias === 'vsyo-dlya-podvodnoj-ohoty')
-  const diving = query.data?.rows.find((item) => item.alias === 'vsyo-dlya-dajvinga')
-  const swimming = query.data?.rows.find((item) => item.alias === 'vsyo-dlya-plavaniya')
+  const categories = arrayToTree<CategoryEntity>(query.data?.rows || [])
+
+  const spearfishing = categories.find((item) => item.alias === 'vsyo-dlya-podvodnoj-ohoty')
+  const diving = categories.find((item) => item.alias === 'vsyo-dlya-dajvinga')
+  const swimming = categories.find((item) => item.alias === 'vsyo-dlya-plavaniya')
 
   return (
     <div className={styles.root}>

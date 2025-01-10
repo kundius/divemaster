@@ -11,23 +11,24 @@ import {
 import { CategoryEntity } from '@/types'
 import useSWR from 'swr'
 import styles from './MobileNavigationCatalog.module.scss'
+import { arrayToTree } from '@/lib/utils'
 
 export default function MobileNavigationCatalog() {
   const query = useSWR<ApiTableData<CategoryEntity>>([
     `categories`,
     {
-      parent: 0,
       limit: 100,
-      active: true,
-      withChildren: true
+      active: true
     }
   ])
+  
+  const categories = arrayToTree<CategoryEntity>(query.data?.rows || [])
 
   return (
     <div className={styles.root}>
       <VerticalMenu>
         <VerticalMenuList>
-          {query.data?.rows.map((item) => (
+          {categories.map((item) => (
             <VerticalMenuItem key={item.id}>
               {(item.children || []).length > 0 ? (
                 <>

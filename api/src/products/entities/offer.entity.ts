@@ -19,7 +19,7 @@ export class Offer {
   @Column({ default: 0 })
   rank: number = 0
 
-  @ManyToMany(() => OptionValue)
+  @ManyToMany(() => OptionValue, optionValue => optionValue.offers)
   @JoinTable({ name: 'offer_option_values' })
   optionValues: OptionValue[]
 

@@ -168,3 +168,39 @@ export function clearEmpty<I extends Record<string, any>>(object: I): Partial<I>
   }
   return output
 }
+
+export type TTree<T> = {
+  children?: TTree<T>[]
+} & T
+
+export const arrayToTree = <T>(
+  list: T[],
+  { id = 'id', parentId = 'parentId' }: { id?: string; parentId?: string } = {}
+): TTree<T>[] | [] => {
+  /** map between id and array position */
+  const map: number[] = []
+  const treeList: TTree<T>[] = list as TTree<T>[]
+
+  for (let i = 0; i < treeList.length; i += 1) {
+    /** initialize the map */
+    map[(treeList[i] as TTree<T> & { [id: string]: number })[id]] = i
+    /** initialize the children */
+    treeList[i].children = []
+  }
+
+  let node: TTree<T> & { [parentId: string]: number }
+  /** return value */
+  const roots: TTree<T>[] = []
+
+  for (const item of treeList) {
+    node = item as TTree<T> & { [parentId: string]: number }
+    if (node[parentId] !== 0 && node[parentId] !== null) {
+      if (treeList[map[node[parentId]]] !== undefined) {
+        treeList[map[node[parentId]]].children?.push(node)
+      }
+    } else {
+      roots.push(node)
+    }
+  }
+  return roots
+}

@@ -42,6 +42,7 @@ export function AddToCart() {
     })
     toast.success('Товар добавлен в корзину')
   }
+  console.log(productStore)
 
   return (
     <div ref={wrapperRef}>

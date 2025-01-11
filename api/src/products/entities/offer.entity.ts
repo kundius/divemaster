@@ -8,10 +8,10 @@ export class Offer {
   id: number
 
   @Column({ nullable: true, type: 'varchar' })
-  remoteId?: string | null = null
+  remoteId?: string | null
 
   @Column({ nullable: true, type: 'varchar' })
-  title: string | null = null
+  title?: string | null
 
   @Column()
   price: number

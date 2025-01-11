@@ -5,6 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { ApiTableData } from '@/lib/ApiTable/types'
 import { apiPatch } from '@/lib/api'
 import { withClientAuth } from '@/lib/api/with-client-auth'
+import { arrayToTree } from '@/lib/utils'
 import { CategoryEntity } from '@/types'
 import { useEffect, useMemo, useState } from 'react'
 import { OnCheckNode } from 'react-checkbox-tree'
@@ -25,16 +26,10 @@ export function ProductCategories({ productId }: ProductCategoriesProps) {
   const [expanded, setExpanded] = useState<string[]>([])
 
   const productCategoriesQuery = useSWR<CategoryEntity[]>(`products/${productId}/categories`)
-  const categoriesQuery = useSWR<ApiTableData<CategoryEntity>>([
-    `categories`,
-    {
-      parent: 0,
-      limit: 100,
-      withChildren: true
-    }
-  ])
+  const categoriesQuery = useSWR<ApiTableData<CategoryEntity>>([`categories`, { limit: 100 }])
 
   const nodes = useMemo(() => {
+    const tree = arrayToTree<CategoryEntity>(categoriesQuery.data?.rows || [])
     const fn = (list: CategoryEntity[]): NodeType[] => {
       return list.map((item) => {
         const children = fn(item.children || [])
@@ -45,7 +40,7 @@ export function ProductCategories({ productId }: ProductCategoriesProps) {
         }
       })
     }
-    return fn(categoriesQuery.data?.rows || [])
+    return fn(tree)
   }, [categoriesQuery.data])
 
   useEffect(() => {
@@ -54,8 +49,7 @@ export function ProductCategories({ productId }: ProductCategoriesProps) {
   }, [productCategoriesQuery.data])
 
   const checkTree = (value: string) => {
-    const rows = categoriesQuery.data?.rows || []
-
+    const tree = arrayToTree<CategoryEntity>(categoriesQuery.data?.rows || [])
     function findTreeIds(data: CategoryEntity[], id: number): string[] {
       const res: string[] = []
       const forFn = function (arr: CategoryEntity[], key: number) {
@@ -76,7 +70,7 @@ export function ProductCategories({ productId }: ProductCategoriesProps) {
       return res
     }
 
-    return findTreeIds(rows, Number(value))
+    return findTreeIds(tree, Number(value))
   }
 
   const checkHandler = async (checked: string[], targetNode: OnCheckNode) => {

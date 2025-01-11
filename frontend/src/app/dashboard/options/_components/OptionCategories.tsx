@@ -6,6 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { ApiTableData } from '@/lib/ApiTable/types'
 import { apiPatch } from '@/lib/api'
 import { withClientAuth } from '@/lib/api/with-client-auth'
+import { arrayToTree } from '@/lib/utils'
 import { CategoryEntity } from '@/types'
 import { useEffect, useMemo, useState } from 'react'
 import useSWR from 'swr'
@@ -25,16 +26,10 @@ export function OptionCategories({ optionId }: OptionCategoriesProps) {
   const [expanded, setExpanded] = useState<string[]>([])
 
   const optionCategoriesQuery = useSWR<CategoryEntity[]>(`options/${optionId}/categories`)
-  const categoriesQuery = useSWR<ApiTableData<CategoryEntity>>([
-    `categories`,
-    {
-      parent: 0,
-      limit: 100,
-      withChildren: true
-    }
-  ])
+  const categoriesQuery = useSWR<ApiTableData<CategoryEntity>>([`categories`, { limit: 100 }])
 
   const nodes = useMemo(() => {
+    const tree = arrayToTree<CategoryEntity>(categoriesQuery.data?.rows || [])
     const fn = (list: CategoryEntity[]): NodeType[] => {
       return list.map((item) => {
         const children = fn(item.children || [])
@@ -45,12 +40,12 @@ export function OptionCategories({ optionId }: OptionCategoriesProps) {
         }
       })
     }
-    return fn(categoriesQuery.data?.rows || [])
+    return fn(tree)
   }, [categoriesQuery.data])
 
   useEffect(() => {
     setChecked(optionCategoriesQuery.data?.map((item) => String(item.id)) || [])
-    setExpanded(optionCategoriesQuery.data?.map((item) => String(item.parent)) || [])
+    setExpanded(optionCategoriesQuery.data?.map((item) => String(item.parentId)) || [])
   }, [optionCategoriesQuery.data])
 
   const checkHandler = async (checked: string[]) => {

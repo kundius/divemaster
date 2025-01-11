@@ -21,13 +21,13 @@ export class Category {
   id: number
 
   @Column({ nullable: true, type: 'varchar' })
-  remoteId?: string | null = null
+  remoteId: string | null
 
   @Column()
   title: string
 
   @Column({ nullable: true, type: 'varchar' })
-  longTitle?: string | null = null
+  longTitle: string | null
 
   @Column({ unique: true })
   alias: string
@@ -36,7 +36,7 @@ export class Category {
   rank: number = 0
 
   @Column({ nullable: true, type: 'text' })
-  description: string | null = null
+  description: string | null
 
   @Column({ default: true })
   active: boolean

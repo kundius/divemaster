@@ -25,13 +25,13 @@ export class CartProduct {
   @Column({ type: 'uuid', length: 36 })
   cartId: string
 
-  @ManyToOne(() => Cart, { cascade: true })
+  @ManyToOne(() => Cart, { onDelete: 'CASCADE' })
   cart!: Cart
 
   @Column()
   productId: number
 
-  @ManyToOne(() => Product, { cascade: true })
+  @ManyToOne(() => Product, { onDelete: 'CASCADE' })
   product!: Product
 
   @Column({ default: 1, unsigned: true })

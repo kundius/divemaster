@@ -62,7 +62,7 @@ export class CartService {
     const cart = new Cart()
 
     if (user) {
-      cart.userId = user.id
+      cart.user = user
     }
 
     await this.cartRepository.save(cart)
@@ -77,7 +77,7 @@ export class CartService {
     })
 
     if (!cart.user) {
-      cart.userId = user.id
+      cart.user = user
       await this.cartRepository.save(cart)
     }
   }

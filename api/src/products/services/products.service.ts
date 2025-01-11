@@ -891,7 +891,6 @@ export class ProductsService {
                 }
 
                 // добавляем категории товара в категории опции
-                const optionId = option.id
                 const productCategories = await this.categoryRepository.find({
                   where: { products: { id: product.id } }
                 })

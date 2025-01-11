@@ -13,13 +13,15 @@ import {
   MoreThan,
   Repository
 } from 'typeorm'
+import { StorageService } from '@/storage/services/storage.service'
 
 @Injectable()
 export class BlogPostService {
   constructor(
     @InjectRepository(BlogPost)
     private blogPostRepository: Repository<BlogPost>,
-    private readonly blogTagService: BlogTagService
+    private readonly blogTagService: BlogTagService,
+    private readonly storageService: StorageService
   ) {}
 
   async makeAlias(from: string, unique: boolean = false) {
@@ -51,7 +53,7 @@ export class BlogPostService {
     }
 
     if (typeof imageId !== 'undefined') {
-      record.imageId = imageId
+      record.image = imageId ? await this.storageService.findOne(imageId) : null
     }
 
     if (typeof tags !== 'undefined') {
@@ -129,7 +131,7 @@ export class BlogPostService {
     }
 
     if (typeof imageId !== 'undefined') {
-      record.imageId = imageId
+      record.image = imageId ? await this.storageService.findOne(imageId) : null
     }
 
     if (typeof tags !== 'undefined') {

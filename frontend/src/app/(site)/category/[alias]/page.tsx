@@ -105,7 +105,7 @@ export default async function Page({ params: { alias } }: { params: { alias: str
                 key={item.id}
                 title={item.title}
                 href={`/category/${item.alias}`}
-                image={!!item.image ? getFileUrl(item.image) : '/noimage.png'}
+                image={!!item.imageId ? getFileUrl(item.imageId) : '/noimage.png'}
               />
             ))}
           </div>

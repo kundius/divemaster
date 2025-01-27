@@ -12,12 +12,23 @@ services:
       - ./docker/db:/var/lib/mysql
     restart: unless-stopped
 
+  phpmyadmin:
+    image: phpmyadmin
+    restart: unless-stopped
+    ports:
+      - ${PHPMYADMIN_PORT:-8083}:80
+    environment:
+      - PMA_ARBITRARY=1
+      - TZ=${TZ:-Europe/Moscow}
+    depends_on:
+      - db
+
   nginx:
     image: nginx:${NGINX_VERSION:-1.25}
     environment:
-      - NGINX_FRONTEND_PORT=${NGINX_FRONTEND_PORT:-8080}
+      - NGINX_FRONTEND_PORT=${NGINX_FRONTEND_PORT:-8081}
       - NODE_FRONTEND_PORT=${NODE_FRONTEND_PORT:-3000}
-      - NGINX_API_PORT=${NGINX_API_PORT:-8090}
+      - NGINX_API_PORT=${NGINX_API_PORT:-8082}
       - NODE_API_PORT=${NODE_API_PORT:-4000}
       - TZ=${TZ:-Europe/Moscow}
     volumes:
@@ -25,8 +36,8 @@ services:
       - ./api:/divemaster/api
       - ./frontend:/divemaster/frontend
     ports:
-      - ${NGINX_HOST:-127.0.0.1}:${NGINX_FRONTEND_PORT:-8080}:${NGINX_FRONTEND_PORT:-8080}
-      - ${NGINX_HOST:-127.0.0.1}:${NGINX_API_PORT:-8090}:${NGINX_API_PORT:-8090}
+      - ${NGINX_HOST:-127.0.0.1}:${NGINX_FRONTEND_PORT:-8081}:${NGINX_FRONTEND_PORT:-8081}
+      - ${NGINX_HOST:-127.0.0.1}:${NGINX_API_PORT:-8082}:${NGINX_API_PORT:-8082}
     restart: unless-stopped
     depends_on:
       - db

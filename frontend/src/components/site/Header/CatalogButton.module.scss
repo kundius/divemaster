@@ -23,7 +23,7 @@
   line-height: 1;
   transition: 0.8s ease;
 
-  @include --max-lg {
+  @include max-lg {
     padding-left: 20px;
     padding-right: 36px;
   }
@@ -49,7 +49,7 @@
     -8px 8px 0 currentColor,
     8px -8px 0 currentColor;
 
-  @include --max-lg {
+  @include max-lg {
     display: none;
   }
 }
@@ -68,7 +68,7 @@
   transform: scale(0.5, 0);
   opacity: 0;
 
-  @include --max-2xl {
+  @include max-2xl {
     margin-left: -12px;
     border-width: 0 12px 12px;
   }
@@ -86,7 +86,7 @@
   justify-content: center;
   transition: 0.3s ease;
 
-  @include --max-lg {
+  @include max-lg {
     right: 12px;
   }
 }

@@ -3,6 +3,7 @@
 import { cn } from '@/lib/utils'
 import styles from './SelectOption.module.scss'
 import { OptionValueEntity } from '@/types'
+import { useCartStore } from '@/providers/cart-store-provider'
 
 export interface SelectOptionProps {
   caption: string

@@ -2,7 +2,7 @@
   padding-top: 64px;
   padding-bottom: 64px;
 
-  @include --max-md {
+  @include max-md {
     padding-top: 48px;
     padding-bottom: 48px;
   }
@@ -17,7 +17,7 @@
   text-align: center;
   margin-bottom: 22px;
 
-  @include --max-md {
+  @include max-md {
     font-size: 16px;
     text-align: left;
     margin-bottom: 12px;
@@ -39,7 +39,7 @@
     }
   }
 
-  @include --max-md {
+  @include max-md {
     font-size: 14px;
     text-align: left;
   }

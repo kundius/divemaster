@@ -9,7 +9,7 @@
   max-width: 100%;
   padding: 0 24px;
 
-  @include --max-lg {
+  @include max-lg {
     padding: 0;
   }
 }
@@ -30,7 +30,7 @@
   top: 0;
   bottom: 0;
 
-  @include --max-lg {
+  @include max-lg {
     display: none;
   }
 }
@@ -95,7 +95,7 @@
   box-shadow: 0 0 24px rgba(0, 8, 35, 0.4);
   margin: 16px 0 16px 280px;
 
-  @include --max-lg {
+  @include max-lg {
     margin: 0 0 16px 0;
   }
 }

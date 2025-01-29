@@ -50,7 +50,7 @@
   flex-direction: column;
   position: relative;
 
-  @include --max-md {
+  @include max-md {
     display: none;
   }
 }
@@ -147,7 +147,7 @@
   justify-content: center;
   align-items: center;
 
-  @include --md {
+  @include min-md {
     display: none;
   }
 }

@@ -63,7 +63,7 @@
     color: #fff;
   }
 
-  @include --max-md {
+  @include max-md {
     color: rgb(133, 138, 142);
   }
 }
@@ -76,7 +76,7 @@
   transition: 0.3s ease;
   display: block;
 
-  @include --max-md {
+  @include max-md {
     color: rgb(133, 138, 142);
   }
 }

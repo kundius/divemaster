@@ -20,7 +20,7 @@
     fill: rgb(169, 0, 131);
   }
 
-  @include --max-lg {
+  @include max-lg {
     margin-right: 8px;
   }
 }
@@ -35,7 +35,7 @@
   font-weight: bold;
   line-height: 18px;
 
-  @include --max-lg {
+  @include max-lg {
     font-size: 12px;
   }
 }
@@ -60,7 +60,7 @@
   line-height: 18px;
   align-self: flex-start;
 
-  @include --max-lg {
+  @include max-lg {
     font-size: 11px;
   }
 }

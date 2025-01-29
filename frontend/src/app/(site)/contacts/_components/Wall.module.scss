@@ -4,17 +4,17 @@
   border-radius: 25px;
   padding: 36px 78px 36px 98px;
 
-  @include --max-2xl {
+  @include max-2xl {
     padding-left: 48px;
     padding-right: 48px;
   }
-  @include --max-xl {
+  @include max-xl {
     padding-left: 36px;
     padding-right: 36px;
     padding-top: 24px;
     padding-bottom: 24px;
   }
-  @include --max-sm {
+  @include max-sm {
     margin: 0 -16px;
     padding: 24px 16px;
     border-radius: 0;

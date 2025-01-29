@@ -13,7 +13,7 @@
   font-family: var(--font-sans-narrow);
   scroll-margin-top: 160px;
 
-  @include --max-md {
+  @include max-md {
     font-size: 16px;
     padding-bottom: 12px;
   }
@@ -24,7 +24,7 @@
   overflow: hidden;
   transition: 0.3s ease;
 
-  @include --max-xl {
+  @include max-xl {
     max-height: calc(24px * 12);
   }
 }
@@ -47,7 +47,7 @@
   font-size: 16px;
   line-height: 1.5;
 
-  @include --max-md {
+  @include max-md {
     font-size: 14px;
   }
 

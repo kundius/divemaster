@@ -7,7 +7,7 @@
   justify-content: space-between;
   margin-bottom: 32px;
 
-  @include --max-md {
+  @include max-md {
     margin-bottom: 20px;
   }
 }
@@ -19,7 +19,7 @@
   font-weight: bold;
   font-family: var(--font-sans-narrow);
 
-  @include --max-md {
+  @include max-md {
     font-size: 16px;
   }
 }
@@ -62,7 +62,7 @@
     }
   }
 
-  @include --max-md {
+  @include max-md {
     width: 24px;
     height: 24px;
   }
@@ -113,23 +113,23 @@
   --slide-spacing: 20px;
   --slide-size: 25%;
 
-  @include --max-3xl {
+  @include max-3xl {
     --slide-size: 380px;
   }
-  @include --max-2xl {
+  @include max-2xl {
     --slide-size: 33.33%;
   }
-  @include --max-xl {
+  @include max-xl {
     --slide-size: 380px;
   }
-  @include --max-lg {
+  @include max-lg {
     --slide-size: 50%;
   }
-  @include --max-md {
+  @include max-md {
     --slide-size: 33.33%;
     --slide-spacing: 16px;
   }
-  @include --max-sm {
+  @include max-sm {
     --slide-size: 50%;
     --slide-spacing: 8px;
   }

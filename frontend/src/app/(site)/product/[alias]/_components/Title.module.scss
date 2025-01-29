@@ -7,13 +7,13 @@
   margin: 0;
   font-weight: bold;
 
-  @include --max-xl {
+  @include max-xl {
     font-size: 32px;
   }
-  @include --max-lg {
+  @include max-lg {
     font-size: 28px;
   }
-  @include --max-md {
+  @include max-md {
     font-size: 18px;
     line-height: 20px;
   }

@@ -7,7 +7,7 @@
   gap: 20px;
   cursor: pointer;
 
-  @include --max-lg {
+  @include max-lg {
     padding: 16px;
     gap: 16px;
   }
@@ -50,7 +50,7 @@
   display: block;
   text-align: left;
 
-  @include --max-lg {
+  @include max-lg {
     font-size: 12px;
     line-height: 14px;
   }

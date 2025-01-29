@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @layer base {
   :root {
@@ -45,23 +43,23 @@
 
     --container-width: 1600px;
     --container-padding: 96px;
-    @include --max-3xl {
+    @include max-3xl {
       --container-width: 1408px;
       --container-padding: 64px;
     }
-    @include --max-2xl {
+    @include max-2xl {
       --container-width: 1216px;
       --container-padding: 32px;
     }
-    @include --max-xl {
+    @include max-xl {
       --container-width: 976px;
       --container-padding: 24px;
     }
-    @include --max-lg {
+    @include max-lg {
       --container-width: 736px;
       --container-padding: 16px;
     }
-    @include --max-md {
+    @include max-md {
       --container-width: calc(100vw - 32px);
       --container-padding: 16px;
     }
@@ -100,10 +98,10 @@
 
 @layer base {
   * {
-    @apply border-border;
+    // @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    // @apply bg-background text-foreground;
   }
 }
 
@@ -156,4 +154,24 @@ body {
 
 .ck-body-wrapper {
   pointer-events: auto;
+}
+
+@keyframes border-pulse {
+  0% { opacity: 0.3; }
+  50% { opacity: 1; border-color: rgba(34,211,238,0.8); }
+  100% { opacity: 0.3; }
+}
+
+.animate-border-pulse {
+  animation: border-pulse 2s infinite;
+}
+
+.bg-conic-gradient {
+  background: conic-gradient(
+    from 180deg at 50% 50%,
+    #22d3ee 0deg,
+    rgba(34,211,238,0.1) 60deg,
+    rgba(34,211,238,0.1) 300deg,
+    #22d3ee 360deg
+  );
 }

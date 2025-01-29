@@ -6,7 +6,7 @@
   margin-top: -12px;
   flex-shrink: 0;
   
-  @include --max-md {
+  @include max-md {
     width: 112px;
   }
 }
@@ -26,10 +26,10 @@
   font-weight: bold;
   text-transform: uppercase;
 
-  @include --max-2xl {
+  @include max-2xl {
     font-size: 20px;
   }
-  @include --max-md {
+  @include max-md {
     font-size: 16px;
   }
 }
@@ -38,11 +38,11 @@
   font-size: 14px;
   color: rgba(155, 155, 155, 0.702);
 
-  @include --max-2xl {
+  @include max-2xl {
     font-size: 12px;;
     margin-top: 4px;
   }
-  @include --max-md {
+  @include max-md {
     font-size: 11px;
     margin-top: 1px;
   }
@@ -54,7 +54,7 @@
   gap: 12px;
   margin-top: 24px;
 
-  @include --max-md {
+  @include max-md {
     margin-top: 16px;
   }
 }
@@ -66,7 +66,7 @@
   position: relative;
   padding-left: 24px;
 
-  @include --max-md {
+  @include max-md {
     font-size: 14px;
   }
 }

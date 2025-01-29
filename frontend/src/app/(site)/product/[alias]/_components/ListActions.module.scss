@@ -9,7 +9,7 @@
   height: 32px;
   position: relative;
 
-  @include --max-md {
+  @include max-md {
     width: 24px;
     height: 24px;
   }
@@ -31,7 +31,7 @@
   width: 36px;
   height: 36px;
 
-  @include --max-md {
+  @include max-md {
     width: 28px;
     height: 28px;
     margin-left: -14px;
@@ -58,7 +58,7 @@
   background-size: contain;
   opacity: 0.6;
 
-  @include --max-md {
+  @include max-md {
     width: 16px;
     height: 16px;
     margin-left: -8px;

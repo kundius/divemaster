@@ -3,10 +3,10 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
 
-  @include --max-xl {
+  @include max-xl {
     grid-template-columns: repeat(3, 1fr);
   }
-  @include --max-md {
+  @include max-md {
     gap: 8px;
   }
 }

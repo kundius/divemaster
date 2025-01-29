@@ -4,7 +4,7 @@
   padding: 24px;
   transition: 0.3s ease;
 
-  @include --max-lg {
+  @include max-lg {
     padding: 20px;
   }
 }

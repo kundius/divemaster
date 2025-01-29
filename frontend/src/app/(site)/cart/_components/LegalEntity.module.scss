@@ -6,7 +6,7 @@
   padding: 12px 24px;
   transition: 0.3s ease;
 
-  @include --max-lg {
+  @include max-lg {
     padding: 20px;
   }
 }
@@ -26,7 +26,7 @@ label.wrap:hover {
   color: #000;
   font-family: var(--font-sans-narrow);
 
-  @include --max-xl {
+  @include max-xl {
     font-size: 14px;
   }
 }

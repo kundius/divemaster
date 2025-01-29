@@ -4,7 +4,7 @@
   padding: 24px 48px;
   flex-grow: 1;
 
-  @include --lg {
+  @include min-lg {
     display: flex;
     align-items: center;
     &:hover {
@@ -30,15 +30,15 @@
     }
   }
 
-  @include --max-3xl {
+  @include max-3xl {
     padding-left: 32px;
     padding-right: 32px;
   }
-  @include --max-2xl {
+  @include max-2xl {
     padding-left: 24px;
     padding-right: 24px;
   }
-  @include --max-lg {
+  @include max-lg {
     padding: 0;
   }
 }
@@ -56,7 +56,7 @@
   bottom: 0;
   transition: 0.3s ease;
 
-  @include --max-lg {
+  @include max-lg {
     display: none;
   }
 }
@@ -73,7 +73,7 @@
   bottom: 0;
   transition: 0.3s ease;
 
-  @include --max-lg {
+  @include max-lg {
     display: none;
   }
 }
@@ -93,7 +93,7 @@
     bottom: 0;
   }
 
-  @include --max-lg {
+  @include max-lg {
     gap: 12px;
     align-items: center;
     flex-direction: column;
@@ -105,7 +105,7 @@
       }
     }
   }
-  @include --max-md {
+  @include max-md {
     gap: 8px;
   }
 }
@@ -117,7 +117,7 @@
   align-items: center;
   justify-content: center;
 
-  @include --lg {
+  @include min-lg {
     svg {
       path {
         fill: #fff;
@@ -125,7 +125,7 @@
     }
   }
 
-  @include --max-lg {
+  @include max-lg {
     aspect-ratio: 1 / 1;
     width: 88px;
     height: auto;
@@ -142,22 +142,22 @@
   font-weight: 700;
   position: relative;
 
-  @include --max-3xl {
+  @include max-3xl {
     font-size: 22px;
   }
-  @include --max-2xl {
+  @include max-2xl {
     font-size: 20px;
   }
-  @include --max-lg {
+  @include max-lg {
     font-size: 18px;
     text-align: center;
     color: #001624;
     max-width: 200px;
   }
-  @include --max-md {
+  @include max-md {
     font-size: 16px;
   }
-  @include --max-sm {
+  @include max-sm {
     font-size: 12px;
   }
 }

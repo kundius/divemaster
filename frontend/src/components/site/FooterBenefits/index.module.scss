@@ -2,7 +2,7 @@
   background: #d0dbe2;
   padding: 12px 0 8px;
 
-  @include --max-md {
+  @include max-md {
     padding: 0;
   }
 }
@@ -14,7 +14,7 @@
   padding-left: var(--container-padding);
   padding-right: var(--container-padding);
 
-  @include --max-md {
+  @include max-md {
     flex-direction: column;
     padding-left: 0;
     padding-right: 0;
@@ -26,7 +26,7 @@
   align-items: center;
   gap: 4px;
   
-  @include --max-md {
+  @include max-md {
     border-top: 1px solid #fff;
     width: calc(100% + var(--container-padding) * 2);
     margin-left: calc(var(--container-padding) * -1);
@@ -47,7 +47,7 @@
   color: #4a4e50;
   line-height: 1.2;
   
-  @include --max-md {
+  @include max-md {
     font-size: 14px;
   }
 }

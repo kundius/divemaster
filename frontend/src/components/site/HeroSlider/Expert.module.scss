@@ -14,9 +14,9 @@
   justify-content: center;
   align-items: center;
 
-  @include --max-2xl {
+  @include max-2xl {
   }
-  @include --max-md {
+  @include max-md {
   }
 }
 
@@ -74,7 +74,7 @@
   align-items: center;
   justify-content: space-between;
 
-  @include --max-md {
+  @include max-md {
     align-items: center;
   }
 }
@@ -91,18 +91,18 @@
   z-index: 1;
   margin: 0 -18px;
 
-  @include --max-2xl {
+  @include max-2xl {
     font-size: 32px;
     line-height: 68px;
   }
-  @include --max-lg {
+  @include max-lg {
     font-size: 24px;
     line-height: 48px;
   }
-  @include --max-md {
+  @include max-md {
     margin: 0 auto;
   }
-  @include --max-sm {
+  @include max-sm {
     font-size: 20px;
     padding: 0 24px;
   }
@@ -131,16 +131,16 @@
   text-align: center;
   width: min-content;
   
-  @include --max-2xl {
+  @include max-2xl {
     font-size: 92px;
   }
-  @include --max-lg {
+  @include max-lg {
     font-size: 68px;
   }
-  @include --max-md {
+  @include max-md {
     font-size: 48px;
   }
-  @include --max-sm {
+  @include max-sm {
     font-size: 40px;
   }
 }

@@ -7,7 +7,7 @@
   min-height: 68px;
   justify-content: space-between;
 
-  @include --max-md {
+  @include max-md {
     flex-wrap: wrap;
     gap: 16px;
     padding: 16px 0;
@@ -15,7 +15,7 @@
 }
 
 .share {
-  @include --max-md {
+  @include max-md {
     display: none;
   }
 }
@@ -31,7 +31,7 @@
   font-family: var(--font-sans-narrow);
   line-height: 1;
 
-  @include --max-md {
+  @include max-md {
     font-size: 12px;
   }
 }
@@ -47,7 +47,7 @@
   color: #afafaf;
   line-height: 1;
 
-  @include --max-md {
+  @include max-md {
     font-size: 12px;
   }
 }
@@ -59,7 +59,7 @@
   gap: 4px;
   flex-grow: 1;
 
-  @include --max-md {
+  @include max-md {
     order: 1;
     width: 100%;
   }

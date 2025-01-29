@@ -10,10 +10,10 @@
   align-items: center;
   gap: 64px;
 
-  @include --max-lg {
+  @include max-lg {
     gap: 32px;
   }
-  @include --max-md {
+  @include max-md {
     flex-wrap: wrap;
     gap: 12px;
   }
@@ -27,11 +27,11 @@
   font-weight: bold;
   letter-spacing: -0.0125em;
 
-  @include --max-lg {
+  @include max-lg {
     font-size: 32px;
     line-height: 36px;
   }
-  @include --max-md {
+  @include max-md {
     font-size: 18px;
     line-height: 22px;
     letter-spacing: 0;
@@ -41,7 +41,7 @@
 .titleSingle {
   text-transform: uppercase;
 
-  @include --max-md {
+  @include max-md {
     font-size: 24px;
     line-height: 32px;
   }
@@ -60,10 +60,10 @@
   display: flex;
   margin-top: 20px;
 
-  @include --max-lg {
+  @include max-lg {
     margin-top: 16px;
   }
-  @include --max-md {
+  @include max-md {
     margin-top: 8px;
   }
 }
@@ -80,10 +80,10 @@
   font-family: var(--font-sans-narrow);
   line-height: 1.25;
 
-  @include --max-lg {
+  @include max-lg {
     font-size: 12px;
   }
-  @include --max-md {
+  @include max-md {
     font-size: 11px;
   }
 }
@@ -94,7 +94,7 @@
   border-top: 1px solid transparent;
   margin-top: 2px;
 
-  @include --max-lg {
+  @include max-lg {
     margin-top: 0;
   }
 }
@@ -124,10 +124,10 @@
 .back + .separator {
   margin-top: 20px;
 
-  @include --max-lg {
+  @include max-lg {
     margin-top: 16px;
   }
-  @include --max-md {
+  @include max-md {
     margin-top: 8px;
   }
 }

@@ -10,11 +10,11 @@ import { LoginDialog } from '@/components/LoginDialog'
 
 const preloadEnabled = cache<() => { current: boolean }>(() => ({ current: false }))
 
-export const authPreloadEnabled = () => {
+export const authPreloadEnabled = async () => {
   return preloadEnabled().current
 }
 
-export const enableAuthPreload = () => {
+export const enableAuthPreload = async () => {
   preloadEnabled().current = true
 }
 

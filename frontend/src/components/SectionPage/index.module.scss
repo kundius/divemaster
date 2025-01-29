@@ -2,11 +2,11 @@
   padding-top: 48px;
   padding-bottom: 160px;
 
-  @include --max-lg {
+  @include max-lg {
     padding-top: 32px;
     padding-bottom: 96px;
   }
-  @include --max-md {
+  @include max-md {
     padding-top: 24px;
     padding-bottom: 64px;
   }
@@ -15,10 +15,10 @@
 .withBreadcrumbs {
   padding-top: 24px;
 
-  @include --max-lg {
+  @include max-lg {
     padding-top: 24px;
   }
-  @include --max-md {
+  @include max-md {
     padding-top: 16px;
   }
 }

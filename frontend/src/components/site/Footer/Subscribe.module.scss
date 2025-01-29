@@ -10,7 +10,7 @@
   line-height: 1;
   padding: 10px 0;
 
-  @include --max-md {
+  @include max-md {
     font-weight: 500;
     letter-spacing: -0.05em;
   }
@@ -40,10 +40,10 @@
     outline: none;
   }
 
-  @include --max-2xl {
+  @include max-2xl {
     padding: 0 20px;
   }
-  @include --max-md {
+  @include max-md {
     padding: 0 12px;
     min-height: 40px;
     border-radius: 20px 0 0 20px;
@@ -71,7 +71,7 @@
     outline: none;
   }
   
-  @include --max-md {
+  @include max-md {
     padding: 0 12px;
     min-height: 44px;
     border-radius: 0 20px 20px 0;
@@ -86,7 +86,7 @@
   position: relative;
   margin-right: -8px;
   
-  @include --max-md {
+  @include max-md {
     display: none;
   }
 }
@@ -145,7 +145,7 @@
     }
   }
   
-  @include --max-md {
+  @include max-md {
     font-size: 12px;
     padding-left: 16px;
     letter-spacing: -0.025em;
@@ -168,7 +168,7 @@
   background: #9b9b9b;
   border: 1px solid #9b9b9b;
   
-  @include --max-md {
+  @include max-md {
     width: 12px;
     height: 12px;
   }

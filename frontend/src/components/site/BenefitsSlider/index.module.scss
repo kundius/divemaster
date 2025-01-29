@@ -17,7 +17,7 @@
   height: 323px;
   pointer-events: none;
 
-  @include --max-2xl {
+  @include max-2xl {
     display: none;
   }
 }
@@ -57,13 +57,13 @@
   top: 82px;
   margin-left: -8px;
 
-  @include --max-2xl {
+  @include max-2xl {
     top: 52px;
   }
-  @include --max-xl {
+  @include max-xl {
     top: 32px;
   }
-  @include --max-md {
+  @include max-md {
     top: 8px;
     left: 50%;
     transform: translateX(-50%);

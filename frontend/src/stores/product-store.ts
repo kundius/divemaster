@@ -1,7 +1,6 @@
-import computed from 'zustand-computed'
 import { createStore } from 'zustand/vanilla'
 
-import { formatPrice, getEntityId, pluck } from '@/lib/utils'
+import { formatPrice, pluck } from '@/lib/utils'
 import {
   OfferEntity,
   OptionType,
@@ -18,13 +17,7 @@ export type ProductState = {
   basicOffer: OfferEntity | undefined
   additionalOffers: OfferEntity[]
   selectedOffer: OfferEntity | undefined
-}
 
-export type ProductActions = {
-  selectOptionValue(option: OptionEntity, value: OptionValueEntity): void
-}
-
-export type ComputedStore = {
   allOptionsSelected: boolean
   defaultPrice: string
   defaultOldPrice?: string
@@ -32,71 +25,11 @@ export type ComputedStore = {
   selectedOldPrice?: string
 }
 
-export type ProductStore = ProductState & ProductActions
-
-const computeState = (state: ProductStore): ComputedStore => {
-  function applyDecrease(value: number, decrease: number) {
-    return value * (decrease / 100) + value
-  }
-
-  function getPrice(selected = true) {
-    if (selected && state.selectedOffer) {
-      return formatPrice(state.selectedOffer.price)
-    }
-
-    if (!state.product.offers || state.product.offers.length === 0) {
-      return 'Цена по запросу'
-    }
-
-    const baseOffer = state.product.offers.find(
-      (o) => o.optionValues && o.optionValues.length === 0
-    )
-    if (baseOffer && state.product.offers.length === 1) {
-      return formatPrice(baseOffer.price)
-    }
-
-    const minPrice = Math.min(...state.product.offers.map((o) => o.price))
-    return `от ${formatPrice(minPrice)}`
-  }
-
-  function getOldPrice(selected = true) {
-    if (!state.product.priceDecrease) return undefined
-
-    if (selected && state.selectedOffer) {
-      return formatPrice(applyDecrease(state.selectedOffer.price, state.product.priceDecrease))
-    }
-
-    if (!state.product.offers || state.product.offers.length === 0) {
-      return undefined
-    }
-
-    const baseOffer = state.product.offers.find(
-      (o) => o.optionValues && o.optionValues.length === 0
-    )
-    if (baseOffer && state.product.offers.length === 1) {
-      return formatPrice(applyDecrease(baseOffer.price, state.product.priceDecrease))
-    }
-
-    const minPrice = Math.min(...state.product.offers.map((o) => o.price))
-    return `от ${formatPrice(applyDecrease(minPrice, state.product.priceDecrease))}`
-  }
-
-  function isAllOptionsSelected() {
-    const selectableKeys = state.selectableOptions.map((item) => item.key)
-    if (selectableKeys.every((key) => !!state.selectedOptionValues[key])) {
-      return true
-    }
-    return false
-  }
-
-  return {
-    defaultPrice: getPrice(false),
-    defaultOldPrice: getOldPrice(false),
-    selectedPrice: getPrice(),
-    selectedOldPrice: getOldPrice(),
-    allOptionsSelected: isAllOptionsSelected()
-  }
+export type ProductActions = {
+  selectOptionValue(option: OptionEntity, value: OptionValueEntity): void
 }
+
+export type ProductStore = ProductState & ProductActions
 
 const SELECTABLE_OPTION_TYPES = [OptionType.COMBOCOLORS, OptionType.COMBOOPTIONS]
 
@@ -133,6 +66,56 @@ export const createProductStore = (product: ProductEntity) => {
     return true
   })
 
+  function applyDecrease(value: number, decrease: number) {
+    return value * (decrease / 100) + value
+  }
+
+  function getPrice(selectedOffer?: OfferEntity) {
+    if (selectedOffer) {
+      return formatPrice(selectedOffer.price)
+    }
+
+    if (!product.offers || product.offers.length === 0) {
+      return 'Цена по запросу'
+    }
+
+    const baseOffer = product.offers.find((o) => o.optionValues && o.optionValues.length === 0)
+    if (baseOffer && product.offers.length === 1) {
+      return formatPrice(baseOffer.price)
+    }
+
+    const minPrice = Math.min(...product.offers.map((o) => o.price))
+    return `от ${formatPrice(minPrice)}`
+  }
+
+  function getOldPrice(selectedOffer?: OfferEntity) {
+    if (!product.priceDecrease) return undefined
+
+    if (selectedOffer) {
+      return formatPrice(applyDecrease(selectedOffer.price, product.priceDecrease))
+    }
+
+    if (!product.offers || product.offers.length === 0) {
+      return undefined
+    }
+
+    const baseOffer = product.offers.find((o) => o.optionValues && o.optionValues.length === 0)
+    if (baseOffer && product.offers.length === 1) {
+      return formatPrice(applyDecrease(baseOffer.price, product.priceDecrease))
+    }
+
+    const minPrice = Math.min(...product.offers.map((o) => o.price))
+    return `от ${formatPrice(applyDecrease(minPrice, product.priceDecrease))}`
+  }
+
+  function isAllOptionsSelected(selectedOptionValues: Record<string, OptionValueEntity>) {
+    const selectableKeys = selectableOptions.map((item) => item.key)
+    if (selectableKeys.every((key) => !!selectedOptionValues[key])) {
+      return true
+    }
+    return false
+  }
+
   // Если дополнительных офферов нет, то используем базовый по умолчанию
   const selectedOffer = additionalOffers.length === 0 ? basicOffer : undefined
 
@@ -149,40 +132,53 @@ export const createProductStore = (product: ProductEntity) => {
   //   {}
   // )
 
-  return createStore<ProductStore>()(
-    computed(
-      (set, get) => ({
-        product,
-        selectableOptions,
-        sortedOffers,
-        basicOffer,
-        additionalOffers,
-        selectedOptionValues,
+  return createStore<ProductStore>()((set, get) => ({
+    // статичные данные, не меняются
+    product,
+    selectableOptions,
+    sortedOffers,
+    basicOffer,
+    additionalOffers,
+
+    // будут меняться
+    selectedOptionValues,
+    selectedOffer,
+
+    // меняться не будут, нужно высчитать по умолчанию
+    defaultPrice: getPrice(),
+    defaultOldPrice: getOldPrice(),
+
+    // будут меняться, нужно высчитать по умолчанию
+    selectedPrice: getPrice(selectedOffer),
+    selectedOldPrice: getOldPrice(selectedOffer),
+    allOptionsSelected: isAllOptionsSelected(selectedOptionValues),
+
+    selectOptionValue(option, value) {
+      const selectedOptionValues = { ...get().selectedOptionValues, [option.key]: value }
+      const selectedValues = Object.values(selectedOptionValues)
+
+      // Если дополнительных офферов нет, то выбираем базовый независимо от выбранных опций
+      // Если есть дополнительные офферы, то выбираем среди них соответствующий опциям
+      let selectedOffer: ProductState['selectedOffer'] = undefined
+      if (additionalOffers.length === 0) {
+        selectedOffer = basicOffer
+      } else {
+        selectedOffer = additionalOffers.find((offer) => {
+          if (!offer.optionValues) return false
+          return pluck(offer.optionValues, 'id').every((id) =>
+            pluck(selectedValues, 'id').includes(id)
+          )
+        })
+      }
+
+      set({
         selectedOffer,
+        selectedOptionValues,
 
-        selectOptionValue(option, value) {
-          const state = get()
-          const selectedOptionValues = { ...state.selectedOptionValues, [option.key]: value }
-          const selectedValues = Object.values(selectedOptionValues)
-
-          // Если дополнительных офферов нет, то выбираем базовый независимо от выбранных опций
-          // Если есть дополнительные офферы, то выбираем среди них соответствующий опциям
-          let selectedOffer: ProductState['selectedOffer'] = undefined
-          if (state.additionalOffers.length === 0) {
-            selectedOffer = state.basicOffer
-          } else {
-            selectedOffer = state.additionalOffers.find((offer) => {
-              if (!offer.optionValues) return false
-              return pluck(offer.optionValues, 'id').every((id) =>
-                pluck(selectedValues, 'id').includes(id)
-              )
-            })
-          }
-
-          set({ selectedOffer, selectedOptionValues })
-        }
-      }),
-      computeState
-    )
-  )
+        selectedPrice: getPrice(selectedOffer),
+        selectedOldPrice: getOldPrice(selectedOffer),
+        allOptionsSelected: isAllOptionsSelected(selectedOptionValues)
+      })
+    }
+  }))
 }

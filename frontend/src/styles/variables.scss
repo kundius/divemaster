@@ -5,73 +5,73 @@ $breakpoint-xl: 1280px;
 $breakpoint-2xl: 1536px;
 $breakpoint-3xl: 1792px;
 
-@mixin --sm {
+@mixin min-sm {
   @media (min-width: $breakpoint-sm) {
     @content;
   }
 }
 
-@mixin --md {
+@mixin min-md {
   @media (min-width: $breakpoint-md) {
     @content;
   }
 }
 
-@mixin --lg {
+@mixin min-lg {
   @media (min-width: $breakpoint-lg) {
     @content;
   }
 }
 
-@mixin --xl {
+@mixin min-xl {
   @media (min-width: $breakpoint-xl) {
     @content;
   }
 }
 
-@mixin --2xl {
+@mixin min-2xl {
   @media (min-width: $breakpoint-2xl) {
     @content;
   }
 }
 
-@mixin --3xl {
+@mixin min-3xl {
   @media (min-width: $breakpoint-3xl) {
     @content;
   }
 }
 
-@mixin --max-sm {
+@mixin max-sm {
   @media not all and (min-width: $breakpoint-sm) {
     @content;
   }
 }
 
-@mixin --max-md {
+@mixin max-md {
   @media not all and (min-width: $breakpoint-md) {
     @content;
   }
 }
 
-@mixin --max-lg {
+@mixin max-lg {
   @media not all and (min-width: $breakpoint-lg) {
     @content;
   }
 }
 
-@mixin --max-xl {
+@mixin max-xl {
   @media not all and (min-width: $breakpoint-xl) {
     @content;
   }
 }
 
-@mixin --max-2xl {
+@mixin max-2xl {
   @media not all and (min-width: $breakpoint-2xl) {
     @content;
   }
 }
 
-@mixin --max-3xl {
+@mixin max-3xl {
   @media not all and (min-width: $breakpoint-3xl) {
     @content;
   }

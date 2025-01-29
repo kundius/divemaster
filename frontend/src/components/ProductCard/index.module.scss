@@ -11,13 +11,13 @@
   flex-direction: column;
   padding: 20px 20px 68px;
 
-  @include --max-3xl {
+  @include max-3xl {
     padding: 16px 16px 62px;
   }
-  @include --max-xl {
+  @include max-xl {
     padding: 12px 12px 58px;
   }
-  @include --max-md {
+  @include max-md {
     padding-top: 6px;
     padding-left: 6px;
     padding-right: 6px;
@@ -47,7 +47,7 @@
   top: 10px;
   z-index: 30;
 
-  @include --max-md {
+  @include max-md {
     top: 4px;
     right: 4px;
   }
@@ -58,7 +58,7 @@
   height: 32px;
   position: relative;
 
-  @include --max-md {
+  @include max-md {
     width: 24px;
     height: 24px;
   }
@@ -80,7 +80,7 @@
   width: 36px;
   height: 36px;
 
-  @include --max-md {
+  @include max-md {
     width: 28px;
     height: 28px;
     margin-left: -14px;
@@ -107,7 +107,7 @@
   background-size: contain;
   opacity: 0.6;
 
-  @include --max-md {
+  @include max-md {
     width: 16px;
     height: 16px;
     margin-left: -8px;
@@ -138,7 +138,7 @@
   gap: 8px;
   width: 40px;
 
-  @include --max-md {
+  @include max-md {
     left: 6px;
     top: 10px;
     gap: 4px;
@@ -159,7 +159,7 @@
   width: 40px;
   transform: skewY(-15deg);
 
-  @include --max-md {
+  @include max-md {
     height: 12px;
     line-height: 12px;
     font-size: 10px;
@@ -180,7 +180,7 @@
   width: 40px;
   transform: skewY(-15deg);
 
-  @include --max-md {
+  @include max-md {
     height: 12px;
     line-height: 12px;
     font-size: 10px;
@@ -202,7 +202,7 @@
   align-items: center;
   justify-content: center;
 
-  @include --max-md {
+  @include max-md {
     font-size: 10px;
     width: 30px;
     height: 30px;
@@ -216,7 +216,7 @@
   display: flex;
   gap: 10px;
 
-  @include --max-md {
+  @include max-md {
     gap: 4px;
     left: auto;
     right: 8px;
@@ -229,7 +229,7 @@
   height: 10px;
   border-radius: 50%;
 
-  @include --max-md {
+  @include max-md {
     width: 5px;
     height: 5px;
   }
@@ -245,13 +245,13 @@
   font-family: var(--font-sans-narrow);
   text-wrap: pretty;
 
-  @include --max-3xl {
+  @include max-3xl {
     font-size: 18px;
   }
-  @include --max-xl {
+  @include max-xl {
     font-size: 16px;
   }
-  @include --max-md {
+  @include max-md {
     font-size: 12px;
   }
 }
@@ -276,15 +276,15 @@
   margin-top: 8px;
   font-family: var(--font-sans-narrow);
 
-  @include --max-3xl {
+  @include max-3xl {
     font-size: 12px;
     margin-top: 6px;
   }
-  @include --max-xl {
+  @include max-xl {
     font-size: 11px;
     margin-top: 4px;
   }
-  @include --max-md {
+  @include max-md {
     font-size: 8px;
     margin-top: 6px;
   }
@@ -300,17 +300,17 @@
   font-size: 18px;
   line-height: 20px;
 
-  @include --max-3xl {
+  @include max-3xl {
     font-size: 16px;
     line-height: 18px;
     column-gap: 16px;
   }
-  @include --max-xl {
+  @include max-xl {
     font-size: 14px;
     line-height: 16px;
     column-gap: 12px;
   }
-  @include --max-md {
+  @include max-md {
     font-size: 12px;
     line-height: 1.2;
     column-gap: 8px;
@@ -335,13 +335,13 @@
   align-items: center;
   margin: -20px -20px 12px; // fix lags
 
-  @include --max-3xl {
+  @include max-3xl {
     margin: -16px -16px 8px;
   }
-  @include --max-3xl {
+  @include max-3xl {
     margin: -12px -12px 6px;
   }
-  @include --max-md {
+  @include max-md {
     margin-top: -6px;
     margin-left: -6px;
     margin-right: -6px;
@@ -385,7 +385,7 @@
   gap: 12px;
   margin: 8px -8px 0;
 
-  @include --max-md {
+  @include max-md {
     display: none;
   }
 }
@@ -451,7 +451,7 @@
     transform: translateY(0);
   }
 
-  @include --max-md {
+  @include max-md {
     transform: translateY(0);
   }
 }

@@ -6,7 +6,7 @@
   pointer-events: none;
   user-select: none;
 
-  @include --max-md {
+  @include max-md {
     width: calc(98px * 0.4);
     height: calc(385px * 0.4);
     bottom: -20px;
@@ -21,13 +21,13 @@
   color: #fff;
   position: relative;
 
-  @include --max-xl {
+  @include max-xl {
     padding: 32px 36px 32px;
   }
-  @include --max-lg {
+  @include max-lg {
     padding: 24px;
   }
-  @include --max-md {
+  @include max-md {
     padding: 24px 12px;
     border-radius: 12px;
   }
@@ -40,14 +40,14 @@
   font-weight: bold;
   margin-bottom: 32px;
 
-  @include --max-xl {
+  @include max-xl {
     margin-bottom: 24px;
   }
-  @include --max-lg {
+  @include max-lg {
     font-size: 20px;
     margin-bottom: 20px;
   }
-  @include --max-md {
+  @include max-md {
     font-size: 16px;
     margin-bottom: 16px;
     line-height: 1.2;
@@ -63,19 +63,19 @@
     * + & {
       margin-top: 24px;
 
-      @include --max-lg {
+      @include max-lg {
         margin-top: 16px;
       }
     }
   }
 
-  @include --max-xl {
+  @include max-xl {
     font-size: 16px;
   }
-  @include --max-lg {
+  @include max-lg {
     font-size: 14px;
   }
-  @include --max-md {
+  @include max-md {
     font-size: 14px;
   }
 }
@@ -101,7 +101,7 @@
       left: 20px;
     }
   }
-  @include --max-xl {
+  @include max-xl {
     font-size: 16px;
     li {
       &::before {
@@ -109,14 +109,14 @@
       }
     }
   }
-  @include --max-lg {
+  @include max-lg {
     margin: 16px 0;
     font-size: 14px;
     li {
       margin-top: 16px;
     }
   }
-  @include --max-md {
+  @include max-md {
     margin: 20px 0;
     li {
       padding-left: 24px;

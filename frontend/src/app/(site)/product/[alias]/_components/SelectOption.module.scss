@@ -14,13 +14,13 @@
   grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
   gap: 8px;
 
-  @include --max-md {
+  @include max-md {
     display: flex;
   }
 }
 
 .valuesContainer {
-  @include --max-md {
+  @include max-md {
     width: calc(100vw - var(--container-padding) * 2);
     overflow: auto;
   }
@@ -46,7 +46,7 @@
   user-select: none;
   min-width: max-content;
 
-  @include --max-md {
+  @include max-md {
     min-width: 60px;
     flex-grow: 1;
   }

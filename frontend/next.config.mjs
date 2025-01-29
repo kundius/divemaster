@@ -46,7 +46,7 @@ const nextConfig = {
   },
   sassOptions: {
     prependData: `
-    @import 'src/styles/variables.scss';
+    @use 'src/styles/variables.scss' as *;
     `
   }
 }

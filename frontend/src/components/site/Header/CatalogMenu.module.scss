@@ -17,7 +17,7 @@
   z-index: 1;
   transition: color 0.3s ease;
 
-  @include --max-lg {
+  @include max-lg {
     font-size: 16px;
   }
 }
@@ -52,7 +52,7 @@
 .first-item:has(ul) .first-link {
   padding-right: 24px;
 
-  @include --max-lg {
+  @include max-lg {
     padding-right: 20px;
   }
 }
@@ -67,7 +67,7 @@
   margin-top: -2px;
   right: 10px;
 
-  @include --max-lg {
+  @include max-lg {
     right: 8px;
   }
 }
@@ -76,7 +76,7 @@
   margin: 9px 24px;
   display: block;
 
-  @include --max-xl {
+  @include max-xl {
     margin-left: 16px;
     margin-right: 16px;
   }
@@ -95,7 +95,7 @@
   z-index: 1;
   pointer-events: none;
 
-  @include --max-2xl {
+  @include max-2xl {
     padding-top: 28px;
   }
 }
@@ -116,7 +116,7 @@
   backdrop-filter: blur(10px);
   box-shadow: 0px 0px 15.36px 0.64px rgba(0, 0, 0, 0.08);
 
-  @include --max-2xl {
+  @include max-2xl {
     top: 12px;
   }
 }
@@ -148,7 +148,7 @@
 .second-diving {
   left: -50%;
 
-  @include --max-lg {
+  @include max-lg {
     left: -100%;
   }
 }

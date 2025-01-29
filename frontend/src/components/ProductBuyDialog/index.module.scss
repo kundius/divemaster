@@ -2,10 +2,10 @@
   padding: 120px;
   max-width: 960px;
 
-  @include --max-lg {
+  @include max-lg {
     padding: 64px;
   }
-  @include --max-md {
+  @include max-md {
     padding: 24px;
     max-width: 384px;
   }
@@ -57,11 +57,11 @@
     'product . .'
     'product . form';
 
-  @include --md {
+  @include min-md {
     position: relative;
     z-index: 1;
   }
-  @include --max-md {
+  @include max-md {
     grid-template-columns: 1fr;
     grid-template-rows: auto 16px auto 16px auto;
     grid-template-areas:
@@ -101,7 +101,7 @@
   top: 0;
   border: 10px solid rgba(73, 88, 254, 0.07);
 
-  @include --max-md {
+  @include max-md {
     display: none;
   }
 }
@@ -113,7 +113,7 @@
   left: -60px;
   margin-right: 30px;
 
-  @include --max-md {
+  @include max-md {
     left: 0;
     margin-right: 0;
     max-width: 160px;
@@ -128,7 +128,7 @@
   font-family: var(--font-sans-narrow);
   margin-top: 16px;
 
-  @include --max-md {
+  @include max-md {
     font-size: 16px;
     margin-top: 8px;
   }
@@ -141,7 +141,7 @@
   gap: 4px;
   margin-top: 12px;
 
-  @include --max-md {
+  @include max-md {
     margin-top: 8px;
   }
 }
@@ -152,7 +152,7 @@
   line-height: 1;
   padding-top: 4px;
 
-  @include --max-md {
+  @include max-md {
     font-size: 12px;
     padding-top: 2px;
   }
@@ -164,7 +164,7 @@
   color: #b6359d;
   line-height: 1;
 
-  @include --max-md {
+  @include max-md {
     font-size: 16px;
   }
 }
@@ -175,7 +175,7 @@
   line-height: 1;
   padding-top: 4px;
 
-  @include --max-md {
+  @include max-md {
     font-size: 12px;
     padding-top: 2px;
   }
@@ -190,7 +190,7 @@
   line-height: 1;
   font-family: var(--font-sans-narrow);
 
-  @include --max-md {
+  @include max-md {
     font-size: 18px;
   }
 }
@@ -202,13 +202,13 @@
   font-weight: 400;
   margin-bottom: 38px;
 
-  @include --max-md {
+  @include max-md {
     display: none;
   }
 }
 
 .rows {
-  @include --md {
+  @include min-md {
     max-width: 290px;
   }
 }
@@ -220,7 +220,7 @@
 * + .rowRules {
   margin-top: 18px;
 
-  @include --max-md {
+  @include max-md {
     margin-top: 16px;
   }
 }
@@ -228,7 +228,7 @@
 * + .rowSubmit {
   margin-top: 34px;
 
-  @include --max-md {
+  @include max-md {
     margin-top: 16px;
     display: flex;
     justify-content: center;
@@ -289,10 +289,10 @@
   width: 640px;
   padding: 64px;
 
-  @include --max-lg {
+  @include max-lg {
     padding: 64px;
   }
-  @include --max-md {
+  @include max-md {
     padding: 24px;
     width: 320px;
   }

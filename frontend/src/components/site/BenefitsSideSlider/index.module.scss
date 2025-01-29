@@ -33,11 +33,11 @@
   transform: translateX(-50%);
   top: 8px;
 
-  @include --max-2xl {
+  @include max-2xl {
   }
-  @include --max-xl {
+  @include max-xl {
   }
-  @include --max-md {
+  @include max-md {
   }
 }
 

@@ -3,7 +3,7 @@
   line-height: 1.25;
   text-wrap: balance;
 
-  @include --max-md {
+  @include max-md {
     font-size: 16px;
   }
 }
@@ -22,11 +22,11 @@
   max-width: 50%;
   padding: 0 6%;
 
-  @include --max-xl {
+  @include max-xl {
     padding: 0;
     margin: 32px 0 32px 32px;
   }
-  @include --max-lg {
+  @include max-lg {
     padding: 0;
     margin: 32px auto;
     float: none;
@@ -39,10 +39,10 @@
   font-weight: bold;
   max-width: 50%;
 
-  @include --max-xl {
+  @include max-xl {
     max-width: 100%;
   }
-  @include --max-md {
+  @include max-md {
     font-size: 26px;
   }
 }
@@ -56,10 +56,10 @@
   font-weight: bold;
   max-width: 50%;
 
-  @include --max-xl {
+  @include max-xl {
     max-width: 100%;
   }
-  @include --max-md {
+  @include max-md {
     font-size: 22px;
   }
 }
@@ -73,10 +73,10 @@
   font-weight: bold;
   max-width: 50%;
 
-  @include --max-xl {
+  @include max-xl {
     max-width: 100%;
   }
-  @include --max-md {
+  @include max-md {
     font-size: 20px;
   }
 }
@@ -89,7 +89,7 @@
   margin: 0;
   max-width: 50%;
 
-  @include --max-xl {
+  @include max-xl {
     max-width: 100%;
   }
 }

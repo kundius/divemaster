@@ -5,7 +5,7 @@
   font-family: var(--sans-narrow);
   color: #b2b2b2;
 
-  @include --max-md {
+  @include max-md {
     font-size: 12px;
   }
 }
@@ -16,7 +16,7 @@
   line-height: 1.2;
   margin-top: 8px;
 
-  @include --max-md {
+  @include max-md {
     font-size: 11px;
     margin-top: 6px;
   }
@@ -34,7 +34,7 @@
     '. . info'
     'content . info';
 
-  @include --max-md {
+  @include max-md {
     grid-template-columns: 1fr;
     grid-template-rows: auto 24px auto 36px auto 80px auto;
     grid-template-areas:

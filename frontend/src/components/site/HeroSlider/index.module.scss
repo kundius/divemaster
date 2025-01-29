@@ -18,30 +18,30 @@
     margin-top: calc(var(--slide-header-offset) * -1);
   }
 
-  @include --max-3xl {
+  @include max-3xl {
     --slide-width-units: 1680;
     --slide-height-units: 780;
   }
-  @include --max-2xl {
+  @include max-2xl {
     --slide-width-units: 1480;
     --slide-height-units: 680;
     --slide-header-offset: 164px;
   }
-  @include --max-xl {
+  @include max-xl {
     --slide-width-units: 1200;
     --slide-height-units: 680;
   }
-  @include --max-lg {
+  @include max-lg {
     --slide-width-units: 920;
     --slide-height-units: 600;
   }
-  @include --max-md {
+  @include max-md {
     --slide-width-units: 768;
     --slide-height-units: 480;
     --slide-header-offset: 101px;
     --slide-dots-offset: 24px;
   }
-  @include --max-sm {
+  @include max-sm {
     --slide-width-units: 640;
     --slide-height-units: 480;
   }
@@ -233,7 +233,7 @@
 }
 
 .prev {
-  @include --max-md {
+  @include max-md {
     position: absolute;
     left: 8px;
     top: 50%;
@@ -243,7 +243,7 @@
 }
 
 .next {
-  @include --max-md {
+  @include max-md {
     position: absolute;
     right: 8px;
     top: 50%;
@@ -253,7 +253,7 @@
 }
 
 .nav {
-  @include --md {
+  @include min-md {
     position: absolute;
     display: flex;
     gap: 32px;
@@ -263,20 +263,20 @@
     left: calc(50% + calc(1792px / 2));
     margin-left: -96px;
 
-    @include --max-3xl {
+    @include max-3xl {
       left: calc(50% + calc(1536px / 2));
       margin-left: -64px;
       transform: translateX(-100%);
     }
-    @include --max-2xl {
+    @include max-2xl {
       left: calc(50% + calc(1280px / 2));
       margin-left: -32px;
     }
-    @include --max-xl {
+    @include max-xl {
       left: calc(50% + calc(1024px / 2));
       margin-left: -24px;
     }
-    @include --max-lg {
+    @include max-lg {
       left: calc(50% + calc(768px / 2));
       margin-left: -16px;
     }

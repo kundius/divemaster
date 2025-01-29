@@ -23,7 +23,7 @@
   background-size: 300% 100%;
   transition: 0.5s ease;
 
-  @include --max-md {
+  @include max-md {
     /* height: 32px; */
     height: 36px;
     min-width: 132px;

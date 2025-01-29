@@ -8,10 +8,10 @@
   border-radius: 4px;
   margin-bottom: 40px;
 
-  @include --max-lg {
+  @include max-lg {
     margin-bottom: 32px;
   }
-  @include --max-md {
+  @include max-md {
     margin-left: calc(var(--container-padding) * -1);
     margin-right: calc(var(--container-padding) * -1);
     padding-left: var(--container-padding);
@@ -27,11 +27,11 @@
   line-height: 1.25;
   margin: 0 16px;
 
-  @include --max-lg {
+  @include max-lg {
     font-size: 14px;
     margin: 0 12px;
   }
-  @include --max-md {
+  @include max-md {
     margin: 0;
   }
 }
@@ -45,7 +45,7 @@
   border-radius: 4px;
   line-height: 1;
 
-  @include --max-md {
+  @include max-md {
     margin-right: -12px;
   }
 }

@@ -3,11 +3,11 @@
   align-items: center;
   gap: 12px;
 
-  // @include --max-xl {
+  // @include max-xl {
   //   flex-direction: column;
   //   gap: 0;
   // }
-  // @include --max-lg {
+  // @include max-lg {
   //   align-items: flex-start;
   // }
 }
@@ -21,7 +21,7 @@
   line-height: 1;
   padding: 10px 0;
 
-  @include --max-md {
+  @include max-md {
     font-weight: 500;
     letter-spacing: -0.05em;
   }

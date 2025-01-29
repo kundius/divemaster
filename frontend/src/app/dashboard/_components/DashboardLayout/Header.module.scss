@@ -4,7 +4,7 @@
   align-items: center;
   padding: 4px 12px;
 
-  @include --lg {
+  @include min-lg {
     display: none;
   }
 }

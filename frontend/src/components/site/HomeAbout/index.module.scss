@@ -5,7 +5,7 @@
   padding: 64px 0 44px;
   background: #ffffff;
 
-  @include --max-md {
+  @include max-md {
     background-color: rgb(246, 246, 246);
     padding-top: 40px;
   }
@@ -23,10 +23,10 @@
   pointer-events: none;
   user-select: none;
 
-  @include --max-lg {
+  @include max-lg {
     height: 780px;
   }
-  @include --max-md {
+  @include max-md {
     display: none;
   }
 }
@@ -39,10 +39,10 @@
   line-height: 1.25;
   margin-bottom: 70px;
 
-  @include --max-lg {
+  @include max-lg {
     font-size: 32px;
   }
-  @include --max-md {
+  @include max-md {
     font-size: 24px;
     margin-bottom: 8px;
     line-height: 1.2;
@@ -59,10 +59,10 @@
   user-select: none;
   border-radius: 24px;
 
-  @include --max-lg {
+  @include max-lg {
     width: 550px;
   }
-  @include --max-md {
+  @include max-md {
     width: 100%;
     max-width: 360px;
     position: relative;
@@ -87,10 +87,10 @@
   margin-top: 55px;
   margin-left: 198px;
 
-  @include --max-lg {
+  @include max-lg {
     top: 780px;
   }
-  @include --max-md {
+  @include max-md {
     display: none;
   }
 }
@@ -106,10 +106,10 @@
   margin-top: 82px;
   margin-left: -206px;
 
-  @include --max-lg {
+  @include max-lg {
     top: 780px;
   }
-  @include --max-md {
+  @include max-md {
     width: calc(143px * 0.4);
     height: calc(431px * 0.4);
     margin-top: 0;
@@ -126,7 +126,7 @@
   pointer-events: none;
   user-select: none;
   
-  @include --max-md {
+  @include max-md {
     width: calc(98px * 0.4);
     height: calc(385px * 0.4);
     bottom: -20px;
@@ -140,13 +140,13 @@
   align-items: flex-start;
   gap: 48px;
 
-  @include --max-xl {
+  @include max-xl {
     gap: 36px;
   }
-  @include --max-lg {
+  @include max-lg {
     gap: 24px;
   }
-  @include --max-md {
+  @include max-md {
     gap: 16px;
   }
 }
@@ -158,16 +158,16 @@
   padding: 44px 48px 50px;
   margin-top: 140px;
 
-  @include --max-xl {
+  @include max-xl {
     width: calc(50% - 18px);
     padding: 32px 36px 32px;
   }
-  @include --max-lg {
+  @include max-lg {
     width: calc(50% - 12px);
     padding: 24px;
     margin-top: 70px;
   }
-  @include --max-md {
+  @include max-md {
     width: 100%;
     order: 2;
     margin-top: 20px;
@@ -182,15 +182,15 @@
   background-color: #e1f8ff;
   padding: 44px 48px 40px;
 
-  @include --max-xl {
+  @include max-xl {
     width: calc(50% - 18px);
     padding: 32px 36px 32px;
   }
-  @include --max-lg {
+  @include max-lg {
     width: calc(50% - 12px);
     padding: 24px;
   }
-  @include --max-md {
+  @include max-md {
     width: 100%;
     order: 1;
     padding: 0;
@@ -208,15 +208,15 @@
   margin-top: 26px;
   position: relative;
 
-  @include --max-xl {
+  @include max-xl {
     width: calc(50% - 18px);
     padding: 32px 36px 32px;
   }
-  @include --max-lg {
+  @include max-lg {
     width: calc(50% - 12px);
     padding: 24px;
   }
-  @include --max-md {
+  @include max-md {
     width: 100%;
     order: 3;
     margin-top: 0;
@@ -234,19 +234,19 @@
   position: relative;
   padding-right: 264px;
 
-  @include --max-2xl {
+  @include max-2xl {
     padding-right: 244px;
   }
-  @include --max-xl {
+  @include max-xl {
     width: calc(50% - 18px);
     padding: 32px 36px 32px;
   }
-  @include --max-lg {
+  @include max-lg {
     width: calc(50% - 12px);
     padding: 24px;
     margin-top: 60px;
   }
-  @include --max-md {
+  @include max-md {
     width: 100%;
     order: 4;
     margin-top: 24px;
@@ -266,7 +266,7 @@
   width: 186px;
   max-width: none;
 
-  @include --max-xl {
+  @include max-xl {
     display: none;
   }
 }
@@ -279,10 +279,10 @@
   width: 100%;
   height: 120px;
 
-  @include --max-xl {
+  @include max-xl {
     display: block;
   }
-  @include --max-md {
+  @include max-md {
     border-radius: 12px;
     margin-bottom: 24px;
   }
@@ -295,14 +295,14 @@
   font-weight: bold;
   margin-bottom: 32px;
 
-  @include --max-xl {
+  @include max-xl {
     margin-bottom: 24px;
   }
-  @include --max-lg {
+  @include max-lg {
     font-size: 20px;
     margin-bottom: 20px;
   }
-  @include --max-md {
+  @include max-md {
     font-size: 16px;
     margin-bottom: 16px;
     line-height: 1.2;
@@ -318,21 +318,21 @@
     * + & {
       margin-top: 24px;
 
-      @include --max-lg {
+      @include max-lg {
         margin-top: 16px;
       }
     }
   }
 
-  @include --max-xl {
+  @include max-xl {
     font-size: 16px;
     line-height: 18px;
   }
-  @include --max-lg {
+  @include max-lg {
     font-size: 14px;
     line-height: 16px;
   }
-  @include --max-md {
+  @include max-md {
     font-size: 14px;
     line-height: 16px;
   }
@@ -357,7 +357,7 @@
       left: 0px;
     }
   }
-  @include --max-lg {
+  @include max-lg {
     li {
       padding-left: 40px;
       &::before {
@@ -366,7 +366,7 @@
       }
     }
   }
-  @include --max-md {
+  @include max-md {
     margin-top: 28px;
     li {
       padding-left: 24px;
@@ -399,14 +399,14 @@
       left: 34px;
     }
   }
-  @include --max-xl {
+  @include max-xl {
     li {
       &::before {
         top: 4px;
       }
     }
   }
-  @include --max-lg {
+  @include max-lg {
     margin-bottom: 16px;
     li {
       padding-left: 20px;
@@ -415,7 +415,7 @@
       }
     }
   }
-  @include --max-md {
+  @include max-md {
     margin-bottom: 32px;
     li {
       padding-left: 36px;
@@ -452,7 +452,7 @@
       left: 20px;
     }
   }
-  @include --max-xl {
+  @include max-xl {
     font-size: 16px;
     li {
       &::before {
@@ -460,14 +460,14 @@
       }
     }
   }
-  @include --max-lg {
+  @include max-lg {
     margin: 16px 0;
     font-size: 14px;
     li {
       margin-top: 16px;
     }
   }
-  @include --max-md {
+  @include max-md {
     margin: 20px 0;
     li {
       padding-left: 24px;
@@ -484,7 +484,7 @@
 .questions {
   margin-top: 57px;
   
-  @include --max-md {
+  @include max-md {
     margin-top: 50px;
   }
 }
@@ -498,7 +498,7 @@
   text-align: center;
   margin-bottom: 22px;
 
-  @include --max-md {
+  @include max-md {
     font-size: 16px;
     text-align: left;
     margin-bottom: 12px;
@@ -520,7 +520,7 @@
     }
   }
 
-  @include --max-md {
+  @include max-md {
     font-size: 14px;
     text-align: left;
   }

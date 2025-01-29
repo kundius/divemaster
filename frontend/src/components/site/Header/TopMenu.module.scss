@@ -3,7 +3,7 @@
   align-items: center;
   gap: 20px;
 
-  @include --max-lg {
+  @include max-lg {
     gap: 12px;
   }
 }

@@ -6,11 +6,11 @@
   padding-right: 16px;
   position: relative;
 
-  @include --max-2xl {
+  @include max-2xl {
   }
-  @include --max-xl {
+  @include max-xl {
   }
-  @include --max-md {
+  @include max-md {
   }
 }
 
@@ -19,11 +19,11 @@
   width: 100%;
   z-index: 20;
 
-  @include --max-xl {
+  @include max-xl {
   }
-  @include --max-lg {
+  @include max-lg {
   }
-  @include --max-md {
+  @include max-md {
   }
 }
 
@@ -36,7 +36,7 @@
   font-family: var(--font-sans-wide);
   margin-bottom: 16px;
 
-  @include --max-md {
+  @include max-md {
   }
 }
 
@@ -46,7 +46,7 @@
   color: #ffffff;
   margin-bottom: 16px;
 
-  @include --max-md {
+  @include max-md {
   }
 }
 
@@ -73,12 +73,12 @@
   height: 100%;
   object-fit: cover;
 
-  @include --max-2xl {
+  @include max-2xl {
   }
-  @include --max-xl {
+  @include max-xl {
   }
-  @include --max-lg {
+  @include max-lg {
   }
-  @include --max-md {
+  @include max-md {
   }
 }

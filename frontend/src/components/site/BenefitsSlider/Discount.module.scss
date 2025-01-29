@@ -4,15 +4,15 @@
   padding-bottom: 100px;
   position: relative;
 
-  @include --max-2xl {
+  @include max-2xl {
     padding-top: 120px;
     padding-bottom: 80px;
   }
-  @include --max-xl {
+  @include max-xl {
     padding-top: 100px;
     padding-bottom: 60px;
   }
-  @include --max-md {
+  @include max-md {
     padding-top: 264px;
     padding-bottom: 24px;
   }
@@ -26,13 +26,13 @@
   position: relative;
   z-index: 30;
 
-  @include --max-xl {
+  @include max-xl {
     width: 60%;
   }
-  @include --max-lg {
+  @include max-lg {
     width: 70%;
   }
-  @include --max-md {
+  @include max-md {
     width: 100%;
     padding-left: 0;
     padding-right: 0;
@@ -48,7 +48,7 @@
   font-family: var(--font-sans-wide);
   margin-bottom: 34px;
 
-  @include --max-md {
+  @include max-md {
     font-size: 18px;
     margin-bottom: 14px;
   }
@@ -60,7 +60,7 @@
   color: #ffffff;
   margin-bottom: 14px;
 
-  @include --max-md {
+  @include max-md {
     font-size: 12px;
     line-height: 18px;
     margin-bottom: 16px;
@@ -89,23 +89,23 @@
   width: 1230px;
   height: 617px;
 
-  @include --max-2xl {
+  @include max-2xl {
     width: calc(1230px * 0.8);
     height: calc(617px * 0.8);
     top: -16px;
   }
-  @include --max-xl {
+  @include max-xl {
     width: calc(1230px * 0.725);
     height: calc(617px * 0.725);
     right: -192px;
   }
-  @include --max-lg {
+  @include max-lg {
     width: calc(1230px * 0.6);
     height: calc(617px * 0.6);
     right: -232px;
     top: 24px;
   }
-  @include --max-md {
+  @include max-md {
     width: calc(1230px * 0.4);
     height: calc(617px * 0.4);
     right: auto;

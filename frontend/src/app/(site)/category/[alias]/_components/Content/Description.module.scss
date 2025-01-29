@@ -10,7 +10,7 @@
   * + h2 {
     margin-top: calc(24em / 28);
 
-    /* @include --max-lg {
+    /* @include max-lg {
       margin-top: 16px;
     } */
   }
@@ -21,7 +21,7 @@
   * + h3 {
     margin-top: calc(24em / 24);
 
-    /* @include --max-lg {
+    /* @include max-lg {
       margin-top: 16px;
     } */
   }
@@ -32,7 +32,7 @@
   * + h4 {
     margin-top: calc(24em / 24);
 
-    /* @include --max-lg {
+    /* @include max-lg {
       margin-top: 16px;
     } */
   }
@@ -42,7 +42,7 @@
   * + p {
     margin-top: calc(24em / 18);
 
-    /* @include --max-lg {
+    /* @include max-lg {
       margin-top: 16px;
     } */
   }
@@ -65,14 +65,14 @@
         left: calc(34em / 18);
       }
     }
-    @include --max-xl {
+    @include max-xl {
       li {
         &::before {
           top: calc(4em / 18);
         }
       }
     }
-    /* @include --max-lg {
+    /* @include max-lg {
       margin-bottom: 16px;
       li {
         padding-left: 20px;
@@ -81,7 +81,7 @@
         }
       }
     } */
-    /* @include --max-md {
+    /* @include max-md {
       margin-bottom: 32px;
       li {
         padding-left: 36px;
@@ -99,15 +99,15 @@
   * + ul {
     margin-top: calc(24em / 18);
 
-    /* @include --max-lg {
+    /* @include max-lg {
       margin-top: 16px;
     } */
   }
 
-  @include --max-lg {
+  @include max-lg {
     font-size: 16px;
   }
-  @include --max-md {
+  @include max-md {
     font-size: 14px;
   }
 }

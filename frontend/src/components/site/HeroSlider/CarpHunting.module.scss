@@ -70,20 +70,20 @@
   flex-direction: column;
   align-items: flex-start;
 
-  @include --max-3xl {
+  @include max-3xl {
     width: 1320px;
   }
-  @include --max-2xl {
+  @include max-2xl {
     width: 1120px;
     padding: 32px 32px;
   }
-  @include --max-xl {
+  @include max-xl {
     width: 900px;
   }
-  @include --max-lg {
+  @include max-lg {
     width: 736px;
   }
-  @include --max-md {
+  @include max-md {
     width: calc(100vw - 32px);
     padding: 16px;
     align-items: center;
@@ -107,10 +107,10 @@
   letter-spacing: 0.2em;
   margin-bottom: 20px;
 
-  @include --max-2xl {
+  @include max-2xl {
     margin-bottom: 12px;
   }
-  @include --max-md {
+  @include max-md {
     line-height: 24px;
     font-size: 12px;
     border-top-width: 6px;
@@ -133,11 +133,11 @@
   line-height: 1;
   margin-bottom: 30px;
 
-  @include --max-2xl {
+  @include max-2xl {
     font-size: 48px;
     margin-bottom: 20px;
   }
-  @include --max-md {
+  @include max-md {
     font-size: 32px;
     text-align: center;
     margin-bottom: 24px;
@@ -150,7 +150,7 @@
   align-items: flex-start;
   gap: 12px;
 
-  @include --max-md {
+  @include max-md {
     align-items: center;
   }
 }
@@ -164,7 +164,7 @@
   letter-spacing: 0.1em;
   font-weight: 500;
 
-  @include --max-md {
+  @include max-md {
     font-size: 12px;
     letter-spacing: 0.05em;
   }
@@ -190,7 +190,7 @@
   padding-right: 60px;
   margin-left: -12px;
 
-  @include --max-md {
+  @include max-md {
     font-size: 12px;
     line-height: 44px;
     padding-left: 12px;
@@ -215,7 +215,7 @@
   background-size: cover;
   opacity: 0.71;
 
-  @include --max-md {
+  @include max-md {
     width: 32px;
     height: 32px;
     right: 7px;

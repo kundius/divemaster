@@ -3,7 +3,7 @@
   position: relative;
   z-index: 50;
 
-  @include --max-md {
+  @include max-md {
     background-color: rgb(12, 3, 2);
   }
 }
@@ -14,10 +14,10 @@
   flex-shrink: 0;
   margin-right: 22px;
 
-  @include --max-lg {
+  @include max-lg {
     margin-right: 16px;
   }
-  @include --max-md {
+  @include max-md {
     margin: 0;
     background: #a90083;
     width: 58px;
@@ -38,7 +38,7 @@
   justify-content: space-between;
   align-items: center;
 
-  @include --max-md {
+  @include max-md {
     margin-left: -16px;
     margin-right: -16px;
     padding-left: 4px;
@@ -54,11 +54,11 @@
   padding-top: 28px;
   transition: 0.3s ease;
 
-  @include --max-2xl {
+  @include max-2xl {
     padding-bottom: 12px;
     padding-top: 22px;
   }
-  @include --max-md {
+  @include max-md {
     padding-top: 0;
     padding-bottom: 0;
     margin-left: -16px;
@@ -70,10 +70,10 @@
   flex-grow: 52;
   min-width: 22px;
 
-  @include --max-lg {
+  @include max-lg {
     min-width: 16px;
   }
-  @include --max-md {
+  @include max-md {
     min-width: 8px;
     flex-grow: 10;
   }
@@ -83,17 +83,17 @@
   flex-grow: 10;
   min-width: 22px;
 
-  @include --max-lg {
+  @include max-lg {
     min-width: 16px;
   }
-  @include --max-md {
+  @include max-md {
     min-width: 8px;
     flex-grow: 10;
   }
 }
 
 .catalog-button {
-  @include --max-md {
+  @include max-md {
     display: none;
   }
 }
@@ -101,7 +101,7 @@
 .menu-button {
   padding: 7px;
 
-  @include --md {
+  @include min-md {
     display: none;
   }
 }
@@ -109,7 +109,7 @@
 .toolbar {
   margin-right: -5px;
 
-  @include --max-md {
+  @include max-md {
     margin-right: 0;
     position: fixed;
     left: 0;
@@ -124,19 +124,19 @@
 .top-menu-primary {
   margin-left: -10px;
 
-  @include --max-md {
+  @include max-md {
     display: none;
   }
 }
 
 .top-menu-secondary {
-  @include --max-2xl {
+  @include max-2xl {
     display: none;
   }
 }
 
 .mobile-contacts {
-  @include --md {
+  @include min-md {
     display: none;
   }
 }
@@ -145,13 +145,13 @@
   margin-right: -10px;
   min-width: 180px;
 
-  @include --max-2xl {
+  @include max-2xl {
     min-width: auto;
   }
-  @include --max-md {
+  @include max-md {
     margin-right: -4px;
   }
-  @include --max-sm {
+  @include max-sm {
     max-width: 140px;
   }
 }
@@ -169,10 +169,10 @@
     border-bottom-color: rgba(231, 231, 235, 0.34);
   }
 
-  @include --max-2xl {
+  @include max-2xl {
     padding: 5px 0;
   }
-  @include --max-md {
+  @include max-md {
     display: none;
   }
 }

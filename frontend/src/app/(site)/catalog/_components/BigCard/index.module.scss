@@ -4,7 +4,7 @@
   padding: 24px 48px;
   flex-grow: 1;
 
-  @include --lg {
+  @include min-lg {
     .card:not(&:hover) {
       .icon {
         svg {
@@ -38,15 +38,15 @@
     }
   }
 
-  @include --max-3xl {
+  @include max-3xl {
     padding-left: 32px;
     padding-right: 32px;
   }
-  @include --max-2xl {
+  @include max-2xl {
     padding-left: 24px;
     padding-right: 24px;
   }
-  @include --max-lg {
+  @include max-lg {
     padding: 0;
   }
 }
@@ -65,7 +65,7 @@
   bottom: 0;
   transition: 0.3s ease;
 
-  @include --max-lg {
+  @include max-lg {
     display: none;
   }
 }
@@ -82,7 +82,7 @@
   bottom: 0;
   transition: 0.3s ease;
 
-  @include --max-lg {
+  @include max-lg {
     display: none;
   }
 }
@@ -99,7 +99,7 @@
     }
   }
 
-  @include --max-lg {
+  @include max-lg {
     gap: 12px;
     align-items: center;
     &:hover {
@@ -110,7 +110,7 @@
       }
     }
   }
-  @include --max-md {
+  @include max-md {
     gap: 8px;
   }
 }
@@ -126,7 +126,7 @@
     }
   }
 
-  @include --max-lg {
+  @include max-lg {
     aspect-ratio: 1 / 1;
     width: 88px;
     min-width: 60%;
@@ -142,22 +142,22 @@
   font-weight: 700;
   position: relative;
 
-  @include --max-3xl {
+  @include max-3xl {
     font-size: 22px;
   }
-  @include --max-2xl {
+  @include max-2xl {
     font-size: 20px;
   }
-  @include --max-lg {
+  @include max-lg {
     font-size: 18px;
     text-align: center;
     color: #001624;
     max-width: 200px;
   }
-  @include --max-md {
+  @include max-md {
     font-size: 16px;
   }
-  @include --max-sm {
+  @include max-sm {
     font-size: 12px;
   }
 }
@@ -174,14 +174,14 @@
   transform: rotate(45deg);
   transition: 0.3s ease;
 
-  @include --max-3xl {
+  @include max-3xl {
     right: -24px;
   }
-  @include --max-2xl {
+  @include max-2xl {
     right: -20px;
     top: 4px;
   }
-  @include --max-lg {
+  @include max-lg {
     display: none;
   }
 }
@@ -194,15 +194,15 @@
   visibility: hidden;
   transition: 0.3s ease;
 
-  @include --max-3xl {
+  @include max-3xl {
     margin-top: 24px;
     gap: 32px;
   }
-  @include --max-2xl {
+  @include max-2xl {
     margin-top: 24px;
     gap: 24px;
   }
-  @include --max-lg {
+  @include max-lg {
     display: none;
   }
 }
@@ -212,7 +212,7 @@
   line-height: 1;
   padding: 8px 0;
 
-  @include --max-2xl {
+  @include max-2xl {
     padding: 4px 0;
   }
 }

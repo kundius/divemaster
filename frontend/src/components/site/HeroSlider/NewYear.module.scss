@@ -14,9 +14,9 @@
   justify-content: center;
   align-items: center;
 
-  @include --max-2xl {
+  @include max-2xl {
   }
-  @include --max-md {
+  @include max-md {
   }
 }
 
@@ -76,10 +76,10 @@
   justify-content: center;
   padding: 0 calc(100px * var(--slide-width-factor));
 
-  @include --max-lg {
+  @include max-lg {
     padding: 0;
   }
-  @include --max-md {
+  @include max-md {
     justify-content: flex-end;
   }
 }
@@ -94,10 +94,10 @@
   text-shadow: 0px 0px 9px rgba(0, 25, 41, 0.08);
   margin-bottom: calc(38px * var(--slide-height-factor));
 
-  @include --max-lg {
+  @include max-lg {
     font-size: 48px;
   }
-  @include --max-md {
+  @include max-md {
     font-size: 24px;
     line-height: 1.25;
     margin-bottom: 12px;
@@ -113,10 +113,10 @@
   max-width: 100%;
   margin-bottom: calc(38px * var(--slide-height-factor));
 
-  @include --max-lg {
+  @include max-lg {
     font-size: 16px;
   }
-  @include --max-md {
+  @include max-md {
     font-size: 12px;
     width: 288px;
     line-height: 1.2;
@@ -141,7 +141,7 @@
   background: #fff;
   box-shadow: 0px 0px 9.8px 0.2px rgba(0, 29, 47, 0.22);
 
-  @include --max-md {
+  @include max-md {
     font-size: 12px;
     line-height: 32px;
     padding: 0 14px;
@@ -168,20 +168,20 @@
   text-align: center;
   flex-direction: column;
 
-  @include --max-3xl {
+  @include max-3xl {
     right: 120px;
   }
-  @include --max-2xl {
+  @include max-2xl {
     right: 80px;
   }
-  @include --max-xl {
+  @include max-xl {
     right: 0;
   }
-  @include --max-lg {
+  @include max-lg {
     width: 100px;
     height: 100px;
   }
-  @include --max-md {
+  @include max-md {
     width: 60px;
     height: 60px;
     right: 42px;
@@ -197,10 +197,10 @@
   margin-bottom: 4px;
   font-family: var(--font-font-alt);
 
-  @include --max-lg {
+  @include max-lg {
     font-size: 12px;
   }
-  @include --max-md {
+  @include max-md {
     font-size: 8px;
     margin-top: 4px;
     margin-bottom: 2px;
@@ -215,10 +215,10 @@
   line-height: 1;
   font-family: var(--font-font-alt);
 
-  @include --max-lg {
+  @include max-lg {
     font-size: 32px;
   }
-  @include --max-md {
+  @include max-md {
     font-size: 18px;
   }
 }
@@ -226,7 +226,7 @@
 .price-value span {
   margin-right: 8px;
 
-  @include --max-md {
+  @include max-md {
     margin-right: 4px;
   }
 }

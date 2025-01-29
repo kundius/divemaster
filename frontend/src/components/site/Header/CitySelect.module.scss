@@ -15,7 +15,7 @@
   line-height: 16px;
   max-width: 100%;
 
-  @include --max-md {
+  @include max-md {
     padding-left: 4px;
     padding-right: 4px;
     min-height: 42px;
@@ -67,7 +67,7 @@
   opacity: 0.8;
   flex-shrink: 0;
 
-  @include --max-md {
+  @include max-md {
     margin-left: 4px;
   }
 } */

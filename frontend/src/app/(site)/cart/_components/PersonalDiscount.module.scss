@@ -4,7 +4,7 @@
   padding: 24px;
   transition: 0.3s ease;
 
-  @include --max-lg {
+  @include max-lg {
     padding: 20px;
   }
 }
@@ -31,7 +31,7 @@ label.wrap:hover {
   align-items: center;
   margin-top: 20px;
 
-  @include --max-lg {
+  @include max-lg {
     margin-top: 16px;
   }
 }
@@ -43,7 +43,7 @@ label.wrap:hover {
   font-weight: bold;
   font-family: var(--font-sans-narrow);
 
-  @include --max-xl {
+  @include max-xl {
     font-size: 14px;
   }
 }

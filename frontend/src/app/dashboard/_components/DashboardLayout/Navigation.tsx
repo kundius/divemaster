@@ -60,11 +60,11 @@ const nav: Nav = [
           {
             title: 'Характеристики',
             route: '/dashboard/options'
+          },
+          {
+            title: 'Синхронизация',
+            route: '/dashboard/snc'
           }
-          // {
-          //   title: 'Импорт',
-          //   route: '/dashboard/import'
-          // }
         ]
       },
       {

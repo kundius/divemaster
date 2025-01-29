@@ -19,7 +19,7 @@
   position: relative;
   z-index: 1;
 
-  @include --max-xl {
+  @include max-xl {
     margin-right: 12px;
   }
 }
@@ -48,7 +48,7 @@
   font-family: var(--font-sans-narrow);
   letter-spacing: 0.2em;
 
-  @include --max-xl {
+  @include max-xl {
     letter-spacing: 0.075em;
     margin-bottom: 8px;
   }
@@ -59,7 +59,7 @@
   color: #a90083;
   line-height: 1.2;
 
-  @include --max-xl {
+  @include max-xl {
     font-size: 16px;
   }
 }

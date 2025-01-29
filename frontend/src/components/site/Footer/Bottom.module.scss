@@ -2,7 +2,7 @@
   background: #252728;
   padding: 18px 0;
 
-  @include --max-md {
+  @include max-md {
     padding: 12px 0;
     :global(body):has([data-header-toolbar]) & {
       padding-bottom: calc(12px + 59px);
@@ -19,10 +19,10 @@
   align-items: center;
   column-gap: 60px;
 
-  @include --max-2xl {
+  @include max-2xl {
     column-gap: 32px;
   }
-  @include --max-md {
+  @include max-md {
     flex-wrap: wrap;
     column-gap: 16px;
     row-gap: 32px;
@@ -33,7 +33,7 @@
   font-size: 14px;
   color: #9b9b9b;
 
-  @include --max-md {
+  @include max-md {
     font-size: 12px;
     width: calc(100% - 16px - 98px);
   }
@@ -59,10 +59,10 @@
     }
   }
 
-  @include --max-2xl {
+  @include max-2xl {
     column-gap: 32px;
   }
-  @include --max-md {
+  @include max-md {
     width: 100%;
     font-size: 12px;
     font-weight: 500;

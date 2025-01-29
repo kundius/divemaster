@@ -4,7 +4,7 @@
   padding-right: 42px;
   display: block;
 
-  @include --max-xl {
+  @include max-xl {
     padding-right: 36px;
   }
 }
@@ -17,10 +17,10 @@
   display: block;
   line-height: 30px;
 
-  @include --max-xl {
+  @include max-xl {
     font-size: 20px;
   }
-  @include --max-lg {
+  @include max-lg {
     font-size: 18px;
   }
 }
@@ -31,7 +31,7 @@
   line-height: 12px;
   display: block;
 
-  @include --max-lg {
+  @include max-lg {
     font-size: 10px;
   }
 }

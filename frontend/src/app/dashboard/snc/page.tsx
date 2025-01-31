@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: 'Синхронизация'
 }
 
-export default async function Page(props: PageProps) {
+export default async function Page() {
   return (
     <PageLayout title="Синхронизация">
       <Exclamation />

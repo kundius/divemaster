@@ -36,7 +36,7 @@ export class OptionsService {
     const relations: FindOptionsRelations<Option> = {}
 
     if (dto.query) {
-      where.caption = Like(dto.query)
+      where.caption = Like(`%${dto.query}%`)
     }
 
     const [rows, total] = await this.optionRepository.findAndCount({

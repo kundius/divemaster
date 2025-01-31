@@ -104,24 +104,11 @@ export class CartService {
         return 0
       })
       .reverse()
-    const basicOffer = sortedOffers.find(
-      (offer) => offer.optionValues && offer.optionValues.length === 0
+    // Находим предложение, все параметры которого соответствуют выбранным.
+    // Благодаря сортировке мы находим предложение с наибольшим сходством параметров.
+    const selectedOffer = sortedOffers.find((offer) =>
+      (offer.optionValues || []).every(({ id }) => cartProductOptionValuesIds.includes(id))
     )
-    const additionalOffers = sortedOffers.filter(
-      (offer) => offer.optionValues && offer.optionValues.length > 0
-    )
-
-    // Если дополнительных нет, то выбираем базовый независимо от выбранных опций
-    // Если есть дополнительные, то выбираем среди них соответствующий опциям
-    let selectedOffer: Offer | undefined = undefined
-    if (additionalOffers.length === 0) {
-      selectedOffer = basicOffer
-    } else {
-      selectedOffer = additionalOffers.find((offer) => {
-        const offerIds = offer.optionValues
-        return offerIds.every((item) => cartProductOptionValuesIds.includes(item.id))
-      })
-    }
 
     // если торговое предложение не найдено, то позицию в корзине помечаем неактивной,
     // дальше считать стоимость нет смысла

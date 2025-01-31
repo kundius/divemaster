@@ -11,7 +11,7 @@ import { ApiTableData } from '@/lib/ApiTable/types'
 import { apiGet } from '@/lib/api'
 import { getFileUrl } from '@/lib/utils'
 import { ProductsStoreProvider } from '@/providers/products-store-provider'
-import { CategoryEntity } from '@/types'
+import { CategoryEntity, PageProps } from '@/types'
 import { CategoryCard } from './_components/CategoryCard'
 import { Filter } from './_components/Filter'
 import { Sorting } from './_components/Sorting'
@@ -29,10 +29,9 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({
-  params: { alias }
-}: {
-  params: { alias: string }
-}): Promise<Metadata> {
+  params
+}: PageProps<{ alias: string }>): Promise<Metadata> {
+  const { alias } = await params
   const category = await apiGet<CategoryEntity>(
     `categories/alias:${alias}`,
     {
@@ -51,7 +50,8 @@ export async function generateMetadata({
   }
 }
 
-export default async function Page({ params: { alias } }: { params: { alias: string } }) {
+export default async function Page({ params }: PageProps<{ alias: string }>) {
+  const { alias } = await params
   const category = await apiGet<CategoryEntity>(
     `categories/alias:${alias}`,
     {

@@ -13,10 +13,10 @@ export const metadata: Metadata = {
   title: 'Пользователи'
 }
 
-export default async function Page(props: PageProps) {
+export default async function Page({ searchParams }: PageProps) {
   const fallbackData = await apiGet<FindAllResult<UserEntity>>(
     'users',
-    props.searchParams,
+    await searchParams,
     withServerAuth()
   )
 

@@ -19,8 +19,8 @@ export const metadata: Metadata = {
   title: 'Заказы'
 }
 
-export default async function Page(props: PageProps) {
-  let { page = 1 } = props.searchParams
+export default async function Page({ searchParams }: PageProps) {
+  let { page = 1 } = await searchParams
   page = Number(page)
   const initialData = await apiGet<ApiTableData<ProductEntity>>(
     'products',

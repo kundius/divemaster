@@ -1,4 +1,5 @@
 import { createStore } from 'zustand/vanilla'
+import { persist, StateStorage, createJSONStorage } from 'zustand/middleware'
 import { ProductsFilter, type ProductEntity } from '@/types'
 import { apiGet } from '@/lib/api'
 
@@ -22,7 +23,7 @@ export type ProductsActions = {
   onChangeFilter(filter: string): void
   onChangeSort(sort: string, dir: string): void
   setListElement(listElement: HTMLElement | null): void
-  load(): Promise<void>
+  load(scroll?: boolean): Promise<void>
 }
 
 export type ProductsStore = ProductsState & ProductsActions
@@ -52,14 +53,7 @@ export const createProductsStore = (options?: { categoryId?: number; favorite?: 
 
     onChangePagination(page, limit) {
       set({ page, limit })
-      get().load()
-
-      const listElement = get().listElement
-      if (listElement) {
-        listElement.scrollIntoView({
-          behavior: 'smooth'
-        })
-      }
+      get().load(true)
     },
 
     onChangeFilter(filter) {
@@ -72,11 +66,11 @@ export const createProductsStore = (options?: { categoryId?: number; favorite?: 
       get().load()
     },
 
-    setListElement(listElement) {
-      set({ listElement })
+    setListElement(el) {
+      set({ listElement: el })
     },
 
-    async load() {
+    async load(scroll = false) {
       set({ loading: true })
       const store = get()
       const params: Record<string, any> = {
@@ -99,6 +93,15 @@ export const createProductsStore = (options?: { categoryId?: number; favorite?: 
       }
       const data = await apiGet<ProductsState['data']>('products', params)
       set({ data, loading: false })
+
+      if (scroll) {
+        const listElement = get().listElement
+        if (listElement) {
+          listElement.scrollIntoView({
+            behavior: 'smooth'
+          })
+        }
+      }
     }
   }))
 }

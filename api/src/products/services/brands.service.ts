@@ -26,7 +26,7 @@ export class BrandsService {
     const relations: FindOptionsRelations<Brand> = {}
 
     if (dto.query) {
-      where.title = Like(dto.query)
+      where.title = Like(`%${dto.query}%`)
     }
 
     const [rows, total] = await this.brandRepository.findAndCount({

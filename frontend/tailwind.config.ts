@@ -22,7 +22,7 @@ export const colorVarsPlugin = ({ addBase, theme }: any) => {
 }
 
 const config = {
-  darkMode: ['class'],
+  darkMode: 'class',
   content: [
     './pages/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',

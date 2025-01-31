@@ -1,11 +1,12 @@
 import { apiGet } from '@/lib/api'
 import { withServerAuth } from '@/lib/api/with-server-auth'
-import { OptionType, ProductEntity } from '@/types'
+import { OptionType, PageProps, ProductEntity } from '@/types'
 import { ProductOptions, ValuesType } from '../../_components/ProductOptions'
 
-export default async function Page({ params }: { params: { id: number } }) {
+export default async function Page({ params }: PageProps<{ id: number }>) {
+  const { id } = await params
   const [product] = await Promise.all([
-    apiGet<ProductEntity>(`products/${params.id}`, { withOptions: true }, withServerAuth())
+    apiGet<ProductEntity>(`products/${id}`, { withOptions: true }, withServerAuth())
   ])
 
   const initialValues: ValuesType = {}
@@ -33,7 +34,7 @@ export default async function Page({ params }: { params: { id: number } }) {
 
   return (
     <ProductOptions
-      productId={params.id}
+      productId={id}
       initialOptions={product.options || []}
       initialValues={initialValues}
     />

@@ -10,13 +10,16 @@ import { BlogPostEntity, BlogTagEntity, FindAllResult, PageProps } from '@/types
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { SectionPage } from '@/components/SectionPage'
 
-export async function generateMetadata(props: PageProps<{ alias: string }>): Promise<Metadata> {
-  const record = await apiGet<BlogTagEntity>(`blog/tag/alias:${props.params.alias}`)
+export async function generateMetadata({
+  params
+}: PageProps<{ alias: string }>): Promise<Metadata> {
+  const { alias } = await params
+  const record = await apiGet<BlogTagEntity>(`blog/tag/alias:${alias}`)
   const metadata = record.metadata || {}
 
-  let title = metadata.title || record.name
-  let description = metadata.description || ''
-  let keywords = metadata.keywords || ''
+  const title = metadata.title || record.name
+  const description = metadata.description || ''
+  const keywords = metadata.keywords || ''
 
   return {
     title,
@@ -32,9 +35,11 @@ export async function generateMetadata(props: PageProps<{ alias: string }>): Pro
 export const revalidate = 60
 
 export default async function Page({ params, searchParams }: PageProps<{ alias: string }>) {
-  const tag = await apiGet<BlogTagEntity>(`blog/tag/alias:${params.alias}`)
-  const limit = Number(searchParams.limit || 6)
-  const page = Number(searchParams.page || 1)
+  const { alias } = await params
+  const _searchParams = await searchParams
+  const tag = await apiGet<BlogTagEntity>(`blog/tag/alias:${alias}`)
+  const limit = Number(_searchParams.limit || 6)
+  const page = Number(_searchParams.page || 1)
   const posts = await apiGet<FindAllResult<BlogPostEntity>>('blog/post', {
     page,
     limit,
@@ -67,7 +72,7 @@ export default async function Page({ params, searchParams }: PageProps<{ alias: 
               total={posts.total}
               page={page}
               baseUrl={`/blog/tag/${tag.alias}`}
-              searchParams={searchParams}
+              searchParams={_searchParams}
             />
           </div>
         )}

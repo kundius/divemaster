@@ -3,7 +3,7 @@ import { Container } from '@/components/site/Container'
 import { ApiTableData } from '@/lib/ApiTable/types'
 import { apiGet } from '@/lib/api'
 import { cn, getFileUrl } from '@/lib/utils'
-import { CategoryEntity, ProductEntity } from '@/types'
+import { CategoryEntity, PageProps, ProductEntity } from '@/types'
 import { AddToCart } from './_components/AddToCart'
 import { DeliveryInfo } from './_components/DeliveryInfo'
 import { Description } from './_components/Description'
@@ -26,10 +26,9 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({
-  params: { alias }
-}: {
-  params: { alias: string }
-}): Promise<Metadata> {
+  params
+}: PageProps<{ alias: string }>): Promise<Metadata> {
+  const { alias } = await params
   const product = await apiGet<ProductEntity>(`products/alias:${alias}`, {
     active: true
   })
@@ -38,7 +37,8 @@ export async function generateMetadata({
   }
 }
 
-export default async function Page({ params: { alias } }: { params: { alias: string } }) {
+export default async function Page({ params }: PageProps<{ alias: string }>) {
+  const { alias } = await params
   const [product] = await Promise.all([
     apiGet<ProductEntity>(
       `products/alias:${alias}`,

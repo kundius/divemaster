@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { useCartStore } from '@/providers/cart-store-provider'
 import { useProductStore } from '@/providers/product-store-provider'
-import { OptionType } from '@/types'
+import { OptionType, OptionValueEntity } from '@/types'
 
 import styles from './AddToCart.module.scss'
 import { SelectOption } from './SelectOption'
@@ -38,11 +38,13 @@ export function AddToCart() {
   const addHandler = () => {
     addToCart({
       id: productStore.product.id,
-      optionValues: Object.values(productStore.selectedOptionValues).map((item) => item.id)
+      optionValues: productStore.selectedOptionValues.map(({ id }) => id)
     })
     toast.success('Товар добавлен в корзину')
   }
-  console.log(productStore)
+
+  const price = productStore.displayPrice(productStore.selectedOffer)
+  const oldPrice = productStore.displayOldPrice(productStore.selectedOffer)
 
   return (
     <div ref={wrapperRef}>
@@ -50,10 +52,8 @@ export function AddToCart() {
         {productStore.product.priceDecrease && (
           <div className={styles.discount}>-{productStore.product.priceDecrease}%</div>
         )}
-        {productStore.selectedOldPrice && (
-          <div className={styles.oldPrice}>{productStore.selectedOldPrice}</div>
-        )}
-        <div className={styles.realPrice}>{productStore.selectedPrice}</div>
+        {oldPrice && <div className={styles.oldPrice}>{oldPrice}</div>}
+        <div className={styles.realPrice}>{price}</div>
       </div>
 
       {productStore.selectableOptions.length > 0 && (
@@ -71,32 +71,39 @@ export function AddToCart() {
                 caption={option.caption}
                 type={option.type}
                 values={option.values}
-                onSelect={(value) => productStore.selectOptionValue(option, value)}
-                selected={productStore.selectedOptionValues[option.key]}
+                onSelect={productStore.selectOptionValue}
+                selected={productStore.selectedOptionValues.find(
+                  ({ optionId }) => optionId === option.id
+                )}
               />
             )
           })}
         </div>
       )}
 
+      {/*
+      Если все параметры выбраны, то показать неактивную кнопку "Выберите параметры".
+      Если найден оффер, то показать активную кнопку "В корзину".
+      Если оффер не найден, то показать кнопку "Заказать".
+      */}
+
       <div className="flex items-center gap-2 mt-12 max-md:gap-4">
-        {productStore.allOptionsSelected && !productStore.selectedOffer ? (
+        {!productStore.isAllOptionsSelected(productStore.selectedOptionValues) ? (
+          <Button className="flex-grow px-4" size="lg" disabled key="available">
+            <SpriteIcon name="cart" size={20} className="mr-2 -ml-2" />
+            Выберите параметры
+          </Button>
+        ) : productStore.selectedOffer ? (
+          <Button className="flex-grow px-4" size="lg" onClick={addHandler} key="available">
+            <SpriteIcon name="cart" size={20} className="mr-2 -ml-2" />В корзину
+          </Button>
+        ) : (
           <ProductBuyDialog title="Заказать от 1 дня">
             <Button className="flex-grow px-4" size="lg" key="not-available">
               <SpriteIcon name="one-click" size={22} className="mr-2 -ml-2" />
               Заказать
             </Button>
           </ProductBuyDialog>
-        ) : (
-          <Button
-            className="flex-grow px-4"
-            size="lg"
-            onClick={addHandler}
-            disabled={!productStore.allOptionsSelected}
-            key="available"
-          >
-            <SpriteIcon name="cart" size={20} className="mr-2 -ml-2" />В корзину
-          </Button>
         )}
         <ProductBuyDialog title="Заказать в 1 клик">
           <Button

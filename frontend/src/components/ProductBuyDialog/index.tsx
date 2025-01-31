@@ -1,43 +1,48 @@
-import { useToggle } from '@reactuses/core'
-import Image from 'next/image'
-import { PropsWithChildren, useMemo, useTransition } from 'react'
-import { toast } from 'sonner'
-
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { apiPost } from '@/lib/api'
 import { cn, getFileUrl } from '@/lib/utils'
 import { useProductStore } from '@/providers/product-store-provider'
-
-import css from './index.module.scss'
+import { useToggle } from '@reactuses/core'
+import Image from 'next/image'
+import Link from 'next/link'
+import { PropsWithChildren, useMemo, useTransition } from 'react'
+import { toast } from 'sonner'
+import { LabeledInput } from '../LabeledInput'
+import { PrimaryButton, PrimaryButtonArrow, PrimaryButtonSpinner } from '../site/PrimaryButton'
 import assetsDive from './assets/dive.png'
 import assetsMaster from './assets/master.png'
 import assetsRing from './assets/ring.png'
 import assetsS from './assets/s.png'
-import { PrimaryButton, PrimaryButtonArrow, PrimaryButtonSpinner } from '../site/PrimaryButton'
-import { LabeledInput } from '../LabeledInput'
-import Link from 'next/link'
+import css from './index.module.scss'
 
 export function ProductBuyDialog({ children, title }: PropsWithChildren<{ title: string }>) {
-  const product = useProductStore((state) => state.product)
-  const defaultPrice = useProductStore((state) => state.defaultPrice)
-  const [show, toggleShow] = useToggle(false)
-  const [success, toggleSuccess] = useToggle(false)
+  const productStore = useProductStore((state) => state)
+  const [show, _toggleShow] = useToggle(false)
+  const [success, _toggleSuccess] = useToggle(false)
   const [pending, startTransition] = useTransition()
 
+  const toggleShow = (val: boolean) => {
+    _toggleShow(val)
+  }
+
+  const toggleSuccess = (val: boolean) => {
+    _toggleSuccess(val)
+  }
+
   const thumbnail = useMemo(() => {
-    const image = product.images?.[0]
+    const image = productStore.product.images?.[0]
 
     if (!image) {
       return '/noimage.png'
     }
 
     return getFileUrl(image.fileId)
-  }, [product])
+  }, [productStore.product])
 
   const submitHandler = (formData: FormData) => {
     startTransition(async () => {
       try {
-        await apiPost(`products/${product.id}/order-by-click`, {
+        await apiPost(`products/${productStore.product.id}/order-by-click`, {
           name: formData.get('name'),
           phone: formData.get('phone'),
           approve: formData.get('approve'),
@@ -56,11 +61,13 @@ export function ProductBuyDialog({ children, title }: PropsWithChildren<{ title:
     toggleShow(false)
   }
 
+  const price = productStore.displayPrice(productStore.selectedOffer)
+
   return (
     <>
       <Dialog open={success} onOpenChange={toggleSuccess}>
         <DialogContent className={css.success}>
-          <div className={css.successTitle}>Спасибо!</div>
+          <DialogTitle className={css.successTitle}>Спасибо!</DialogTitle>
           <div className={css.successBody}>
             <div className={css.successDesc}>
               <strong>Ваша заявка успешно отправлена.</strong>
@@ -85,17 +92,22 @@ export function ProductBuyDialog({ children, title }: PropsWithChildren<{ title:
         <DialogContent className={css.content}>
           <div className={css.layout}>
             <div className={css.layoutTitle}>
-              <div className={css.title}>{title}</div>
+              <DialogTitle className={css.title}>{title}</DialogTitle>
             </div>
             <div className={css.layoutProduct}>
               <div className={css.product}>
                 <div className={css.productImage}>
-                  <Image src={thumbnail} alt={product.title} fill className="object-contain" />
+                  <Image
+                    src={thumbnail}
+                    alt={productStore.product.title}
+                    fill
+                    className="object-contain"
+                  />
                 </div>
-                <div className={css.productTitle}>{product.title}</div>
+                <div className={css.productTitle}>{productStore.product.title}</div>
                 <div className={css.productPrice}>
                   <div className={css.productPriceLabel}>Цена:</div>
-                  <div className={css.productPriceValue}>{defaultPrice}</div>
+                  <div className={css.productPriceValue}>{price}</div>
                   <div className={css.productPriceDesc}>(без учёта доставки)</div>
                 </div>
               </div>

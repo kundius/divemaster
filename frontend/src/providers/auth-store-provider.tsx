@@ -16,7 +16,7 @@ export interface AuthStoreProviderProps {
 }
 
 export const AuthStoreProvider = ({ children, initialUser }: AuthStoreProviderProps) => {
-  const storeRef = useRef<AuthStoreApi>()
+  const storeRef = useRef<AuthStoreApi>(null)
   if (!storeRef.current) {
     storeRef.current = createAuthStore(initialUser)
   }

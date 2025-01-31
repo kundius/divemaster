@@ -73,7 +73,7 @@ export class BlogPostService {
     relations.tags = true
 
     if (dto.query) {
-      where.title = Like(dto.query)
+      where.title = Like(`%${dto.query}%`)
     }
 
     if (dto.tags) {

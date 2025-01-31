@@ -47,7 +47,7 @@ export class BlogTagService {
     const relations: FindOptionsRelations<BlogTag> = {}
 
     if (dto.query) {
-      where.name = Like(dto.query)
+      where.name = Like(`%${dto.query}%`)
     }
 
     const [rows, total] = await this.blogTagRepository.findAndCount({

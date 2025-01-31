@@ -53,7 +53,7 @@ export class CategoriesService {
     }
 
     if (dto.query) {
-      where.title = Like(dto.query)
+      where.title = Like(`%${dto.query}%`)
     }
 
     if (typeof dto.parent !== 'undefined') {

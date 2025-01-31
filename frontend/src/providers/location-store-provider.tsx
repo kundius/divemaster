@@ -14,7 +14,7 @@ export interface LocationStoreProviderProps {
 }
 
 export const LocationStoreProvider = ({ children }: LocationStoreProviderProps) => {
-  const storeRef = useRef<LocationStoreApi>()
+  const storeRef = useRef<LocationStoreApi>(null)
   if (!storeRef.current) {
     storeRef.current = createLocationStore()
     // Почему-то если не вызвать эту функцию, то сперва видно состояние по умолчанию.

@@ -12,10 +12,10 @@ export const metadata: Metadata = {
   title: 'Категории'
 }
 
-export default async function Page(props: PageProps) {
+export default async function Page({ searchParams }: PageProps) {
   const fallbackData = await apiGet<ApiTableData<CategoryEntity>>(
     'categories',
-    props.searchParams,
+    await searchParams,
     withServerAuth()
   )
 

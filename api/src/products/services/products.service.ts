@@ -116,7 +116,7 @@ export class ProductsService {
     }
 
     if (dto.query) {
-      where.title = Like(dto.query)
+      where.title = Like(`%${dto.query}%`)
     }
 
     if (typeof dto.category !== 'undefined') {
@@ -349,8 +349,17 @@ export class ProductsService {
 
   async findProductOptions(productId: number) {
     return this.optionRepository.find({
-      where: { categories: { products: { id: productId } } },
-      order: { rank: 'asc' }
+      where: {
+        categories: { products: { id: productId } },
+        values: { productId }
+      },
+      order: {
+        rank: 'asc',
+        values: { content: 'asc' }
+      },
+      relations: {
+        values: true
+      }
     })
   }
 

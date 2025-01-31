@@ -19,7 +19,11 @@ export interface CreateablePickerProps {
   placeholder?: string
 }
 
-function filterItems(availableItems: CreateablePickerItem[], selectedItems: CreateablePickerItem[], inputValue: string) {
+function filterItems(
+  availableItems: CreateablePickerItem[],
+  selectedItems: CreateablePickerItem[],
+  inputValue: string
+) {
   const availableItemValues = availableItems.map((item) => item.value)
   const selectedItemValues = selectedItems.map((item) => item.value)
 
@@ -176,7 +180,7 @@ export function CreateablePicker({
           </div>
         </PopoverAnchor>
         <PopoverContent
-          className="p-1"
+          className="p-1 max-h-64 overflow-auto"
           style={{ width }}
           onOpenAutoFocus={(e) => {
             e.preventDefault()

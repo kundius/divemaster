@@ -35,11 +35,13 @@ export const apiGet = <
   route: string,
   params?: TParams,
   init?: Omit<RequestInit, 'method'>
-) =>
-  api<TResult>(`${route}?${new URLSearchParams(params)}`, {
+) => {
+  const searchParams = new URLSearchParams(params)
+  return api<TResult>(`${route}?${searchParams.toString()}`, {
     ...withJsonContent(init),
     method: 'GET'
   })
+}
 
 export const apiDelete = <
   TResult = unknown,
@@ -48,11 +50,13 @@ export const apiDelete = <
   route: string,
   params?: TParams,
   init?: Omit<RequestInit, 'method'>
-) =>
-  api<TResult>(`${route}?${new URLSearchParams(params)}`, {
+) => {
+  const searchParams = new URLSearchParams(params)
+  return api<TResult>(`${route}?${searchParams.toString()}`, {
     ...withJsonContent(init),
     method: 'DELETE'
   })
+}
 
 export const apiPost = <
   TResult = unknown,

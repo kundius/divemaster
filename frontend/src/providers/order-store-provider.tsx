@@ -14,7 +14,7 @@ export interface OrderStoreProviderProps {
 }
 
 export const OrderStoreProvider = ({ children }: OrderStoreProviderProps) => {
-  const storeRef = useRef<OrderStoreApi>()
+  const storeRef = useRef<OrderStoreApi>(null)
   if (!storeRef.current) {
     storeRef.current = createOrderStore()
   }

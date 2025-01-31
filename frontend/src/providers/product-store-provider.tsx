@@ -5,7 +5,7 @@ import { useStore } from 'zustand'
 
 // import { apiPost } from '@/lib/api'
 // import { withClientAuth } from '@/lib/api/with-client-auth'
-import { ComputedStore, type ProductStore, createProductStore } from '@/stores/product-store'
+import { type ProductStore, createProductStore } from '@/stores/product-store'
 // import { useAuthStore } from './auth-store-provider'
 import { ProductEntity } from '@/types'
 
@@ -19,7 +19,7 @@ export interface ProductStoreProviderProps {
 }
 
 export const ProductStoreProvider = ({ children, product }: ProductStoreProviderProps) => {
-  const storeRef = useRef<ProductStoreApi>()
+  const storeRef = useRef<ProductStoreApi>(null)
   if (!storeRef.current) {
     storeRef.current = createProductStore(product)
   }
@@ -29,7 +29,7 @@ export const ProductStoreProvider = ({ children, product }: ProductStoreProvider
   )
 }
 
-export const useProductStore = <T,>(selector: (store: ProductStore & ComputedStore) => T): T => {
+export const useProductStore = <T,>(selector: (store: ProductStore) => T): T => {
   const context = useContext(ProductStoreContext)
 
   if (!context) {

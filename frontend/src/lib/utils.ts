@@ -113,7 +113,7 @@ export function shallowEqual(object1: Record<string, any>, object2: Record<strin
     return false
   }
 
-  for (let key of keys1) {
+  for (const key of keys1) {
     if (object1[key] !== object2[key]) {
       return false
     }
@@ -150,7 +150,7 @@ export function getEntityId(entity: number | { id: number }) {
 }
 
 export function clearUndefined<I extends Record<string, any>>(object: I): Partial<I> {
-  let output = { ...object }
+  const output = { ...object }
   for (const key of Object.keys(output)) {
     if (typeof output[key] === 'undefined') {
       delete output[key]
@@ -160,7 +160,7 @@ export function clearUndefined<I extends Record<string, any>>(object: I): Partia
 }
 
 export function clearEmpty<I extends Record<string, any>>(object: I): Partial<I> {
-  let output = { ...object }
+  const output = { ...object }
   for (const key of Object.keys(output)) {
     if (!output[key]) {
       delete output[key]

@@ -1,11 +1,12 @@
 import { apiGet } from '@/lib/api'
 import { withServerAuth } from '@/lib/api/with-server-auth'
-import { OptionType, ProductEntity } from '@/types'
+import { OptionType, PageProps, ProductEntity } from '@/types'
 import { ProductOffers } from '../../_components/ProductOffers'
 
-export default async function Page({ params }: { params: { id: number } }) {
+export default async function Page({ params }: PageProps<{ id: number }>) {
+  const { id } = await params
   const product = await apiGet<ProductEntity>(
-    `products/${params.id}`,
+    `products/${id}`,
     { withOptions: true },
     withServerAuth()
   )
@@ -18,5 +19,5 @@ export default async function Page({ params }: { params: { id: number } }) {
     option.values = (product.optionValues || []).filter((ov) => ov.optionId === option.id)
   }
 
-  return <ProductOffers productId={params.id} options={comboOptions} />
+  return <ProductOffers productId={id} options={comboOptions} />
 }

@@ -1,28 +1,3 @@
-// export interface PickupPointCitiesDistrict {
-//   id: number
-//   name: string
-// }
-
-// export interface PickupPointCitiesRegion {
-//   id: number
-//   districtId: number
-//   name: string
-// }
-
-// export interface PickupPointCitiesCity {
-//   id: string
-//   regionId: number
-//   name: string
-//   lat: number
-//   lon: number
-// }
-
-// export interface PickupPointCities {
-//   districts: PickupPointCitiesDistrict[]
-//   regions: PickupPointCitiesRegion[]
-//   cities: PickupPointCitiesCity[]
-// }
-
 export interface FindAllResult<TRow> {
   rows: TRow[]
   total: number
@@ -306,11 +281,11 @@ export enum OptionType {
 }
 
 export type PageProps<
-  TParams = {},
+  TParams = object,
   TSearchParams = { [key: string]: string | string[] | undefined }
 > = {
-  params: TParams
-  searchParams: TSearchParams
+  params: Promise<TParams>
+  searchParams: Promise<TSearchParams>
 }
 
 export interface CartEntity {

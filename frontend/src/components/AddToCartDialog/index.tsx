@@ -30,9 +30,16 @@ export function AddToCartDialog({
   children,
   requestButton
 }: PropsWithChildren<{ requestButton: ReactNode }>) {
-  const [show, toggleShow] = useToggle(false)
+  const [show, _toggleShow] = useToggle(false)
   const productStore = useProductStore((state) => state)
   const addToCart = useCartStore((state) => state.addToCart)
+
+  const toggleShow = (val: boolean) => {
+    if (!val) {
+      productStore.reset()
+    }
+    _toggleShow(val)
+  }
 
   const thumbnail = useMemo(() => {
     const image = productStore.product.images?.[0]
@@ -47,23 +54,23 @@ export function AddToCartDialog({
   const addHandler = () => {
     addToCart({
       id: productStore.product.id,
-      optionValues: Object.values(productStore.selectedOptionValues).map((item) => item.id)
+      optionValues: productStore.selectedOptionValues.map(({ id }) => id)
     })
     toast.success('Товар добавлен в корзину')
     toggleShow(false)
   }
 
-  if (productStore.additionalOffers.length === 0 && !productStore.basicOffer) {
+  if (!productStore.product.offers || !productStore.product.offers.length) {
     return <ProductBuyDialog title="Заказать от 1 дня">{requestButton}</ProductBuyDialog>
   }
 
-  if (
-    productStore.additionalOffers.length === 0 &&
-    !!productStore.basicOffer &&
-    productStore.selectableOptions.length === 0
-  ) {
+  // Если выбрано предложение и нет опций для выбора то сразу добавляем в корзину
+  if (!!productStore.selectedOffer && productStore.selectableOptions.length === 0) {
     return <Slot onClick={addHandler}>{children}</Slot>
   }
+
+  const price = productStore.displayPrice(productStore.selectedOffer)
+  const oldPrice = productStore.displayOldPrice(productStore.selectedOffer)
 
   return (
     <Dialog open={show} onOpenChange={toggleShow}>
@@ -79,8 +86,10 @@ export function AddToCartDialog({
                 key={option.id}
                 caption={option.caption}
                 values={option.values}
-                onSelect={(value) => productStore.selectOptionValue(option, value)}
-                selected={productStore.selectedOptionValues[option.key]}
+                onSelect={productStore.selectOptionValue}
+                selected={productStore.selectedOptionValues.find(
+                  ({ optionId }) => optionId === option.id
+                )}
               />
             ))}
           </div>
@@ -96,17 +105,13 @@ export function AddToCartDialog({
           </div>
           <div>
             <div className="text-base font-bold text-balance max-md:text-sm">
-              {productStore.selectedOffer?.title
-                ? productStore.selectedOffer.title
-                : productStore.product.title}
+              {productStore.selectedOffer?.title || productStore.product.title}
             </div>
             <div className="flex items-center flex-wrap gap-4 mt-2 max-md:gap-2 max-md:mt-1">
-              <div className="text-primary text-lg font-bold max-md:text-base">
-                {productStore.selectedPrice}
-              </div>
-              {productStore.selectedOldPrice && (
+              <div className="text-primary text-lg font-bold max-md:text-base">{price}</div>
+              {oldPrice && (
                 <div className="text-neutral-400 text-base line-through max-md:text-xs">
-                  {productStore.selectedOldPrice}
+                  {oldPrice}
                 </div>
               )}
             </div>
@@ -118,7 +123,16 @@ export function AddToCartDialog({
               Отмена
             </Button>
           </DialogClose>
-          {productStore.allOptionsSelected && !productStore.selectedOffer ? (
+          {!productStore.isAllOptionsSelected(productStore.selectedOptionValues) ? (
+            <Button className="w-full" size="lg" disabled key="available">
+              <SpriteIcon name="cart" size={19} className="mr-2 -ml-2" />
+              Выберите параметры
+            </Button>
+          ) : productStore.selectedOffer ? (
+            <Button className="w-full" size="lg" onClick={addHandler} key="available">
+              <SpriteIcon name="cart" size={19} className="mr-2 -ml-2" />В корзину
+            </Button>
+          ) : (
             <div className="w-full">
               <ProductBuyDialog title="Заказать от 1 дня">
                 <Button className="w-full leading-none" size="lg">
@@ -127,16 +141,6 @@ export function AddToCartDialog({
                 </Button>
               </ProductBuyDialog>
             </div>
-          ) : (
-            <Button
-              className="w-full"
-              size="lg"
-              onClick={addHandler}
-              disabled={!productStore.allOptionsSelected}
-              key="available"
-            >
-              <SpriteIcon name="cart" size={19} className="mr-2 -ml-2" />В корзину
-            </Button>
           )}
         </DialogFooter>
       </DialogContent>

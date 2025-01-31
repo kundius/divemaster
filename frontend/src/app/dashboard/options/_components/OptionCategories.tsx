@@ -1,6 +1,5 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
 import { CheckboxTree } from '@/components/ui/checkbox-tree'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ApiTableData } from '@/lib/ApiTable/types'
@@ -23,7 +22,6 @@ interface NodeType {
 
 export function OptionCategories({ optionId }: OptionCategoriesProps) {
   const [checked, setChecked] = useState<string[]>([])
-  const [expanded, setExpanded] = useState<string[]>([])
 
   const optionCategoriesQuery = useSWR<CategoryEntity[]>(`options/${optionId}/categories`)
   const categoriesQuery = useSWR<ApiTableData<CategoryEntity>>([`categories`, { limit: 100 }])
@@ -45,7 +43,6 @@ export function OptionCategories({ optionId }: OptionCategoriesProps) {
 
   useEffect(() => {
     setChecked(optionCategoriesQuery.data?.map((item) => String(item.id)) || [])
-    setExpanded(optionCategoriesQuery.data?.map((item) => String(item.parentId)) || [])
   }, [optionCategoriesQuery.data])
 
   const checkHandler = async (checked: string[]) => {
@@ -68,11 +65,9 @@ export function OptionCategories({ optionId }: OptionCategoriesProps) {
         </div>
       ) : (
         <CheckboxTree
-          nodes={nodes}
+          items={nodes}
           checked={checked}
-          expanded={expanded}
           onCheck={checkHandler}
-          onExpand={setExpanded}
         />
       )}
     </div>

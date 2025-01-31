@@ -1,8 +1,6 @@
 import { BlogPostCard } from '@/components/BlogPostCard'
 import { Headline } from '@/components/Headline'
 import { SectionPage } from '@/components/SectionPage'
-import { Container } from '@/components/site/Container'
-import { Pagination } from '@/components/site/Pagination'
 import { StaticPagination } from '@/components/site/StaticPagination'
 import { Button } from '@/components/ui/button'
 import { apiGet } from '@/lib/api'
@@ -12,8 +10,9 @@ import { ChevronDownIcon } from '@heroicons/react/24/outline'
 export const revalidate = 60
 
 export default async function Page({ searchParams }: PageProps) {
-  const limit = Number(searchParams.limit || 6)
-  const page = Number(searchParams.page || 1)
+  const _searchParams = await searchParams
+  const limit = Number(_searchParams.limit || 6)
+  const page = Number(_searchParams.page || 1)
   const posts = await apiGet<FindAllResult<BlogPostEntity>>('blog/post', {
     page,
     limit
@@ -42,7 +41,7 @@ export default async function Page({ searchParams }: PageProps) {
               total={posts.total}
               page={page}
               baseUrl="/blog"
-              searchParams={searchParams}
+              searchParams={_searchParams}
             />
           </div>
         )}

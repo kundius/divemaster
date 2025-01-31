@@ -6,7 +6,7 @@ import { Headline } from '@/components/Headline'
 import { Container } from '@/components/site/Container'
 import { apiGet } from '@/lib/api'
 import { formatPrice } from '@/lib/utils'
-import { DeliveryService, OrderEntity } from '@/types'
+import { DeliveryService, OrderEntity, PageProps } from '@/types'
 
 import { PaymentContainer } from './_components/PaymentContainer'
 import { SectionPage } from '@/components/SectionPage'
@@ -20,7 +20,8 @@ const DeliveryServiceNames: Record<DeliveryService, string> = {
   [DeliveryService.Shipping]: 'Доставка'
 }
 
-export default async function Page({ params: { hash } }: { params: { hash: string } }) {
+export default async function Page({ params }: PageProps<{ hash: string }>) {
+  const { hash } = await params
   const order = await apiGet<OrderEntity>(`order/hash:${hash}`)
   if (!order.delivery) {
     throw new Error('delivery not defined')

@@ -26,7 +26,7 @@ export class RolesService {
     const relations: FindOptionsRelations<Role> = {}
 
     if (dto.query) {
-      where.title = Like(dto.query)
+      where.title = Like(`%${dto.query}%`)
     }
 
     if (dto.scope) {

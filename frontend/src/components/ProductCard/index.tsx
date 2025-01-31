@@ -14,33 +14,31 @@ import { Gallery } from './Gallery'
 import styles from './index.module.scss'
 
 export function ProductCard() {
-  const product = useProductStore((state) => state.product)
-  const defaultPrice = useProductStore((state) => state.defaultPrice)
-  const defaultOldPrice = useProductStore((state) => state.defaultOldPrice)
+  const productStore = useProductStore((state) => state)
   const [showGallery, setShowGallery] = useState(false)
   const [galleryShowNav, setGalleryShowNav] = useState(false)
   const [thumbIndex, setThumbIndex] = useState(0)
   const [startIndex, setStartIndex] = useState(0)
-  const showGalleryTimer = useRef<ReturnType<typeof setTimeout>>()
+  const showGalleryTimer = useRef<ReturnType<typeof setTimeout>>(null)
 
   const images = useMemo(() => {
-    if (!product.images || product.images.length === 0) {
+    if (!productStore.product.images || productStore.product.images.length === 0) {
       return ['/noimage.png']
     }
-    return product.images.map((item) => getFileUrl(item.fileId))
-  }, [product])
+    return productStore.product.images.map((item) => getFileUrl(item.fileId))
+  }, [productStore.product])
 
   const colors = useMemo(() => {
-    if (!product.options || product.options.length === 0) {
+    if (!productStore.product.options || productStore.product.options.length === 0) {
       return []
     }
 
-    const option = product.options.find((option) => option.key === 'color')
+    const option = productStore.product.options.find((option) => option.key === 'color')
     if (!option) {
       return []
     }
 
-    option.values = (product.optionValues || []).filter(
+    option.values = (productStore.product.optionValues || []).filter(
       (ov) => ov.optionId === option.id
     )
     if (option.values.length < 2) {
@@ -48,10 +46,11 @@ export function ProductCard() {
     }
 
     return pluck(option.values, 'content')
-  }, [product])
+  }, [productStore.product])
 
-  const brand =
-    product.brand !== null && typeof product.brand === 'object' ? product.brand.title : undefined
+  const brand = productStore.product.brand ? productStore.product.brand.title : undefined
+  const price = productStore.displayPrice(productStore.selectedOffer)
+  const oldPrice = productStore.displayOldPrice(productStore.selectedOffer)
 
   const handleMouseEnter = () => {
     if (showGalleryTimer.current) {
@@ -78,16 +77,18 @@ export function ProductCard() {
   return (
     <div className={styles.root} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <div className={styles.meta}>
-        {product.favorite && <div className={styles.hit}>Хит</div>}
-        {product.recent && <div className={styles.new}>New!</div>}
-        {product.priceDecrease && <div className={styles.discount}>-{product.priceDecrease}%</div>}
+        {productStore.product.favorite && <div className={styles.hit}>Хит</div>}
+        {productStore.product.recent && <div className={styles.new}>New!</div>}
+        {productStore.product.priceDecrease && (
+          <div className={styles.discount}>-{productStore.product.priceDecrease}%</div>
+        )}
       </div>
       <div className={styles.media}>
         <div className={styles.mediaContainer}>
           <div className={styles.mediaThumb}>
             <Image
               src={images[thumbIndex]}
-              alt={product.title}
+              alt={productStore.product.title}
               fill
               className={styles.mediaThumbImage}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -108,11 +109,11 @@ export function ProductCard() {
         </div>
       </div>
       <div className={styles.prices}>
-        <div className={styles.realPrice}>{defaultPrice}</div>
-        {defaultOldPrice && <div className={styles.oldPrice}>{defaultOldPrice}</div>}
+        <div className={styles.realPrice}>{price}</div>
+        {oldPrice && <div className={styles.oldPrice}>{oldPrice}</div>}
       </div>
-      <Link href={`/product/${product.alias}`} className={styles.title}>
-        {product.title}
+      <Link href={`/product/${productStore.product.alias}`} className={styles.title}>
+        {productStore.product.title}
       </Link>
       {brand && <div className={styles.brand}>{brand}</div>}
       {/* TODO: ИЗБРАННОЕ */}

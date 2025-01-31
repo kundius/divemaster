@@ -10,8 +10,9 @@ export const metadata: Metadata = {
   title: 'Редактировать доступ'
 }
 
-export default async function Page({ params }: PageProps<{ id: string }>) {
-  const record = await apiGet<UserRoleEntity>(`roles/${params.id}`, {}, withServerAuth())
+export default async function Page({ params }: PageProps<{ id: number }>) {
+  const { id } = await params
+  const record = await apiGet<UserRoleEntity>(`roles/${id}`, {}, withServerAuth())
   return (
     <PageLayout title="Редактировать доступ">
       <UserRoleForm record={record} />

@@ -14,14 +14,15 @@ import { PostNeighbors } from '../../_components/PostNeighbors'
 import { SectionPage } from '@/components/SectionPage'
 
 export async function generateMetadata(props: PageProps<{ alias: string }>): Promise<Metadata> {
-  const post = await apiGet<BlogPostEntity>(`blog/post/alias:${props.params.alias}`)
+  const { alias } = await props.params
+  const post = await apiGet<BlogPostEntity>(`blog/post/alias:${alias}`)
   const metadata = post.metadata || {}
 
-  let title = metadata.title || post.longTitle || post.title
-  let description = metadata.description || ''
-  let keywords = metadata.keywords || ''
+  const title = metadata.title || post.longTitle || post.title
+  const description = metadata.description || ''
+  const keywords = metadata.keywords || ''
 
-  let images = []
+  const images = []
   if (post.image) images.push(getFileUrl(post.image))
 
   return {
@@ -39,7 +40,8 @@ export async function generateMetadata(props: PageProps<{ alias: string }>): Pro
 export const revalidate = 60
 
 export default async function Page({ params }: PageProps<{ alias: string }>) {
-  const post = await apiGet<BlogPostEntity>(`blog/post/alias:${params.alias}`)
+  const { alias } = await params
+  const post = await apiGet<BlogPostEntity>(`blog/post/alias:${alias}`)
   const neighbors = await apiGet<{ previous: BlogPostEntity; next: BlogPostEntity }>(
     `blog/post/${post.id}/neighbors`
   )

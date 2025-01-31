@@ -55,7 +55,7 @@ export const createOrderStore = () =>
         validate() {
           const state = get()
 
-          let errors: OrderState['errors'] = []
+          const errors: OrderState['errors'] = []
 
           if (!state.delivery) {
             errors.push({

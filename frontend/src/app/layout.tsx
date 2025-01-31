@@ -1,10 +1,9 @@
 import type { Metadata } from 'next'
 import { Roboto as FontSans, Roboto_Condensed as FontSansAlt, Montserrat } from 'next/font/google'
-
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { Toaster } from '@/components/ui/sonner'
 import { SWRGlobalProvider } from '@/lib/api/swr-global-provider'
 import { cn } from '@/lib/utils'
-import { AuthServerProvider } from '@/providers/auth-server-provider'
 import { CartStoreProvider } from '@/providers/cart-store-provider'
 import { LocationStoreProvider } from '@/providers/location-store-provider'
 import { OrderStoreProvider } from '@/providers/order-store-provider'
@@ -12,6 +11,7 @@ import '@/styles/globals.scss'
 import Script from 'next/script'
 import { Suspense } from 'react'
 import YandexMetrika from '@/components/YandexMetrika'
+import { AuthStoreProvider } from '@/providers/auth-store-provider'
 
 const fontSans = FontSans({
   weight: ['400', '500', '700'],
@@ -57,15 +57,17 @@ export default async function RootLayout({
           fontMontserrat.variable
         )}
       >
-        <SWRGlobalProvider>
-          <AuthServerProvider>
-            <LocationStoreProvider>
-              <CartStoreProvider>
-                <OrderStoreProvider>{children}</OrderStoreProvider>
-              </CartStoreProvider>
-            </LocationStoreProvider>
-          </AuthServerProvider>
-        </SWRGlobalProvider>
+        <NuqsAdapter>
+          <SWRGlobalProvider>
+            <AuthStoreProvider>
+              <LocationStoreProvider>
+                <CartStoreProvider>
+                  <OrderStoreProvider>{children}</OrderStoreProvider>
+                </CartStoreProvider>
+              </LocationStoreProvider>
+            </AuthStoreProvider>
+          </SWRGlobalProvider>
+        </NuqsAdapter>
         <Toaster richColors position="top-center" />
         <Script id="metrika-counter" strategy="afterInteractive">
           {`(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};

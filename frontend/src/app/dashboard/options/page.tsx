@@ -13,10 +13,10 @@ export const metadata: Metadata = {
   title: 'Характеристики'
 }
 
-export default async function Page(props: PageProps) {
+export default async function Page({ searchParams }: PageProps) {
   const fallbackData = await apiGet<FindAllResult<OptionEntity>>(
     'options',
-    props.searchParams,
+    await searchParams,
     withServerAuth()
   )
 

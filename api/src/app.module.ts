@@ -13,6 +13,7 @@ import { OrderModule } from './order/order.module'
 import { ProductsModule } from './products/products.module'
 import { StorageModule } from './storage/storage.module'
 import { UsersModule } from './users/users.module'
+import { SyncModule } from './sync/sync.module'
 
 @Module({
   imports: [
@@ -26,7 +27,8 @@ import { UsersModule } from './users/users.module'
     CartModule,
     OrderModule,
     NotificationsModule,
-    BlogModule
+    BlogModule,
+    SyncModule
   ],
   providers: [AppService]
 })

@@ -110,7 +110,7 @@ export function DataTable<
       return column.formatter(row[column.key], row)
     }
 
-    return <>{row[column.key]}</>
+    return String(row[column.key])
   }
 
   const renderHead = (column: DataTableColumn<TRow>): ReactNode => {

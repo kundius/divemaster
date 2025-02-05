@@ -63,7 +63,7 @@ const nav: Nav = [
           },
           {
             title: 'Синхронизация',
-            route: '/dashboard/snc'
+            route: '/dashboard/sync'
           }
         ]
       },

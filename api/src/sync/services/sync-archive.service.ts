@@ -60,7 +60,7 @@ export class SyncArchiveService {
   @Cron(CronExpression.EVERY_5_SECONDS)
   async prepareTask() {
     const tasks = await this.syncTaskRepository.find({
-      where: { status: SyncTaskStatus.INITIALIZATION }
+      where: { status: SyncTaskStatus.INITIALIZATION, provider: SyncTaskProvider.ARCHIVE }
     })
 
     for (const task of tasks) {
@@ -118,7 +118,24 @@ export class SyncArchiveService {
         const importData = parser.parse(importContent)
         const offersData = parser.parse(offersContent)
 
-        const parseProperties = async () => {
+        const arrayField = (input: any) => {
+          if (!Array.isArray(input)) {
+            return [input]
+          }
+          return input
+        }
+
+        const parsePriceTypes = (): Record<string, string> => {
+          const data =
+            offersData['КоммерческаяИнформация']['ПакетПредложений']['ТипыЦен']['ТипЦены']
+          let output = {}
+          for (const item of data) {
+            output[item['Ид']] = item['Наименование']
+          }
+          return output
+        }
+
+        const parseProperties = (): Record<string, string> => {
           const data = importData['КоммерческаяИнформация']['Классификатор']['Свойства']['Свойство']
           let output = {}
           for (const item of data) {
@@ -127,42 +144,63 @@ export class SyncArchiveService {
           return output
         }
 
-        const parseCategories = async () => {
-          const data = importData['КоммерческаяИнформация']['Классификатор']['Группы']['Группа']
+        const parsePropertyValues = (): Record<string, string> => {
+          const data = importData['КоммерческаяИнформация']['Классификатор']['Свойства']['Свойство']
           let output = {}
           for (const item of data) {
-            output[item['Ид']] = item['Наименование']
+            if (!item['ВариантыЗначений']) continue
+            if (!item['ВариантыЗначений']['Справочник']) continue
+
+            let values = item['ВариантыЗначений']['Справочник']
+            if (typeof values === 'string') {
+              values = [values]
+            }
+            for (const value of values) {
+              output[value['ИдЗначения']] = value['Значение']
+            }
           }
           return output
         }
 
-        // Ид: Наименование
-        const parsedProperties = await parseProperties()
+        const addOption = (target, name, value) => {
+          if (target[name]) {
+            if (!target[name].includes(value)) {
+              target[name].push(value)
+            }
+          } else {
+            target[name] = [value]
+          }
+        }
 
-        // Наименование: Ид
-        const parsedPropertiesByName = swap(parsedProperties)
+        const priceTypesById = parsePriceTypes()
+        const optionsById = parseProperties()
+        const optionsByName = swap(optionsById)
+        const optionValuesById = parsePropertyValues()
 
-        const parsedCategories = await parseCategories()
-
-        const dataTo: Record<string, string>[] = []
+        const dataTo: Record<string, string | null | number>[] = []
         const dataFrom = importData['КоммерческаяИнформация']['Каталог']['Товары']['Товар']
+
         for (const rowFrom of dataFrom) {
-          let images: string[] = []
-          if (Array.isArray(rowFrom['Картинки']['Картинка'])) {
-            images = rowFrom['Картинки']['Картинка']
-          }
-          if (typeof rowFrom['Картинки']['Картинка'] === 'string') {
-            images = [rowFrom['Картинки']['Картинка']]
+          const rowTo: Record<string, string | null | number> = {
+            remoteId: rowFrom['Ид'],
+            sku: rowFrom['Артикул'],
+            name: rowFrom['Наименование'],
+            description: rowFrom['Описание'],
+            brand: null,
+            categories: null,
+            images: null,
+            offers: null,
+            options: null,
+            syncTaskId: task.id
           }
 
+          // парсим категории в виде ['Раздел', 'Подраздел']
           let categories: string[][] = []
-          if (rowFrom['Группы']) {
-            const groupIds = Array.isArray(rowFrom['Группы']['Ид'])
-              ? rowFrom['Группы']['Ид']
-              : [rowFrom['Группы']['Ид']]
+          if (rowFrom['Группы'] && rowFrom['Группы']['Ид']) {
+            const groupIds = arrayField(rowFrom['Группы']['Ид'])
             for (const groupId of groupIds) {
               const fn = (items: Record<string, any>[], path: string[]): string[] | undefined => {
-                const found = items.find(item => item['Ид'] === groupId)
+                const found = items.find((item) => item['Ид'] === groupId)
                 if (found) {
                   return [...path, found['Наименование']]
                 }
@@ -177,37 +215,123 @@ export class SyncArchiveService {
                 return undefined
               }
 
-              const group = fn(importData['КоммерческаяИнформация']['Классификатор']['Группы']['Группа'], [])
+              const group = fn(
+                importData['КоммерческаяИнформация']['Классификатор']['Группы']['Группа'],
+                []
+              )
 
               if (group) {
                 categories.push(group)
               }
             }
           }
-          
-          // Пропусить, если среди категорий есть архивная
-          if (categories.find(path => path[0] === 'Архив')) {
+          rowTo.categories = JSON.stringify(categories)
+
+          // Пропусить, если среди категорий есть архив
+          if (categories.find((path) => path[0] === 'Архив')) {
             continue
           }
 
-          const rowTo: Record<string, string> = {}
-          rowTo.remoteId = rowFrom['Ид']
-          rowTo.article = rowFrom['Артикул']
-          rowTo.name = rowFrom['Наименование']
-          rowTo.description = rowFrom['Описание']
+          let images: string[] = []
+          if (rowFrom['Картинки'] && rowFrom['Картинки']['Картинка']) {
+            images = arrayField(rowFrom['Картинки']['Картинка'])
+          }
           rowTo.images = JSON.stringify(images)
-          rowTo.categories = JSON.stringify(categories)
+
+          let options: Record<string, string[]> = {}
+          if (rowFrom['ЗначенияСвойств'] && rowFrom['ЗначенияСвойств']['ЗначенияСвойства']) {
+            const rawOptions = arrayField(rowFrom['ЗначенияСвойств']['ЗначенияСвойства'])
+            for (const rawOption of rawOptions) {
+              // у "Новинки" и "ХитПродаж" всегда пустое "Значение", проверить факт наличия
+              if (rawOption['Ид'] === optionsByName['Новинки']) {
+                rowTo.recent = rawOption['Значение'] ? '1' : '0'
+              }
+              if (rawOption['Ид'] === optionsByName['ХитПродаж']) {
+                rowTo.favorite = rawOption['Значение'] ? '1' : '0'
+              }
+              // у "Бренд", "Цвет" и "Материал" может быть пустое "Значение", проверить что оно не пустое
+              if (rawOption['Ид'] === optionsByName['Бренд']) {
+                if (rawOption['Значение']) {
+                  rowTo.brand = optionValuesById[rawOption['Значение']]
+                }
+              }
+              if (rawOption['Ид'] === optionsByName['Цвет']) {
+                if (rawOption['Значение']) {
+                  addOption(options, 'Цвет', optionValuesById[rawOption['Значение']])
+                }
+              }
+              if (rawOption['Ид'] === optionsByName['Материал']) {
+                if (rawOption['Значение']) {
+                  addOption(options, 'Материал', optionValuesById[rawOption['Значение']])
+                }
+              }
+            }
+          }
+
+          let offers: Record<string, any> = []
+          const rawOffers =
+            offersData['КоммерческаяИнформация']['ПакетПредложений']['Предложения']['Предложение']
+          for (const rawOffer of rawOffers) {
+            const rawOfferId = rawOffer['Ид']
+            const rawOfferProductId = rawOfferId.split('#')[0]
+
+            // пропустить офферы других товаров
+            if (rawOfferProductId !== rowFrom['Ид']) {
+              continue
+            }
+
+            let offerPrice: number | undefined = undefined
+            if (rawOffer['Цены']) {
+              const rawOfferPrices = arrayField(rawOffer['Цены']['Цена'])
+              for (const rawOfferPrice of rawOfferPrices) {
+                if ((priceTypesById[rawOfferPrice['ИдТипаЦены']] = 'Розничная')) {
+                  offerPrice = rawOfferPrice['ЦенаЗаЕдиницу']
+                }
+              }
+            }
+
+            // не добавлять оффер если розничная цена не найдена
+            if (typeof offerPrice === 'undefined') {
+              continue
+            }
+
+            const offer = {
+              price: offerPrice,
+              remoteId: rawOfferId,
+              name: rawOffer['Наименование'],
+              options: {}
+            }
+
+            if (rawOffer['ХарактеристикиТовара']) {
+              const rawOfferOptions = arrayField(
+                rawOffer['ХарактеристикиТовара']['ХарактеристикаТовара']
+              )
+              for (const rawOfferOption of rawOfferOptions) {
+                addOption(options, rawOfferOption['Наименование'], rawOfferOption['Значение'])
+                addOption(offer.options, rawOfferOption['Наименование'], rawOfferOption['Значение'])
+              }
+            }
+
+            offers.push(offer)
+          }
+
+          // поскольку опции находятся и в товаре и в оффере, добавить их после всего
+          rowTo.offers = JSON.stringify(offers)
+          rowTo.options = JSON.stringify(options)
+
           dataTo.push(rowTo)
         }
-        console.log(dataTo)
-        // await this.syncProductRepository
-        //   .createQueryBuilder()
-        //   .insert()
-        //   .values([
-        //     { firstName: 'Timber', lastName: 'Saw' },
-        //     { firstName: 'Phantom', lastName: 'Lancer' }
-        //   ])
-        //   .execute()
+
+        // если запись в базу сломается то... перехватим исключение и поменяем статус на ошибку
+
+        console.log(
+          await this.syncProductRepository.createQueryBuilder().insert().values(dataTo).execute()
+        )
+
+        task.status = SyncTaskStatus.SYNCHRONIZATION
+        task.statusMessage = `Синхронизация товаров`
+        task.total = dataTo.length
+        await this.syncTaskRepository.save(task)
       }
     }
   }

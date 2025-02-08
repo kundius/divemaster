@@ -60,6 +60,23 @@ export class ProductsService {
     private readonly configService: ConfigService
   ) {}
 
+  async makeAlias(from: string, unique: boolean = false) {
+    let alias = slugify(from)
+
+    if (unique) {
+      const fn = async (n: number) => {
+        const tmp = n !== 0 ? `${alias}-${n}` : alias
+        const record = await this.productRepository.findOne({
+          where: { alias: tmp }
+        })
+        return record ? fn(n + 1) : tmp
+      }
+      alias = await fn(0)
+    }
+
+    return alias
+  }
+
   async create({ brandId, rank, ...fillable }: CreateProductDto) {
     const record = new Product()
 

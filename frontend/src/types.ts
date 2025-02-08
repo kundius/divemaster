@@ -12,6 +12,52 @@ export interface CartGetOrderCost {
   }[]
 }
 
+export enum SyncTaskStatus {
+  INITIALIZATION = 'initialization',
+  SYNCHRONIZATION = 'synchronization',
+  SUSPENDED = 'suspended',
+  CANCELLED = 'cancelled', // end
+  SUCCESS = 'success', // end
+  ERROR = 'error' // end
+}
+
+export enum SyncTaskProvider {
+  ARCHIVE = 'archive'
+}
+
+export interface SyncProductEntity {
+  id: number
+  remoteId: string | null
+  sku: string | null
+  name: string | null
+  description: string | null
+  categories: string | null
+  images: string | null
+  brand: string | null
+  favorite: string | null
+  recent: string | null
+  options: string | null
+  offers: string | null
+  syncTaskId: number
+  syncTask: SyncTaskEntity
+}
+
+export interface SyncTaskEntity {
+  id: number
+  status: SyncTaskStatus
+  statusMessage: string | null
+  provider: SyncTaskProvider
+  total: number
+  offset: number
+  created: number
+  updated: number
+  skipped: number
+  properties: Record<string, string> | null
+  createdAt: string
+  updatedAt: string
+  syncProducts?: SyncProductEntity[]
+}
+
 export interface CityEntity {
   id: string
   type: string

@@ -26,6 +26,7 @@ import { ProductsFilterService } from './services/products-filter.service'
     StorageModule
   ],
   controllers: [ProductsController, CategoriesController, BrandsController, OptionsController],
+  exports: [ProductsService, CategoriesService],
   providers: [
     ProductsService,
     CategoriesService,

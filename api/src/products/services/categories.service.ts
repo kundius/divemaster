@@ -8,6 +8,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm'
 import { Category } from '../entities/category.entity'
 import { FindOptionsRelations, FindOptionsWhere, IsNull, Like, Repository } from 'typeorm'
+import { slugify } from '@/lib/utils'
 
 @Injectable()
 export class CategoriesService {
@@ -15,6 +16,23 @@ export class CategoriesService {
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>
   ) {}
+
+  async makeAlias(from: string, unique: boolean = false) {
+    let alias = slugify(from)
+
+    if (unique) {
+      const fn = async (n: number) => {
+        const tmp = n !== 0 ? `${alias}-${n}` : alias
+        const record = await this.categoryRepository.findOne({
+          where: { alias: tmp }
+        })
+        return record ? fn(n + 1) : tmp
+      }
+      alias = await fn(0)
+    }
+
+    return alias
+  }
 
   async create({ parentId, imageId, ...fillable }: CreateCategoryDto) {
     const record = new Category()

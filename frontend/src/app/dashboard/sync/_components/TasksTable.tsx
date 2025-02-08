@@ -4,58 +4,137 @@ import { DataTable, DataTableColumn, DataTableFilterField } from '@/components/D
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ApiRemoveDialog } from '@/lib/ApiRemoveDialog'
-import { getFileUrl } from '@/lib/utils'
-import { ProductEntity } from '@/types'
-import { CheckCircleIcon, PencilIcon, TrashIcon, XCircleIcon } from '@heroicons/react/24/outline'
+import { cn, getFileUrl } from '@/lib/utils'
+import { SyncTaskEntity, SyncTaskStatus } from '@/types'
+import {
+  CheckCircleIcon,
+  PencilIcon,
+  PlayIcon,
+  TrashIcon,
+  XCircleIcon
+} from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import Link from 'next/link'
 import { TasksFilterType, useTasks } from './TasksProvider'
+import { format } from 'date-fns'
+import { ru } from 'date-fns/locale'
+import { Progress } from '@/components/ui/progress'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { diving } from '@/components/site/Header/menu'
 
 export function TasksTable() {
   const { data = { rows: [], total: 0 }, refetch, ...tasks } = useTasks()
 
-  const columns: DataTableColumn<ProductEntity>[] = [
-    {
-      key: 'title',
-      label: 'Товар',
-      sortable: true,
-      formatter: (title, record) => {
-        let image: null | string = null
-        if (record.images && record.images[0]) {
-          image = getFileUrl(record.images[0].fileId)
-        }
+  const renderStatus = (status: SyncTaskStatus, record: SyncTaskEntity) => {
+    switch (status) {
+      case SyncTaskStatus.SYNCHRONIZATION:
         return (
-          <div className="flex gap-3 items-center">
-            {image && (
-              <div className="flex w-12 h-12 relative self-start">
-                <Image src={image} fill alt="" className="object-cover rounded" />
-              </div>
-            )}
-            <div className="space-y-1">
-              <div className="text-balance">{title}</div>
-              {record.categories && record.categories.length > 0 && (
-                <div className="flex gap-1.5 flex-wrap">
-                  {record.categories.map((category) => (
-                    <Badge variant="outline" className="font-normal" key={category.id}>
-                      {category.title}
-                    </Badge>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
+          <Badge variant="secondary" className="bg-blue-100 hover:bg-blue-200 text-blue-600">
+            Синхронизация
+          </Badge>
         )
-      }
+      case SyncTaskStatus.INITIALIZATION:
+        return (
+          <Badge variant="secondary" className="">
+            Инициализация
+          </Badge>
+        )
+      case SyncTaskStatus.CANCELLED:
+        return (
+          <Badge variant="secondary" className="bg-orange-100 hover:bg-orange-200 text-orange-600">
+            Отменено
+          </Badge>
+        )
+      case SyncTaskStatus.ERROR:
+        return (
+          <Badge variant="secondary" className="bg-red-100 hover:bg-red-200 text-red-600">
+            Ошибка
+          </Badge>
+        )
+      case SyncTaskStatus.SUCCESS:
+        return (
+          <Badge variant="secondary" className="bg-green-100 hover:bg-green-200 text-green-600">
+            Выполнено
+          </Badge>
+        )
+      case SyncTaskStatus.SUSPENDED:
+        return (
+          <Badge variant="secondary" className="bg-yellow-100 hover:bg-yellow-200 text-yellow-600">
+            Приостановлено
+          </Badge>
+        )
+    }
+  }
+
+  const renderProgress = (total: number, record: SyncTaskEntity) => {
+    const percent = total ? Math.round(100 - ((total - record.offset) / total) * 100) : 0
+    return (
+      <div className="w-40 flex" key={record.id}>
+        <div
+          className={cn(
+            `progress-background relative overflow-hidden rounded border border-transparent bg-slate-100 w-full flex items-center justify-center`,
+            {
+              'animate-stripe-move': record.status === SyncTaskStatus.SYNCHRONIZATION,
+              'bg-[linear-gradient(135deg,var(--slate200)_25%,transparent_25%,transparent_50%,var(--slate200)_50%,var(--slate200)_75%,transparent_75%,transparent)] bg-[length:24px_24px]':
+                [SyncTaskStatus.SYNCHRONIZATION, SyncTaskStatus.SUSPENDED].includes(record.status)
+            }
+          )}
+        >
+          <div
+            className="absolute h-full w-full bg-slate-300 transition-all z-10"
+            style={{ transform: `translateX(-${100 - percent}%)` }}
+          />
+          {record.status === SyncTaskStatus.ERROR ? (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="overflow-hidden text-ellipsis whitespace-nowrap text-slate-600 px-2.5 py-0.5 text-xs font-semibold">
+                    {record.statusMessage}
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{record.statusMessage}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          ) : (
+            <>
+              <div className="relative z-20 text-slate-600 px-2.5 py-0.5 text-xs font-semibold">
+                {record.offset} из {total}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  const columns: DataTableColumn<SyncTaskEntity>[] = [
+    {
+      key: 'status',
+      headProps: {
+        className: 'w-1/3'
+      },
+      label: 'Статус',
+      sortable: true,
+      formatter: renderStatus
     },
     {
-      key: 'active',
-      label: 'Активен',
+      key: 'total',
+      headProps: {
+        className: 'w-1/3'
+      },
+      label: 'Прогресс',
+      formatter: renderProgress
+    },
+    {
+      key: 'createdAt',
+      label: 'Дата',
       sortable: true,
-      formatter: (active) => {
-        const Icon = active ? CheckCircleIcon : XCircleIcon
-        const color = active ? 'text-green-500' : 'text-amber-500'
-        return <Icon className={`w-6 h-6 ${color}`} />
-      }
+      headProps: {
+        className: 'w-1/3 whitespace-nowrap'
+      },
+      formatter: (createdAt) => format(createdAt, 'dd MMMM, HH:mm', { locale: ru })
     },
     {
       key: 'id',
@@ -64,12 +143,7 @@ export function TasksTable() {
       },
       formatter: (id) => (
         <div className="flex gap-2">
-          <Link href={`/dashboard/products/${id}`}>
-            <Button variant="outline" size="sm-icon">
-              <PencilIcon className="w-4 h-4" />
-            </Button>
-          </Link>
-          <ApiRemoveDialog url={`products/${id}`} onSuccess={refetch}>
+          <ApiRemoveDialog url={`sync/task/${id}`} onSuccess={refetch}>
             <Button variant="destructive-outline" size="sm-icon">
               <TrashIcon className="w-4 h-4" />
             </Button>
@@ -79,20 +153,11 @@ export function TasksTable() {
     }
   ]
 
-  const filters: DataTableFilterField[] = [
-    {
-      name: 'query',
-      type: 'search',
-      placeholder: 'Поиск по названию'
-    }
-  ]
-
   return (
-    <DataTable<ProductEntity, TasksFilterType>
+    <DataTable<SyncTaskEntity, TasksFilterType>
       data={data.rows}
       total={data.total}
       columns={columns}
-      filters={filters}
       {...tasks}
     />
   )

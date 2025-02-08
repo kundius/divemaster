@@ -7,13 +7,15 @@ import {
   mkdirSync,
   unlinkSync,
   existsSync,
-  writeFile
+  writeFile,
+  copyFileSync
 } from 'fs'
 import { sync as md5FileSync } from 'md5-file'
 import * as stream from 'node:stream'
 import { basename, dirname, join } from 'path'
 import { Repository } from 'typeorm'
 import { File } from '../entities/file.entity'
+import { statSync } from 'node:fs'
 
 const mime = require('mime-types')
 
@@ -65,6 +67,25 @@ export class StorageService {
       size: upload.size,
       type: upload.mimetype,
       hash: md5FileSync(upload.path)
+    })
+    await this.fileRepository.save(file)
+
+    return file
+  }
+
+  async createFromPath(fromPath: string, toPath: string): Promise<File> {
+    mkdirSync(dirname(this.fullPath(toPath)), { recursive: true })
+    copyFileSync(this.fullPath(fromPath), this.fullPath(toPath))
+
+    const stats = statSync(this.fullPath(toPath))
+
+    const file = new File()
+    this.fileRepository.merge(file, {
+      file: basename(toPath),
+      path: toPath,
+      size: stats.size,
+      type: mime.lookup(toPath),
+      hash: md5FileSync(this.fullPath(toPath))
     })
     await this.fileRepository.save(file)
 

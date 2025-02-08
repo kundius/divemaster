@@ -1,23 +1,30 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm'
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm'
 import { SyncProduct } from './sync-product.entity'
 
 export enum SyncTaskStatus {
   INITIALIZATION = 'initialization',
   SYNCHRONIZATION = 'synchronization',
-  SUSPENDED = 'suspended',
-  CANCELLED = 'cancelled', // end
+  // SUSPENDED = 'suspended',
+  // CANCELLED = 'cancelled', // end
   SUCCESS = 'success', // end
-  ERROR = 'error', // end
-}
-
-export enum SyncTaskProvider {
-  ARCHIVE = 'archive',
+  ERROR = 'error' // end
 }
 
 @Entity()
 export class SyncTask {
   @PrimaryGeneratedColumn()
   id: number
+
+  @Column()
+  uuid: string
 
   @Column({
     type: 'enum',
@@ -27,12 +34,6 @@ export class SyncTask {
 
   @Column({ nullable: true, type: 'varchar' })
   statusMessage?: string | null
-
-  @Column({
-    type: 'enum',
-    enum: SyncTaskProvider
-  })
-  provider!: SyncTaskProvider
 
   @Column({ default: 0 })
   total: number
@@ -52,6 +53,12 @@ export class SyncTask {
   @Column({ type: 'simple-json', nullable: true })
   properties: Record<string, string> | null
 
-  @ManyToMany(() => SyncProduct)
+  @CreateDateColumn()
+  createdAt: Date
+
+  @UpdateDateColumn()
+  updatedAt: Date
+
+  @OneToMany(() => SyncProduct, (syncProduct) => syncProduct.syncTask, { cascade: true })
   syncProducts: SyncProduct[]
 }

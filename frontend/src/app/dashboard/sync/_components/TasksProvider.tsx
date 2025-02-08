@@ -2,7 +2,7 @@
 
 import { DataTableProps } from '@/components/DataTable'
 import { clearEmpty } from '@/lib/utils'
-import { FindAllResult, ProductEntity } from '@/types'
+import { FindAllResult, SyncTaskEntity } from '@/types'
 import {
   parseAsArrayOf,
   parseAsInteger,
@@ -21,18 +21,18 @@ export type TasksFilterType = Values<{
 
 export interface TasksContextType
   extends Pick<
-    DataTableProps<ProductEntity, TasksFilterType>,
-    'pagination' | 'setPagination' | 'filter' | 'setFilter' | 'sorting' | 'setSorting'
+    DataTableProps<SyncTaskEntity, TasksFilterType>,
+    'pagination' | 'setPagination' | 'sorting' | 'setSorting'
   > {
   isLoading: boolean
-  data: FindAllResult<ProductEntity> | undefined
-  refetch: () => Promise<FindAllResult<ProductEntity> | undefined>
+  data: FindAllResult<SyncTaskEntity> | undefined
+  refetch: () => Promise<FindAllResult<SyncTaskEntity> | undefined>
 }
 
 export const TasksContext = createContext<TasksContextType | undefined>(undefined)
 
 export interface TasksProviderProps {
-  fallbackData?: FindAllResult<ProductEntity>
+  fallbackData?: FindAllResult<SyncTaskEntity>
 }
 
 export function TasksProvider({ children, fallbackData }: PropsWithChildren<TasksProviderProps>) {
@@ -51,18 +51,12 @@ export function TasksProvider({ children, fallbackData }: PropsWithChildren<Task
     dir: parseAsString
   })
 
-  const [filter, setFilter] = useQueryStates({
-    query: parseAsString,
-    tags: parseAsArrayOf(parseAsString)
-  })
-
-  const { data, isLoading, mutate } = useSWR<FindAllResult<ProductEntity>>(
+  const { data, isLoading, mutate } = useSWR<FindAllResult<SyncTaskEntity>>(
     [
-      `products`,
+      `sync/task`,
       {
         ...pagination,
         ...clearEmpty(sorting),
-        ...clearEmpty(filter),
         withBrand: true,
         withImages: true,
         withCategories: true
@@ -70,7 +64,8 @@ export function TasksProvider({ children, fallbackData }: PropsWithChildren<Task
     ],
     {
       fallbackData,
-      keepPreviousData: true
+      keepPreviousData: true,
+      refreshInterval: 5
     }
   )
 
@@ -83,8 +78,6 @@ export function TasksProvider({ children, fallbackData }: PropsWithChildren<Task
         setPagination,
         sorting,
         setSorting,
-        filter,
-        setFilter,
         isLoading,
         data,
         refetch

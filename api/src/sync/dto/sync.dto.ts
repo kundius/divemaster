@@ -13,20 +13,15 @@ import { SyncProduct } from '../entities/sync-product.entity'
 
 // export class UpdateBrandDto extends PartialType(CreateBrandDto) {}
 
-// export class FindAllSyncTaskQueryDto extends PaginationQueryDto {
-//   @Type(() => String)
-//   @IsString()
-//   @IsOptional()
-//   readonly query?: string
+export class FindAllSyncTaskDto extends PaginationQueryDto {
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  sort: keyof SyncTask = 'createdAt'
 
-//   @Type(() => String)
-//   @IsString()
-//   @IsOptional()
-//   sort: keyof Brand = 'id'
-
-//   @IsString()
-//   @IsOptional()
-//   dir: 'asc' | 'desc' = 'asc'
-// }
+  @IsString()
+  @IsOptional()
+  dir: 'asc' | 'desc' = 'desc'
+}
 
 // export class FindOneBrandQueryDto {}

@@ -4,13 +4,14 @@ import { Button, ButtonLoadingIcon } from '@/components/ui/button'
 import { api } from '@/lib/api'
 import { useState } from 'react'
 import { useTasks } from './TasksProvider'
+import { toast } from 'sonner'
 
 export function Upload() {
   const { refetch } = useTasks()
 
   const [isPending, setIsPending] = useState(false)
 
-  const url = `sync/archive/create-task`
+  const url = `sync/task`
 
   function onFileSelect() {
     const el = document.createElement('input')
@@ -39,13 +40,13 @@ export function Upload() {
     setIsPending(true)
     try {
       for (const file of nativeFiles) {
-        // if (['application/x-zip-compressed', 'application/zip'].includes(file.type)) {
-          await asyncLoad(file)
-        // }
+        await asyncLoad(file)
       }
+      refetch()
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Unknown error')
     } finally {
       setIsPending(false)
-      refetch()
     }
   }
 

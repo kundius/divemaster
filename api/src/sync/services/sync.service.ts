@@ -615,7 +615,7 @@ export class SyncService {
       const rawProducts = await this.productRepository
         .createQueryBuilder('product')
         .select('id')
-        .where('product.remoteId NOT NULL')
+        .where('product.remoteId IS NOT NULL')
         .andWhere((qb) => {
           const subQuery = qb
             .subQuery()

@@ -19,13 +19,15 @@ export class Offer {
   @Column({ default: 0 })
   rank: number = 0
 
-  @ManyToMany(() => OptionValue, optionValue => optionValue.offers)
-  @JoinTable({ name: 'offer_option_values' })
+  @ManyToMany(() => OptionValue, (optionValue) => optionValue.offers, { cascade: true })
+  @JoinTable({
+    name: 'offer_option_values'
+  })
   optionValues: OptionValue[]
 
   @Column()
   productId: number
 
-  @ManyToOne(() => Product)
+  @ManyToOne(() => Product, (product) => product.offers, { onDelete: 'CASCADE' })
   product: Product
 }

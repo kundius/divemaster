@@ -57,13 +57,13 @@ export class Product {
   @JoinTable({ name: 'category_products' })
   categories: Category[]
 
-  @OneToMany(() => ProductImage, (image) => image.product)
+  @OneToMany(() => ProductImage, (image) => image.product, { cascade: true })
   images: ProductImage[]
 
-  @OneToMany(() => OptionValue, (optionValue) => optionValue.product)
+  @OneToMany(() => OptionValue, (optionValue) => optionValue.product, { cascade: true })
   optionValues: OptionValue[]
 
-  @OneToMany(() => Offer, (offer) => offer.product)
+  @OneToMany(() => Offer, (offer) => offer.product, { cascade: true })
   offers: Offer[]
 
   @Column({ type: 'int', nullable: true })

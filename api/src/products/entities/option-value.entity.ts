@@ -20,7 +20,7 @@ export class OptionValue {
   @Column()
   productId: number
 
-  @ManyToOne(() => Product)
+  @ManyToOne(() => Product, (product) => product.optionValues, { onDelete: 'CASCADE' })
   product: Product
 
   @Column({ default: 0 })

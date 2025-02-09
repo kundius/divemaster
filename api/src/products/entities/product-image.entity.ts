@@ -13,7 +13,7 @@ export class ProductImage {
   @ManyToOne(() => File)
   file: File
 
-  @ManyToOne(() => Product, (product) => product.images)
+  @ManyToOne(() => Product, (product) => product.images, { onDelete: 'CASCADE' })
   product: Product
 
   @Column({ default: 0 })

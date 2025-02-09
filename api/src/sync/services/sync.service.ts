@@ -123,7 +123,7 @@ export class SyncService {
     private configService: ConfigService
   ) {}
 
-  takeProduct = 50
+  takeProduct = 100
 
   async findAllTask(dto: FindAllSyncTaskDto) {
     const where: FindOptionsWhere<SyncTask> = {}
@@ -173,7 +173,7 @@ export class SyncService {
   }
 
   // данные из файлов перенести в промежуточную базу
-  @Cron(CronExpression.EVERY_5_SECONDS)
+  @Cron(CronExpression.EVERY_SECOND)
   async prepareTask() {
     const tasks = await this.syncTaskRepository.find({
       where: { status: SyncTaskStatus.INITIALIZATION }
@@ -376,7 +376,7 @@ export class SyncService {
   }
 
   // обновить товары данными из промежуточной таблицы
-  @Cron(CronExpression.EVERY_5_SECONDS)
+  @Cron(CronExpression.EVERY_SECOND)
   async syncTask() {
     const task = await this.syncTaskRepository.findOne({
       where: { status: SyncTaskStatus.SYNCHRONIZATION }
@@ -433,17 +433,20 @@ export class SyncService {
         } catch {}
         let rank = 0
         for (const image of images) {
-          rank++
-          const filePath = join(String(product.id), basename(image))
-          const file = await this.storageService.createFromPath(image, filePath)
-          const productImage = new ProductImage()
-          productImage.rank = rank
-          productImage.file = file
-          productImage.product = product
-          await this.productImageRepository.save(productImage)
-          if (!categoryImage) {
-            categoryImage = file
-          }
+          // если по какой-то причине картинка не добавляется- пропускаем
+          try {
+            rank++
+            const filePath = join(String(product.id), basename(image))
+            const file = await this.storageService.createFromPath(image, filePath)
+            const productImage = new ProductImage()
+            productImage.rank = rank
+            productImage.file = file
+            productImage.product = product
+            await this.productImageRepository.save(productImage)
+            if (!categoryImage) {
+              categoryImage = file
+            }
+          } catch {}
         }
 
         // Связать с существующими или новыми категориями.
@@ -492,7 +495,8 @@ export class SyncService {
 
       // Связать с существующими или новыми опциями и их значениями.
       // Опции искать по ключу _или_ названию, чтобы гарантировать уникальность ключа.
-      const optionValuesForOffers = {}
+      // Только добавляем новые, существующие не меняем.
+      const optionValuesForOffers: Record<string, Record<string, OptionValue>> = {}
       let options: Record<string, string[]> = {}
       try {
         options = JSON.parse(data.options) as unknown as typeof options
@@ -528,7 +532,7 @@ export class SyncService {
             optionValue.rank = k
             await this.optionValueRepository.save(optionValue)
           }
-          optionValuesForOffers[caption][content] = optionValue.id
+          optionValuesForOffers[caption][content] = optionValue
         }
       }
 
@@ -540,6 +544,7 @@ export class SyncService {
       //
       // в п.4 проверка remoteId необходима, чтобы не удалить торг. предл. добавленные через админку вручную
       // при этом в случае сходства параметров вручную добавленные обновятся и приобретут remoteId
+      const changedOfferIds: number[] = []
       let offers: {
         price: number
         remoteId: string
@@ -549,59 +554,88 @@ export class SyncService {
       try {
         offers = JSON.parse(data.offers) as unknown as typeof offers
       } catch {}
+      let ii = 0
       for (const offerData of offers) {
-        const optionValueIds = Object.entries(offerData.options).map(
+        ii++
+        const optionValues = Object.entries(offerData.options).map(
           ([caption, content]) => optionValuesForOffers[caption][content]
         )
-        let offer = await this.offerRepository
+        const optionValueIds = optionValues.map((optionValue) => optionValue.id)
+        const qb = this.offerRepository
           .createQueryBuilder('offer')
-          .where((qb) => {
+          .leftJoinAndSelect('offer.product', 'product')
+          .leftJoinAndSelect('offer.optionValues', 'optionValues')
+          .setParameter('optionValueIds', optionValueIds)
+          .setParameter('optionValueCount', optionValueIds.length)
+        qb.where('product.id = :productId', { productId: product.id })
+        if (optionValueIds.length > 0) {
+          qb.andWhere((qb) => {
             const subQuery = qb
               .subQuery()
               .select('1')
               .from(OptionValue, 'v')
               .innerJoin('v.offers', 'o')
               .where('o.id = offer.id')
-            if (optionValueIds.length > 0) {
-              subQuery.andWhere('v.id NOT IN (:...optionValueIds)')
-            }
-            return `NOT EXISTS ${subQuery.getQuery()}`
+              .andWhere('v.id IN (:...optionValueIds)')
+            return `EXISTS ${subQuery.getQuery()}`
           })
-          .setParameter('optionValueIds', optionValueIds)
-          .getOne()
+        }
+        qb.groupBy('offer.id')
+        qb.having('COUNT(optionValues.id) = :optionValueCount')
+
+        let offer = await qb.getOne()
+
         if (!offer) {
           offer = new Offer()
+          offer.optionValues = optionValues
+          offer.product = product
+          offer.rank = ii
           offer.title = offerData.name
-          await this.offerRepository.save(offer)
-          await this.offerRepository
-            .createQueryBuilder('offer')
-            .relation(OptionValue, 'OptionValues')
-            .of(offer.id)
-            .add(optionValueIds)
         }
+
         offer.remoteId = offerData.remoteId // для обновления добавленных вручную офферов
         offer.price = offerData.price
+
         await this.offerRepository.save(offer)
+
+        changedOfferIds.push(offer.id)
       }
+      // Удалить торг. предл. ранеее загруженные их выгрузки и теперь в ней отсутствующие
       await this.offerRepository.delete({
-        remoteId: And(Not(In(offers.map((item) => item.remoteId))), Not(IsNull()))
+        remoteId: Not(IsNull()),
+        id: Not(In(changedOfferIds)),
+        productId: product.id
       })
     }
 
     // изменить статус в конце, чтобы дождаться окончания этой задачи
+    // также выполнить завершающие действия
     if (task.offset === task.total) {
-      task.status = SyncTaskStatus.SUCCESS
-      await this.syncTaskRepository.save(task)
+      // удалить товары, которых нет в выгрузке и которые не были добавлены вручную
+      const rawProducts = await this.productRepository
+        .createQueryBuilder('product')
+        .select('id')
+        .where('product.remoteId NOT NULL')
+        .andWhere((qb) => {
+          const subQuery = qb
+            .subQuery()
+            .select('1')
+            .from(SyncProduct, 'p')
+            .andWhere('p.remoteId = product.remoteId')
+          return `NOT EXISTS ${subQuery.getQuery()}`
+        })
+        .getRawMany()
+      await this.productRepository.delete({ id: In(rawProducts.map((item) => item.id)) })
+
       // удалить файлы
       const syncDir = join(this.configService.get('LOCAL_STORAGE_PATH', ''), 'sync', task.uuid)
       rmSync(syncDir, { recursive: true, force: true })
+
       // удалить товары задачи
       await this.syncProductRepository.delete({ syncTaskId: task.id })
-    }
 
-    // удалить или деактивировать товары, которых нет в выгрузке и у которыхз есть ремотИд
-    // !!! судя по админке категории не приписало (наверное потому что товары добавились до того как я исправил ошибку)
-    // офферы тоже не добавились, возможно потому что товар добавился до исправления ошибки
-    // удалить все и попробовать заново импорт, потом искать что не так
+      task.status = SyncTaskStatus.SUCCESS
+      await this.syncTaskRepository.save(task)
+    }
   }
 }

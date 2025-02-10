@@ -36,14 +36,14 @@ export function Headline({
         </div>
       )}
       <div className={css.titleContainer}>
-        <div
+        <h1
           className={cn(css.title, {
             // [css.titleSingle]: title.split(' ').length === 1
             [css.titleSingle]: title.length < 20
           })}
         >
           {title}
-        </div>
+        </h1>
         {description && <div className={css.description}>{description}</div>}
         {actions && <div className={css.actions}>{actions}</div>}
       </div>

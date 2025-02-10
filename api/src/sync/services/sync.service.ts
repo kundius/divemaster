@@ -123,7 +123,7 @@ export class SyncService {
     private configService: ConfigService
   ) {}
 
-  takeProduct = 100
+  takeProduct = 20
 
   async findAllTask(dto: FindAllSyncTaskDto) {
     const where: FindOptionsWhere<SyncTask> = {}

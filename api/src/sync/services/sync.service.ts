@@ -211,15 +211,15 @@ export class SyncService {
           'Товар'
         ]) {
           const product: Record<string, string | null | number> = {
-            remoteId: rawProduct['Ид'],
-            sku: rawProduct['Артикул'],
-            name: rawProduct['Наименование'],
-            description: rawProduct['Описание'],
-            brand: null,
-            categories: null,
-            images: null,
-            offers: null,
-            options: null,
+            remoteId: rawProduct['Ид'] || '',
+            sku: rawProduct['Артикул'] || '',
+            name: rawProduct['Наименование'] || '',
+            description: rawProduct['Описание'] || '',
+            brand: '',
+            categories: '',
+            images: '',
+            offers: '',
+            options: '',
             syncTaskId: task.id
           }
 
@@ -418,12 +418,14 @@ export class SyncService {
         await this.productRepository.save(product)
 
         // связать с существующим или новым брендом
-        let brand = await this.brandRepository.findOneBy({ title: data.brand })
-        if (!brand) {
-          brand = new Brand()
-          brand.title = data.brand
+        if (data.brand) {
+          let brand = await this.brandRepository.findOneBy({ title: data.brand })
+          if (!brand) {
+            brand = new Brand()
+            brand.title = data.brand
+          }
+          product.brand = brand
         }
-        product.brand = brand
 
         // загрузить и привязать картинки, запомнить первую для добавления категории
         let categoryImage: File | null = null

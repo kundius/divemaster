@@ -369,7 +369,7 @@ export class SyncService {
         await this.syncTaskRepository.save(task)
       } catch (e) {
         task.status = SyncTaskStatus.ERROR
-        task.statusMessage = `Не подготовить товары к синхронизации`
+        task.statusMessage = `Не удалось подготовить товары к синхронизации. Ошибка: ${e.message}`
         await this.syncTaskRepository.save(task)
       }
     }

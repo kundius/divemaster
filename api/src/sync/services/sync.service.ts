@@ -1,39 +1,37 @@
+import { slugify } from '@/lib/utils'
+import { Brand } from '@/products/entities/brand.entity'
+import { Category } from '@/products/entities/category.entity'
+import { Offer } from '@/products/entities/offer.entity'
+import { OptionValue } from '@/products/entities/option-value.entity'
+import { Option, OptionType } from '@/products/entities/option.entity'
+import { ProductImage } from '@/products/entities/product-image.entity'
+import { Product } from '@/products/entities/product.entity'
+import { CategoriesService } from '@/products/services/categories.service'
+import { ProductsService } from '@/products/services/products.service'
+import { File } from '@/storage/entities/file.entity'
+import { StorageService } from '@/storage/services/storage.service'
 import { BadRequestException, Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { InjectRepository } from '@nestjs/typeorm'
 import * as AdmZip from 'adm-zip'
 import { XMLParser } from 'fast-xml-parser'
-import { copyFileSync, mkdirSync, rmSync } from 'fs'
+import { mkdirSync, rmSync } from 'fs'
 import { readFile } from 'fs/promises'
-import { basename, extname, join } from 'path'
+import { basename, join } from 'path'
 import {
-  And,
   FindOptionsOrder,
   FindOptionsRelations,
   FindOptionsWhere,
   In,
   IsNull,
   Not,
-  Raw,
   Repository
 } from 'typeorm'
 import { v4 as uuidv4 } from 'uuid'
 import { FindAllSyncTaskDto } from '../dto/sync.dto'
 import { SyncProduct } from '../entities/sync-product.entity'
 import { SyncTask, SyncTaskStatus } from '../entities/sync-task.entity'
-import { Product } from '@/products/entities/product.entity'
-import { ProductsService } from '@/products/services/products.service'
-import { StorageService } from '@/storage/services/storage.service'
-import { ProductImage } from '@/products/entities/product-image.entity'
-import { ConfigService } from '@nestjs/config'
-import { Category } from '@/products/entities/category.entity'
-import { CategoriesService } from '@/products/services/categories.service'
-import { File } from '@/storage/entities/file.entity'
-import { Brand } from '@/products/entities/brand.entity'
-import { Option, OptionType } from '@/products/entities/option.entity'
-import { OptionValue } from '@/products/entities/option-value.entity'
-import { slugify } from '@/lib/utils'
-import { Offer } from '@/products/entities/offer.entity'
 
 const swap = (json) => {
   var ret = {}
@@ -375,6 +373,7 @@ export class SyncService {
     }
   }
 
+  // TODO: реализовать подсчет количества добавленных, обновленных и пропущенных товаров
   // обновить товары данными из промежуточной таблицы
   @Cron(CronExpression.EVERY_SECOND)
   async syncTask() {
@@ -382,19 +381,16 @@ export class SyncService {
       where: { status: SyncTaskStatus.SYNCHRONIZATION }
     })
 
-    if (!task) return
+    if (!task || task.busy) return
 
-    const skip = task.offset
-
-    // ограничить смещение общим количеством
-    // сохранить сразу, чтобы паралельная задача не брала эти товары
-    task.offset = Math.min(task.offset + this.takeProduct, task.total)
+    // сделать таску занятой чтобы не выполнять паралельного импорта
+    task.busy = true
     await this.syncTaskRepository.save(task)
 
     const products = await this.syncProductRepository.find({
       where: { syncTaskId: task.id },
       take: this.takeProduct,
-      skip
+      skip: task.offset
     })
 
     for (const data of products) {
@@ -610,8 +606,13 @@ export class SyncService {
       })
     }
 
-    // изменить статус в конце, чтобы дождаться окончания этой задачи
-    // также выполнить завершающие действия
+    // добавить смещение ограниченное общим количеством
+    task.offset = Math.min(task.offset + this.takeProduct, task.total)
+
+    // сделать таску готовой к работе
+    task.busy = false
+
+    // если это были последние товары, то выполнить завершающие действия
     if (task.offset === task.total) {
       // удалить товары, которых нет в выгрузке и которые не были добавлены вручную
       const rawProducts = await this.productRepository
@@ -637,7 +638,9 @@ export class SyncService {
       await this.syncProductRepository.delete({ syncTaskId: task.id })
 
       task.status = SyncTaskStatus.SUCCESS
-      await this.syncTaskRepository.save(task)
     }
+
+    // сохранить задачу в самом конце чтобы она не пошла в следующую итерацию раньше времени
+    await this.syncTaskRepository.save(task)
   }
 }

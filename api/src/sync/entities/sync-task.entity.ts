@@ -41,6 +41,9 @@ export class SyncTask {
   @Column({ default: 0 })
   offset: number
 
+  @Column({ default: false })
+  busy: boolean
+
   @Column({ default: 0 })
   created: number
 

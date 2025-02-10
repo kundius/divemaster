@@ -140,12 +140,6 @@ export class ProductsController {
     return this.productsService.updateOffer(+offerId, dto)
   }
 
-  @Post('import')
-  @UseInterceptors(FileInterceptor('file', { storage: diskStorage({}) }))
-  async import(@UploadedFile() upload: Express.Multer.File) {
-    return this.productsService.import(upload)
-  }
-
   @Post(':id/order-by-click')
   orderByClick(@Param('id') id: string, @Body() dto: OrderByClickProductDto) {
     return this.productsService.orderByClick(+id, dto)

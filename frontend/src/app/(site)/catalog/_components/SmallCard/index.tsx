@@ -7,7 +7,7 @@ import css from './index.module.scss'
 
 export interface SmallCardProps {
   title: string
-  icon: JSX.Element
+  icon: React.ReactNode
   background: StaticImageData
   uri: string
 }

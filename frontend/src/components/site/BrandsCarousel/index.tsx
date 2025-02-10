@@ -5,6 +5,7 @@ import Autoplay from 'embla-carousel-autoplay'
 import useEmblaCarousel from 'embla-carousel-react'
 import { useMediaQuery } from 'react-responsive'
 import styles from './index.module.scss'
+import Image from 'next/image'
 
 export interface BrandsCarouselProps {
   items: {
@@ -43,7 +44,7 @@ export function BrandsCarousel({ items }: BrandsCarouselProps) {
             {items.map((item, i) => (
               <div className={styles.slide} key={i}>
                 <div className={styles.brand}>
-                  <img src={item.image} alt="" />
+                  <Image width={120} height={40} src={item.image} alt="" />
                 </div>
               </div>
             ))}

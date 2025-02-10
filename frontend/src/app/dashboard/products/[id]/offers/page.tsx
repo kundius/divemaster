@@ -8,7 +8,7 @@ export default async function Page({ params }: PageProps<{ id: number }>) {
   const product = await apiGet<ProductEntity>(
     `products/${id}`,
     { withOptions: true },
-    withServerAuth()
+    await withServerAuth()
   )
 
   const comboOptions = (product.options || []).filter((option) =>

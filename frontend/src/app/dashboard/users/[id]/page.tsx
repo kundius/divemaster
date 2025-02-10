@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default async function Page({ params }: PageProps<{ id: number }>) {
   const { id } = await params
-  const record = await apiGet<UserEntity>(`users/${id}`, {}, withServerAuth())
+  const record = await apiGet<UserEntity>(`users/${id}`, {}, await withServerAuth())
   return (
     <PageLayout title="Редактировать пользователя">
       <UserForm record={record} />

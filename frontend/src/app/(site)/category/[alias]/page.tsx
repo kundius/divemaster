@@ -20,6 +20,7 @@ import { Pagination } from './_components/Pagination'
 import { Content } from './_components/Content'
 import { Headline } from '@/components/Headline'
 import { SectionPage } from '@/components/SectionPage'
+import { Suspense } from 'react'
 
 export async function generateStaticParams() {
   const categories = await apiGet<ApiTableData<CategoryEntity>>(`categories`, {
@@ -94,7 +95,7 @@ export default async function Page({ params }: PageProps<{ alias: string }>) {
   const isParent = category.children ? category.children.length > 0 : false
 
   return (
-    <ProductsStoreProvider categoryId={category.id} favorite={isParent}>
+    <>
       <SectionPage withBreadcrumbs>
         <Headline breadcrumbs={crumbs} separator title={category.title} />
 
@@ -111,45 +112,49 @@ export default async function Page({ params }: PageProps<{ alias: string }>) {
           </div>
         )}
 
-        <div className="flex gap-x-5 mt-14">
-          <div className="w-[320px] max-xl:w-[260px] flex-shrink-0 space-y-5 max-lg:hidden">
-            {!isParent && (
-              <div className="mb-80">
-                <Filter />
+        <Suspense>
+          <ProductsStoreProvider categoryId={category.id} favorite={isParent}>
+            <div className="flex gap-x-5 mt-14">
+              <div className="w-[320px] max-xl:w-[260px] flex-shrink-0 space-y-5 max-lg:hidden">
+                {!isParent && (
+                  <div className="mb-80">
+                    <Filter />
+                  </div>
+                )}
+                <ConsultationWidget />
+                <BenefitsSideSlider
+                  items={[
+                    {
+                      content: <BenefitsSideSliderDiscount />,
+                      name: 'BenefitsSideSliderDiscount1'
+                    },
+                    {
+                      content: <BenefitsSideSliderDiscount />,
+                      name: 'BenefitsSideSliderDiscount2'
+                    },
+                    {
+                      content: <BenefitsSideSliderDiscount />,
+                      name: 'BenefitsSideSliderDiscount3'
+                    }
+                  ]}
+                />
               </div>
-            )}
-            <ConsultationWidget />
-            <BenefitsSideSlider
-              items={[
-                {
-                  content: <BenefitsSideSliderDiscount />,
-                  name: 'BenefitsSideSliderDiscount1'
-                },
-                {
-                  content: <BenefitsSideSliderDiscount />,
-                  name: 'BenefitsSideSliderDiscount2'
-                },
-                {
-                  content: <BenefitsSideSliderDiscount />,
-                  name: 'BenefitsSideSliderDiscount3'
-                }
-              ]}
-            />
-          </div>
-          <div className="w-full">
-            <div className="hidden">
-              {isParent ? (
-                <div className="mb-6 text-xl font-sans-narrow uppercase font-bold">
-                  Популярные товары
+              <div className="w-full">
+                <div className="hidden">
+                  {isParent ? (
+                    <div className="mb-6 text-xl font-sans-narrow uppercase font-bold">
+                      Популярные товары
+                    </div>
+                  ) : (
+                    <Sorting />
+                  )}
                 </div>
-              ) : (
-                <Sorting />
-              )}
+                <Products />
+                <Pagination />
+              </div>
             </div>
-            <Products />
-            <Pagination />
-          </div>
-        </div>
+          </ProductsStoreProvider>
+        </Suspense>
       </SectionPage>
       <Container>
         <Content
@@ -157,6 +162,6 @@ export default async function Page({ params }: PageProps<{ alias: string }>) {
           content={category.description || undefined}
         />
       </Container>
-    </ProductsStoreProvider>
+    </>
   )
 }

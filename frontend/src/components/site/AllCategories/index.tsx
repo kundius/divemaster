@@ -3,10 +3,8 @@ import styles from './index.module.scss'
 import Image from 'next/image'
 import Link from 'next/link'
 
-export interface AllCategoriesProps {}
-
 // TODO: картинки не адаптированы на телефоне
-export function AllCategories(props: AllCategoriesProps) {
+export function AllCategories() {
   return (
     <div className={cn(styles.root, 'gap-8 columns-3')}>
       <div className={cn(styles.group, styles.groupWeapon)}>

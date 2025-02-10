@@ -6,7 +6,7 @@ import { ProductOptions, ValuesType } from '../../_components/ProductOptions'
 export default async function Page({ params }: PageProps<{ id: number }>) {
   const { id } = await params
   const [product] = await Promise.all([
-    apiGet<ProductEntity>(`products/${id}`, { withOptions: true }, withServerAuth())
+    apiGet<ProductEntity>(`products/${id}`, { withOptions: true }, await withServerAuth())
   ])
 
   const initialValues: ValuesType = {}

@@ -20,7 +20,7 @@ const parseContent = (content?: string): string[] => {
 export function Content({ title, content }: ContentProps) {
   const renderContent = () => {
     const parsedContent = parseContent(content)
-    const output: JSX.Element[] = []
+    const output: React.ReactNode[] = []
 
     if (title) {
       output.push(

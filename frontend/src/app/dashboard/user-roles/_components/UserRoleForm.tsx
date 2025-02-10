@@ -16,7 +16,6 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { TagsInput } from '@/components/ui/tags-input'
 import { apiPatch, apiPost } from '@/lib/api'
 import { withClientAuth } from '@/lib/api/with-client-auth'
 import { UserRoleEntity } from '@/types'
@@ -103,11 +102,15 @@ export function UserRoleForm({ record }: UserRoleFormProps) {
           <FormField
             control={form.control}
             name="scope"
-            render={({ field: { value, ...field } }) => (
+            render={({ field: { value, onChange, ...field } }) => (
               <FormItem>
                 <FormLabel>Разрешения</FormLabel>
                 <FormControl>
-                  <TagsInput value={value || []} {...field} />
+                  <Input
+                    value={(value || []).join(', ')}
+                    onChange={(e) => onChange(e.target.value.split(', '))}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

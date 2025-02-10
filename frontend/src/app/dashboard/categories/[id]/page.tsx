@@ -16,7 +16,7 @@ export default async function Page({ params }: PageProps<{ id: number }>) {
       withContent: true,
       withParent: true
     },
-    withServerAuth()
+    await withServerAuth()
   )
   return <CategoriesEditPage initialData={initialData} />
 }

@@ -42,7 +42,6 @@ export function EditorInput({ placeholder, value, onChange }: EditorInputProps) 
         }
       })
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

@@ -187,7 +187,6 @@ export function ProductGallery(props: ProductGalleryProps) {
 
   useEffect(() => {
     fetch()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -199,7 +198,6 @@ export function ProductGallery(props: ProductGalleryProps) {
       })
       apiPut(url, { files: _files })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items, sorted])
 
   const url = `products/${productId}/images`

@@ -19,7 +19,7 @@ export function FilterOptions({ filter, onSelect, selected = [] }: FilterOptions
   const [contentWidth, contentHeight] = useElementSize(refContent, { box: 'border-box' })
 
   const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    let set = new Set(selected)
+    const set = new Set(selected)
     if (e.target.checked) {
       set.add(e.target.value)
     } else {

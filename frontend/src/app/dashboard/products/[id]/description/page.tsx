@@ -8,7 +8,7 @@ export default async function Page({ params }: PageProps<{ id: number }>) {
   const initialData = await apiGet<ProductEntity>(
     `products/${id}`,
     { withContent: true },
-    withServerAuth()
+    await withServerAuth()
   )
 
   return <ProductDescription initialData={initialData} />

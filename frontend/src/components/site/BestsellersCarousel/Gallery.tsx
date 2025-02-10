@@ -27,7 +27,6 @@ export function Gallery({ items, startIndex, onChangeIndex, showNav }: GalleryPr
     emblaApi.on('select', (emblaApi: EmblaCarouselType) => {
       onChangeIndex(emblaApi.selectedScrollSnap())
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [emblaApi])
 
   return (

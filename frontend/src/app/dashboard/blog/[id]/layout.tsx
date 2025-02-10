@@ -3,6 +3,7 @@ import { PropsWithChildren } from 'react'
 
 import { PageLayout } from '@/components/admin/PageLayout'
 import { VerticalNav } from '@/components/VerticalNav'
+import { PageProps } from '@/types'
 
 export const metadata: Metadata = {
   title: 'Редактировать пост'
@@ -11,15 +12,19 @@ export const metadata: Metadata = {
 export default async function Page({
   children,
   params
-}: PropsWithChildren<{ params: { id: string } }>) {
+}: {
+  children: React.ReactNode,
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
   const items = [
     {
       title: 'Свойства',
-      href: `/dashboard/blog/${params.id}`
+      href: `/dashboard/blog/${id}`
     },
     {
       title: 'Метаданные',
-      href: `/dashboard/blog/${params.id}/metadata`
+      href: `/dashboard/blog/${id}/metadata`
     }
   ]
   return (

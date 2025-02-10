@@ -80,7 +80,6 @@ export function BenefitsSlider(props: BenefitsSliderProps) {
     setTweenFactor(emblaApi)
     tweenOpacity(emblaApi)
     emblaApi.on('reInit', setTweenFactor).on('reInit', tweenOpacity).on('scroll', tweenOpacity)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [emblaApi, tweenOpacity])
 
   return (

@@ -29,7 +29,7 @@ export function StaticPagination(props: StaticPaginationProps) {
   } = props
 
   const pageUrl = (value: number) => {
-    let params = new URLSearchParams()
+    const params = new URLSearchParams()
     Object.entries(searchParams).forEach(([k, v]) => {
       if (typeof v === 'undefined') return
       if (Array.isArray(v)) {

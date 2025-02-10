@@ -5,7 +5,7 @@ import { ProductUpdate } from '../_components/ProductUpdate'
 
 export default async function Page({ params }: PageProps<{ id: number }>) {
   const { id } = await params
-  const initialData = await apiGet<ProductEntity>(`products/${id}`, {}, withServerAuth())
+  const initialData = await apiGet<ProductEntity>(`products/${id}`, {}, await withServerAuth())
 
   return <ProductUpdate initialData={initialData} />
 }

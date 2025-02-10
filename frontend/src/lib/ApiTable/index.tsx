@@ -112,7 +112,7 @@ export function useApiTable<TRow extends unknown>({
 
       if (values) {
         for (const fieldName of Object.keys(values)) {
-          let value = values[fieldName as keyof typeof values]
+          const value = values[fieldName as keyof typeof values]
           if (typeof value === 'undefined') {
             params.delete(fieldName)
           } else if (Array.isArray(value)) {

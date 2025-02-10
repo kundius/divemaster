@@ -7,18 +7,22 @@ export const metadata: Metadata = {
   title: 'Редактировать параметр'
 }
 
-export default function Layout({
+export default async function Layout({
   children,
   params
-}: PropsWithChildren<{ params: { id: string } }>) {
+}: {
+  children: React.ReactNode
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
   const items = [
     {
       title: 'Свойства',
-      href: `/dashboard/options/${params.id}`
+      href: `/dashboard/options/${id}`
     },
     {
       title: 'Категории',
-      href: `/dashboard/options/${params.id}/categories`
+      href: `/dashboard/options/${id}/categories`
     }
   ]
   return (

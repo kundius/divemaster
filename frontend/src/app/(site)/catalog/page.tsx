@@ -26,13 +26,14 @@ import { CategoryEntity } from '@/types'
 import Link from 'next/link'
 import { SmallCard } from './_components/SmallCard'
 import { arrayToTree } from '@/lib/utils'
+import { Suspense } from 'react'
 
 export default async function Page() {
   const data = await apiGet<ApiTableData<CategoryEntity>>(`categories`, {
     limit: 100,
     active: true
   })
-  
+
   const categories = arrayToTree<CategoryEntity>(data.rows)
 
   const spearfishing = categories.find((item) => item.alias === 'vsyo-dlya-podvodnoj-ohoty')
@@ -47,7 +48,7 @@ export default async function Page() {
   ]
 
   return (
-    <ProductsStoreProvider>
+    <>
       <SectionPage withBreadcrumbs>
         <Headline breadcrumbs={crumbs} separator title="Каталог" />
 
@@ -317,34 +318,38 @@ export default async function Page() {
           </div> */}
         </div>
 
-        <div className="flex gap-x-5 mt-14 max-md:mt-8">
-          <div className="w-[320px] max-xl:w-[260px] flex-shrink-0 space-y-5 max-lg:hidden">
-            <ConsultationWidget />
-            <BenefitsSideSlider
-              items={[
-                {
-                  content: <BenefitsSideSliderDiscount />,
-                  name: 'BenefitsSideSliderDiscount1'
-                },
-                {
-                  content: <BenefitsSideSliderDiscount />,
-                  name: 'BenefitsSideSliderDiscount2'
-                },
-                {
-                  content: <BenefitsSideSliderDiscount />,
-                  name: 'BenefitsSideSliderDiscount3'
-                }
-              ]}
-            />
-          </div>
-          <div className="w-full">
-            <div className="mb-6 text-xl font-sans-narrow uppercase font-bold">
-              Популярные товары
+        <Suspense>
+          <ProductsStoreProvider>
+            <div className="flex gap-x-5 mt-14 max-md:mt-8">
+              <div className="w-[320px] max-xl:w-[260px] flex-shrink-0 space-y-5 max-lg:hidden">
+                <ConsultationWidget />
+                <BenefitsSideSlider
+                  items={[
+                    {
+                      content: <BenefitsSideSliderDiscount />,
+                      name: 'BenefitsSideSliderDiscount1'
+                    },
+                    {
+                      content: <BenefitsSideSliderDiscount />,
+                      name: 'BenefitsSideSliderDiscount2'
+                    },
+                    {
+                      content: <BenefitsSideSliderDiscount />,
+                      name: 'BenefitsSideSliderDiscount3'
+                    }
+                  ]}
+                />
+              </div>
+              <div className="w-full">
+                <div className="mb-6 text-xl font-sans-narrow uppercase font-bold">
+                  Популярные товары
+                </div>
+                <Products />
+                <Pagination />
+              </div>
             </div>
-            <Products />
-            <Pagination />
-          </div>
-        </div>
+          </ProductsStoreProvider>
+        </Suspense>
       </SectionPage>
       <Container>
         <Content
@@ -371,6 +376,6 @@ export default async function Page() {
           `}
         />
       </Container>
-    </ProductsStoreProvider>
+    </>
   )
 }

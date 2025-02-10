@@ -25,7 +25,7 @@ const RootContext = createContext<{
 
 const ItemContext = createContext<{
   name: string
-  ref: RefObject<HTMLDivElement>
+  ref: RefObject<HTMLDivElement | null>
 } | null>(null)
 
 interface VerticalMenuProps {
@@ -46,9 +46,7 @@ export function VerticalMenu({
   )
 }
 
-interface VerticalMenuListProps {}
-
-export function VerticalMenuList({ children }: PropsWithChildren<VerticalMenuListProps>) {
+export function VerticalMenuList({ children }: PropsWithChildren) {
   const contentRef = useRef<HTMLDivElement>(null)
 
   const [height, setHeight] = useState(0)

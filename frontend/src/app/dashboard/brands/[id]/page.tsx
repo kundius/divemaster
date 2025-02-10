@@ -10,6 +10,6 @@ export const metadata: Metadata = {
 
 export default async function Page({ params }: PageProps<{ id: number }>) {
   const { id } = await params
-  const initialData = await apiGet<BrandEntity>(`brands/${id}`, {}, withServerAuth())
+  const initialData = await apiGet<BrandEntity>(`brands/${id}`, {}, await withServerAuth())
   return <BrandsUpdatePage initialData={initialData} />
 }

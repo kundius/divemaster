@@ -26,7 +26,7 @@ interface PointsQueryState {
 const PointsQueryContext = createContext<PointsQueryState | undefined>(undefined)
 
 export function PointsQuery({ children }: PropsWithChildren) {
-  const mapRef = useRef<any>()
+  const mapRef = useRef<any>(null)
   const [selected, setSelected] = useState<PickupPointEntity | null>(null)
   const city = useLocationStore((state) => state.city)
 

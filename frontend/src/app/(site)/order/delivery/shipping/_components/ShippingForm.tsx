@@ -43,7 +43,7 @@ export function ShippingForm() {
   })
 
   function onSubmit(values: ShippingFormFields) {
-    let tmp = [values.city, values.street, values.house]
+    const tmp = [values.city, values.street, values.house]
 
     if (values.apartment) {
       tmp.push(`кв/офис ${values.apartment}`)

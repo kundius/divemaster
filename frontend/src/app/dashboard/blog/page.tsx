@@ -17,7 +17,7 @@ export default async function Page({ searchParams }: PageProps) {
   const fallbackData = await apiGet<FindAllResult<BlogPostEntity>>(
     'blog/post',
     await searchParams,
-    withServerAuth()
+    await withServerAuth()
   )
 
   const actions = [

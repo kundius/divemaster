@@ -28,7 +28,7 @@ export default async function Page({ searchParams }: PageProps) {
       limit: 10,
       page
     },
-    withServerAuth()
+    await withServerAuth()
   )
   return (
     <PageLayout title="Заказы">

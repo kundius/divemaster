@@ -22,7 +22,7 @@ export default async function Page() {
           title="Приходите в магазин"
           icon={<SpriteIcon name="contacts-marker" className="w-10 h-10 ml-0.5 mt-1.5" />}
         >
-          г. Воронеж, ул. 20 лет Октября 123, ТЦ&nbsp;"Европа", 4&nbsp;этаж
+          г. Воронеж, ул. 20 лет Октября 123, ТЦ&nbsp;&ldquo;Европа&rdquo;, 4&nbsp;этаж
         </Group>
         <Group
           title="Напишите нам в соцсетях"

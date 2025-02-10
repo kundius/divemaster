@@ -7,7 +7,7 @@ import {
   defaultProductsStore
 } from '@/stores/products-store'
 import { parseAsInteger, parseAsString, useQueryStates } from 'nuqs'
-import { type ReactNode, createContext, useContext, useEffect, useRef, useState } from 'react'
+import { type ReactNode, Suspense, createContext, useContext, useEffect, useRef, useState } from 'react'
 import { useStore } from 'zustand'
 
 export type ProductStoreApi = ReturnType<typeof createProductsStore>

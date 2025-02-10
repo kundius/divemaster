@@ -42,7 +42,7 @@ export function PaymentContainer({ hash }: PaymentContainerProps) {
     )
   }
 
-  const renderPaid = (): JSX.Element | null => {
+  const renderPaid = (): React.ReactNode | null => {
     if (!data.payment) {
       throw new Error('payment not defined')
     }
@@ -56,7 +56,7 @@ export function PaymentContainer({ hash }: PaymentContainerProps) {
     }
   }
 
-  const renderPayment = (): JSX.Element | null => {
+  const renderPayment = (): React.ReactNode | null => {
     if (!data.payment) {
       throw new Error('payment not defined')
     }

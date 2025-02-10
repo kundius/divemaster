@@ -7,42 +7,46 @@ export const metadata: Metadata = {
   title: 'Редактировать товар'
 }
 
-export default function Layout({
+export default async function Layout({
   children,
   params
-}: PropsWithChildren<{ params: { id: string } }>) {
+}: {
+  children: React.ReactNode
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
   const items = [
     {
       title: 'Свойства',
-      href: `/dashboard/products/${params.id}`
+      href: `/dashboard/products/${id}`
     },
     {
       title: 'Описание',
-      href: `/dashboard/products/${params.id}/description`
+      href: `/dashboard/products/${id}/description`
     },
     {
       title: 'Категории',
-      href: `/dashboard/products/${params.id}/categories`
+      href: `/dashboard/products/${id}/categories`
     },
     {
       title: 'Галерея',
-      href: `/dashboard/products/${params.id}/gallery`
+      href: `/dashboard/products/${id}/gallery`
     },
     {
       title: 'Характеристики',
-      href: `/dashboard/products/${params.id}/options`
+      href: `/dashboard/products/${id}/options`
     },
     // {
     //   title: 'Отзывы',
-    //   href: `/dashboard/products/${params.id}/reviews`
+    //   href: `/dashboard/products/${id}/reviews`
     // },
     // {
     //   title: 'Связи',
-    //   href: `/dashboard/products/${params.id}/links`
+    //   href: `/dashboard/products/${id}/links`
     // },
     {
       title: 'Торговые предложения',
-      href: `/dashboard/products/${params.id}/offers`
+      href: `/dashboard/products/${id}/offers`
     }
   ]
   return (

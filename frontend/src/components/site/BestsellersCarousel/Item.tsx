@@ -24,7 +24,7 @@ export function Item(props: ItemProps) {
   const [galleryShowNav, setGalleryShowNav] = useState(false)
   const [thumbIndex, setThumbIndex] = useState(0)
   const [startIndex, setStartIndex] = useState(0)
-  const showGalleryTimer = useRef<ReturnType<typeof setTimeout>>()
+  const showGalleryTimer = useRef<ReturnType<typeof setTimeout>>(null)
 
   const handleMouseEnter = () => {
     if (showGalleryTimer.current) {

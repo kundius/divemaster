@@ -7,7 +7,7 @@ import css from './index.module.scss'
 
 export interface BigCardProps {
   title: string
-  icon: JSX.Element
+  icon: React.ReactNode
   items: {
     title: string
     uri: string

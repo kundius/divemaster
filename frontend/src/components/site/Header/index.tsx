@@ -104,7 +104,7 @@ export function Header() {
         </Container>
       </div>
       <Sticky>
-        <Garland />
+{/*         <Garland /> */}
         <Container>
           <div className={styles['primary-container']} data-header-primary="">
             <div className={styles.logo}>

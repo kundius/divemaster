@@ -68,7 +68,7 @@ export function Delivery() {
         <TabMarker
           items={[
             { title: 'Самовывоз', name: DeliveryService.Pickup },
-            { title: 'Доставка', name: DeliveryService.Shipping }
+            { title: 'Курьером', name: DeliveryService.Shipping }
           ]}
           selected={orderState.delivery.service}
         />

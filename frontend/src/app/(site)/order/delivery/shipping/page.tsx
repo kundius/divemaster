@@ -20,8 +20,8 @@ export default function Page() {
         </div>
         <TabMarker
           items={[
-            { title: 'Самовывоз', name: DeliveryService.Pickup },
-            { title: 'Доставка', name: DeliveryService.Shipping }
+            { title: 'Самовывоз', name: DeliveryService.Pickup, href: '/order/delivery/pickup' },
+            { title: 'Курьером', name: DeliveryService.Shipping }
           ]}
           size="lg"
           selected={DeliveryService.Shipping}

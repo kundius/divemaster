@@ -40,8 +40,8 @@ export function Delivery() {
             action="/order/delivery/pickup"
           />
           <MethodCard
-            title="Доставка"
-            description="Курьером до вашей двери"
+            title="Курьером"
+            description="Доставка до вашей двери"
             icon={<SpriteIcon name="delivery" size={40} />}
             action="/order/delivery/shipping"
           />

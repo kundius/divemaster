@@ -1,25 +1,32 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-
 import { SpriteIcon } from '@/components/SpriteIcon'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { cn } from '@/lib/utils'
 import { useOrderStore } from '@/providers/order-store-provider'
 import { DeliveryService } from '@/types'
-
 import { PointsDetails } from './PointsDetails'
 import { PointsItem } from './PointsItem'
 import { usePointsQuery } from './PointsQuery'
-import { TabMarker } from '@/components/TabMarker'
-import { Headline } from '@/components/Headline'
+import { useLocationStore } from '@/providers/location-store-provider'
+import { CitySelectForm, CitySelectFormProps } from '@/components/site/Header/CitySelectForm'
+import { useState } from 'react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { MapPinIcon } from '@heroicons/react/24/outline'
 
 export function PointsList() {
   const orderState = useOrderStore((state) => state)
   const router = useRouter()
   const { loading, rows, coverage, selected, setSelected } = usePointsQuery()
+
+  const locationStore = useLocationStore((state) => state)
+  const [showCitySelect, setShowCitySelect] = useState(false)
+  const changeLocationHandler: CitySelectFormProps['onChangeLocation'] = (city) => {
+    locationStore.changeCity(city)
+    setShowCitySelect(false)
+  }
 
   const renderContent = () => {
     if (loading) {
@@ -93,22 +100,37 @@ export function PointsList() {
   }
 
   return (
-    <>
-      <div className="mb-6">
-        <Headline
-          title="Способ получения"
-          back={{ action: selected ? () => setSelected(null) : '/order', title: 'Назад' }}
-        />
-      </div>
-      <TabMarker
-        items={[
-          { title: 'Самовывоз', name: DeliveryService.Pickup },
-          { title: 'Доставка', name: DeliveryService.Shipping }
-        ]}
-        size="lg"
-        selected={DeliveryService.Pickup}
-      />
-      <div className="mt-6 flex-grow overflow-auto">{renderContent()}</div>
-    </>
+    <div className='mt-6 space-y-6'>
+      {locationStore.hasHydrated ? (
+        <Skeleton className="w-full h-[16px] rounded bg-neutral-50/50" />
+      ) : (
+        <div className='flex items-center justify-between'>
+          <div className='flex items-center gap-2'>
+            <div className='text-base text-neutral-500'>Ваш город:</div>
+            <div className="text-base font-medium">{locationStore.city.name}</div>
+          </div>
+          <Dialog open={showCitySelect} onOpenChange={setShowCitySelect}>
+            <DialogTrigger asChild>
+              <button className='group font-sans-narrow inline-flex gap-1 items-center text-primary uppercase font-bold text-sm tracking-wide'>
+                <MapPinIcon className='w-4 h-4' />
+                <span className='border-b border-transparent group-hover:order-primary'>
+                  Выбрать
+                </span>
+              </button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[960px]">
+              <DialogHeader>
+                <DialogTitle>Ваш город</DialogTitle>
+              </DialogHeader>
+              <CitySelectForm
+                onChangeLocation={changeLocationHandler}
+                initialCity={locationStore.city}
+              />
+            </DialogContent>
+          </Dialog>
+        </div>
+      )}
+      <div className="flex-grow overflow-auto">{renderContent()}</div>
+    </div>
   )
 }

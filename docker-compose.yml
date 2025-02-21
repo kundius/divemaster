@@ -20,6 +20,7 @@ services:
     environment:
       - PMA_ARBITRARY=1
       - TZ=${TZ:-Europe/Moscow}
+      - UPLOAD_LIMIT=300M
     depends_on:
       - db
 

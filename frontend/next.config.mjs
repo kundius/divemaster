@@ -23,6 +23,14 @@ const nextConfig = {
         hostname: 'api.divermaster.ru'
       },
       {
+        protocol: 'https',
+        hostname: 'musical-acorn-j7xwwrw79pfjpq-10001.app.github.dev'
+      },
+      {
+        protocol: 'https',
+        hostname: 'musical-acorn-j7xwwrw79pfjpq-10002.app.github.dev'
+      },
+      {
         protocol: 'http',
         hostname: '127.0.0.1',
         port: '8080'

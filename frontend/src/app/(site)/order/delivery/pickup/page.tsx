@@ -1,9 +1,7 @@
 import { Metadata } from 'next'
-
 import { Headline } from '@/components/Headline'
 import { TabMarker } from '@/components/TabMarker'
 import { DeliveryService } from '@/types'
-
 import { Layout, LayoutContent, LayoutMap } from './_components/Layout'
 import { PointsList } from './_components/PointsList'
 import { PointsMap } from './_components/PointsMap'
@@ -18,6 +16,20 @@ export default function Page() {
     <PointsQuery>
       <Layout>
         <LayoutContent>
+          <div className="mb-6">
+            <Headline
+              title="Способ получения"
+              back={{ action: '/order', title: 'Назад' }}
+            />
+          </div>
+          <TabMarker
+            items={[
+              { title: 'Самовывоз', name: DeliveryService.Pickup },
+              { title: 'Курьером', name: DeliveryService.Shipping, href: '/order/delivery/shipping' }
+            ]}
+            size="lg"
+            selected={DeliveryService.Pickup}
+          />
           <PointsList />
         </LayoutContent>
         <LayoutMap>

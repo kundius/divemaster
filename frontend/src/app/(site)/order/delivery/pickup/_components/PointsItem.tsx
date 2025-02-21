@@ -23,39 +23,27 @@ export function PointsItem({ entity, onOpen, onSelect, open = false }: PointsIte
         </div>
         <div className={css.description}>{entity.note}</div>
         <div className={css.timetable}>{entity.workTime}</div>
-      </div>
-
-      <div className="min-h-full flex flex-col">
-        <div className="pt-4">
-          <div className={css.labels}>
-            {entity.haveCash && <div className={css.label}>Принимают наличные</div>}
-            {entity.haveCashless && <div className={css.label}>Принимают карты</div>}
-            {entity.allowedCod && <div className={css.label}>Наложенный платеж</div>}
-            {entity.isReception && <div className={css.label}>Приём заказов</div>}
-            {entity.isDressingRoom && <div className={css.label}>Примерка</div>}
+        {open && (
+          <div className="mt-4">
+            <div className={css.labels}>
+              {entity.haveCash && <div className={css.label}>Принимают наличные</div>}
+              {entity.haveCashless && <div className={css.label}>Принимают карты</div>}
+              {entity.allowedCod && <div className={css.label}>Наложенный платеж</div>}
+              {entity.isReception && <div className={css.label}>Приём заказов</div>}
+              {entity.isDressingRoom && <div className={css.label}>Примерка</div>}
+            </div>
+            <div className="mt-4">
+              <Button
+                onClick={() => onSelect?.()}
+                variant="default"
+                size="lg"
+                className="w-full uppercase font-sans-narrow"
+              >
+                Заберу отсюда
+              </Button>
+            </div>
           </div>
-        </div>
-        <div className="flex-grow" />
-        <div className="mt-6">
-          <Button
-            onClick={() => {
-              onSelect?.()
-              // orderState.setDelivery({
-              //   service: DeliveryService.Pickup,
-              //   address: selected.fullAddress,
-              //   properties: {
-              //     pickupPointId: selected.id
-              //   }
-              // })
-              // router.push('/order')
-            }}
-            variant="default"
-            size="lg"
-            className="w-full uppercase font-sans-narrow"
-          >
-            Заберу отсюда
-          </Button>
-        </div>
+        )}
       </div>
     </div>
   )

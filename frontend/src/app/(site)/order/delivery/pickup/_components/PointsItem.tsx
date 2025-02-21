@@ -6,30 +6,53 @@ import { PointsDetails } from './PointsDetails'
 import { cn } from '@/lib/utils'
 import { MouseEvent, MouseEventHandler, useEffect, useRef } from 'react'
 
+function findClosestScrollableParent(element: HTMLElement | null): HTMLElement | null {
+  let currentElement: HTMLElement | null = element;
+
+  while (currentElement && currentElement !== document.body) {
+      if (
+          currentElement.scrollHeight > currentElement.clientHeight ||
+          currentElement.scrollWidth > currentElement.clientWidth
+      ) {
+          return currentElement;
+      }
+
+      currentElement = currentElement.parentElement;
+  }
+
+  return null;
+}
+
 export interface PointsItemProps {
   entity: PickupPointEntity
   open?: boolean
-  onOpen?: MouseEventHandler<HTMLDivElement>
+  onOpen?: () => void
   onSelect?: () => void
 }
 
 export function PointsItem({ entity, onOpen, onSelect, open = false }: PointsItemProps) {
-  // const itemRef = useRef<HTMLDivElement>(null)
+  const itemRef = useRef<HTMLDivElement>(null)
 
-  // useEffect(() => {
-  //   const itemNode = itemRef.current
+  useEffect(() => {
+    const itemNode = itemRef.current
 
-  //   if (!itemNode) return
+    if (!itemNode) return
 
-  //   if (open) {
-  //     itemNode.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
-  //   }
-  // }, [open])
+    const scrollableParent: HTMLElement | null = findClosestScrollableParent(itemNode);
+
+    if (scrollableParent) {
+      scrollableParent.scrollTo({
+        behavior: "smooth",
+        top: itemNode.offsetTop - scrollableParent.offsetTop,
+        left: 0
+      })
+    }
+  }, [open])
 
   return (
       <div className={cn(css.wrap, {
         [css.wrapOpened]: open
-      })} onClick={onOpen}>
+      })} onClick={() => onOpen?.()}>
         <div className={css.headline}>
           <div className={css.icon}>
             <SpriteIcon name={`pickup-${entity.type}`} size={32} />

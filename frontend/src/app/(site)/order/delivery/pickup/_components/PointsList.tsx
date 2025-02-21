@@ -118,7 +118,7 @@ export function PointsList() {
   // }
 
   return (
-    <div className='mt-6 space-y-6'>
+    <div className='flex flex-col'>
       {!locationStore.hasHydrated ? (
         <Skeleton className="w-full h-[16px] rounded bg-neutral-50/50" />
       ) : (
@@ -131,7 +131,7 @@ export function PointsList() {
             <DialogTrigger asChild>
               <button className='group font-sans-narrow inline-flex gap-1 items-center text-primary uppercase font-bold text-sm tracking-wide'>
                 <MapPinIcon className='w-4 h-4' />
-                <span className='border-b border-transparent group-hover:order-primary'>
+                <span className='border-b border-t border-transparent group-hover:border-b-primary'>
                   Выбрать
                 </span>
               </button>
@@ -148,7 +148,7 @@ export function PointsList() {
           </Dialog>
         </div>
       )}
-      <div className="flex-grow overflow-auto">
+      <div className="flex-grow overflow-auto mt-4">
         {loading && (
           <div className="flex flex-col gap-6">
             {[0, 1, 2].map((n) => (

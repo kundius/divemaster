@@ -22,6 +22,7 @@ export default function Page() {
               back={{ action: '/order', title: 'Назад' }}
             />
           </div>
+          <div className="mb-6">
           <TabMarker
             items={[
               { title: 'Самовывоз', name: DeliveryService.Pickup },
@@ -30,6 +31,7 @@ export default function Page() {
             size="lg"
             selected={DeliveryService.Pickup}
           />
+          </div>
           <PointsList />
         </LayoutContent>
         <LayoutMap>

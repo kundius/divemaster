@@ -125,27 +125,26 @@ export function PointsList() {
         <div className='flex items-center justify-between'>
           <div className='flex items-center gap-2'>
             <div className='text-base text-neutral-500'>Ваш город:</div>
-            <div className="text-base font-medium">{locationStore.city.name}</div>
+            <Dialog open={showCitySelect} onOpenChange={setShowCitySelect}>
+              <DialogTrigger asChild>
+                <button className='group font-sans-narrow inline-flex gap-1 items-center text-primary uppercase font-bold text-sm tracking-wide'>
+                  <MapPinIcon className='w-4 h-4' />
+                  <span className='border-b border-t border-transparent group-hover:border-b-primary'>
+                    {locationStore.city.name}
+                  </span>
+                </button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[960px]">
+                <DialogHeader>
+                  <DialogTitle>Ваш город</DialogTitle>
+                </DialogHeader>
+                <CitySelectForm
+                  onChangeLocation={changeLocationHandler}
+                  initialCity={locationStore.city}
+                />
+              </DialogContent>
+            </Dialog>
           </div>
-          <Dialog open={showCitySelect} onOpenChange={setShowCitySelect}>
-            <DialogTrigger asChild>
-              <button className='group font-sans-narrow inline-flex gap-1 items-center text-primary uppercase font-bold text-sm tracking-wide'>
-                <MapPinIcon className='w-4 h-4' />
-                <span className='border-b border-t border-transparent group-hover:border-b-primary'>
-                  Выбрать
-                </span>
-              </button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[960px]">
-              <DialogHeader>
-                <DialogTitle>Ваш город</DialogTitle>
-              </DialogHeader>
-              <CitySelectForm
-                onChangeLocation={changeLocationHandler}
-                initialCity={locationStore.city}
-              />
-            </DialogContent>
-          </Dialog>
         </div>
       )}
       <div className="flex-grow overflow-auto mt-4">

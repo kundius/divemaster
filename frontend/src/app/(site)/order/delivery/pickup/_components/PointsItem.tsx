@@ -2,8 +2,8 @@ import { SpriteIcon } from '@/components/SpriteIcon'
 import { PickupPointEntity } from '@/types'
 import css from './PointsItem.module.scss'
 import { Button } from '@/components/ui/button'
-import { PointsDetails } from './PointsDetails'
 import { cn } from '@/lib/utils'
+import { useEffect, useRef } from 'react'
 
 export interface PointsItemProps {
   entity: PickupPointEntity
@@ -13,9 +13,20 @@ export interface PointsItemProps {
 }
 
 export function PointsItem({ entity, onOpen, onSelect, open = false }: PointsItemProps) {
+  const itemRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const itemNode = itemRef.current
+
+    if (!itemNode) return
+
+    if (open) {
+      itemNode.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" })
+    }
+  }, [open])
+
   return (
-    <div>
-      <div className={cn(css.wrap, {
+      <div ref={itemRef} className={cn(css.wrap, {
         [css.wrapOpened]: open
       })} onClick={() => onOpen?.()}>
         <div className={css.headline}>
@@ -48,6 +59,5 @@ export function PointsItem({ entity, onOpen, onSelect, open = false }: PointsIte
           </>
         )}
       </div>
-    </div>
   )
 }

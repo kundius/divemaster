@@ -41,14 +41,19 @@ export function PointsItem({ entity, onOpen, onSelect, open = false }: PointsIte
 
     if (!itemNode) return
 
-    const scrollableParent: HTMLElement | null = findClosestScrollableParent(itemNode);
+    const scrollableParent: HTMLElement | null = findClosestScrollableParent(itemNode)
 
-    console.log(scrollableParent)
+    if (!scrollableParent) return
+
+    const targetRect = itemNode.getBoundingClientRect();
+    const containerRect = scrollableParent.getBoundingClientRect();
+
+    const offsetTop = targetRect.top - containerRect.top;
 
     if (scrollableParent) {
       scrollableParent.scrollTo({
         behavior: "smooth",
-        top: itemNode.offsetTop - scrollableParent.offsetTop,
+        top: scrollableParent.scrollTop + offsetTop,
         left: 0
       })
     }

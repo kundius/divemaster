@@ -3,6 +3,7 @@ import { PickupPointEntity } from '@/types'
 import css from './PointsItem.module.scss'
 import { Button } from '@/components/ui/button'
 import { PointsDetails } from './PointsDetails'
+import { cn } from '@/lib/utils'
 
 export interface PointsItemProps {
   entity: PickupPointEntity
@@ -14,17 +15,19 @@ export interface PointsItemProps {
 export function PointsItem({ entity, onOpen, onSelect, open = false }: PointsItemProps) {
   return (
     <div>
-      <div className={css.wrap} onClick={() => onOpen?.()}>
+      <div className={cn(css.wrap, {
+        [css.wrapOpened]: open
+      })} onClick={() => onOpen?.()}>
         <div className={css.headline}>
           <div className={css.icon}>
             <SpriteIcon name={`pickup-${entity.type}`} size={32} />
           </div>
           <div className={css.title}>{entity.fullAddress}</div>
         </div>
-        <div className={css.description}>{entity.note}</div>
-        <div className={css.timetable}>{entity.workTime}</div>
+        <div className={css.description}>{entity.workTime}</div>
         {open && (
-          <div className="mt-4">
+          <>
+            <div className={css.timetable}>{entity.note}</div>
             <div className={css.labels}>
               {entity.haveCash && <div className={css.label}>Принимают наличные</div>}
               {entity.haveCashless && <div className={css.label}>Принимают карты</div>}
@@ -42,7 +45,7 @@ export function PointsItem({ entity, onOpen, onSelect, open = false }: PointsIte
                 Заберу отсюда
               </Button>
             </div>
-          </div>
+          </>
         )}
       </div>
     </div>

@@ -118,7 +118,7 @@ export function PointsList() {
   // }
 
   return (
-    <div className='flex flex-col'>
+    <>
       {!locationStore.hasHydrated ? (
         <Skeleton className="w-full h-[16px] rounded bg-neutral-50/50" />
       ) : (
@@ -189,6 +189,6 @@ export function PointsList() {
           ))}
         </div>
       </div>
-    </div>
+    </>
   )
 }

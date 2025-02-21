@@ -9,6 +9,11 @@
   border-color: #c1adff;
 }
 
+.wrapOpened {
+  border-color: #c1adff;
+  background: hsl(254.63deg 100% 83.92% / 5%);
+}
+
 .headline {
   display: flex;
   align-items: center;
@@ -57,7 +62,7 @@
 }
 
 .labels {
-  margin-top: 24px;
+  margin-top: 16px;
   display: flex;
   flex-wrap: wrap;
   row-gap: 12px;

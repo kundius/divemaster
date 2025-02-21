@@ -27,7 +27,13 @@ export function PointsItem({ entity, onOpen, onSelect, open = false }: PointsIte
 
       <div className="min-h-full flex flex-col">
         <div className="pt-4">
-          <PointsDetails entity={entity} />
+          <div className={css.labels}>
+            {entity.haveCash && <div className={css.label}>Принимают наличные</div>}
+            {entity.haveCashless && <div className={css.label}>Принимают карты</div>}
+            {entity.allowedCod && <div className={css.label}>Наложенный платеж</div>}
+            {entity.isReception && <div className={css.label}>Приём заказов</div>}
+            {entity.isDressingRoom && <div className={css.label}>Примерка</div>}
+          </div>
         </div>
         <div className="flex-grow" />
         <div className="mt-6">

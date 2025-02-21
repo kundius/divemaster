@@ -55,3 +55,30 @@
   color: #222222;
   margin-top: 16px;
 }
+
+.labels {
+  margin-top: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 12px;
+  column-gap: 24px;
+  max-width: 360px;
+}
+
+.label {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 16px;
+  color: #000;
+}
+
+.label::before {
+  content: '';
+  border-left: 2px solid #5965fe;
+  border-bottom: 2px solid #5965fe;
+  width: 12px;
+  height: 8px;
+  transform: rotate(-45deg);
+  display: block;
+}

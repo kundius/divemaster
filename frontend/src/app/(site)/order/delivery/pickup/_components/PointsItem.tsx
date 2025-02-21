@@ -57,7 +57,7 @@ export function PointsItem({ entity, onOpen, onSelect, open = false }: PointsIte
   return (
       <div className={cn(css.wrap, {
         [css.wrapOpened]: open
-      })} onClick={() => onOpen?.()}>
+      })} onClick={() => onOpen?.()} ref={itemRef}>
         <div className={css.headline}>
           <div className={css.icon}>
             <SpriteIcon name={`pickup-${entity.type}`} size={32} />

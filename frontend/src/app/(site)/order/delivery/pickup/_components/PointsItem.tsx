@@ -2,33 +2,34 @@ import { SpriteIcon } from '@/components/SpriteIcon'
 import { PickupPointEntity } from '@/types'
 import css from './PointsItem.module.scss'
 import { Button } from '@/components/ui/button'
+import { PointsDetails } from './PointsDetails'
 import { cn } from '@/lib/utils'
-import { useEffect, useRef } from 'react'
+import { MouseEvent, MouseEventHandler, useEffect, useRef } from 'react'
 
 export interface PointsItemProps {
   entity: PickupPointEntity
   open?: boolean
-  onOpen?: () => void
+  onOpen?: MouseEventHandler<HTMLDivElement>
   onSelect?: () => void
 }
 
 export function PointsItem({ entity, onOpen, onSelect, open = false }: PointsItemProps) {
-  const itemRef = useRef<HTMLDivElement>(null)
+  // const itemRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    const itemNode = itemRef.current
+  // useEffect(() => {
+  //   const itemNode = itemRef.current
 
-    if (!itemNode) return
+  //   if (!itemNode) return
 
-    if (open) {
-      itemNode.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" })
-    }
-  }, [open])
+  //   if (open) {
+  //     itemNode.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+  //   }
+  // }, [open])
 
   return (
-      <div ref={itemRef} className={cn(css.wrap, {
+      <div className={cn(css.wrap, {
         [css.wrapOpened]: open
-      })} onClick={() => onOpen?.()}>
+      })} onClick={onOpen}>
         <div className={css.headline}>
           <div className={css.icon}>
             <SpriteIcon name={`pickup-${entity.type}`} size={32} />

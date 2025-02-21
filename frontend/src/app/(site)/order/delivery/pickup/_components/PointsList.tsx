@@ -12,11 +12,12 @@ import { PointsItem } from './PointsItem'
 import { usePointsQuery } from './PointsQuery'
 import { useLocationStore } from '@/providers/location-store-provider'
 import { CitySelectForm, CitySelectFormProps } from '@/components/site/Header/CitySelectForm'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { MapPinIcon } from '@heroicons/react/24/outline'
 
 export function PointsList() {
+  const scrollerRef = useRef<HTMLDivElement>(null)
   const orderState = useOrderStore((state) => state)
   const router = useRouter()
   const { loading, rows, coverage, selected, mapRef, setSelected } = usePointsQuery()
@@ -28,9 +29,16 @@ export function PointsList() {
     setShowCitySelect(false)
   }
 
-  const openEntity = async (entity: PickupPointEntity) => {
+  const openEntity = async (el: HTMLDivElement, entity: PickupPointEntity) => {
     if (mapRef.current) {
       await mapRef.current.setCenter([entity.lat, entity.lon], 18)
+    }
+    if (scrollerRef.current) {
+      scrollerRef.current.scrollTo({
+        behavior: 'smooth',
+        top: el.offsetTop,
+        left: 0
+      })
     }
     setSelected(entity)
   }
@@ -147,7 +155,7 @@ export function PointsList() {
           </div>
         </div>
       )}
-      <div className="flex-grow overflow-auto mt-4">
+      <div className="flex-grow overflow-auto mt-4" ref={scrollerRef}>
         {loading && (
           <div className="flex flex-col gap-6">
             {[0, 1, 2].map((n) => (
@@ -182,7 +190,7 @@ export function PointsList() {
               key={item.id}
               entity={item}
               onSelect={() => selectEntity(item)}
-              onOpen={() => openEntity(item)}
+              onOpen={(e) => openEntity(e.currentTarget, item)}
               open={selected?.id === item.id}
             />
           ))}

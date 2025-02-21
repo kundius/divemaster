@@ -10,9 +10,12 @@ function findClosestScrollableParent(element: HTMLElement | null): HTMLElement |
   let currentElement: HTMLElement | null = element;
 
   while (currentElement && currentElement !== document.body) {
+      const style = window.getComputedStyle(currentElement);
+
       if (
-          currentElement.scrollHeight > currentElement.clientHeight ||
-          currentElement.scrollWidth > currentElement.clientWidth
+          (style.overflow === 'auto' || style.overflow === 'scroll') &&
+          (currentElement.scrollHeight > currentElement.clientHeight ||
+          currentElement.scrollWidth > currentElement.clientWidth)
       ) {
           return currentElement;
       }
@@ -39,6 +42,8 @@ export function PointsItem({ entity, onOpen, onSelect, open = false }: PointsIte
     if (!itemNode) return
 
     const scrollableParent: HTMLElement | null = findClosestScrollableParent(itemNode);
+
+    console.log(scrollableParent)
 
     if (scrollableParent) {
       scrollableParent.scrollTo({

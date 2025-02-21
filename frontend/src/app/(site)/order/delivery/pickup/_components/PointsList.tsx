@@ -36,7 +36,7 @@ export function PointsList() {
     if (scrollerRef.current) {
       scrollerRef.current.scrollTo({
         behavior: 'smooth',
-        top: el.offsetTop,
+        top: el.offsetTop - scrollerRef.current.offsetTop,
         left: 0
       })
     }

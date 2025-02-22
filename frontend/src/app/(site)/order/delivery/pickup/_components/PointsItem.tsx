@@ -50,9 +50,6 @@ export function PointsItem({ entity, onOpen, onSelect, open = false }: PointsIte
     const targetRect = itemNode.getBoundingClientRect();
     const containerRect = scrollableParent.getBoundingClientRect();
 
-    console.log('[scrollableParent, scrollableParent.scrollTop, targetRect, containerRect]')
-    console.log([scrollableParent, scrollableParent.scrollTop, targetRect, containerRect])
-
     const offsetTop = targetRect.top - containerRect.top;
 
     if (scrollableParent) {

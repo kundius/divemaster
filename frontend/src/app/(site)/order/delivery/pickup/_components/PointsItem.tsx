@@ -37,6 +37,8 @@ export function PointsItem({ entity, onOpen, onSelect, open = false }: PointsIte
   const itemRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    if (!open) return
+
     const itemNode = itemRef.current
 
     if (!itemNode) return

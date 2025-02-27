@@ -106,7 +106,7 @@ export class FindAllProductDto extends PaginationQueryDto {
   @Type(() => String)
   @IsString()
   @IsOptional()
-  sort: keyof Product = 'id'
+  sort: keyof Product = 'title'
 
   @IsString()
   @IsOptional()

@@ -1,6 +1,6 @@
 import { PageLayout } from '@/components/admin/PageLayout'
 import type { Metadata } from 'next'
-import { OptionCreateForm } from '../_components/OptionCreateForm'
+import { PropertyCreateForm } from '../_components/PropertyCreateForm'
 import { VerticalNav } from '@/components/VerticalNav'
 
 export const metadata: Metadata = {
@@ -11,7 +11,7 @@ export default function Page() {
   const items = [
     {
       title: 'Свойства',
-      href: `/dashboard/options/create`
+      href: `/dashboard/properties/create`
     },
     {
       title: 'Категории'
@@ -19,7 +19,7 @@ export default function Page() {
   ]
   return (
     <PageLayout title="Добавить параметр" aside={<VerticalNav items={items} />}>
-      <OptionCreateForm />
+      <PropertyCreateForm />
     </PageLayout>
   )
 }

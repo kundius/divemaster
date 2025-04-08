@@ -27,3 +27,6 @@ based on top of [Nestjs], [Nextjs].
 Есть товары только в одной комплектации, без параметров, там и цена одна.
 Поэтому если есть только базовый оффер, используем только его.
 Если у товара есть и базовый оффер и дополнительные, то базовый игнорируем.
+
+# DB
+npx typeorm-ts-node-commonjs migration:generate -d db/ormconfig.ts db/migrations/name

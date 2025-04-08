@@ -10,8 +10,8 @@ import { CategoryEntity } from '@/types'
 import { useEffect, useMemo, useState } from 'react'
 import useSWR from 'swr'
 
-export interface OptionCategoriesProps {
-  optionId: number
+export interface PropertyCategoriesProps {
+  propertyId: number
 }
 
 interface NodeType {
@@ -20,10 +20,10 @@ interface NodeType {
   children?: NodeType[]
 }
 
-export function OptionCategories({ optionId }: OptionCategoriesProps) {
+export function PropertyCategories({ propertyId }: PropertyCategoriesProps) {
   const [checked, setChecked] = useState<string[]>([])
 
-  const optionCategoriesQuery = useSWR<CategoryEntity[]>(`options/${optionId}/categories`)
+  const propertyCategoriesQuery = useSWR<CategoryEntity[]>(`properties/${propertyId}/categories`)
   const categoriesQuery = useSWR<ApiTableData<CategoryEntity>>([`categories`, { limit: 100 }])
 
   const nodes = useMemo(() => {
@@ -42,17 +42,17 @@ export function OptionCategories({ optionId }: OptionCategoriesProps) {
   }, [categoriesQuery.data])
 
   useEffect(() => {
-    setChecked(optionCategoriesQuery.data?.map((item) => String(item.id)) || [])
-  }, [optionCategoriesQuery.data])
+    setChecked(propertyCategoriesQuery.data?.map((item) => String(item.id)) || [])
+  }, [propertyCategoriesQuery.data])
 
   const checkHandler = async (checked: string[]) => {
     setChecked(checked)
-    await apiPatch(`options/${optionId}/categories`, { categories: checked }, withClientAuth())
+    await apiPatch(`properties/${propertyId}/categories`, { categories: checked }, withClientAuth())
   }
 
   return (
     <div className="bg-neutral-50 p-4 rounded-md relative">
-      {categoriesQuery.isLoading || optionCategoriesQuery.isLoading ? (
+      {categoriesQuery.isLoading || propertyCategoriesQuery.isLoading ? (
         <div className="space-y-4">
           <Skeleton className="h-4 w-60" />
           <Skeleton className="h-4 w-32 ml-8" />

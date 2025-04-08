@@ -79,9 +79,10 @@ export class AddProductDto {
   @IsOptional()
   quantity?: number
 
-  @Type(() => Array)
-  @IsArray()
-  optionValues?: number[]
+  @ParseObject()
+  @IsObject()
+  @IsOptional()
+  options?: Record<string, string>
 }
 
 export class UpdateProductDto {

@@ -2,119 +2,99 @@ import { createStore } from 'zustand/vanilla'
 import { formatPrice, pluck } from '@/lib/utils'
 import {
   OfferEntity,
-  OptionType,
-  type OptionEntity,
-  type OptionValueEntity,
-  type ProductEntity
+  PropertyType,
+  type PropertyEntity,
+  type ProductEntity,
+  type ProductOptionEntity,
+  type OfferOptionEntity
 } from '@/types'
+import { se } from 'date-fns/locale'
 
 export type ProductState = {
   product: ProductEntity
-  selectableOptions: OptionEntity[]
-  selectedOptionValues: OptionValueEntity[]
-  selectedOffer: OfferEntity | undefined
+  selectable: Array<{ property: PropertyEntity; options: string[] }>
+  selected: Record<string, string>
+  offer: OfferEntity | undefined
 }
 
 export type ProductActions = {
-  selectOptionValue(value: OptionValueEntity): void
+  selectOption(name: string, content: string): void
   reset(): void
-  isAllOptionsSelected(selectedOptionValues: OptionValueEntity[]): boolean
-  displayPrice(selectedOffer?: OfferEntity): string
-  displayOldPrice(selectedOffer?: OfferEntity): string
+  isAllOptionsSelected(selected: ProductState['selected']): boolean
+  displayPrice(offer?: OfferEntity): string
+  displayOldPrice(offer?: OfferEntity): string
 }
 
 export type ProductStore = ProductState & ProductActions
 
-const SELECTABLE_OPTION_TYPES = [OptionType.COMBOCOLORS, OptionType.COMBOOPTIONS]
+export const SELECTABLE_PROPERTY_TYPES = [PropertyType.COMBOCOLORS, PropertyType.COMBOOPTIONS]
 
 function applyDecrease(value: number, decrease: number) {
   return value * (decrease / 100) + value
 }
 
 export const createProductStore = (product: ProductEntity) => {
-  // Оставить только те необходимые параметры
-  const selectableOptions = (product.options || []).filter((option) => {
-    // Пропустить невариативный параметр
-    if (!SELECTABLE_OPTION_TYPES.includes(option.type)) return false
-
-    // Найти значения параметра
-    const optionValues = option.values || []
-
-    // Пропустить параметр без значений
-    if (optionValues.length === 0) return false
-
-    // Пропустить параметр с единственным значением и без связи с торговым предложением
-    if (optionValues.length === 1) {
-      const foundOffer = (product.offers || []).find((offer) =>
-        (offer.optionValues || []).some((offerOptionValue) =>
-          optionValues.find((optionValue) => optionValue.id === offerOptionValue.id)
-        )
-      )
-      if (!foundOffer) return false
+  // Сформировать выбираемые параметры
+  const selectable: ProductState['selectable'] = []
+  for (const property of product.properties || []) {
+    if (SELECTABLE_PROPERTY_TYPES.includes(property.type)) {
+      const options = (product.options || [])
+        .sort((a, b) => a.rank - b.rank)
+        .filter((a) => a.name === property.key)
+        .map((a) => a.content)
+      if (options.length > 0) {
+        selectable.push({ options, property })
+      }
     }
-
-    return true
-  })
+  }
 
   // По умолчанию выбрать единственное торговое предложение без параметров
   let initialOffer: OfferEntity | undefined = undefined
   if (product.offers && product.offers.length === 1) {
-    initialOffer = product.offers.find((offer) => (offer.optionValues || []).length === 0)
+    initialOffer = product.offers.find((offer) => (offer.options || []).length === 0)
   }
 
-  const findOffer = (selectedOptionValues: OptionValueEntity[]) => {
+  const findOffer = (selected: ProductState['selected']) => {
     // Сортируем предложения по количеству параметров от большего к меньшему.
     const sorted = (product.offers || [])
       .sort((a, b) => {
-        if (!a.optionValues || !b.optionValues) return 0
-        if (a.optionValues.length < b.optionValues.length) return -1
-        if (a.optionValues.length > b.optionValues.length) return 1
+        if (!a.options || !b.options) return 0
+        if (a.options.length < b.options.length) return -1
+        if (a.options.length > b.options.length) return 1
         return 0
       })
       .reverse()
 
-    // Группируем идентификаторы выбранных значений
-    const ids = Object.values(selectedOptionValues).map((optionValue) => optionValue.id)
-
     // Находим предложение, все параметры которого соответствуют выбранным.
     // Благодаря сортировке мы находим предложение с наибольшим сходством параметров.
-    return sorted.find((offer) => (offer.optionValues || []).every(({ id }) => ids.includes(id)))
+    return sorted.find((offer) =>
+      (offer.options || []).every(({ name, content }) => selected[name] === content)
+    )
   }
 
   return createStore<ProductStore>()((set, get) => ({
     product,
-    selectableOptions,
+    selectable,
 
-    selectedOptionValues: [],
-    selectedOffer: initialOffer,
+    selected: {},
+    offer: initialOffer,
 
     reset() {
-      set({ selectedOptionValues: [], selectedOffer: initialOffer })
+      set({ selected: {}, offer: initialOffer })
     },
 
-    selectOptionValue(value) {
-      // Убрать дургое значение параметра и такое же
-      const selectedOptionValues = get().selectedOptionValues.filter((selectedOptionValue) => {
-        if (selectedOptionValue.optionId === value.optionId) return false
-        if (selectedOptionValue.id === value.id) return false
-        return true
-      })
-
-      // Добавить значение
-      selectedOptionValues.push(value)
+    selectOption(name, content) {
+      // Установить значение
+      const selected = { ...get().selected, [name]: content }
 
       // Найти торговое предложение по максимальному сходству параметров
-      const selectedOffer = findOffer(selectedOptionValues)
+      const offer = findOffer(selected)
 
-      set({ selectedOptionValues, selectedOffer })
+      set({ selected, offer })
     },
 
-    isAllOptionsSelected(selectedOptionValues) {
-      return selectableOptions.every((selectableOption) =>
-        selectedOptionValues
-          .map((optionValue) => optionValue.optionId)
-          .includes(selectableOption.id)
-      )
+    isAllOptionsSelected(selected) {
+      return selectable.every(({ property }) => !!selected[property.key])
     },
 
     displayPrice(selectedOffer) {

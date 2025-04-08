@@ -2,7 +2,7 @@ import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColum
 import { Category } from './category.entity'
 import { OptionValue } from './option-value.entity'
 
-export enum OptionType {
+export enum PropertyType {
   // STRING = 'string',
   // NUMBER = 'number',
   // BOOLEAN = 'boolean',
@@ -21,8 +21,10 @@ export enum OptionType {
   // TEXTAREA = 'textarea'
 }
 
-@Entity()
-export class Option {
+@Entity({
+  name: 'option'
+})
+export class Property {
   @PrimaryGeneratedColumn()
   id!: number
 
@@ -34,9 +36,9 @@ export class Option {
 
   @Column({
     type: 'enum',
-    enum: OptionType
+    enum: PropertyType
   })
-  type!: OptionType
+  type!: PropertyType
 
   @Column({ default: false })
   inFilter: boolean = false

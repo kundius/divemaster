@@ -10,12 +10,14 @@ import { Order } from '@/order/entities/order.entity'
 import { Payment } from '@/order/entities/payment.entity'
 import { Delivery } from '@/order/entities/delivery.entity'
 import { OrderProduct } from '@/order/entities/order-product.entity'
+import { CartProductOption } from './entities/cart-product-option.entity'
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       Cart,
       CartProduct,
+      CartProductOption,
       OptionValue,
       Order,
       Payment,

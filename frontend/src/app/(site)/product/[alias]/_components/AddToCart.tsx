@@ -9,21 +9,13 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { useCartStore } from '@/providers/cart-store-provider'
 import { useProductStore } from '@/providers/product-store-provider'
-import { OptionType, OptionValueEntity } from '@/types'
+import { PropertyType } from '@/types'
 
 import styles from './AddToCart.module.scss'
 import { SelectOption } from './SelectOption'
 import { SpriteIcon } from '@/components/SpriteIcon'
 import { AddToCartDialog } from '@/components/AddToCartDialog'
 import Link from 'next/link'
-
-export const OptionComponents = {
-  [OptionType.COMBOCOLORS]: SelectOption,
-  [OptionType.COMBOOPTIONS]: SelectOption,
-  [OptionType.COMBOBOOLEAN]: undefined,
-  [OptionType.NUMBERFIELD]: undefined,
-  [OptionType.TEXTFIELD]: undefined
-}
 
 export function AddToCart() {
   const addToCart = useCartStore((state) => state.addToCart)
@@ -38,13 +30,13 @@ export function AddToCart() {
   const addHandler = () => {
     addToCart({
       id: productStore.product.id,
-      optionValues: productStore.selectedOptionValues.map(({ id }) => id)
+      options: productStore.selected
     })
     toast.success('Товар добавлен в корзину')
   }
 
-  const price = productStore.displayPrice(productStore.selectedOffer)
-  const oldPrice = productStore.displayOldPrice(productStore.selectedOffer)
+  const price = productStore.displayPrice(productStore.offer)
+  const oldPrice = productStore.displayOldPrice(productStore.offer)
 
   return (
     <div ref={wrapperRef}>
@@ -56,28 +48,18 @@ export function AddToCart() {
         <div className={styles.realPrice}>{price}</div>
       </div>
 
-      {productStore.selectableOptions.length > 0 && (
+      {productStore.selectable.length > 0 && (
         <div className={cn(styles.options, 'mt-12')}>
-          {productStore.selectableOptions.map((option) => {
-            if (!option.values || option.values.length === 0) return null
-
-            const Component = OptionComponents[option.type]
-
-            if (!Component) return null
-
-            return (
-              <Component
-                key={option.id}
-                caption={option.caption}
-                type={option.type}
-                values={option.values}
-                onSelect={productStore.selectOptionValue}
-                selected={productStore.selectedOptionValues.find(
-                  ({ optionId }) => optionId === option.id
-                )}
-              />
-            )
-          })}
+          {productStore.selectable.map(({ property, options }) => (
+            <SelectOption
+              key={property.id}
+              caption={property.caption}
+              type={property.type}
+              values={options}
+              onSelect={(value) => productStore.selectOption(property.key, value)}
+              selected={productStore.selected[property.key]}
+            />
+          ))}
         </div>
       )}
 
@@ -88,12 +70,12 @@ export function AddToCart() {
       */}
 
       <div className="flex items-center gap-2 mt-12 max-md:gap-4">
-        {!productStore.isAllOptionsSelected(productStore.selectedOptionValues) ? (
+        {!productStore.isAllOptionsSelected(productStore.selected) ? (
           <Button className="flex-grow px-4" size="lg" disabled key="available">
             <SpriteIcon name="cart" size={20} className="mr-2 -ml-2" />
             Выберите параметры
           </Button>
-        ) : productStore.selectedOffer ? (
+        ) : productStore.offer ? (
           <Button className="flex-grow px-4" size="lg" onClick={addHandler} key="available">
             <SpriteIcon name="cart" size={20} className="mr-2 -ml-2" />В корзину
           </Button>

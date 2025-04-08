@@ -17,7 +17,7 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { apiPatch } from '@/lib/api'
 import { withClientAuth } from '@/lib/api/with-client-auth'
 import { colors } from '@/lib/colors'
-import { OptionEntity, OptionType } from '@/types'
+import { PropertyEntity, PropertyType } from '@/types'
 import { useToggle } from '@reactuses/core'
 import Link from 'next/link'
 import { FormEvent, useState } from 'react'
@@ -31,7 +31,7 @@ interface OptionsControlProps {
 }
 
 function OptionsControl({ optionId, value, onChange }: OptionsControlProps) {
-  const valuesQuery = useSWR<string[]>(`options/${optionId}/values`)
+  const valuesQuery = useSWR<string[]>(`properties/${optionId}/suggestions`)
 
   return (
     <CreateablePicker
@@ -42,29 +42,29 @@ function OptionsControl({ optionId, value, onChange }: OptionsControlProps) {
   )
 }
 
-export type ValueType = number | number[] | boolean | boolean[] | string | string[] | undefined
+export type OptionType = number | number[] | boolean | boolean[] | string | string[] | undefined
 
-export type ValuesType = Record<string, ValueType>
+export type OptionsType = Record<string, OptionType>
 
 export interface ProductOptionsProps {
   productId: number
-  initialOptions: OptionEntity[]
-  initialValues: ValuesType
+  properties: PropertyEntity[]
+  initialOptions: OptionsType
 }
 
-export function ProductOptions({ productId, initialOptions, initialValues }: ProductOptionsProps) {
-  const [values, setValues] = useState<ValuesType>(initialValues)
+export function ProductOptions({ productId, properties, initialOptions }: ProductOptionsProps) {
+  const [options, setOptions] = useState<OptionsType>(initialOptions)
   const [pending, pendingToggle] = useToggle(false)
 
-  const renderControl = (item: OptionEntity) => {
-    const onChange = (value: ValueType) => {
-      setValues((prev) => ({ ...prev, [item.key]: value }))
+  const renderControl = (property: PropertyEntity) => {
+    const onChange = (value: OptionType) => {
+      setOptions((prev) => ({ ...prev, [property.key]: value }))
     }
 
-    const value = values[item.key]
+    const value = options[property.key]
 
-    switch (item.type) {
-      case OptionType.COMBOBOOLEAN:
+    switch (property.type) {
+      case PropertyType.COMBOBOOLEAN:
         return (
           <Switch
             checked={(value as boolean | undefined) || false}
@@ -81,7 +81,7 @@ export function ProductOptions({ productId, initialOptions, initialValues }: Pro
       //     />
       //   )
 
-      case OptionType.COMBOCOLORS:
+      case PropertyType.COMBOCOLORS:
         return (
           <CreateablePicker
             options={colors.map((item) => ({
@@ -118,10 +118,10 @@ export function ProductOptions({ productId, initialOptions, initialValues }: Pro
           />
         )
 
-      case OptionType.COMBOOPTIONS:
+      case PropertyType.COMBOOPTIONS:
         return (
           <OptionsControl
-            optionId={item.id}
+            optionId={property.id}
             value={
               (value as string[] | undefined)?.map((item) => ({ value: item, label: item })) || []
             }
@@ -129,7 +129,7 @@ export function ProductOptions({ productId, initialOptions, initialValues }: Pro
           />
         )
 
-      case OptionType.NUMBERFIELD:
+      case PropertyType.NUMBERFIELD:
         return (
           <Input
             type="number"
@@ -146,7 +146,7 @@ export function ProductOptions({ productId, initialOptions, initialValues }: Pro
       //     />
       //   )
 
-      case OptionType.TEXTFIELD:
+      case PropertyType.TEXTFIELD:
         return (
           <Input
             value={(value as string | undefined) || ''}
@@ -162,7 +162,7 @@ export function ProductOptions({ productId, initialOptions, initialValues }: Pro
     pendingToggle()
 
     try {
-      await apiPatch(`products/${productId}/options`, values, withClientAuth())
+      await apiPatch(`products/${productId}/options`, options, withClientAuth())
       toast.success('Сохранено')
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Unknown error')
@@ -173,12 +173,12 @@ export function ProductOptions({ productId, initialOptions, initialValues }: Pro
 
   return (
     <form onSubmit={submitHandler} className="space-y-6">
-      {initialOptions.map((item) => (
-        <div className="space-y-2" key={item.id}>
+      {properties.map((property) => (
+        <div className="space-y-2" key={property.id}>
           <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-            {item.caption}
+            {property.caption}
           </label>
-          <div className="w-full">{renderControl(item)}</div>
+          <div className="w-full">{renderControl(property)}</div>
         </div>
       ))}
       <div className="p-5 rounded-md flex items-center justify-end gap-4 bg-neutral-50">

@@ -19,27 +19,27 @@ import {
   SelectValue
 } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
-import { OptionType } from '@/types'
+import { PropertyType } from '@/types'
 import Link from 'next/link'
 import { UseFormReturn } from 'react-hook-form'
 import { z } from 'zod'
 
-export const OptionFormSchema = z.object({
+export const PropertyFormSchema = z.object({
   key: z.string().trim().min(1),
   rank: z.coerce.number(),
   caption: z.string().trim().min(1),
   inFilter: z.boolean(),
-  type: z.nativeEnum(OptionType).default(OptionType.TEXTFIELD)
+  type: z.nativeEnum(PropertyType).default(PropertyType.TEXTFIELD)
 })
 
-export type OptionFormFields = z.infer<typeof OptionFormSchema>
+export type PropertyFormFields = z.infer<typeof PropertyFormSchema>
 
-export interface OptionFormProps {
-  form: UseFormReturn<OptionFormFields, any, undefined>
-  onSubmit: (values: OptionFormFields) => Promise<void>
+export interface PropertyFormProps {
+  form: UseFormReturn<PropertyFormFields, any, undefined>
+  onSubmit: (values: PropertyFormFields) => Promise<void>
 }
 
-export function OptionForm({ form, onSubmit }: OptionFormProps) {
+export function PropertyForm({ form, onSubmit }: PropertyFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -90,13 +90,13 @@ export function OptionForm({ form, onSubmit }: OptionFormProps) {
                           <SelectValue placeholder="Выберите тип" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value={OptionType.COMBOBOOLEAN}>Да/Нет</SelectItem>
-                          <SelectItem value={OptionType.COMBOCOLORS}>Список с цветами</SelectItem>
-                          <SelectItem value={OptionType.COMBOOPTIONS}>
+                          <SelectItem value={PropertyType.COMBOBOOLEAN}>Да/Нет</SelectItem>
+                          <SelectItem value={PropertyType.COMBOCOLORS}>Список с цветами</SelectItem>
+                          <SelectItem value={PropertyType.COMBOOPTIONS}>
                             Список с автодополнением
                           </SelectItem>
-                          <SelectItem value={OptionType.NUMBERFIELD}>Числовое поле</SelectItem>
-                          <SelectItem value={OptionType.TEXTFIELD}>Текстовое поле</SelectItem>
+                          <SelectItem value={PropertyType.NUMBERFIELD}>Числовое поле</SelectItem>
+                          <SelectItem value={PropertyType.TEXTFIELD}>Текстовое поле</SelectItem>
                         </SelectContent>
                       </Select>
                     </FormControl>
@@ -142,7 +142,7 @@ export function OptionForm({ form, onSubmit }: OptionFormProps) {
             </div>
           </div>
           <div className="p-5 rounded-md flex items-center justify-end gap-4 bg-neutral-50">
-            <Link href="/dashboard/options">
+            <Link href="/dashboard/properties">
               <Button type="button" variant="outline">
                 Отмена
               </Button>

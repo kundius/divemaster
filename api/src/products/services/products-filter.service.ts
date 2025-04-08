@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Product } from '../entities/product.entity'
 import { FindOptionsWhere, Repository } from 'typeorm'
-import { Option, OptionType } from '../entities/option.entity'
+import { Property, PropertyType } from '../entities/property.entity'
 
 export interface BaseFilter {
   name: string
@@ -39,8 +39,8 @@ export class ProductsFilterService {
   constructor(
     @InjectRepository(Product)
     private productRepository: Repository<Product>,
-    @InjectRepository(Option)
-    private optionRepository: Repository<Option>
+    @InjectRepository(Property)
+    private optionRepository: Repository<Property>
   ) {}
 
   filters: Filter[] = []
@@ -68,7 +68,7 @@ export class ProductsFilterService {
       where,
       relations: {
         brand: true,
-        optionValues: { option: true },
+        options: true,
         offers: true
       }
     })
@@ -88,26 +88,31 @@ export class ProductsFilterService {
         record.brand = [product.brand.title]
       }
 
-      for (const value of product.optionValues) {
-        switch (value.option.type) {
-          case OptionType.TEXTFIELD:
+      for (const productOption of product.options) {
+        const option = await this.optionRepository.findOne({ where: { key: productOption.name } })
+
+        // этой опции больше не существует, пропускаем
+        if (!option) continue
+
+        switch (option.type) {
+          case PropertyType.TEXTFIELD:
             // case OptionType.TEXTAREA:
             // case OptionType.COMBOBOX:
-            record[value.option.key] = value.content
+            record[option.key] = productOption.content
             break
-          case OptionType.COMBOBOOLEAN:
-            record[value.option.key] = value.content === '1'
+          case PropertyType.COMBOBOOLEAN:
+            record[option.key] = productOption.content === '1'
             break
-          case OptionType.NUMBERFIELD:
-            record[value.option.key] = Number(value.content)
+          case PropertyType.NUMBERFIELD:
+            record[option.key] = Number(productOption.content)
             break
-          case OptionType.COMBOCOLORS:
-          case OptionType.COMBOOPTIONS:
-            const field = record[value.option.key]
+          case PropertyType.COMBOCOLORS:
+          case PropertyType.COMBOOPTIONS:
+            const field = record[option.key]
             if (isArray(field, isString)) {
-              field.push(value.content)
+              field.push(productOption.content)
             } else {
-              record[value.option.key] = [value.content]
+              record[option.key] = [productOption.content]
             }
             break
         }
@@ -121,7 +126,7 @@ export class ProductsFilterService {
 
   // по умолчанию фильтры имеют не заполненные варианты
   async loadFilters(categoryId?: number): Promise<Filter[]> {
-    const where: FindOptionsWhere<Option> = {}
+    const where: FindOptionsWhere<Property> = {}
     // TODO: HIERARCHY_DEPTH_LIMIT
     if (categoryId) {
       where.categories = { id: categoryId }
@@ -157,7 +162,7 @@ export class ProductsFilterService {
         // case OptionType.TEXTAREA:
         //   // не фильтруется
         //   break
-        case OptionType.TEXTFIELD:
+        case PropertyType.TEXTFIELD:
           // case OptionType.COMBOBOX:
           filters.push({
             ...base,
@@ -167,20 +172,20 @@ export class ProductsFilterService {
             variant: 'default'
           })
           break
-        case OptionType.COMBOBOOLEAN:
+        case PropertyType.COMBOBOOLEAN:
           filters.push({ ...base, type: 'toggle' })
           break
-        case OptionType.NUMBERFIELD:
+        case PropertyType.NUMBERFIELD:
           filters.push({ ...base, type: 'range', range: [undefined, undefined] })
           break
-        case OptionType.COMBOCOLORS:
-        case OptionType.COMBOOPTIONS:
+        case PropertyType.COMBOCOLORS:
+        case PropertyType.COMBOOPTIONS:
           filters.push({
             ...base,
             type: 'options',
             conjunction: false,
             options: [],
-            variant: option.type === OptionType.COMBOCOLORS ? 'colors' : 'default'
+            variant: option.type === PropertyType.COMBOCOLORS ? 'colors' : 'default'
           })
           break
       }

@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, ManyToMany } from 'typeorm'
 import { Product } from './product.entity'
-import { Option } from './option.entity'
+import { Property } from './property.entity'
 import { File } from '@/storage/entities/file.entity'
 
 @Entity()
@@ -50,8 +50,8 @@ export class Category {
   @ManyToMany(() => Product, (product) => product.categories)
   products: Product[]
 
-  @ManyToMany(() => Option, (option) => option.categories)
-  options: Option[]
+  @ManyToMany(() => Property, (option) => option.categories)
+  options: Property[]
 
   @OneToMany(() => Category, (category) => category.parent)
   children: Category[]

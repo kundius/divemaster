@@ -15,13 +15,13 @@ import { DataTable, DataTableColumn, DataTableFilterField } from '@/components/D
 import { Button } from '@/components/ui/button'
 import { ApiRemoveDialog } from '@/lib/ApiRemoveDialog'
 import { clearEmpty } from '@/lib/utils'
-import { FindAllResult, OptionEntity } from '@/types'
+import { FindAllResult, PropertyEntity } from '@/types'
 
-export interface OptionListProps {
-  fallbackData?: FindAllResult<OptionEntity>
+export interface PropertyListProps {
+  fallbackData?: FindAllResult<PropertyEntity>
 }
 
-export function OptionList({ fallbackData }: OptionListProps) {
+export function PropertyList({ fallbackData }: PropertyListProps) {
   const [pagination, setPagination] = useQueryStates(
     {
       page: parseAsInteger.withDefault(1),
@@ -42,9 +42,9 @@ export function OptionList({ fallbackData }: OptionListProps) {
     tags: parseAsArrayOf(parseAsString)
   })
 
-  const { data, isLoading, mutate } = useSWR<FindAllResult<OptionEntity>>(
+  const { data, isLoading, mutate } = useSWR<FindAllResult<PropertyEntity>>(
     [
-      `options`,
+      `properties`,
       {
         ...pagination,
         ...clearEmpty(sorting),
@@ -59,7 +59,7 @@ export function OptionList({ fallbackData }: OptionListProps) {
 
   const refetch = () => mutate(data, { revalidate: true })
 
-  const columns: DataTableColumn<OptionEntity>[] = [
+  const columns: DataTableColumn<PropertyEntity>[] = [
     {
       key: 'id',
       label: 'ID'
@@ -104,17 +104,17 @@ export function OptionList({ fallbackData }: OptionListProps) {
       },
       formatter: (id) => (
         <div className="flex gap-2">
-          <Link href={`/dashboard/options/${id}`}>
+          <Link href={`/dashboard/properties/${id}`}>
             <Button variant="outline" size="sm-icon">
               <PencilIcon className="w-4 h-4" />
             </Button>
           </Link>
-          <Link href={`/dashboard/options/${id}/categories`}>
+          <Link href={`/dashboard/properties/${id}/categories`}>
             <Button variant="outline" size="sm-icon">
               <SquaresPlusIcon className="w-4 h-4" />
             </Button>
           </Link>
-          <ApiRemoveDialog url={`options/${id}`} onSuccess={refetch}>
+          <ApiRemoveDialog url={`properties/${id}`} onSuccess={refetch}>
             <Button variant="destructive-outline" size="sm-icon">
               <TrashIcon className="w-4 h-4" />
             </Button>
@@ -135,7 +135,7 @@ export function OptionList({ fallbackData }: OptionListProps) {
   const { rows, total } = data || { rows: [], total: 0 }
 
   return (
-    <DataTable<OptionEntity, typeof filter>
+    <DataTable<PropertyEntity, typeof filter>
       data={rows}
       total={total}
       isLoading={isLoading}

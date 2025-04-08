@@ -1,11 +1,10 @@
-version: '3.9'
 services:
 
   db:
     restart: no
     ports:
       - ${MARIADB_PORT:-3333}:3306
-  
+
   phpmyadmin:
     restart: no
 

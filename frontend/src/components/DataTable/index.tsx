@@ -96,12 +96,12 @@ export function DataTable<
 
     const field = String(column.key)
 
-    if (sorting?.sort === field && sorting?.dir === 'asc') {
-      onChangeSorting({ sort: field, dir: 'desc' })
-    } else if (sorting?.sort === field && sorting?.dir === 'desc') {
+    if (sorting?.sort === field && sorting?.dir === 'ASC') {
+      onChangeSorting({ sort: field, dir: 'DESC' })
+    } else if (sorting?.sort === field && sorting?.dir === 'DESC') {
       onChangeSorting({ sort: null, dir: null })
     } else {
-      onChangeSorting({ sort: field, dir: 'asc' })
+      onChangeSorting({ sort: field, dir: 'ASC' })
     }
   }
 
@@ -120,10 +120,10 @@ export function DataTable<
 
     let arrow = <ArrowsUpDownIcon className="ml-2 h-4 w-4" />
     if (sorting?.sort === column.key) {
-      if (sorting.dir === 'asc') {
+      if (sorting.dir === 'ASC') {
         arrow = <BarsArrowDownIcon className="ml-2 h-4 w-4" />
       }
-      if (sorting.dir === 'desc') {
+      if (sorting.dir === 'DESC') {
         arrow = <BarsArrowUpIcon className="ml-2 h-4 w-4" />
       }
     }

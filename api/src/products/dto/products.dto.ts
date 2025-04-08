@@ -2,8 +2,9 @@ import { PaginationQueryDto } from '@/lib/pagination-query.dto'
 import { ParseBoolean } from '@/lib/parse-boolean'
 import { PartialType } from '@nestjs/mapped-types'
 import { Type } from 'class-transformer'
-import { IsArray, IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
+import { IsArray, IsBoolean, IsEnum, IsNumber, IsObject, IsOptional, IsString } from 'class-validator'
 import { Product } from '../entities/product.entity'
+import { ParseObject } from '@/lib/parse-object'
 
 export class UpdateProductImageDto {
   @Type(() => Boolean)
@@ -110,7 +111,7 @@ export class FindAllProductDto extends PaginationQueryDto {
 
   @IsString()
   @IsOptional()
-  dir: 'asc' | 'desc' = 'asc'
+  dir: 'ASC' | 'DESC' = 'ASC'
 }
 
 export class CreateProductDto {
@@ -187,10 +188,10 @@ export class CreateOfferDto {
   @Type(() => Number)
   @IsNumber()
   price: number
-
-  @Type(() => Array)
-  @IsArray()
-  optionValues: number[]
+  
+  @ParseObject()
+  @IsObject()
+  options: Record<string, string>
 }
 
 export class UpdateOfferDto {
@@ -202,10 +203,10 @@ export class UpdateOfferDto {
   @Type(() => Number)
   @IsNumber()
   price: number
-
-  @Type(() => Array)
-  @IsArray()
-  optionValues: number[]
+  
+  @ParseObject()
+  @IsObject()
+  options: Record<string, string>
 }
 
 export class OrderByClickProductDto {

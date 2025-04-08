@@ -33,10 +33,10 @@ export const defaultProductsStore = {
   limit: 24,
   filter: '{}',
   sort: 'id',
-  dir: 'asc'
+  dir: 'ASC'
 }
 
-export const createProductsStore = (options?: { categoryId?: number; favorite?: boolean }) => {
+export const createProductsStore = (prams?: { categoryId?: number; favorite?: boolean }) => {
   return createStore<ProductsStore>()((set, get) => ({
     page: defaultProductsStore.page,
     limit: defaultProductsStore.limit,
@@ -85,11 +85,11 @@ export const createProductsStore = (options?: { categoryId?: number; favorite?: 
         sort: store.sort,
         dir: store.dir
       }
-      if (options?.categoryId) {
-        params.category = options.categoryId
+      if (prams?.categoryId) {
+        params.category = prams.categoryId
       }
-      if (options?.favorite) {
-        params.favorite = options.favorite
+      if (prams?.favorite) {
+        params.favorite = prams.favorite
       }
       const data = await apiGet<ProductsState['data']>('products', params)
       set({ data, loading: false })

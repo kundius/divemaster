@@ -12,6 +12,7 @@ import { AddToCart } from './AddToCart'
 import { BuyInClick } from './BuyInClick'
 import { Gallery } from './Gallery'
 import styles from './index.module.scss'
+import { PropertyType } from '@/types'
 
 export function ProductCard() {
   const productStore = useProductStore((state) => state)
@@ -29,28 +30,15 @@ export function ProductCard() {
   }, [productStore.product])
 
   const colors = useMemo(() => {
-    if (!productStore.product.options || productStore.product.options.length === 0) {
-      return []
-    }
-
-    const option = productStore.product.options.find((option) => option.key === 'color')
-    if (!option) {
-      return []
-    }
-
-    option.values = (productStore.product.optionValues || []).filter(
-      (ov) => ov.optionId === option.id
+    const entry = productStore.selectable.find(
+      ({ property }) => property.type === PropertyType.COMBOCOLORS
     )
-    if (option.values.length < 2) {
-      return []
-    }
-
-    return pluck(option.values, 'content')
-  }, [productStore.product])
+    return entry ? entry.options : []
+  }, [productStore.selectable])
 
   const brand = productStore.product.brand ? productStore.product.brand.title : undefined
-  const price = productStore.displayPrice(productStore.selectedOffer)
-  const oldPrice = productStore.displayOldPrice(productStore.selectedOffer)
+  const price = productStore.displayPrice(productStore.offer)
+  const oldPrice = productStore.displayOldPrice(productStore.offer)
 
   const handleMouseEnter = () => {
     if (showGalleryTimer.current) {

@@ -1,7 +1,7 @@
 import { nanoid, njk, pluck, slugify } from '@/lib/utils'
 import { NotificationsService } from '@/notifications/services/notifications.service'
 import { StorageService } from '@/storage/services/storage.service'
-import { isArray, isBoolean, isNumber, isString, isUndefined } from '@modyqyw/utils'
+import { isArray, isBoolean, isDeepEqual, isNumber, isString, isUndefined } from '@modyqyw/utils'
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { InjectRepository } from '@nestjs/typeorm'
@@ -31,23 +31,29 @@ import {
 import { Brand } from '../entities/brand.entity'
 import { Category } from '../entities/category.entity'
 import { Offer } from '../entities/offer.entity'
-import { OptionValue } from '../entities/option-value.entity'
-import { Option, OptionType } from '../entities/option.entity'
+// import { OptionValue } from '../entities/option-value.entity'
+import { Property, PropertyType } from '../entities/property.entity'
 import { ProductImage } from '../entities/product-image.entity'
 import { Product } from '../entities/product.entity'
 import { ProductsFilterService } from './products-filter.service'
+import { ProductOption } from '../entities/product-option.entity'
+import { OfferOption } from '../entities/offer-option.entity'
 
 @Injectable()
 export class ProductsService {
   constructor(
+    @InjectRepository(ProductOption)
+    private productOptionRepository: Repository<ProductOption>,
+    @InjectRepository(OfferOption)
+    private offerOptionRepository: Repository<OfferOption>,
     @InjectRepository(Product)
     private productRepository: Repository<Product>,
     @InjectRepository(ProductImage)
     private productImageRepository: Repository<ProductImage>,
-    @InjectRepository(Option)
-    private optionRepository: Repository<Option>,
-    @InjectRepository(OptionValue)
-    private optionValueRepository: Repository<OptionValue>,
+    @InjectRepository(Property)
+    private propertyRepository: Repository<Property>,
+    // @InjectRepository(OptionValue)
+    // private optionValueRepository: Repository<OptionValue>,
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
     @InjectRepository(Offer)
@@ -94,52 +100,53 @@ export class ProductsService {
   }
 
   async findAll(dto: FindAllProductDto) {
-    const where: FindOptionsWhere<Product> = {}
-    const relations: FindOptionsRelations<Product> = {}
-    const order: FindOptionsOrder<Product> = {}
+    const qb = this.productRepository.createQueryBuilder('product')
 
     if (dto.withImages) {
-      relations.images = true
-      where.images = { active: true }
-      order.images = { rank: 'asc' }
+      qb.leftJoinAndSelect('product.images', 'images', 'images.active = :imagesActive', {
+        imagesActive: true
+      })
+      qb.orderBy('images.rank', 'ASC')
     }
 
     if (dto?.withOffers) {
-      relations.offers = { optionValues: true }
+      qb.leftJoinAndSelect('product.offers', 'offers')
+      qb.leftJoinAndSelect('offers.options', 'offersOptions')
     }
 
     if (dto?.withOptions) {
-      relations.optionValues = true
+      qb.leftJoinAndSelect('product.options', 'options')
     }
 
     if (dto?.withBrand) {
-      relations.brand = true
+      qb.leftJoinAndSelect('product.brand', 'brand')
     }
 
     if (dto?.withCategories) {
-      relations.categories = true
+      qb.leftJoinAndSelect('product.categories', 'categories')
     }
 
     if (dto.favorite) {
-      where.favorite = true
+      qb.andWhere('product.favorite = :productFavorite', { productFavorite: true })
     }
 
     if (dto.recent) {
-      where.recent = true
+      qb.andWhere('product.recent = :productRecent', { productRecent: true })
     }
 
     if (dto.active) {
-      where.active = true
+      qb.andWhere('product.active = :productActive', { productActive: true })
     }
 
     if (dto.query) {
-      where.title = Like(`%${dto.query}%`)
+      qb.andWhere('product.title LIKE :productTitle', { productTitle: `%${dto.query}%` })
     }
 
     if (typeof dto.category !== 'undefined') {
       // TODO: HIERARCHY_DEPTH_LIMIT
       // товары выбираются без учета подкатегорий
-      where.categories = { id: dto.category }
+      qb.leftJoinAndSelect('product.categories', 'categories')
+      qb.andWhere('categories.id IN (:...categoryIds)', { categoryIds: [dto.category] })
     }
 
     if (dto.filter) {
@@ -148,24 +155,20 @@ export class ProductsService {
         filter = JSON.parse(dto.filter)
       } catch {}
       await this.productsFilterService.init(dto.category)
-      where.id = In(await this.productsFilterService.search(filter))
+      const productIds = await this.productsFilterService.search(filter)
+      qb.andWhere('product.id IN (:...productIds)', { productIds })
     }
 
-    const [rows, total] = await this.productRepository.findAndCount({
-      where,
-      relations,
-      order: {
-        ...order,
-        [dto.sort]: dto.dir
-      },
-      skip: dto.skip,
-      take: dto.take
-    })
+    qb.orderBy(`product.${dto.sort}`, dto.dir)
+    qb.skip(dto.skip)
+    qb.take(dto.take)
+
+    const [rows, total] = await qb.getManyAndCount()
 
     if (dto.withOptions) {
       await Promise.all(
-        rows.map(async (item) => {
-          item.options = await this.findProductOptions(item.id)
+        rows.map(async (row) => {
+          row.properties = await this.findPropertiesForProduct(row.id)
         })
       )
     }
@@ -174,96 +177,84 @@ export class ProductsService {
   }
 
   async findOne(id: number, dto?: FindOneProductDto) {
-    const where: FindOptionsWhere<Product> = {}
-    const relations: FindOptionsRelations<Product> = {}
-    const order: FindOptionsOrder<Product> = {}
+    const qb = this.productRepository.createQueryBuilder('product')
 
-    where.id = id
+    qb.where('product.id = :id', { id })
 
     if (dto?.withOffers) {
-      relations.offers = {
-        optionValues: true
-      }
+      qb.leftJoinAndSelect('product.offers', 'offers')
+      qb.leftJoinAndSelect('offers.options', 'offersOptions')
     }
 
     if (dto?.withOptions) {
-      relations.optionValues = true
+      qb.leftJoinAndSelect('product.options', 'options')
     }
 
     if (dto?.withImages) {
-      relations.images = true
-      where.images = { active: true }
-      order.images = { rank: 'asc' }
+      qb.leftJoinAndSelect('product.images', 'images', 'images.active = :imagesActive', {
+        imagesActive: true
+      })
+      qb.orderBy('images.rank', 'ASC')
     }
 
     if (dto?.withBrand) {
-      relations.brand = true
+      qb.leftJoinAndSelect('product.brand', 'brand')
     }
 
     if (dto?.withCategories) {
-      relations.categories = true
+      qb.leftJoinAndSelect('product.categories', 'categories')
     }
 
     if (dto?.active) {
-      where.active = true
+      qb.andWhere('product.active = :productActive', { productActive: true })
     }
 
-    const product = await this.productRepository.findOneOrFail({
-      where,
-      relations,
-      order
-    })
+    const product = await qb.getOneOrFail()
 
     if (dto?.withOptions) {
-      product.options = await this.findProductOptions(product.id)
+      product.properties = await this.findPropertiesForProduct(product.id)
     }
 
     return product
   }
 
   async findOneByAlias(alias: string, dto?: FindOneProductDto) {
-    const where: FindOptionsWhere<Product> = {}
-    const relations: FindOptionsRelations<Product> = {}
-    const order: FindOptionsOrder<Product> = {}
+    const qb = this.productRepository.createQueryBuilder('product')
 
-    where.alias = alias
+    qb.where('product.alias = :alias', { alias })
 
     if (dto?.withOffers) {
-      relations.offers = {
-        optionValues: true
-      }
+      qb.leftJoinAndSelect('product.offers', 'offers')
+      qb.leftJoinAndSelect('offers.options', 'offersOptions')
     }
 
     if (dto?.withOptions) {
-      relations.optionValues = true
+      qb.leftJoinAndSelect('product.options', 'options')
     }
 
     if (dto?.withImages) {
-      relations.images = true
-      where.images = { active: true }
-      order.images = { rank: 'asc' }
+      qb.leftJoinAndSelect('product.images', 'images', 'images.active = :imagesActive', {
+        imagesActive: true
+      })
+      qb.orderBy('images.rank', 'ASC')
     }
 
     if (dto?.withBrand) {
-      relations.brand = true
+      qb.leftJoinAndSelect('product.brand', 'brand')
     }
 
     if (dto?.withCategories) {
-      relations.categories = true
+      qb.leftJoinAndSelect('product.categories', 'categories')
     }
 
     if (dto?.active) {
-      where.active = true
+      qb.andWhere('product.active = :productActive', { productActive: true })
     }
 
-    const product = await this.productRepository.findOneOrFail({
-      where,
-      relations,
-      order
-    })
+    const product = await qb.getOne()
 
-    if (dto?.withOptions) {
-      product.options = await this.findProductOptions(product.id)
+    if (dto?.withOptions && product) {
+      product.properties = await this.findPropertiesForProduct(product.id)
     }
 
     return product
@@ -364,79 +355,49 @@ export class ProductsService {
     await this.productRepository.save(record)
   }
 
-  async findProductOptions(productId: number) {
-    return this.optionRepository.find({
+  async findPropertiesForProduct(productId: number) {
+    return this.propertyRepository.find({
       where: {
-        categories: { products: { id: productId } },
-        values: { productId }
+        categories: { products: { id: productId } }
       },
       order: {
-        rank: 'asc',
-        values: { content: 'asc' }
-      },
-      relations: {
-        values: true
+        rank: 'asc'
       }
     })
   }
 
   async updateOptions(productId: number, values: UpdateProductOptions) {
-    const product = await this.findOne(productId)
-    const options = await this.findProductOptions(productId)
+    const options = await this.findPropertiesForProduct(productId)
 
-    const findOptionValues = async (option: Option) => {
-      return this.optionValueRepository.find({
-        where: { option: { id: option.id }, product: { id: product?.id } },
-        order: { rank: 'asc' }
-      })
-    }
-
-    const findOrCreateOptionValue = async (option: Option) => {
-      let variant = await this.optionValueRepository.findOne({
-        where: { option: { id: option.id }, product: { id: product?.id } },
-        order: { rank: 'asc' }
-      })
-
-      if (!variant) {
-        variant = new OptionValue()
-        variant.option = option
-        variant.product = product
-        variant.content = ''
-        variant.rank = 0
-        await this.optionValueRepository.save(variant)
-      }
-
-      return variant
-    }
-
-    const multipleUpdater = async (option: Option) => {
+    const multipleUpdater = async (option: Property) => {
       const value = values[option.key]
 
-      const optionValues = await findOptionValues(option)
+      const productOptions = await this.productOptionRepository.find({
+        where: { productId, name: option.key },
+        order: { rank: 'asc' }
+      })
 
       if (isUndefined(value)) {
-        for (const optionValue of optionValues) {
-          await this.optionValueRepository.delete({ id: optionValue.id })
-        }
+        await this.productOptionRepository.delete({ productId, name: option.key })
         return
       }
 
       if (isArray(value, isString)) {
-        // удаляем лишние варианты и меняем ранги для остальных
-        for (const optionValue of optionValues) {
-          const index = value.indexOf(optionValue.content)
+        // удаляем лишние варианты и меняем порядок для остальных
+        for (const productOption of productOptions) {
+          const index = value.indexOf(productOption.content)
           if (index === -1) {
-            await this.optionValueRepository.delete({ id: optionValue.id })
+            await this.productOptionRepository.delete({ id: productOption.id })
             continue
           }
-          await this.optionValueRepository.update({ id: optionValue.id }, { rank: index })
+          await this.productOptionRepository.update({ id: productOption.id }, { rank: index })
           delete value[index]
         }
         // добавляем новые варианты
         for (const key in value) {
-          await this.optionValueRepository.insert({
-            option,
-            product,
+          await this.productOptionRepository.insert({
+            productId,
+            name: option.key,
             content: value[key],
             rank: Number(key)
           })
@@ -447,31 +408,47 @@ export class ProductsService {
       throw new Error('Invalid value type')
     }
 
-    const singleUpdater = async (option: Option) => {
+    const singleUpdater = async (option: Property) => {
       const value = values[option.key]
 
-      const optionValue = await findOrCreateOptionValue(option)
-
       if (isUndefined(value)) {
-        await this.optionValueRepository.delete({ id: optionValue.id })
-        return
-      }
-
-      if (isNumber(value)) {
-        await this.optionValueRepository.update({ id: optionValue.id }, { content: String(value) })
-        return
-      }
-
-      if (isBoolean(value)) {
-        await this.optionValueRepository.update(
-          { id: optionValue.id },
-          { content: value ? '1' : '0' }
-        )
+        await this.productOptionRepository.delete({ productId, name: option.key })
         return
       }
 
       if (isString(value)) {
-        await this.optionValueRepository.update({ id: optionValue.id }, { content: value })
+        await this.productOptionRepository.upsert(
+          {
+            productId,
+            name: option.key,
+            content: value
+          },
+          ['productId', 'name']
+        )
+        return
+      }
+
+      if (isBoolean(value)) {
+        await this.productOptionRepository.upsert(
+          {
+            productId,
+            name: option.key,
+            content: value ? '1' : '0'
+          },
+          ['productId', 'name']
+        )
+        return
+      }
+
+      if (isNumber(value)) {
+        await this.productOptionRepository.upsert(
+          {
+            productId,
+            name: option.key,
+            content: String(value)
+          },
+          ['productId', 'name']
+        )
         return
       }
 
@@ -479,13 +456,13 @@ export class ProductsService {
     }
 
     const updaters = {
-      [OptionType.COMBOBOOLEAN]: singleUpdater,
+      [PropertyType.COMBOBOOLEAN]: singleUpdater,
       // [OptionType.COMBOBOX]: singleUpdater,
-      [OptionType.COMBOCOLORS]: multipleUpdater,
-      [OptionType.COMBOOPTIONS]: multipleUpdater,
-      [OptionType.NUMBERFIELD]: singleUpdater,
+      [PropertyType.COMBOCOLORS]: multipleUpdater,
+      [PropertyType.COMBOOPTIONS]: multipleUpdater,
+      [PropertyType.NUMBERFIELD]: singleUpdater,
       // [OptionType.TEXTAREA]: singleUpdater,
-      [OptionType.TEXTFIELD]: singleUpdater
+      [PropertyType.TEXTFIELD]: singleUpdater
     }
 
     for (const option of options) {
@@ -497,35 +474,44 @@ export class ProductsService {
     return this.offerRepository.find({
       where: { product: { id: productId } },
       order: { rank: 'asc' },
-      relations: { optionValues: true }
+      relations: { options: true }
     })
   }
 
   async createOffer(productId: number, dto: CreateOfferDto) {
-    const currentOffers = await this.offerRepository.find({
-      where: { product: { id: productId } },
-      relations: { optionValues: true }
+    const otherOffers = await this.offerRepository.find({
+      where: { productId },
+      relations: { options: true }
     })
-    const existOffer = currentOffers.find(
-      (currentOffer) =>
-        JSON.stringify(pluck(currentOffer.optionValues, 'id').sort()) ===
-        JSON.stringify(dto.optionValues.sort())
-    )
-    if (existOffer) {
-      throw new BadRequestException('Торговое предложение с указанными опциями уже сущесивует')
+
+    // предотвратить дублирование оффера
+    for (const currentOffer of otherOffers) {
+      const a1 = currentOffer.options
+        .map((option) => [option.name, option.content])
+        .sort((a, b) => a[0].localeCompare(b[0]))
+      const a2 = Object.entries(dto.options).sort((a, b) => a[0].localeCompare(b[0]))
+      if (isDeepEqual(a1, a2)) {
+        throw new BadRequestException('Торговое предложение с указанными опциями уже сущесивует')
+      }
     }
 
-    // TODO: попробовать заменить на productId
     const offer = this.offerRepository.create({
-      product: await this.productRepository.findOneByOrFail({ id: productId }),
+      productId,
       price: dto.price,
-      title: dto.title,
-      optionValues: await Promise.all(
-        dto.optionValues.map(async (id) => this.optionValueRepository.findOneByOrFail({ id }))
-      )
+      title: dto.title
     })
 
     await this.offerRepository.save(offer)
+
+    // добваить новые опции оффера
+    for (const [name, content] of Object.entries(dto.options)) {
+      const offerOption = this.offerOptionRepository.create({
+        name,
+        content,
+        offer
+      })
+      await this.offerOptionRepository.save(offerOption)
+    }
 
     return offer
   }
@@ -535,29 +521,42 @@ export class ProductsService {
   }
 
   async updateOffer(id: number, dto: UpdateOfferDto) {
-    const currentOffer = await this.offerRepository.findOneOrFail({
-      where: { id },
-      relations: { product: true }
+    const offer = await this.offerRepository.findOneOrFail({
+      where: { id }
     })
-    const currentOffers = await this.offerRepository.find({
-      where: { product: { id: currentOffer.product.id }, id: Not(currentOffer.id) },
-      relations: { optionValues: true }
+
+    // предотвратить дублирование оффера
+    const otherOffers = await this.offerRepository.find({
+      where: { productId: offer.productId, id: Not(offer.id) },
+      relations: { options: true }
     })
-    const existOffer = currentOffers.find(
-      (currentOffer) =>
-        JSON.stringify(pluck(currentOffer.optionValues, 'id').sort()) ===
-        JSON.stringify(dto.optionValues.sort())
-    )
-    if (existOffer) {
-      throw new BadRequestException('Торговое предложение с указанными опциями уже сущесивует')
+    for (const currentOffer of otherOffers) {
+      const a1 = currentOffer.options
+        .map((option) => [option.name, option.content])
+        .sort((a, b) => a[0].localeCompare(b[0]))
+      const a2 = Object.entries(dto.options).sort((a, b) => a[0].localeCompare(b[0]))
+      if (isDeepEqual(a1, a2)) {
+        throw new BadRequestException('Торговое предложение с указанными опциями уже сущесивует')
+      }
     }
 
-    currentOffer.price = dto.price
-    currentOffer.title = dto.title
-    currentOffer.optionValues = await Promise.all(
-      dto.optionValues.map(async (id) => this.optionValueRepository.findOneByOrFail({ id }))
-    )
-    await this.offerRepository.save(currentOffer)
+    offer.price = dto.price
+    offer.title = dto.title
+
+    await this.offerRepository.save(offer)
+
+    // удалить старые опции оффера
+    await this.offerOptionRepository.delete({ offer })
+
+    // добваить новые опции оффера
+    for (const [name, content] of Object.entries(dto.options)) {
+      const offerOption = this.offerOptionRepository.create({
+        name,
+        content,
+        offer
+      })
+      await this.offerOptionRepository.save(offerOption)
+    }
   }
 
   async orderByClick(id: number, dto: OrderByClickProductDto) {

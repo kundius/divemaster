@@ -2,9 +2,9 @@ import { PaginationQueryDto } from '@/lib/pagination-query.dto'
 import { PartialType } from '@nestjs/mapped-types'
 import { Type } from 'class-transformer'
 import { IsArray, IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
-import { Option, OptionType } from '../entities/option.entity'
+import { Property, PropertyType } from '../entities/property.entity'
 
-export class CreateOptionDto {
+export class CreatePropertyDto {
   @Type(() => String)
   @IsString()
   key: string
@@ -13,8 +13,8 @@ export class CreateOptionDto {
   @IsString()
   caption: string
 
-  @IsEnum(OptionType)
-  type: OptionType
+  @IsEnum(PropertyType)
+  type: PropertyType
 
   @Type(() => Boolean)
   @IsBoolean()
@@ -26,9 +26,9 @@ export class CreateOptionDto {
   rank?: number
 }
 
-export class UpdateOptionDto extends PartialType(CreateOptionDto) {}
+export class UpdatePropertyDto extends PartialType(CreatePropertyDto) {}
 
-export class FindAllOptionDto extends PaginationQueryDto {
+export class FindAllPropertyDto extends PaginationQueryDto {
   @Type(() => String)
   @IsString()
   @IsOptional()
@@ -37,18 +37,18 @@ export class FindAllOptionDto extends PaginationQueryDto {
   @Type(() => String)
   @IsString()
   @IsOptional()
-  readonly sort: keyof Option = 'rank'
+  readonly sort: keyof Property = 'rank'
 
   @IsString()
   @IsOptional()
   readonly dir: 'asc' | 'desc' = 'asc'
 }
 
-export class FindOneOptionDto {}
+export class FindOnePropertyDto {}
 
-export class FindAllOptionCategoriesDto {}
+export class FindAllPropertyCategoriesDto {}
 
-export class UpdateOptionCategoriesDto {
+export class UpdatePropertyCategoriesDto {
   @IsArray()
   categories: Array<string>
 }

@@ -27,7 +27,7 @@ import {
 } from '@/components/ui/select'
 import { apiPatch, apiPost } from '@/lib/api'
 import { withClientAuth } from '@/lib/api/with-client-auth'
-import { OfferEntity, OptionEntity } from '@/types'
+import { OfferEntity, PropertyEntity } from '@/types'
 import { useToggle } from '@reactuses/core'
 import { PropsWithChildren } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
@@ -36,9 +36,8 @@ import { toast } from 'sonner'
 export interface ProductOffersUpdateDialogProps {
   productId: number
   offer: OfferEntity
-  options: OptionEntity[]
+  properties: Record<string, { property: PropertyEntity; options: string[] } | undefined>
   onSuccess?: () => void
-  defaultValues?: Fields
 }
 
 interface Fields {
@@ -50,10 +49,9 @@ interface Fields {
 export function ProductOffersUpdateDialog({
   productId,
   offer,
-  options,
+  properties,
   children,
-  onSuccess,
-  defaultValues
+  onSuccess
 }: PropsWithChildren<ProductOffersUpdateDialogProps>) {
   const [show, toggleShow] = useToggle(false)
   const [loading, toggleLoading] = useToggle(false)
@@ -61,13 +59,13 @@ export function ProductOffersUpdateDialog({
     defaultValues: {
       price: String(offer.price),
       title: offer.title || '',
-      options: options.reduce((previousValue, currentValue) => {
-        const foundValue = offer.optionValues?.find(({optionId}) => optionId === currentValue.id)
-        return {
+      options: (offer.options || []).reduce(
+        (previousValue, option) => ({
           ...previousValue,
-          [currentValue.key]: foundValue ? String(foundValue.id) : undefined
-        }
-      }, {})
+          [option.name]: option.content
+        }),
+        {}
+      )
     }
   })
 
@@ -80,14 +78,12 @@ export function ProductOffersUpdateDialog({
         {
           title: data.title,
           price: Number(data.price),
-          optionValues: Object.values(data.options)
-            .filter((id) => !!id)
-            .map((id) => Number(id))
+          options: data.options
         },
         withClientAuth()
       )
       toast.success('Сохранено')
-      form.reset()
+      // form.reset()
       onSuccess?.()
       toggleShow(false)
     } catch (e) {
@@ -140,34 +136,34 @@ export function ProductOffersUpdateDialog({
                   </div>
                 )}
               />
-              {options.map((option) => (
-                <FormField
-                  key={option.id}
-                  control={form.control}
-                  name={`options.${option.key}`}
-                  render={({ field: { value, onChange, ref, ...field } }) => (
-                    <FormItem className="grid grid-cols-4 items-center gap-4 space-y-0">
-                      <FormLabel className="text-right">{option.caption}</FormLabel>
-                      <FormControl className="col-span-3">
-                        <Select onValueChange={onChange} value={value || ''} {...field}>
-                          <SelectTrigger className="col-span-3">
-                            <SelectValue />
-                          </SelectTrigger>
-                          {option.values && (
+              {Object.values(properties)
+                .filter((v) => !!v)
+                .map(({ property, options }) => (
+                  <FormField
+                    key={property.id}
+                    control={form.control}
+                    name={`options.${property.key}`}
+                    render={({ field: { value, onChange, ref, ...field } }) => (
+                      <FormItem className="grid grid-cols-4 items-center gap-4 space-y-0">
+                        <FormLabel className="text-right">{property.caption}</FormLabel>
+                        <FormControl className="col-span-3">
+                          <Select onValueChange={onChange} value={value || ''} {...field}>
+                            <SelectTrigger className="col-span-3">
+                              <SelectValue />
+                            </SelectTrigger>
                             <SelectContent>
-                              {option.values.map((value) => (
-                                <SelectItem key={value.id} value={String(value.id)}>
-                                  {value.content}
+                              {options.map((option) => (
+                                <SelectItem key={option} value={option}>
+                                  {option}
                                 </SelectItem>
                               ))}
                             </SelectContent>
-                          )}
-                        </Select>
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-              ))}
+                          </Select>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                ))}
             </div>
             <DialogFooter>
               <Button disabled={loading} type="submit">

@@ -18,12 +18,12 @@ import { Title } from './_components/Title'
 import type { Metadata } from 'next'
 import { SectionPage } from '@/components/SectionPage'
 
-export async function generateStaticParams() {
-  const products = await apiGet<ApiTableData<ProductEntity>>(`products`, {
-    limit: 100
-  })
-  return products.rows.map(({ alias }) => ({ alias }))
-}
+// export async function generateStaticParams() {
+//   const products = await apiGet<ApiTableData<ProductEntity>>(`products`, {
+//     limit: 100
+//   })
+//   return products.rows.map(({ alias }) => ({ alias }))
+// }
 
 export async function generateMetadata({
   params

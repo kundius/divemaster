@@ -2,8 +2,8 @@ import { slugify } from '@/lib/utils'
 import { Brand } from '@/products/entities/brand.entity'
 import { Category } from '@/products/entities/category.entity'
 import { Offer } from '@/products/entities/offer.entity'
-import { OptionValue } from '@/products/entities/option-value.entity'
-import { Option, OptionType } from '@/products/entities/option.entity'
+// import { OptionValue } from '@/products/entities/option-value.entity'
+import { Property, PropertyType } from '@/products/entities/property.entity'
 import { ProductImage } from '@/products/entities/product-image.entity'
 import { Product } from '@/products/entities/product.entity'
 import { CategoriesService } from '@/products/services/categories.service'
@@ -32,6 +32,9 @@ import { v4 as uuidv4 } from 'uuid'
 import { FindAllSyncTaskDto } from '../dto/sync.dto'
 import { SyncProduct } from '../entities/sync-product.entity'
 import { SyncTask, SyncTaskStatus } from '../entities/sync-task.entity'
+import { ProductOption } from '@/products/entities/product-option.entity'
+import { OfferOption } from '@/products/entities/offer-option.entity'
+import { isDeepEqual } from '@modyqyw/utils'
 
 const swap = (json) => {
   var ret = {}
@@ -103,18 +106,22 @@ export class SyncService {
     private syncProductRepository: Repository<SyncProduct>,
     @InjectRepository(Product)
     private productRepository: Repository<Product>,
+    @InjectRepository(ProductOption)
+    private productOptionRepository: Repository<ProductOption>,
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
     @InjectRepository(ProductImage)
     private productImageRepository: Repository<ProductImage>,
     @InjectRepository(Brand)
     private brandRepository: Repository<Brand>,
-    @InjectRepository(Option)
-    private optionRepository: Repository<Option>,
-    @InjectRepository(OptionValue)
-    private optionValueRepository: Repository<OptionValue>,
+    @InjectRepository(Property)
+    private optionRepository: Repository<Property>,
+    // @InjectRepository(OptionValue)
+    // private optionValueRepository: Repository<OptionValue>,
     @InjectRepository(Offer)
     private offerRepository: Repository<Offer>,
+    @InjectRepository(OfferOption)
+    private offerOptionRepository: Repository<OfferOption>,
     private productsService: ProductsService,
     private categoriesService: CategoriesService,
     private storageService: StorageService,
@@ -395,7 +402,8 @@ export class SyncService {
 
     for (const data of products) {
       let product = await this.productRepository.findOne({
-        where: { remoteId: data.remoteId }
+        where: { remoteId: data.remoteId },
+        relations: { offers: { options: true } }
       })
 
       // Если товара нет создать новый.
@@ -494,7 +502,6 @@ export class SyncService {
       // Связать с существующими или новыми опциями и их значениями.
       // Опции искать по ключу _или_ названию, чтобы гарантировать уникальность ключа.
       // Только добавляем новые, существующие не меняем.
-      const optionValuesForOffers: Record<string, Record<string, OptionValue>> = {}
       let options: Record<string, string[]> = {}
       try {
         options = JSON.parse(data.options) as unknown as typeof options
@@ -505,32 +512,31 @@ export class SyncService {
         const key = slugify(caption)
         let option = await this.optionRepository.findOneBy([{ caption }, { key }])
         if (!option) {
-          option = new Option()
+          option = new Property()
           option.caption = caption
           option.key = key
           option.rank = i
           option.inFilter = true
-          option.type = OptionType.COMBOOPTIONS
+          option.type = PropertyType.COMBOOPTIONS
           await this.optionRepository.save(option)
         }
-        optionValuesForOffers[caption] = {}
         let k = 0
         for (const content of values) {
           k++
-          let optionValue = await this.optionValueRepository.findOneBy({
+          let optionValue = await this.productOptionRepository.findOneBy({
             productId: product.id,
-            optionId: option.id,
+            name: option.key,
             content
           })
           if (!optionValue) {
-            optionValue = new OptionValue()
-            optionValue.product = product
-            optionValue.option = option
-            optionValue.content = content
-            optionValue.rank = k
-            await this.optionValueRepository.save(optionValue)
+            optionValue = this.productOptionRepository.create({
+              productId: product.id,
+              name: option.key,
+              content,
+              rank: k
+            })
+            await this.productOptionRepository.save(optionValue)
           }
-          optionValuesForOffers[caption][content] = optionValue
         }
       }
 
@@ -555,40 +561,48 @@ export class SyncService {
       let ii = 0
       for (const offerData of offers) {
         ii++
-        const optionValues = Object.entries(offerData.options).map(
-          ([caption, content]) => optionValuesForOffers[caption][content]
-        )
-        const optionValueIds = optionValues.map((optionValue) => optionValue.id)
-        const qb = this.offerRepository
-          .createQueryBuilder('offer')
-          .leftJoinAndSelect('offer.product', 'product')
-          .leftJoinAndSelect('offer.optionValues', 'optionValues')
-          .setParameter('optionValueIds', optionValueIds)
-          .setParameter('optionValueCount', optionValueIds.length)
-        qb.where('product.id = :productId', { productId: product.id })
-        if (optionValueIds.length > 0) {
-          qb.andWhere((qb) => {
-            const subQuery = qb
-              .subQuery()
-              .select('1')
-              .from(OptionValue, 'v')
-              .innerJoin('v.offers', 'o')
-              .where('o.id = offer.id')
-              .andWhere('v.id IN (:...optionValueIds)')
-            return `EXISTS ${subQuery.getQuery()}`
-          })
-        }
-        qb.groupBy('offer.id')
-        qb.having('COUNT(optionValues.id) = :optionValueCount')
+        const optionEntries = Object.entries(offerData.options)
+        // const optionValues = Object.entries(offerData.options).map(
+        //   ([caption, content]) => optionValuesForOffers[caption][content]
+        // )
+        // const optionValueIds = optionValues.map((optionValue) => optionValue.id)
+        // const qb = this.offerRepository
+        //   .createQueryBuilder('offer')
+        //   .leftJoinAndSelect('offer.product', 'product')
+        //   .leftJoinAndSelect('offer.optionValues', 'optionValues')
+        //   .setParameter('optionValueIds', optionValueIds)
+        //   .setParameter('optionValueCount', optionValueIds.length)
+        // qb.where('product.id = :productId', { productId: product.id })
+        // if (optionValueIds.length > 0) {
+        //   qb.andWhere((qb) => {
+        //     const subQuery = qb
+        //       .subQuery()
+        //       .select('1')
+        //       .from(OptionValue, 'v')
+        //       .innerJoin('v.offers', 'o')
+        //       .where('o.id = offer.id')
+        //       .andWhere('v.id IN (:...optionValueIds)')
+        //     return `EXISTS ${subQuery.getQuery()}`
+        //   })
+        // }
+        // qb.groupBy('offer.id')
+        // qb.having('COUNT(optionValues.id) = :optionValueCount')
 
-        let offer = await qb.getOne()
+        // let offer = await qb.getOne()
+        let offer = product.offers.find((productOffer) => {
+          const a1 = productOffer.options
+            .map((option) => [option.name, option.content])
+            .sort((a, b) => a[0].localeCompare(b[0]))
+          const a2 = optionEntries.sort((a, b) => a[0].localeCompare(b[0]))
+          return isDeepEqual(a1, a2)
+        })
 
         if (!offer) {
-          offer = new Offer()
-          offer.optionValues = optionValues
-          offer.product = product
-          offer.rank = ii
-          offer.title = offerData.name
+          offer = this.offerRepository.create({
+            product: product,
+            rank: ii,
+            title: offerData.name
+          })
         }
 
         offer.remoteId = offerData.remoteId // для обновления добавленных вручную офферов
@@ -596,9 +610,22 @@ export class SyncService {
 
         await this.offerRepository.save(offer)
 
+        // удалить старые опции оффера
+        await this.offerOptionRepository.delete({ offer })
+
+        // добваить новые опции оффера
+        for (const [name, content] of optionEntries) {
+          const offerOption = this.offerOptionRepository.create({
+            name,
+            content,
+            offer
+          })
+          await this.offerOptionRepository.save(offerOption)
+        }
+
         changedOfferIds.push(offer.id)
       }
-      // Удалить торг. предл. ранеее загруженные их выгрузки и теперь в ней отсутствующие
+      // Удалить торг. предл. ранеее загруженные из выгрузки и теперь в ней отсутствующие
       await this.offerRepository.delete({
         remoteId: Not(IsNull()),
         id: Not(In(changedOfferIds)),

@@ -16,6 +16,7 @@ import { PickupPointTypeEnum } from '@/order/entities/pickup-point.entity'
 import { Payment, PaymentServiceEnum } from '@/order/entities/payment.entity'
 import { Order } from '@/order/entities/order.entity'
 import { OrderProduct } from '@/order/entities/order-product.entity'
+import { CartProductOption } from '../entities/cart-product-option.entity'
 
 type ProductAssessment =
   | {
@@ -36,8 +37,8 @@ export class CartService {
     private cartRepository: Repository<Cart>,
     @InjectRepository(CartProduct)
     private cartProductRepository: Repository<CartProduct>,
-    @InjectRepository(OptionValue)
-    private optionValueRepository: Repository<OptionValue>,
+    @InjectRepository(CartProductOption)
+    private cartProductOptionRepository: Repository<CartProductOption>,
     @InjectRepository(Order)
     private orderRepository: Repository<Order>,
     @InjectRepository(Payment)
@@ -90,24 +91,26 @@ export class CartService {
     const cartProduct = await this.cartProductRepository.findOneOrFail({
       where: { id: cartProductId },
       relations: {
-        optionValues: true,
-        product: { offers: { optionValues: true } }
+        options: true,
+        product: { offers: { options: true } }
       }
     })
-    const cartProductOptionValuesIds = cartProduct.optionValues.map((item) => item.id)
 
     // сортируем офферы по количеству опций
     const sortedOffers = cartProduct.product.offers
       .sort((a, b) => {
-        if (a.optionValues.length < b.optionValues.length) return -1
-        if (a.optionValues.length > b.optionValues.length) return 1
+        if (a.options.length < b.options.length) return -1
+        if (a.options.length > b.options.length) return 1
         return 0
       })
       .reverse()
-    // Находим предложение, все параметры которого соответствуют выбранным.
+    // Находим предложение, все параметры которого есть среди выбранных.
+    // Точное соответствие не нужно, потому что могут быть выбраны параметры которые не влияют на цену.
     // Благодаря сортировке мы находим предложение с наибольшим сходством параметров.
     const selectedOffer = sortedOffers.find((offer) =>
-      (offer.optionValues || []).every(({ id }) => cartProductOptionValuesIds.includes(id))
+      offer.options.every((a) =>
+        cartProduct.options.find((b) => a.name === b.name && a.content === b.content)
+      )
     )
 
     // если торговое предложение не найдено, то позицию в корзине помечаем неактивной,
@@ -146,7 +149,7 @@ export class CartService {
       },
       relations: {
         product: { images: true },
-        optionValues: { option: true }
+        options: true
       },
       order: {
         product: { images: { rank: 'asc' } },
@@ -167,40 +170,48 @@ export class CartService {
   }
 
   async addProduct(cartId: string, dto: AddProductDto) {
+    const optionEntries = Object.entries(dto.options || {})
+
     const cartProducts = await this.cartProductRepository.find({
-      where: {
-        cartId,
-        productId: dto.id
-      },
-      relations: {
-        optionValues: true
-      }
+      where: { cartId, productId: dto.id },
+      relations: { options: true }
     })
 
-    // Найти в корзине товар с такими же опциями
+    // Найти в корзине товар с таким же набором опций
     let cartProduct = cartProducts.find((cartProduct) => {
-      if (dto.optionValues && dto.optionValues.length) {
-        const identifiers = cartProduct.optionValues.map((item) => item.id)
-        return dto.optionValues.every((id) => identifiers.includes(id))
+      if (optionEntries.length) {
+        if (optionEntries.length !== cartProduct.options.length) {
+          return false
+        }
+        return optionEntries.every(([name, content]) =>
+          cartProduct.options.find((b) => name === b.name && content === b.content)
+        )
       }
-      return cartProduct.optionValues.length === 0
+      return cartProduct.options.length === 0
     })
 
-    // Увеличить количество, если найден, или добавить новый
+    // Увеличить количество или добавить новый
     if (cartProduct) {
       cartProduct.quantity = cartProduct.quantity + (dto.quantity || 1)
       await this.cartProductRepository.save(cartProduct)
     } else {
-      cartProduct = new CartProduct()
-      cartProduct.quantity = dto.quantity || 1
-      cartProduct.cartId = cartId
-      cartProduct.productId = dto.id
-      cartProduct.optionValues = await Promise.all(
-        (dto.optionValues || []).map(async (id) =>
-          this.optionValueRepository.findOneByOrFail({ id })
-        )
-      )
+      // добавить товар
+      cartProduct = this.cartProductRepository.create({
+        quantity: dto.quantity || 1,
+        cartId,
+        productId: dto.id
+      })
       await this.cartProductRepository.save(cartProduct)
+
+      // добавить опции
+      for (const [name, content] of optionEntries) {
+        const cartProductOption = this.cartProductOptionRepository.create({
+          name,
+          content,
+          cartProduct
+        })
+        await this.cartProductOptionRepository.save(cartProductOption)
+      }
     }
 
     return this.findProducts(cartId)
@@ -365,7 +376,7 @@ export class CartService {
       where: { cartId },
       relations: {
         product: true,
-        optionValues: { option: true }
+        options: true
       }
     })
     for (const cartProduct of cartProducts) {
@@ -373,10 +384,10 @@ export class CartService {
 
       if (typeof productAssessment.price === 'undefined' || !productAssessment.active) continue
 
-      const options = cartProduct.optionValues.reduce<Record<string, string>>((options, item) => {
+      const options = cartProduct.options.reduce<Record<string, string>>((options, item) => {
         return {
           ...options,
-          [item.option.caption]: item.content
+          [item.name]: item.content
         }
       }, {})
 

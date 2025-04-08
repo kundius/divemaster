@@ -17,7 +17,7 @@ export type CartState = {
 
 export type CartActions = {
   loadCart(): Promise<void>
-  addToCart(item: { id: number; quantity?: number; optionValues?: number[] }): Promise<void>
+  addToCart(item: { id: number; quantity?: number; options?: Record<string, string> }): Promise<void>
   removeFromCart(product: CartProductEntity): Promise<void>
   changeQuantity(product: CartProductEntity, quantity: number): Promise<void>
   deleteCart(): Promise<void>
@@ -76,7 +76,7 @@ export const createCartStore = () =>
         const params = {
           id: item.id,
           quantity: item.quantity || 1,
-          optionValues: item.optionValues || []
+          options: item.options || {}
         }
         const cartProducts = await apiPut<CartProductEntity[]>(
           `cart/${cartId}/products`,

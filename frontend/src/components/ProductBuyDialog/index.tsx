@@ -61,7 +61,7 @@ export function ProductBuyDialog({ children, title }: PropsWithChildren<{ title:
     toggleShow(false)
   }
 
-  const price = productStore.displayPrice(productStore.selectedOffer)
+  const price = productStore.displayPrice(productStore.offer)
 
   return (
     <>

@@ -4,7 +4,9 @@ import { ProductImage } from './product-image.entity'
 import { OptionValue } from './option-value.entity'
 import { Offer } from './offer.entity'
 import { Brand } from './brand.entity'
-import { Option } from './option.entity'
+import { Property } from './property.entity'
+import { OfferOption } from './offer-option.entity'
+import { ProductOption } from './product-option.entity'
 
 @Entity()
 export class Product {
@@ -60,6 +62,7 @@ export class Product {
   @OneToMany(() => ProductImage, (image) => image.product, { cascade: true })
   images: ProductImage[]
 
+  // TODO remove
   @OneToMany(() => OptionValue, (optionValue) => optionValue.product, { cascade: true })
   optionValues: OptionValue[]
 
@@ -72,6 +75,9 @@ export class Product {
   @ManyToOne(() => Brand, { nullable: true })
   brand: Brand | null
 
-  // для ручной подготовки опций товаров
-  options?: Option[]
+  // для ручной подготовки свойств товара
+  properties?: Property[]
+    
+  @OneToMany(() => ProductOption, (option) => option.product)
+  options: ProductOption[]
 }

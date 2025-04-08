@@ -2,14 +2,12 @@
 
 import { cn } from '@/lib/utils'
 import styles from './SelectOption.module.scss'
-import { OptionValueEntity } from '@/types'
-import { useCartStore } from '@/providers/cart-store-provider'
 
 export interface SelectOptionProps {
   caption: string
-  values?: OptionValueEntity[]
-  selected?: OptionValueEntity
-  onSelect?: (value: OptionValueEntity) => void
+  values?: string[]
+  selected?: string
+  onSelect?: (value: string) => void
 }
 
 export function SelectOption({ caption, values = [], selected, onSelect }: SelectOptionProps) {
@@ -19,13 +17,13 @@ export function SelectOption({ caption, values = [], selected, onSelect }: Selec
       <div className={styles.values}>
         {values.map((value) => (
           <button
-            key={value.id}
+            key={value}
             className={cn(styles.value, {
-              [styles.active]: selected?.id === value.id
+              [styles.active]: selected === value
             })}
             onClick={() => onSelect?.(value)}
           >
-            {value.content}
+            {value}
           </button>
         ))}
       </div>

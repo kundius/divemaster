@@ -2,15 +2,15 @@
 
 import { cn } from '@/lib/utils'
 import styles from './SelectOption.module.scss'
-import { OptionType, OptionValueEntity } from '@/types'
+import { PropertyType } from '@/types'
 import { colorsObject } from '@/lib/colors'
 
 export interface SelectOptionProps {
-  type: OptionType
+  type: PropertyType
   caption: string
-  values?: OptionValueEntity[]
-  selected?: OptionValueEntity
-  onSelect?: (value: OptionValueEntity) => void
+  values?: string[]
+  selected?: string
+  onSelect?: (value: string) => void
 }
 
 export function SelectOption({
@@ -42,19 +42,16 @@ export function SelectOption({
         <div className={styles.values}>
           {values.map((value) => (
             <button
-              key={value.id}
+              key={value}
               className={cn(styles.value, {
-                [styles.active]: selected?.id === value.id
+                [styles.active]: selected === value
               })}
               onClick={() => onSelect?.(value)}
             >
-              {type === OptionType.COMBOCOLORS && (
-                <span
-                  className={styles.color}
-                  style={{ backgroundColor: colorsObject[value.content] }}
-                />
+              {type === PropertyType.COMBOCOLORS && (
+                <span className={styles.color} style={{ backgroundColor: colorsObject[value] }} />
               )}
-              {value.content}
+              {value}
             </button>
           ))}
         </div>

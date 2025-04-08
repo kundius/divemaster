@@ -126,22 +126,6 @@ export function pluck<T, V extends keyof T>(typeFrom: T[], properties: V) {
   return typeFrom.map((prop) => prop[properties])
 }
 
-export function productPrice(product: ProductEntity): [string, number | undefined] {
-  if (!product.offers || product.offers.length === 0) {
-    return ['Цена по запросу', undefined]
-  }
-
-  const baseOffer = product.offers.find((o) => o.optionValues && o.optionValues.length === 0)
-
-  if (baseOffer && product.offers.length === 1) {
-    return [formatPrice(baseOffer.price), baseOffer.price]
-  }
-
-  const min = Math.min(...product.offers.map((o) => o.price))
-
-  return [`от ${formatPrice(min)}`, min]
-}
-
 export function getEntityId(entity: number | { id: number }) {
   if (typeof entity === 'number') {
     return entity

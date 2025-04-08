@@ -18,11 +18,11 @@ export default async function Layout({
   const items = [
     {
       title: 'Свойства',
-      href: `/dashboard/options/${id}`
+      href: `/dashboard/properties/${id}`
     },
     {
       title: 'Категории',
-      href: `/dashboard/options/${id}/categories`
+      href: `/dashboard/properties/${id}/categories`
     }
   ]
   return (

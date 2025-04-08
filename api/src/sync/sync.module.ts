@@ -11,8 +11,10 @@ import { ProductImage } from '@/products/entities/product-image.entity'
 import { Category } from '@/products/entities/category.entity'
 import { Brand } from '@/products/entities/brand.entity'
 import { OptionValue } from '@/products/entities/option-value.entity'
-import { Option } from '@/products/entities/option.entity'
+import { Property } from '@/products/entities/property.entity'
 import { Offer } from '@/products/entities/offer.entity'
+import { ProductOption } from '@/products/entities/product-option.entity'
+import { OfferOption } from '@/products/entities/offer-option.entity'
 
 @Module({
   imports: [
@@ -22,10 +24,12 @@ import { Offer } from '@/products/entities/offer.entity'
       Product,
       Category,
       ProductImage,
+      ProductOption,
       Brand,
-      Option,
+      Property,
       OptionValue,
-      Offer
+      Offer,
+      OfferOption
     ]),
     StorageModule,
     ProductsModule

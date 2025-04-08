@@ -208,7 +208,15 @@ export interface OfferEntity {
   price: number
   productId: number
   product?: ProductEntity
-  optionValues?: OptionValueEntity[]
+  options?: OfferOptionEntity[]
+}
+
+export interface OfferOptionEntity {
+  id: number
+  name: string
+  content: string
+  offerId: number
+  offer?: OfferEntity
 }
 
 export interface CategoryEntity {
@@ -224,7 +232,7 @@ export interface CategoryEntity {
   active: boolean
   rank: number
   children?: CategoryEntity[]
-  options?: OptionEntity[]
+  properties?: PropertyEntity[]
   products?: ProductEntity[]
 }
 
@@ -250,9 +258,18 @@ export interface ProductEntity {
   images?: ProductImageEntity[]
   categories?: CategoryEntity[]
   descriptions?: ProductDescription[]
-  options?: OptionEntity[]
   offers?: OfferEntity[]
-  optionValues?: OptionValueEntity[]
+  properties?: PropertyEntity[]
+  options?: ProductOptionEntity[]
+}
+
+export interface ProductOptionEntity {
+  id: number
+  name: string
+  content: string
+  rank: number
+  productId: number
+  product?: ProductEntity
 }
 
 export interface ProductDescription {
@@ -291,29 +308,29 @@ export type ProductImageEntity = {
   active: boolean
 }
 
-export interface OptionEntity {
+export interface PropertyEntity {
   id: number
   key: string
   caption: string
   inFilter: boolean
-  type: OptionType
+  type: PropertyType
   rank: number
   categories?: CategoryEntity[]
-  values?: OptionValueEntity[]
+  // values?: OptionValueEntity[]
 }
 
-export interface OptionValueEntity {
-  id: number
-  content: string
-  optionId: number
-  option?: OptionEntity
-  productId: number
-  product?: ProductEntity
-  rank: number
-  properties?: string
-}
+// export interface OptionValueEntity {
+//   id: number
+//   content: string
+//   optionId: number
+//   option?: OptionEntity
+//   productId: number
+//   product?: ProductEntity
+//   rank: number
+//   properties?: string
+// }
 
-export enum OptionType {
+export enum PropertyType {
   // CHECKBOX = 'checkbox',
   // COMBOMULTIPLE = 'combo-multiple',
   COMBOBOOLEAN = 'combo-boolean',
@@ -352,10 +369,18 @@ export interface CartProductEntity {
   quantity: number
   createdAt: string
   updatedAt: string
-  optionValues?: OptionValueEntity[]
+  options?: CartProductOptionEntity[]
   oldPrice?: number
   price?: number
   active?: boolean
+}
+
+export interface CartProductOptionEntity {
+  id: number
+  name: string
+  content: string
+  cartProductId: number
+  cartProduct?: ProductEntity
 }
 
 export interface BlogPostEntity {

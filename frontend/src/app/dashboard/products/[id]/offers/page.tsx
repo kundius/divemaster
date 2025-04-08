@@ -1,7 +1,7 @@
 import { apiGet } from '@/lib/api'
 import { withServerAuth } from '@/lib/api/with-server-auth'
-import { OptionType, PageProps, ProductEntity } from '@/types'
-import { ProductOffers } from '../../_components/ProductOffers'
+import { PageProps, ProductEntity } from '@/types'
+import { ProductOffers, ProductOffersProps } from '../../_components/ProductOffers'
 
 export default async function Page({ params }: PageProps<{ id: number }>) {
   const { id } = await params
@@ -11,13 +11,13 @@ export default async function Page({ params }: PageProps<{ id: number }>) {
     await withServerAuth()
   )
 
-  const comboOptions = (product.options || []).filter((option) =>
-    [OptionType.COMBOCOLORS, OptionType.COMBOOPTIONS].includes(option.type)
-  )
-
-  for (const option of comboOptions) {
-    option.values = (product.optionValues || []).filter((ov) => ov.optionId === option.id)
+  const properties: ProductOffersProps['properties'] = {}
+  for (const property of product.properties || []) {
+    const options = (product.options || [])
+      .filter((option) => option.name == property.key)
+      .map((option) => option.content)
+    properties[property.key] = { property, options }
   }
 
-  return <ProductOffers productId={id} options={comboOptions} />
+  return <ProductOffers productId={product.id} properties={properties} />
 }

@@ -27,15 +27,16 @@ import {
 } from '@/components/ui/select'
 import { apiPost } from '@/lib/api'
 import { withClientAuth } from '@/lib/api/with-client-auth'
-import { OfferEntity, OptionEntity } from '@/types'
+import { OfferEntity, PropertyEntity } from '@/types'
 import { useToggle } from '@reactuses/core'
 import { PropsWithChildren } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
+import { ProductOffersProps } from './ProductOffers'
 
 export interface ProductOffersCreateDialogProps {
   productId: number
-  options: OptionEntity[]
+  properties: ProductOffersProps['properties']
   onSuccess?: () => void
 }
 
@@ -47,7 +48,7 @@ interface Fields {
 
 export function ProductOffersCreateDialog({
   productId,
-  options,
+  properties,
   children,
   onSuccess
 }: PropsWithChildren<ProductOffersCreateDialogProps>) {
@@ -70,9 +71,7 @@ export function ProductOffersCreateDialog({
         {
           title: data.title,
           price: Number(data.price),
-          optionValues: Object.values(data.options)
-            .filter((id) => !!id)
-            .map((id) => Number(id))
+          options: data.options
         },
         withClientAuth()
       )
@@ -130,34 +129,36 @@ export function ProductOffersCreateDialog({
                   </div>
                 )}
               />
-              {options.map((option) => (
-                <FormField
-                  key={option.id}
-                  control={form.control}
-                  name={`options.${option.key}`}
-                  render={({ field: { value, onChange, ref, ...field } }) => (
-                    <FormItem className="grid grid-cols-4 items-center gap-4 space-y-0">
-                      <FormLabel className="text-right">{option.caption}</FormLabel>
-                      <FormControl className="col-span-3">
-                        <Select onValueChange={onChange} value={value || ''} {...field}>
-                          <SelectTrigger className="col-span-3">
-                            <SelectValue />
-                          </SelectTrigger>
-                          {option.values && (
-                            <SelectContent>
-                              {option.values.map((value) => (
-                                <SelectItem key={value.id} value={String(value.id)}>
-                                  {value.content}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          )}
-                        </Select>
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-              ))}
+              {Object.values(properties)
+                .filter((v) => !!v)
+                .map(({ property, options }) => (
+                  <FormField
+                    key={property.id}
+                    control={form.control}
+                    name={`options.${property.key}`}
+                    render={({ field: { value, onChange, ref, ...field } }) => (
+                      <FormItem className="grid grid-cols-4 items-center gap-4 space-y-0">
+                        <FormLabel className="text-right">{property.caption}</FormLabel>
+                        <FormControl className="col-span-3">
+                          <Select onValueChange={onChange} value={value || ''} {...field}>
+                            <SelectTrigger className="col-span-3">
+                              <SelectValue />
+                            </SelectTrigger>
+                            {options && (
+                              <SelectContent>
+                                {options.map((option) => (
+                                  <SelectItem key={option} value={option}>
+                                    {option}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            )}
+                          </Select>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                ))}
             </div>
             <DialogFooter>
               <Button disabled={loading} type="submit">

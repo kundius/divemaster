@@ -1,5 +1,5 @@
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
-import { Option } from './option.entity'
+import { Property } from './property.entity'
 import { Product } from './product.entity'
 import { Offer } from './offer.entity'
 
@@ -14,12 +14,13 @@ export class OptionValue {
   @Column()
   optionId: number
 
-  @ManyToOne(() => Option)
-  option: Option
+  @ManyToOne(() => Property)
+  option: Property
 
   @Column()
   productId: number
 
+  // TODO remove
   @ManyToOne(() => Product, (product) => product.optionValues, { onDelete: 'CASCADE' })
   product: Product
 
@@ -29,6 +30,7 @@ export class OptionValue {
   @Column({ type: 'simple-json', nullable: true })
   properties: Record<string, string> | null
 
-  @ManyToMany(() => Offer, offer => offer.optionValues)
+  // TODO remove
+  @ManyToMany(() => Offer, (offer) => offer.optionValues)
   offers: Offer[]
 }

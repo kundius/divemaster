@@ -59,7 +59,7 @@ const nav: Nav = [
           // },
           {
             title: 'Характеристики',
-            route: '/dashboard/options'
+            route: '/dashboard/properties'
           },
           {
             title: 'Синхронизация',

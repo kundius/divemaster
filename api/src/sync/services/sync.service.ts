@@ -539,7 +539,7 @@ export class SyncService {
       }
       for (const [caption, values] of Object.entries(options)) {
         let rank = 0
-        const sortedValues = values.sort((a, b) => a[0].localeCompare(b[0]))
+        const sortedValues = values.sort((a, b) => a.localeCompare(b))
         for (const content of sortedValues) {
           rank++
           let option = await this.productOptionRepository.findOneBy({

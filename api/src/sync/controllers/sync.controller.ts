@@ -12,6 +12,7 @@ import { FileInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
 import { FindAllSyncTaskDto } from '../dto/sync.dto'
 import { SyncService } from '../services/sync.service'
+import { tmpdir } from 'os'
 
 @Controller('sync')
 export class SyncController {
@@ -25,7 +26,9 @@ export class SyncController {
   @Post('task')
   @UseInterceptors(
     FileInterceptor('file', {
-      storage: diskStorage({})
+      storage: diskStorage({
+        destination: tmpdir()
+      })
     })
   )
   createTask(@UploadedFile() upload: Express.Multer.File) {

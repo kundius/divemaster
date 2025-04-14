@@ -1,9 +1,14 @@
 import type { Metadata } from 'next'
+import { SectionPage } from '@/components/SectionPage'
+import { Headline } from '@/components/Headline'
+import { HasScope } from '@/lib/HasScope'
+import { Nav } from '../_components/Nav'
+import { Favourites } from '../_components/Favourites'
 
 export const metadata: Metadata = {
-  title: 'Избранное / Личный кабинет'
+  title: 'Избранные товары / Личный кабинет'
 }
 
 export default function Page() {
-  return <div>Страница в разработке</div>
+  return <Favourites />
 }

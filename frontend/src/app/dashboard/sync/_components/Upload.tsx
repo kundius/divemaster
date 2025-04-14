@@ -1,10 +1,10 @@
 'use client'
 
 import { Button, ButtonLoadingIcon } from '@/components/ui/button'
-import { api } from '@/lib/api'
 import { useState } from 'react'
-import { useTasks } from './TasksProvider'
 import { toast } from 'sonner'
+import { useTasks } from './TasksProvider'
+import { ApiClient } from '@/lib/api-client'
 
 export function Upload() {
   const { refetch } = useTasks()
@@ -32,10 +32,9 @@ export function Upload() {
     const asyncLoad = async (file: File): Promise<string> => {
       const body = new FormData()
       body.append('file', file)
-      return await api<string>(url, {
-        method: 'POST',
-        body
-      })
+      const api = new ApiClient()
+      await api.withClientAuth()
+      return await api.post<string>(url, body)
     }
     setIsPending(true)
     try {

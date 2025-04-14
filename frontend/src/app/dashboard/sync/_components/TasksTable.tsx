@@ -1,26 +1,18 @@
 'use client'
 
-import { DataTable, DataTableColumn, DataTableFilterField } from '@/components/DataTable'
+import { DataTable, DataTableColumn } from '@/components/DataTable'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { ApiRemoveDialog } from '@/lib/ApiRemoveDialog'
-import { cn, getFileUrl } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import { SyncTaskEntity, SyncTaskStatus } from '@/types'
 import {
-  CheckCircleIcon,
-  PencilIcon,
-  PlayIcon,
-  TrashIcon,
-  XCircleIcon
+  TrashIcon
 } from '@heroicons/react/24/outline'
-import Image from 'next/image'
-import Link from 'next/link'
-import { TasksFilterType, useTasks } from './TasksProvider'
 import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
-import { Progress } from '@/components/ui/progress'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { diving } from '@/components/site/Header/menu'
+import { TasksFilterType, useTasks } from './TasksProvider'
 
 export function TasksTable() {
   const { data = { rows: [], total: 0 }, refetch, ...tasks } = useTasks()

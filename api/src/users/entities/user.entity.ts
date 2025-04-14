@@ -14,6 +14,9 @@ export class User {
   @Column()
   name: string
 
+  @Column({ nullable: true, type: 'text' })
+  phone: string | null = null
+
   @Column()
   @Exclude()
   password: string
@@ -23,6 +26,9 @@ export class User {
 
   @Column({ default: 0 })
   discount: number
+
+  @Column({ type: 'simple-json', nullable: true })
+  address: Record<string, string> | null
 
   @Column({ nullable: true })
   roleId: number | null

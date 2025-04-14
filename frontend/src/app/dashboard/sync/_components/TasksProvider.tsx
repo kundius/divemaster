@@ -3,14 +3,7 @@
 import { DataTableProps } from '@/components/DataTable'
 import { clearEmpty } from '@/lib/utils'
 import { FindAllResult, SyncTaskEntity } from '@/types'
-import {
-  parseAsArrayOf,
-  parseAsInteger,
-  parseAsString,
-  ParserBuilder,
-  useQueryStates,
-  Values
-} from 'nuqs'
+import { parseAsInteger, parseAsString, ParserBuilder, useQueryStates, Values } from 'nuqs'
 import { createContext, PropsWithChildren, useContext } from 'react'
 import useSWR from 'swr'
 

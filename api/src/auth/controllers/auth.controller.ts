@@ -1,24 +1,53 @@
-import { UsersService } from '@/users/services/users.service'
-import { Body, Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common'
-import { CurrentUser } from '../decorators/current-user.decorator'
-import { AuthService } from '../services/auth.service'
 import { User } from '@/users/entities/user.entity'
+import {
+  Body,
+  Controller,
+  ForbiddenException,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Query
+} from '@nestjs/common'
+import { CurrentUser } from '../decorators/current-user.decorator'
+import { FindProfileOrdersDto, SignInDto, SignUpDto, UpdateProfileDto } from '../dto/auth.dto'
+import { AuthService } from '../services/auth.service'
 
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private readonly usersService: UsersService,
-    private readonly authService: AuthService
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Get('profile')
-  async getProfile(@CurrentUser() user?: User) {
+  async findProfile(@CurrentUser() user?: User) {
     return { user }
   }
 
+  @Post('profile')
+  async updateProfile(@Body() dto: UpdateProfileDto, @CurrentUser() user?: User) {
+    if (!user) {
+      throw new ForbiddenException()
+    }
+    await this.authService.updateProfile(user, dto)
+    return { user }
+  }
+
+  @Get('profile/orders')
+  async findProfileOrders(@Query() dto: FindProfileOrdersDto, @CurrentUser() user?: User) {
+    if (!user) {
+      throw new ForbiddenException()
+    }
+    return this.authService.findProfileOrders(dto, user)
+  }
+
   @HttpCode(HttpStatus.OK)
-  @Post('login')
-  signIn(@Body() signInDto: Record<string, any>) {
-    return this.authService.signIn(signInDto.email, signInDto.password)
+  @Post('signin')
+  async signIn(@Body() signInDto: SignInDto) {
+    return this.authService.signIn(signInDto)
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('signup')
+  async signUp(@Body() signUpDto: SignUpDto) {
+    return this.authService.signUp(signUpDto)
   }
 }

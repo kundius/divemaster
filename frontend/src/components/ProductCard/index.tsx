@@ -30,10 +30,9 @@ export function ProductCard() {
   }, [productStore.product])
 
   const colors = useMemo(() => {
-    const entry = productStore.selectable.find(
-      ({ property }) => property.type === PropertyType.COMBOCOLORS
-    )
-    return entry ? entry.options : []
+    return (productStore.product.options || [])
+      .filter(({ name }) => name == 'color')
+      .map(({ content }) => content)
   }, [productStore.selectable])
 
   const brand = productStore.product.brand ? productStore.product.brand.title : undefined

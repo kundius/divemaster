@@ -1,8 +1,6 @@
 'use client'
 
-import { PrimaryButton } from '@/components/site/PrimaryButton'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Button } from '@/components/ui/button'
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
 
 export function Exclamation() {
@@ -11,7 +9,7 @@ export function Exclamation() {
       <Alert>
         <ExclamationTriangleIcon className="h-4 w-4" />
         <AlertTitle>Внимание!</AlertTitle>
-        <AlertDescription className='flex'>
+        <AlertDescription className="flex">
           <div>
             В архиве должны присутствовать следующие файлы:
             <br />

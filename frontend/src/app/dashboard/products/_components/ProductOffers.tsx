@@ -44,45 +44,6 @@ export function ProductOffers({ productId, properties }: ProductOffersProps) {
     return Array.from(cls)
   }, [swrQuery.data])
 
-  const renderHead = (column: string) => {
-    return (
-      <TableHead
-        key={column}
-        className={cn({
-          'bg-neutral-100': !properties[column]
-        })}
-      >
-        {properties[column] ? (
-          properties[column].property.caption
-        ) : (
-          <div className="flex gap-2 items-center">
-            {column}
-            <ExclamationCircleIcon className="w-5 h-5" title="Характеристика отсутствует" />
-          </div>
-        )}
-      </TableHead>
-    )
-  }
-
-  const renderCell = (offer: OfferEntity) => (column: string) => {
-    const option = (offer.options || []).find((option) => option.name === column)
-    const orphan =
-      option && !!properties[column] && !properties[column].options.includes(option.content)
-    return (
-      <TableCell
-        key={column}
-        className={cn({
-          'bg-neutral-100': orphan || (!properties[column] && option)
-        })}
-      >
-        <div className="flex gap-2 items-center">
-          {option ? option.content : '-'}
-          {orphan && <ExclamationCircleIcon className="w-5 h-5" title="Значение отсутствует" />}
-        </div>
-      </TableCell>
-    )
-  }
-
   return (
     <div className="space-y-6">
       <div className="p-5 rounded-md flex items-center justify-end gap-4 bg-neutral-50">
@@ -97,7 +58,28 @@ export function ProductOffers({ productId, properties }: ProductOffersProps) {
       <Table>
         <TableHeader>
           <TableRow>
-            {columns.map(renderHead)}
+            {columns.map((column: string) => {
+              return (
+                <TableHead
+                  key={column}
+                  className={cn({
+                    'bg-neutral-100': !properties[column]
+                  })}
+                >
+                  {properties[column] ? (
+                    properties[column].property.caption
+                  ) : (
+                    <div className="flex gap-2 items-center">
+                      {column}
+                      <ExclamationCircleIcon
+                        className="w-5 h-5"
+                        title="Характеристика отсутствует"
+                      />
+                    </div>
+                  )}
+                </TableHead>
+              )
+            })}
             <TableHead>Цена</TableHead>
             <TableHead></TableHead>
           </TableRow>
@@ -105,7 +87,28 @@ export function ProductOffers({ productId, properties }: ProductOffersProps) {
         <TableBody>
           {swrQuery.data?.map((offer) => (
             <TableRow key={offer.id}>
-              {columns.map(renderCell(offer))}
+              {columns.map((column: string) => {
+                const option = (offer.options || []).find((option) => option.name === column)
+                const orphan =
+                  option &&
+                  !!properties[column] &&
+                  !properties[column].options.includes(option.content)
+                return (
+                  <TableCell
+                    key={column}
+                    className={cn({
+                      'bg-neutral-100': orphan || (!properties[column] && option)
+                    })}
+                  >
+                    <div className="flex gap-2 items-center">
+                      {option ? option.content : '-'}
+                      {orphan && (
+                        <ExclamationCircleIcon className="w-5 h-5" title="Значение отсутствует" />
+                      )}
+                    </div>
+                  </TableCell>
+                )
+              })}
               <TableCell>{offer.price}</TableCell>
               <TableCell className="w-0">
                 <div className="flex gap-2">

@@ -1,9 +1,16 @@
-import { User } from "@/users/entities/user.entity";
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { OrderProduct } from "./order-product.entity";
-import { Payment } from "./payment.entity";
-import { Delivery } from "./delivery.entity";
-
+import { User } from '@/users/entities/user.entity'
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn
+} from 'typeorm'
+import { OrderProduct } from './order-product.entity'
+import { Payment } from './payment.entity'
+import { Delivery } from './delivery.entity'
 
 @Entity()
 export class Order {
@@ -30,7 +37,9 @@ export class Order {
 
   @OneToOne(() => Delivery, (delivery) => delivery.order, { orphanedRowAction: 'delete' })
   delivery!: Delivery
-  
+
   @CreateDateColumn()
   createdAt: Date
+
+  number?: string
 }

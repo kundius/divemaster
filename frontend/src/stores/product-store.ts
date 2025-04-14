@@ -34,15 +34,42 @@ function applyDecrease(value: number, decrease: number) {
 }
 
 export const createProductStore = (product: ProductEntity) => {
+  const productOptions = (product.options || []).sort((a, b) => a.rank - b.rank)
+
+  const productOptionsMapped = new Map<string, string[]>()
+  for (const option of productOptions) {
+    if (!productOptionsMapped.has(option.name)) {
+      productOptionsMapped.set(option.name, [])
+    }
+    productOptionsMapped.get(option.name)!.push(option.content)
+  }
+
+  // Фильтруем предложения. Убираем те, которые содержат несуществующие опции.
+  const productOffers = (product.offers || [])
+    .filter((offer) => {
+      return (offer.options || []).every((option) => {
+        return (productOptionsMapped.get(option.name) || []).includes(option.content)
+      })
+    })
+    .sort((a, b) => {
+      if (!a.options || !b.options) return 0
+      if (a.options.length < b.options.length) return -1
+      if (a.options.length > b.options.length) return 1
+      return 0
+    })
+    .reverse()
+
   // Сформировать выбираемые параметры
   const selectable: ProductState['selectable'] = []
   for (const property of product.properties || []) {
     if (SELECTABLE_PROPERTY_TYPES.includes(property.type)) {
-      const options = (product.options || [])
-        .sort((a, b) => a.rank - b.rank)
-        .filter((a) => a.name === property.key)
-        .map((a) => a.content)
-      if (options.length > 0) {
+      const options = productOptionsMapped.get(property.key) || []
+      const hasOffer = productOffers.some((offer) => {
+        return (offer.options || [])
+          .filter((option) => option.name == property.key)
+          .some((option) => options.includes(option.content))
+      })
+      if (options.length > 1 || hasOffer) {
         selectable.push({ options, property })
       }
     }
@@ -50,24 +77,14 @@ export const createProductStore = (product: ProductEntity) => {
 
   // По умолчанию выбрать единственное торговое предложение без параметров
   let initialOffer: OfferEntity | undefined = undefined
-  if (product.offers && product.offers.length === 1) {
-    initialOffer = product.offers.find((offer) => (offer.options || []).length === 0)
+  if (productOffers.length === 1) {
+    initialOffer = productOffers.find((offer) => (offer.options || []).length === 0)
   }
 
   const findOffer = (selected: ProductState['selected']) => {
-    // Сортируем предложения по количеству параметров от большего к меньшему.
-    const sorted = (product.offers || [])
-      .sort((a, b) => {
-        if (!a.options || !b.options) return 0
-        if (a.options.length < b.options.length) return -1
-        if (a.options.length > b.options.length) return 1
-        return 0
-      })
-      .reverse()
-
     // Находим предложение, все параметры которого соответствуют выбранным.
     // Благодаря сортировке мы находим предложение с наибольшим сходством параметров.
-    return sorted.find((offer) =>
+    return productOffers.find((offer) =>
       (offer.options || []).every(({ name, content }) => selected[name] === content)
     )
   }
@@ -101,10 +118,10 @@ export const createProductStore = (product: ProductEntity) => {
       let price = ''
       if (selectedOffer) {
         price = formatPrice(selectedOffer.price)
-      } else if (!product.offers || product.offers.length === 0) {
+      } else if (productOffers.length === 0) {
         price = 'Цена по запросу'
       } else {
-        const minPrice = Math.min(...product.offers.map((o) => o.price))
+        const minPrice = Math.min(...productOffers.map((o) => o.price))
         price = `от ${formatPrice(minPrice)}`
       }
       return price
@@ -115,10 +132,10 @@ export const createProductStore = (product: ProductEntity) => {
       if (product.priceDecrease) {
         if (selectedOffer) {
           oldPrice = formatPrice(applyDecrease(selectedOffer.price, product.priceDecrease))
-        } else if (!product.offers || product.offers.length === 0) {
+        } else if (productOffers.length === 0) {
           oldPrice = ''
         } else {
-          const minPrice = Math.min(...product.offers.map((o) => o.price))
+          const minPrice = Math.min(...productOffers.map((o) => o.price))
 
           oldPrice = `от ${formatPrice(applyDecrease(minPrice, product.priceDecrease))}`
         }

@@ -5,11 +5,12 @@ import { apiGet } from '@/lib/api'
 import { withClientAuth } from '@/lib/api/with-client-auth'
 import { MAX_AGE, TOKEN_NAME } from '@/constants'
 import { UserEntity } from '@/types'
+import { ApiClient } from '@/lib/api-client'
 
 export type AuthState = {
   user: UserEntity | null
   loginDialogOpened: boolean
-  loaded: boolean
+  loading: boolean
 }
 
 export type AuthActions = {
@@ -17,6 +18,7 @@ export type AuthActions = {
   login(token: string): Promise<void>
   logout(): Promise<void>
   loadUser(): Promise<void>
+  setUser(user: UserEntity): void
   loginDialogToggle(value?: boolean): void
 }
 
@@ -24,11 +26,19 @@ export const createAuthStore = (initialUser?: UserEntity) =>
   createStore<AuthState & AuthActions>()((set, get) => ({
     user: initialUser || null,
     loginDialogOpened: false,
-    loaded: !!initialUser,
+    loading: false,
+
+    setUser(user) {
+      set({ user })
+    },
 
     async loadUser() {
-      const data = await apiGet<{ user?: UserEntity }>('auth/profile', {}, withClientAuth())
-      set({ user: data.user || null, loaded: true })
+      set({ loading: true })
+      const api = new ApiClient()
+      await api.withClientAuth()
+      const data = await api.get<{ user?: UserEntity }>('auth/profile')
+      // const data = await apiGet<{ user?: UserEntity }>('auth/profile', {}, withClientAuth())
+      set({ user: data.user || null, loading: false })
     },
 
     hasScope(scopes) {

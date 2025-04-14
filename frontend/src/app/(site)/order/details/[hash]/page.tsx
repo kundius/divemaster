@@ -119,7 +119,7 @@ export default async function Page({ params }: PageProps<{ hash: string }>) {
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
                     <div className="text-sm max-xl:text-xs">Номер заказа</div>
-                    <div className="font-bold text-base max-xl:text-sm">{order.id}</div>
+                    <div className="font-bold text-base max-xl:text-sm">{order.number}</div>
                   </div>
                   <div className="flex justify-between items-center">
                     <div className="text-sm max-xl:text-xs">Дата оформления</div>

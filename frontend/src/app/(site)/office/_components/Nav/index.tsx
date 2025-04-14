@@ -1,18 +1,29 @@
 'use client'
 
 import Link from 'next/link'
-import styles from './Nav.module.scss'
+import styles from './index.module.scss'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/providers/auth-store-provider'
+import { usePathname } from 'next/navigation'
+import { HasScope } from '@/lib/HasScope'
 
-export function Nav() {
-  const { logout, user } = useAuthStore((state) => state)
+export interface NavProps {
+  onNavigate?: () => void
+}
+
+export function Nav({ onNavigate }: NavProps) {
+  const logout = useAuthStore((state) => state.logout)
+  const pathname = usePathname()
   return (
     <ul className={styles.items}>
       <li>
-        <Link href="/office" className={styles.item}>
+        <Link
+          href="/office"
+          className={cn(styles.item, { [styles.itemActive]: pathname == '/office' })}
+          onNavigate={onNavigate}
+        >
           <span className={styles.icon}>
-            <svg viewBox="0 0 19 17" width="19" height="17">
+            <svg viewBox="0 0 19 17" width="1em" height="1em">
               <use href="/sprite.svg#office-profile"></use>
             </svg>
           </span>
@@ -20,9 +31,13 @@ export function Nav() {
         </Link>
       </li>
       <li>
-        <Link href="/office/orders" className={styles.item}>
+        <Link
+          href="/office/orders"
+          className={cn(styles.item, { [styles.itemActive]: pathname == '/office/orders' })}
+          onNavigate={onNavigate}
+        >
           <span className={styles.icon}>
-            <svg viewBox="0 0 19 17" width="19" height="17">
+            <svg viewBox="0 0 19 17" width="1em" height="1em">
               <use href="/sprite.svg#office-orders"></use>
             </svg>
           </span>
@@ -30,9 +45,13 @@ export function Nav() {
         </Link>
       </li>
       <li>
-        <Link href="/office/comparison" className={styles.item}>
+        <Link
+          href="/office/comparison"
+          className={cn(styles.item, { [styles.itemActive]: pathname == '/office/comparison' })}
+          onNavigate={onNavigate}
+        >
           <span className={styles.icon}>
-            <svg viewBox="0 0 19 17" width="19" height="17">
+            <svg viewBox="0 0 19 17" width="0.8em" height="0.8em">
               <use href="/sprite.svg#office-comparison"></use>
             </svg>
           </span>
@@ -40,31 +59,35 @@ export function Nav() {
         </Link>
       </li>
       <li>
-        <Link href="/office/favourites" className={styles.item}>
+        <Link
+          href="/office/favourites"
+          className={cn(styles.item, { [styles.itemActive]: pathname == '/office/favourites' })}
+          onNavigate={onNavigate}
+        >
           <span className={styles.icon}>
-            <svg viewBox="0 0 19 17" width="19" height="17">
+            <svg viewBox="0 0 19 17" width="1em" height="1em">
               <use href="/sprite.svg#office-favourites"></use>
             </svg>
           </span>
           <span className={styles.text}>Избранное</span>
         </Link>
       </li>
-      {user && false && (
+      <HasScope scopes="admin">
         <li>
-          <Link href="/dashboard" className={styles.item}>
+          <Link href="/dashboard" className={styles.item} target="_blank">
             <span className={styles.icon}>
-              <svg viewBox="0 0 24 24" width="20" height="20">
+              <svg viewBox="0 0 24 24" width="0.8em" height="0.8em">
                 <use href="/sprite.svg#office-admin"></use>
               </svg>
             </span>
             <span className={styles.text}>Панель управления</span>
           </Link>
         </li>
-      )}
+      </HasScope>
       <li>
         <button className={cn(styles.item, styles.gray)} onClick={logout}>
           <span className={styles.icon}>
-            <svg viewBox="0 0 19 17" width="19" height="17">
+            <svg viewBox="0 0 19 17" width="0.8em" height="0.8em">
               <use href="/sprite.svg#office-logout"></use>
             </svg>
           </span>

@@ -116,6 +116,7 @@ export class ProductsService {
 
     if (dto?.withOptions) {
       qb.leftJoinAndSelect('product.options', 'options')
+      qb.orderBy('options.rank', 'ASC')
     }
 
     if (dto?.withBrand) {
@@ -188,6 +189,7 @@ export class ProductsService {
 
     if (dto?.withOptions) {
       qb.leftJoinAndSelect('product.options', 'options')
+      qb.orderBy('options.rank', 'ASC')
     }
 
     if (dto?.withImages) {
@@ -230,6 +232,7 @@ export class ProductsService {
 
     if (dto?.withOptions) {
       qb.leftJoinAndSelect('product.options', 'options')
+      qb.orderBy('options.rank', 'ASC')
     }
 
     if (dto?.withImages) {

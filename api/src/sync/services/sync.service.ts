@@ -97,6 +97,10 @@ const addOption = (target, name, value) => {
   }
 }
 
+const prepareOption = (value: string) => {
+  return String(value).replace(/ё/g, 'е')
+}
+
 @Injectable()
 export class SyncService {
   constructor(
@@ -115,9 +119,7 @@ export class SyncService {
     @InjectRepository(Brand)
     private brandRepository: Repository<Brand>,
     @InjectRepository(Property)
-    private optionRepository: Repository<Property>,
-    // @InjectRepository(OptionValue)
-    // private optionValueRepository: Repository<OptionValue>,
+    private propertyRepository: Repository<Property>,
     @InjectRepository(Offer)
     private offerRepository: Repository<Offer>,
     @InjectRepository(OfferOption)
@@ -155,7 +157,7 @@ export class SyncService {
 
   // распаковать архив, обновить задачу
   async createTask(upload: Express.Multer.File) {
-    if (upload.mimetype !== 'application/zip') {
+    if (!['application/zip', 'application/x-zip-compressed'].includes(upload.mimetype)) {
       throw new BadRequestException('Файл не является архивом')
     }
 
@@ -289,17 +291,21 @@ export class SyncService {
               // у "Бренд", "Цвет" и "Материал" может быть пустое "Значение", проверить что оно не пустое
               if (rawOption['Ид'] === optionsByName['Бренд']) {
                 if (rawOption['Значение']) {
-                  product.brand = optionValuesById[rawOption['Значение']]
+                  product.brand = prepareOption(optionValuesById[rawOption['Значение']])
                 }
               }
               if (rawOption['Ид'] === optionsByName['Цвет']) {
                 if (rawOption['Значение']) {
-                  addOption(options, 'Цвет', optionValuesById[rawOption['Значение']])
+                  addOption(options, 'Цвет', prepareOption(optionValuesById[rawOption['Значение']]))
                 }
               }
               if (rawOption['Ид'] === optionsByName['Материал']) {
                 if (rawOption['Значение']) {
-                  addOption(options, 'Материал', optionValuesById[rawOption['Значение']])
+                  addOption(
+                    options,
+                    'Материал',
+                    prepareOption(optionValuesById[rawOption['Значение']])
+                  )
                 }
               }
             }
@@ -344,8 +350,14 @@ export class SyncService {
                 rawOffer['ХарактеристикиТовара']['ХарактеристикаТовара']
               )
               for (const rawOfferOption of rawOfferOptions) {
-                offer.options[rawOfferOption['Наименование']] = rawOfferOption['Значение']
-                addOption(options, rawOfferOption['Наименование'], rawOfferOption['Значение'])
+                offer.options[rawOfferOption['Наименование']] = prepareOption(
+                  rawOfferOption['Значение']
+                )
+                addOption(
+                  options,
+                  rawOfferOption['Наименование'],
+                  prepareOption(rawOfferOption['Значение'])
+                )
               }
             }
 
@@ -399,6 +411,9 @@ export class SyncService {
       take: this.takeProduct,
       skip: task.offset
     })
+    // в этот объект будут добалвться соответствия ключей характеристик их названиям,
+    // чтобы корректно добавить опции к торг. пред.
+    // const propertyKeys: Record<string, string> = {}
 
     for (const data of products) {
       let product = await this.productRepository.findOne({
@@ -417,6 +432,7 @@ export class SyncService {
         product.description = data.description
         product.recent = data.recent === '1'
         product.favorite = data.favorite === '1'
+        product.offers = []
 
         // дальше понадобится id товара, сохранить
         await this.productRepository.save(product)
@@ -506,37 +522,40 @@ export class SyncService {
       try {
         options = JSON.parse(data.options) as unknown as typeof options
       } catch {}
-      let i = 0
-      for (const [caption, values] of Object.entries(options)) {
-        i++
+      const propertyKeys: Record<string, string> = {}
+      for (const caption of Object.keys(options)) {
         const key = slugify(caption)
-        let option = await this.optionRepository.findOneBy([{ caption }, { key }])
-        if (!option) {
-          option = new Property()
-          option.caption = caption
-          option.key = key
-          option.rank = i
-          option.inFilter = true
-          option.type = PropertyType.COMBOOPTIONS
-          await this.optionRepository.save(option)
+        let property = await this.propertyRepository.findOneBy([{ caption }, { key }])
+        if (!property) {
+          property = new Property()
+          property.caption = caption
+          property.key = key
+          property.rank = 0
+          property.inFilter = true
+          property.type = PropertyType.COMBOOPTIONS
+          await this.propertyRepository.save(property)
         }
-        let k = 0
-        for (const content of values) {
-          k++
-          let optionValue = await this.productOptionRepository.findOneBy({
+        propertyKeys[caption] = property.key
+      }
+      for (const [caption, values] of Object.entries(options)) {
+        let rank = 0
+        const sortedValues = values.sort((a, b) => a[0].localeCompare(b[0]))
+        for (const content of sortedValues) {
+          rank++
+          let option = await this.productOptionRepository.findOneBy({
             productId: product.id,
-            name: option.key,
+            name: propertyKeys[caption] ?? caption,
             content
           })
-          if (!optionValue) {
-            optionValue = this.productOptionRepository.create({
+          if (!option) {
+            option = this.productOptionRepository.create({
               productId: product.id,
-              name: option.key,
-              content,
-              rank: k
+              name: propertyKeys[caption] ?? caption,
+              content
             })
-            await this.productOptionRepository.save(optionValue)
           }
+          option.rank = rank
+          await this.productOptionRepository.save(option)
         }
       }
 
@@ -562,38 +581,14 @@ export class SyncService {
       for (const offerData of offers) {
         ii++
         const optionEntries = Object.entries(offerData.options)
-        // const optionValues = Object.entries(offerData.options).map(
-        //   ([caption, content]) => optionValuesForOffers[caption][content]
-        // )
-        // const optionValueIds = optionValues.map((optionValue) => optionValue.id)
-        // const qb = this.offerRepository
-        //   .createQueryBuilder('offer')
-        //   .leftJoinAndSelect('offer.product', 'product')
-        //   .leftJoinAndSelect('offer.optionValues', 'optionValues')
-        //   .setParameter('optionValueIds', optionValueIds)
-        //   .setParameter('optionValueCount', optionValueIds.length)
-        // qb.where('product.id = :productId', { productId: product.id })
-        // if (optionValueIds.length > 0) {
-        //   qb.andWhere((qb) => {
-        //     const subQuery = qb
-        //       .subQuery()
-        //       .select('1')
-        //       .from(OptionValue, 'v')
-        //       .innerJoin('v.offers', 'o')
-        //       .where('o.id = offer.id')
-        //       .andWhere('v.id IN (:...optionValueIds)')
-        //     return `EXISTS ${subQuery.getQuery()}`
-        //   })
-        // }
-        // qb.groupBy('offer.id')
-        // qb.having('COUNT(optionValues.id) = :optionValueCount')
 
-        // let offer = await qb.getOne()
         let offer = product.offers.find((productOffer) => {
           const a1 = productOffer.options
             .map((option) => [option.name, option.content])
             .sort((a, b) => a[0].localeCompare(b[0]))
-          const a2 = optionEntries.sort((a, b) => a[0].localeCompare(b[0]))
+          const a2 = optionEntries
+            .map(([caption, content]) => [propertyKeys[caption] ?? caption, content])
+            .sort((a, b) => a[0].localeCompare(b[0]))
           return isDeepEqual(a1, a2)
         })
 
@@ -603,6 +598,9 @@ export class SyncService {
             rank: ii,
             title: offerData.name
           })
+        } else {
+          // удалить старые опции оффера
+          await this.offerOptionRepository.delete({ offer })
         }
 
         offer.remoteId = offerData.remoteId // для обновления добавленных вручную офферов
@@ -610,13 +608,10 @@ export class SyncService {
 
         await this.offerRepository.save(offer)
 
-        // удалить старые опции оффера
-        await this.offerOptionRepository.delete({ offer })
-
         // добваить новые опции оффера
-        for (const [name, content] of optionEntries) {
+        for (const [caption, content] of optionEntries) {
           const offerOption = this.offerOptionRepository.create({
-            name,
+            name: propertyKeys[caption] ?? caption,
             content,
             offer
           })

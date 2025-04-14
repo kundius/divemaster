@@ -12,7 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 export function Toolbar() {
   const cartTotal = useCartStore((state) => state.total)
   const authUser = useAuthStore((state) => state.user)
-  const authLoaded = useAuthStore((state) => state.loaded)
+  const authLoading = useAuthStore((state) => state.loading)
   const loginDialogToggle = useAuthStore((state) => state.loginDialogToggle)
   const mobileNavigation = useMobileNavigation()
 
@@ -56,7 +56,7 @@ export function Toolbar() {
         <span className={styles.title}>Избранное</span>
         {/* <span className={styles.badge}>0</span> */}
       </Link>
-      {authLoaded ? (
+      {!authLoading ? (
         !authUser ? (
           <button onClick={() => loginDialogToggle(true)} className={cn(styles.button, 'block')}>
             <span className={styles.icon}>

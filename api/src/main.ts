@@ -10,9 +10,9 @@ async function bootstrap() {
     origin: process.env['APP_ORIGIN']
   })
 
-  app.use(json({ limit: '100mb' }))
+  app.use(json({ limit: '1024mb' }))
 
-  app.use(urlencoded({ extended: true, limit: '100mb' }))
+  app.use(urlencoded({ extended: true, limit: '1024mb' }))
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }))
 

@@ -152,6 +152,7 @@ export interface OrderEntity {
   payment?: PaymentEntity
   delivery?: DeliveryEntity
   createdAt: string
+  number: string
 }
 
 export interface ProductsBaseFilter {
@@ -184,7 +185,9 @@ export interface UserEntity {
   id: number
   name: string
   email: string
+  phone: string | null
   discount: number
+  address: Record<string, string> | null
   active: boolean
   roleId: number
   role?: UserRoleEntity

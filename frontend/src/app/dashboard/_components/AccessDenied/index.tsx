@@ -11,6 +11,7 @@ import { apiPost } from '@/lib/api'
 import { useAuthStore } from '@/providers/auth-store-provider'
 
 import styles from './index.module.scss'
+import { ApiClient } from '@/lib/api-client'
 
 export function AccessDenied() {
   const login = useAuthStore((state) => state.login)
@@ -18,8 +19,9 @@ export function AccessDenied() {
 
   const submitHandler = (formData: FormData) => {
     startTransition(async () => {
+      const api = new ApiClient()
       try {
-        const data = await apiPost<{ token: string }>('auth/login', {
+        const data = await api.post<{ token: string }>('auth/signin', {
           email: formData.get('email'),
           password: formData.get('password')
         })

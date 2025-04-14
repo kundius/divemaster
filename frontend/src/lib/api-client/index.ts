@@ -8,7 +8,7 @@ export class ApiClient {
 
   constructor(baseURL: string = getApiUrl(), headers: Record<string, string> = {}) {
     this.baseURL = baseURL
-    this.headers = { ...headers }
+    this.headers = { 'Content-Type': 'application/json', ...headers }
   }
 
   async withClientAuth() {
@@ -40,10 +40,9 @@ export class ApiClient {
     if (data) {
       if (data instanceof FormData) {
         body = data
-        this.headers['Content-Type'] = 'form/multipart'
+        delete this.headers['Content-Type']
       } else {
         body = JSON.stringify(data)
-        this.headers['Content-Type'] = 'application/json'
       }
     }
 

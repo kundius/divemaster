@@ -157,7 +157,6 @@ export class SyncService {
 
   // распаковать архив, обновить задачу
   async createTask(upload: Express.Multer.File) {
-    console.log(upload)
     if (!['application/zip', 'application/x-zip-compressed'].includes(upload.mimetype)) {
       throw new BadRequestException('Файл не является архивом')
     }

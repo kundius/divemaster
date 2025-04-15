@@ -58,6 +58,7 @@ export class CategoriesService {
     if (dto.withChildren) {
       // HIERARCHY_DEPTH_LIMIT
       qb.leftJoinAndSelect('category.children', 'children')
+      qb.orderBy('children.rank', 'ASC')
     }
 
     if (dto.withParent) {
@@ -91,57 +92,51 @@ export class CategoriesService {
   }
 
   async findOne(id: number, dto?: FindOneCategoryQueryDto) {
-    const where: FindOptionsWhere<Category> = {}
-    const relations: FindOptionsRelations<Category> = {}
+    const qb = this.categoryRepository.createQueryBuilder('category')
 
-    where.id = id
+    qb.andWhere('category.id = :categoryId', { categoryId: id })
 
     if (dto?.withChildren) {
       // HIERARCHY_DEPTH_LIMIT
-      relations.children = true
+      qb.leftJoinAndSelect('category.children', 'children')
+      qb.orderBy('children.rank', 'ASC')
     }
 
     if (dto?.withParent) {
       // HIERARCHY_DEPTH_LIMIT
-      relations.parent = true
+      qb.leftJoinAndSelect('category.parent', 'parent')
     }
 
     if (dto?.active) {
-      where.active = true
+      qb.andWhere('category.active = :categoryActive', { categoryActive: true })
     }
 
-    const record = await this.categoryRepository.findOne({
-      where,
-      relations
-    })
+    const record = await qb.getOne()
 
     return record
   }
 
   async findOneByAlias(alias: string, dto?: FindOneCategoryQueryDto) {
-    const where: FindOptionsWhere<Category> = {}
-    const relations: FindOptionsRelations<Category> = {}
+    const qb = this.categoryRepository.createQueryBuilder('category')
 
-    where.alias = alias
+    qb.andWhere('category.alias = :categoryAlias', { categoryAlias: alias })
 
     if (dto?.withChildren) {
       // HIERARCHY_DEPTH_LIMIT
-      relations.children = true
+      qb.leftJoinAndSelect('category.children', 'children')
+      qb.orderBy('children.rank', 'ASC')
     }
 
     if (dto?.withParent) {
       // HIERARCHY_DEPTH_LIMIT
-      relations.parent = true
+      qb.leftJoinAndSelect('category.parent', 'parent')
     }
 
     if (dto?.active) {
-      where.active = true
+      qb.andWhere('category.active = :categoryActive', { categoryActive: true })
     }
 
-    const record = await this.categoryRepository.findOne({
-      where,
-      relations
-    })
+    const record = await qb.getOne()
 
     return record
   }

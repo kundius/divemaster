@@ -327,7 +327,7 @@ export class SyncService {
             if (rawOffer['Цены']) {
               const rawOfferPrices = arrayField(rawOffer['Цены']['Цена'])
               for (const rawOfferPrice of rawOfferPrices) {
-                if ((priceTypesById[rawOfferPrice['ИдТипаЦены']] = 'Розничная')) {
+                if ((priceTypesById[rawOfferPrice['ИдТипаЦены']] == 'Розничная')) {
                   offerPrice = rawOfferPrice['ЦенаЗаЕдиницу']
                 }
               }

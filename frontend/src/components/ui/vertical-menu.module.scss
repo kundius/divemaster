@@ -13,7 +13,11 @@
 .root > .list > .list-content > .item {
 }
 
-.root > .list > .list-content > .item > .trigger {
+.root > .list > .list-content > .item > .link {
+  position: relative;
+}
+
+.root > .list > .list-content > .item > .link > .linkButton {
   font-size: 14px;
   line-height: 16px;
   font-family: var(--font-sans-narrow);
@@ -32,38 +36,8 @@
   transition: background .3s ease ;
 }
 
-.root > .list > .list-content > .item.active > .trigger {
+.root > .list > .list-content > .item.active > .link > .linkButton {
   background: #eae9f8;
-}
-
-.root > .list > .list-content > .item > .trigger > .arrow {
-  width: 32px;
-  height: 32px;
-  flex-shrink: 0;
-  background: #e1e6f4;
-  border-radius: 50%;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: -8px;
-  transition: transform .5s ease;
-}
-
-.root > .list > .list-content > .item.active > .trigger > .arrow {
-  background: #f7f9ff;
-  color: #757679;
-  transform: rotate(-180deg);
-}
-
-.root > .list > .list-content > .item > .trigger > .arrow::after {
-  content: '';
-  width: 8px;
-  height: 8px;
-  border-left: 2px solid currentColor;
-  border-bottom: 2px solid currentColor;
-  transform: rotate(-45deg);
-  margin-top: -2px;
 }
 
 .root > .list > .list-content > .item > .list {
@@ -116,7 +90,7 @@
 .root > .list > .list-content > .item > .list > .list-content > .item {
 }
 
-.root > .list > .list-content > .item > .list > .list-content > .item > .trigger {
+.root > .list > .list-content > .item > .list > .list-content > .item > .link > .linkButton {
   font-size: 14px;
   line-height: 16px;
   font-family: var(--font-sans-narrow);
@@ -130,7 +104,44 @@
   align-items: center;
 }
 
-.root > .list > .list-content > .item > .list > .list-content > .item > .trigger:hover {
+.root > .list > .list-content > .item > .list > .list-content > .item > .link:hover > .linkButton {
   color: #000000;
   background: #e4e7ed;
+}
+
+.root > .list > .list-content > .item > .link > .linkArrow {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  background: #e1e6f4;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: -8px;
+  transition: transform .5s ease;
+  position: absolute;
+  top: 10px;
+  right: 16px;
+}
+
+.root > .list > .list-content > .item.active > .link > .linkArrow {
+  background: #f7f9ff;
+  color: #757679;
+  transform: rotate(-180deg);
+}
+
+.root > .list > .list-content > .item > .link > .linkArrow::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-left: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  margin-top: -2px;
+}
+
+.root > .list > .list-content > .item > .list > .list-content > .item > .link > .linkArrow {
+  display: none;
 }

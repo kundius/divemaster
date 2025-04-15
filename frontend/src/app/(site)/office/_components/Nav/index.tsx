@@ -7,11 +7,7 @@ import { useAuthStore } from '@/providers/auth-store-provider'
 import { usePathname } from 'next/navigation'
 import { HasScope } from '@/lib/HasScope'
 
-export interface NavProps {
-  onNavigate?: () => void
-}
-
-export function Nav({ onNavigate }: NavProps) {
+export function Nav() {
   const logout = useAuthStore((state) => state.logout)
   const pathname = usePathname()
   return (
@@ -20,7 +16,6 @@ export function Nav({ onNavigate }: NavProps) {
         <Link
           href="/office"
           className={cn(styles.item, { [styles.itemActive]: pathname == '/office' })}
-          onNavigate={onNavigate}
         >
           <span className={styles.icon}>
             <svg viewBox="0 0 19 17" width="1em" height="1em">
@@ -34,7 +29,6 @@ export function Nav({ onNavigate }: NavProps) {
         <Link
           href="/office/orders"
           className={cn(styles.item, { [styles.itemActive]: pathname == '/office/orders' })}
-          onNavigate={onNavigate}
         >
           <span className={styles.icon}>
             <svg viewBox="0 0 19 17" width="1em" height="1em">
@@ -48,7 +42,6 @@ export function Nav({ onNavigate }: NavProps) {
         <Link
           href="/office/comparison"
           className={cn(styles.item, { [styles.itemActive]: pathname == '/office/comparison' })}
-          onNavigate={onNavigate}
         >
           <span className={styles.icon}>
             <svg viewBox="0 0 19 17" width="0.8em" height="0.8em">
@@ -62,7 +55,6 @@ export function Nav({ onNavigate }: NavProps) {
         <Link
           href="/office/favourites"
           className={cn(styles.item, { [styles.itemActive]: pathname == '/office/favourites' })}
-          onNavigate={onNavigate}
         >
           <span className={styles.icon}>
             <svg viewBox="0 0 19 17" width="1em" height="1em">

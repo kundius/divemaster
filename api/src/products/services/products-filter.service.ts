@@ -40,7 +40,7 @@ export class ProductsFilterService {
     @InjectRepository(Product)
     private productRepository: Repository<Product>,
     @InjectRepository(Property)
-    private optionRepository: Repository<Property>
+    private propertyRepository: Repository<Property>
   ) {}
 
   filters: Filter[] = []
@@ -89,30 +89,30 @@ export class ProductsFilterService {
       }
 
       for (const productOption of product.options) {
-        const option = await this.optionRepository.findOne({ where: { key: productOption.name } })
+        const property = await this.propertyRepository.findOne({ where: { key: productOption.name } })
 
         // этой опции больше не существует, пропускаем
-        if (!option) continue
+        if (!property) continue
 
-        switch (option.type) {
+        switch (property.type) {
           case PropertyType.TEXTFIELD:
             // case OptionType.TEXTAREA:
             // case OptionType.COMBOBOX:
-            record[option.key] = productOption.content
+            record[property.key] = productOption.content
             break
           case PropertyType.COMBOBOOLEAN:
-            record[option.key] = productOption.content === '1'
+            record[property.key] = productOption.content === '1'
             break
           case PropertyType.NUMBERFIELD:
-            record[option.key] = Number(productOption.content)
+            record[property.key] = Number(productOption.content)
             break
           case PropertyType.COMBOCOLORS:
           case PropertyType.COMBOOPTIONS:
-            const field = record[option.key]
+            const field = record[property.key]
             if (isArray(field, isString)) {
               field.push(productOption.content)
             } else {
-              record[option.key] = [productOption.content]
+              record[property.key] = [productOption.content]
             }
             break
         }
@@ -131,7 +131,7 @@ export class ProductsFilterService {
     if (categoryId) {
       where.categories = { id: categoryId }
     }
-    const options = await this.optionRepository.find({
+    const properties = await this.propertyRepository.find({
       where,
       order: { rank: 'asc' }
     })
@@ -156,9 +156,9 @@ export class ProductsFilterService {
       conjunction: true,
       options: []
     })
-    for (const option of options) {
-      const base = { title: option.caption, name: option.key, option }
-      switch (option.type) {
+    for (const roperty of properties) {
+      const base = { title: roperty.caption, name: roperty.key, option: roperty }
+      switch (roperty.type) {
         // case OptionType.TEXTAREA:
         //   // не фильтруется
         //   break
@@ -185,7 +185,7 @@ export class ProductsFilterService {
             type: 'options',
             conjunction: false,
             options: [],
-            variant: option.type === PropertyType.COMBOCOLORS ? 'colors' : 'default'
+            variant: roperty.type === PropertyType.COMBOCOLORS ? 'colors' : 'default'
           })
           break
       }

@@ -12,6 +12,8 @@ import { Suspense } from 'react'
 import YandexMetrika from '@/components/YandexMetrika'
 import { AuthStoreProvider } from '@/providers/auth-store-provider'
 import { SWRGlobalProvider } from '@/providers/swr-global-provider'
+import { MobileNavigation } from '@/components/MobileNavigation'
+import { LoginDialog } from '@/components/LoginDialog'
 
 const fontSans = FontSans({
   weight: ['400', '500', '700'],
@@ -62,7 +64,12 @@ export default async function RootLayout({
             <AuthStoreProvider>
               <LocationStoreProvider>
                 <CartStoreProvider>
-                  <OrderStoreProvider>{children}</OrderStoreProvider>
+                  <OrderStoreProvider>
+                    <MobileNavigation>
+                      {children}
+                      <LoginDialog />
+                    </MobileNavigation>
+                  </OrderStoreProvider>
                 </CartStoreProvider>
               </LocationStoreProvider>
             </AuthStoreProvider>

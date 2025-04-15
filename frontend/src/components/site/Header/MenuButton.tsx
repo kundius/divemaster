@@ -2,13 +2,13 @@
 
 import { cn } from '@/lib/utils'
 import styles from './MenuButton.module.scss'
-import { useMobileNavigation } from './MobileNavigation'
+import { useMobileNavigation } from '@/components/MobileNavigation'
 
 export function MenuButton() {
   const mobileNavigation = useMobileNavigation()
 
   const handleClick = () => {
-    if (mobileNavigation.opened.length > 0) {
+    if (mobileNavigation.opened) {
       mobileNavigation.close()
     } else {
       mobileNavigation.open('pages')
@@ -19,7 +19,7 @@ export function MenuButton() {
     <>
       <button
         className={cn(styles.button, {
-          [styles.close]: mobileNavigation.opened.length > 0
+          [styles.close]: mobileNavigation.opened
         })}
         onClick={handleClick}
       >

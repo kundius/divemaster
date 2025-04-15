@@ -1,13 +1,3 @@
-.top {
-  background: rgba(0, 11, 27, 0.5);
-  position: relative;
-  z-index: 50;
-
-  @include max-md {
-    background-color: rgb(12, 3, 2);
-  }
-}
-
 .logo {
   margin-top: -26px;
   margin-bottom: -15px;
@@ -17,6 +7,7 @@
   @include max-lg {
     margin-right: 16px;
   }
+
   @include max-md {
     margin: 0;
     background: #a90083;
@@ -33,19 +24,6 @@
   visibility: hidden;
 }
 
-.top-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  @include max-md {
-    margin-left: -16px;
-    margin-right: -16px;
-    padding-left: 4px;
-    padding-right: 8px;
-  }
-}
-
 .primary-container {
   display: flex;
   align-items: center;
@@ -58,6 +36,7 @@
     padding-bottom: 12px;
     padding-top: 22px;
   }
+
   @include max-md {
     padding-top: 0;
     padding-bottom: 0;
@@ -73,6 +52,7 @@
   @include max-lg {
     min-width: 16px;
   }
+
   @include max-md {
     min-width: 8px;
     flex-grow: 10;
@@ -86,6 +66,7 @@
   @include max-lg {
     min-width: 16px;
   }
+
   @include max-md {
     min-width: 8px;
     flex-grow: 10;
@@ -121,26 +102,6 @@
   }
 }
 
-.top-menu-primary {
-  margin-left: -10px;
-
-  @include max-md {
-    display: none;
-  }
-}
-
-.top-menu-secondary {
-  @include max-2xl {
-    display: none;
-  }
-}
-
-.mobile-contacts {
-  @include min-md {
-    display: none;
-  }
-}
-
 .city-select {
   margin-right: -10px;
   min-width: 180px;
@@ -148,9 +109,11 @@
   @include max-2xl {
     min-width: auto;
   }
+
   @include max-md {
     margin-right: -4px;
   }
+
   @include max-sm {
     max-width: 140px;
   }
@@ -172,6 +135,7 @@
   @include max-2xl {
     padding: 5px 0;
   }
+
   @include max-md {
     display: none;
   }
@@ -181,5 +145,4 @@
   margin-left: -16px;
 }
 
-.desktop-contacts {
-}
+.desktop-contacts {}

@@ -3,11 +3,12 @@
 import { cn } from '@/lib/utils'
 import styles from './Toolbar.module.scss'
 import Link from 'next/link'
-import { useMobileNavigation } from './MobileNavigation'
+import { useMobileNavigation } from '../../MobileNavigation'
 import { useAuthStore } from '@/providers/auth-store-provider'
 import { useCartStore } from '@/providers/cart-store-provider'
 import { SpriteIcon } from '@/components/SpriteIcon'
 import { Skeleton } from '@/components/ui/skeleton'
+import { MouseEvent } from 'react'
 
 export function Toolbar() {
   const cartTotal = useCartStore((state) => state.total)
@@ -16,11 +17,22 @@ export function Toolbar() {
   const loginDialogToggle = useAuthStore((state) => state.loginDialogToggle)
   const mobileNavigation = useMobileNavigation()
 
-  const handleClick = () => {
-    if (mobileNavigation.opened.includes('catalog')) {
+  const catalogClickHandler = () => {
+    if (mobileNavigation.opened == 'catalog') {
       mobileNavigation.close()
     } else {
       mobileNavigation.open('catalog')
+    }
+  }
+
+  const officeClickHandler = (e: { preventDefault: () => void }) => {
+    if (window.matchMedia('not all and (min-width: 768px)').matches) {
+      e.preventDefault()
+      if (mobileNavigation.opened == 'office') {
+        mobileNavigation.close()
+      } else {
+        mobileNavigation.open('office')
+      }
     }
   }
 
@@ -30,12 +42,12 @@ export function Toolbar() {
         className={cn(
           styles.button,
           {
-            [styles.active]: mobileNavigation.opened.includes('catalog')
+            [styles.active]: mobileNavigation.opened == 'catalog'
           },
           'block',
           'md:hidden'
         )}
-        onClick={handleClick}
+        onClick={catalogClickHandler}
       >
         <span className={styles.icon}>
           <SpriteIcon name="catalog" size={20} />
@@ -65,7 +77,11 @@ export function Toolbar() {
             <span className={styles.title}>Войти</span>
           </button>
         ) : (
-          <Link href="/office" className={cn(styles.button, 'block')}>
+          <Link
+            href="/office"
+            className={cn(styles.button, 'block')}
+            onNavigate={officeClickHandler}
+          >
             <span className={styles.icon}>
               <SpriteIcon name="toolbar-profile" size={24} />
             </span>

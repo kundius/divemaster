@@ -1,8 +1,8 @@
-import { Metadata } from 'next'
-import { PropsWithChildren } from 'react'
-
+import { HeaderExtra } from '@/components/HeaderExtra'
 import { Footer } from '@/components/site/Footer'
 import { Header } from '@/components/site/Header'
+import { Metadata } from 'next'
+import { PropsWithChildren } from 'react'
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -17,6 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function Layout({ children }: PropsWithChildren) {
   return (
     <div className="flex flex-col min-h-screen">
+      <HeaderExtra />
       <Header />
       <div className="grow">{children}</div>
       <Footer />

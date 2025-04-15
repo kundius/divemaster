@@ -26,7 +26,7 @@
   top: 0;
   right: 0;
   bottom: 0;
-  padding: 8px;
+  padding: 12px 8px;
   background: #fff;
   overflow: auto;
   transform: translateX(-100%);
@@ -34,6 +34,7 @@
   transition: transform 0.3s ease, visibility 0.3s ease, opacity 0.3s ease;
   box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
   scroll-padding-top: 8px;
+  z-index: 100;
 
   animation-name: slideout;
   animation-duration: .5s;
@@ -44,4 +45,5 @@
 
 .opened {
   animation-name: slidein;
+  z-index: 110;
 }

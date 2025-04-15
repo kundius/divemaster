@@ -157,7 +157,11 @@ export class ProductsService {
       } catch {}
       await this.productsFilterService.init(dto.category)
       const productIds = await this.productsFilterService.search(filter)
-      qb.andWhere('product.id IN (:...productIds)', { productIds })
+      if (productIds.length > 0) {
+        qb.andWhere('product.id IN (:...productIds)', { productIds })
+      } else {
+        qb.andWhere('1=0')
+      }
     }
 
     qb.orderBy(`product.${dto.sort}`, dto.dir)

@@ -1,6 +1,5 @@
 import { BrandsUpdatePage } from '@/components/admin/BrandsUpdatePage'
 import { apiGet } from '@/lib/api'
-import { withServerAuth } from '@/lib/api/with-server-auth'
 import { BrandEntity, PageProps } from '@/types'
 import type { Metadata } from 'next'
 
@@ -10,6 +9,6 @@ export const metadata: Metadata = {
 
 export default async function Page({ params }: PageProps<{ id: number }>) {
   const { id } = await params
-  const initialData = await apiGet<BrandEntity>(`brands/${id}`, {}, await withServerAuth())
+  const initialData = await apiGet<BrandEntity>(`brands/${id}`)
   return <BrandsUpdatePage initialData={initialData} />
 }

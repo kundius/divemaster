@@ -12,7 +12,6 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button, ButtonLoadingIcon } from '@/components/ui/button'
 import { apiDelete } from '@/lib/api'
-import { withClientAuth } from '@/lib/api/with-client-auth'
 import { PropsWithChildren, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -40,7 +39,7 @@ export function ApiRemoveDialog({
     setIsPending(true)
 
     try {
-      await apiDelete(url, {}, withClientAuth())
+      await apiDelete(url)
       toast.success(`Удалено`)
       setOpen(false)
       onSuccess?.()

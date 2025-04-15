@@ -4,7 +4,6 @@ import { CheckboxTree } from '@/components/ui/checkbox-tree'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ApiTableData } from '@/lib/ApiTable/types'
 import { apiPatch } from '@/lib/api'
-import { withClientAuth } from '@/lib/api/with-client-auth'
 import { arrayToTree } from '@/lib/utils'
 import { CategoryEntity } from '@/types'
 import { useEffect, useMemo, useState } from 'react'
@@ -47,7 +46,7 @@ export function PropertyCategories({ propertyId }: PropertyCategoriesProps) {
 
   const checkHandler = async (checked: string[]) => {
     setChecked(checked)
-    await apiPatch(`properties/${propertyId}/categories`, { categories: checked }, withClientAuth())
+    await apiPatch(`properties/${propertyId}/categories`, { categories: checked })
   }
 
   return (

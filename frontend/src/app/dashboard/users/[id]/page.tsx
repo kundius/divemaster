@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
-
-import { PageLayout } from '@/components/admin/PageLayout'
+import { PageLayout } from '@/app/dashboard/_components/PageLayout'
 import { apiGet } from '@/lib/api'
-import { withServerAuth } from '@/lib/api/with-server-auth'
 import { PageProps, UserEntity } from '@/types'
 
 import { UserForm } from '../_components/UserForm'
@@ -13,7 +11,7 @@ export const metadata: Metadata = {
 
 export default async function Page({ params }: PageProps<{ id: number }>) {
   const { id } = await params
-  const record = await apiGet<UserEntity>(`users/${id}`, {}, await withServerAuth())
+  const record = await apiGet<UserEntity>(`users/${id}`)
   return (
     <PageLayout title="Редактировать пользователя">
       <UserForm record={record} />

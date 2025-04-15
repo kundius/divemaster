@@ -1,4 +1,4 @@
-import { PageLayout } from '@/components/admin/PageLayout'
+import { PageLayout } from '@/app/dashboard/_components/PageLayout'
 import type { Metadata } from 'next'
 import { PropertyCreateForm } from '../_components/PropertyCreateForm'
 import { VerticalNav } from '@/components/VerticalNav'

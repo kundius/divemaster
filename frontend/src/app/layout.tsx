@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { Roboto as FontSans, Roboto_Condensed as FontSansAlt, Montserrat } from 'next/font/google'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { Toaster } from '@/components/ui/sonner'
-import { SWRGlobalProvider } from '@/lib/api/swr-global-provider'
 import { cn } from '@/lib/utils'
 import { CartStoreProvider } from '@/providers/cart-store-provider'
 import { LocationStoreProvider } from '@/providers/location-store-provider'
@@ -12,6 +11,7 @@ import Script from 'next/script'
 import { Suspense } from 'react'
 import YandexMetrika from '@/components/YandexMetrika'
 import { AuthStoreProvider } from '@/providers/auth-store-provider'
+import { SWRGlobalProvider } from '@/providers/swr-global-provider'
 
 const fontSans = FontSans({
   weight: ['400', '500', '700'],

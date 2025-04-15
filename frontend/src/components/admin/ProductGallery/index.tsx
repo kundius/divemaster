@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import { Overlay } from '@/components/ui/overlay'
-import { api, apiDelete, apiGet, apiPatch, apiPut } from '@/lib/api'
+import { api, apiDelete, apiGet, apiPatch, apiPost, apiPut } from '@/lib/api'
 import { getApiUrl } from '@/lib/utils'
 import { ProductImageEntity } from '@/types'
 import {
@@ -24,11 +24,9 @@ import {
 import { ArrowPathIcon, CheckIcon, PowerIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-
 import { Skeleton } from '@/components/ui/skeleton'
-import { withClientAuth } from '@/lib/api/with-client-auth'
 import { CSS } from '@dnd-kit/utilities'
-import { PageLayout } from '../PageLayout'
+import { PageLayout } from '../../../app/dashboard/_components/PageLayout'
 import { ProductLayout } from '../ProductLayout'
 
 interface SortableItemProps {
@@ -221,10 +219,7 @@ export function ProductGallery(props: ProductGalleryProps) {
     const asyncLoad = async (file: File): Promise<ProductImageEntity> => {
       const body = new FormData()
       body.append('file', file)
-      return await api<ProductImageEntity>(url, {
-        method: 'POST',
-        body
-      })
+      return await apiPost<ProductImageEntity>(url, body)
     }
     setIsPending(true)
     try {
@@ -248,7 +243,7 @@ export function ProductGallery(props: ProductGalleryProps) {
   async function fetch() {
     setIsLoading(true)
     try {
-      const data = await apiGet<ProductImageEntity[]>(url, {}, withClientAuth())
+      const data = await apiGet<ProductImageEntity[]>(url)
       setItems(
         data.map((item) => ({
           ...item,

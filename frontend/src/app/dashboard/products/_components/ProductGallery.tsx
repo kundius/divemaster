@@ -3,8 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { Overlay } from '@/components/ui/overlay'
 import { Skeleton } from '@/components/ui/skeleton'
-import { api, apiDelete, apiGet, apiPatch, apiPut } from '@/lib/api'
-import { withClientAuth } from '@/lib/api/with-client-auth'
+import { api, apiDelete, apiGet, apiPatch, apiPost, apiPut } from '@/lib/api'
 import { getApiUrl } from '@/lib/utils'
 import { ProductImageEntity } from '@/types'
 import {
@@ -218,10 +217,7 @@ export function ProductGallery(props: ProductGalleryProps) {
     const asyncLoad = async (file: File): Promise<ProductImageEntity> => {
       const body = new FormData()
       body.append('file', file)
-      return await api<ProductImageEntity>(url, {
-        method: 'POST',
-        body
-      })
+      return await apiPost<ProductImageEntity>(url, body)
     }
     setIsPending(true)
     try {
@@ -245,7 +241,7 @@ export function ProductGallery(props: ProductGalleryProps) {
   async function fetch() {
     setIsLoading(true)
     try {
-      const data = await apiGet<ProductImageEntity[]>(url, {}, withClientAuth())
+      const data = await apiGet<ProductImageEntity[]>(url)
       setItems(
         data.map((item) => ({
           ...item,

@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { toast } from 'sonner'
-
 import { Button, ButtonLoadingIcon } from '@/components/ui/button'
 import {
   Dialog,
@@ -16,7 +15,6 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { apiPut } from '@/lib/api'
-import { withClientAuth } from '@/lib/api/with-client-auth'
 import { useCartStore } from '@/providers/cart-store-provider'
 
 export function TmpBuye() {
@@ -29,7 +27,7 @@ export function TmpBuye() {
 
   const submitHandler = async () => {
     setLoading(true)
-    await apiPut(`cart/${cartId}`, { customerPhone, customerEmail, customerName }, withClientAuth())
+    await apiPut(`cart/${cartId}`, { customerPhone, customerEmail, customerName })
     setLoading(false)
     setSendOpened(false)
     // cartStore.deleteCart()

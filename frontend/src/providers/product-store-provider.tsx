@@ -2,11 +2,7 @@
 
 import { type ReactNode, createContext, useContext, useRef } from 'react'
 import { useStore } from 'zustand'
-
-// import { apiPost } from '@/lib/api'
-// import { withClientAuth } from '@/lib/api/with-client-auth'
 import { type ProductStore, createProductStore } from '@/stores/product-store'
-// import { useAuthStore } from './auth-store-provider'
 import { ProductEntity } from '@/types'
 
 export type ProductStoreApi = ReturnType<typeof createProductStore>

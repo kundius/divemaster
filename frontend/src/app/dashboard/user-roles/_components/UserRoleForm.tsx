@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
-
 import { Button, ButtonLoadingIcon } from '@/components/ui/button'
 import {
   Form,
@@ -17,7 +16,6 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { apiPatch, apiPost } from '@/lib/api'
-import { withClientAuth } from '@/lib/api/with-client-auth'
 import { UserRoleEntity } from '@/types'
 
 export const UserRoleFormSchema = z.object({
@@ -61,7 +59,7 @@ export function UserRoleForm({ record }: UserRoleFormProps) {
     }
 
     try {
-      await apiPatch(`roles/${record.id}`, values, withClientAuth())
+      await apiPatch(`roles/${record.id}`, values)
 
       toast.success('Доступ изменен')
     } catch (e) {
@@ -71,7 +69,7 @@ export function UserRoleForm({ record }: UserRoleFormProps) {
 
   const create = async (values: UserRoleFormFields) => {
     try {
-      const result = await apiPost<UserRoleEntity>(`roles`, values, withClientAuth())
+      const result = await apiPost<UserRoleEntity>(`roles`, values)
 
       toast.success('Доступ добавлен')
 

@@ -30,7 +30,6 @@ import {
 import { ApiInputFile } from '@/lib/ApiInputFile'
 import { EditorInput } from '@/lib/EditorInput'
 import { apiPatch, apiPost } from '@/lib/api'
-import { withClientAuth } from '@/lib/api/with-client-auth'
 import { slugify } from '@/lib/utils'
 import { BlogPostEntity, BlogPostStatusEnum, BlogTagEntity, FindAllResult } from '@/types'
 import { Textarea } from '@/components/ui/textarea'
@@ -71,7 +70,7 @@ export function BlogPostMetadata({ record }: BlogPostMetadataProps) {
     }
 
     try {
-      await apiPatch(`blog/post/${record.id}`, { metadata }, withClientAuth())
+      await apiPatch(`blog/post/${record.id}`, { metadata })
 
       toast.success('Метаданные изменены')
     } catch (e) {

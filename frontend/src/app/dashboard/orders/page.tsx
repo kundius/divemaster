@@ -1,6 +1,5 @@
-import { PageLayout } from '@/components/admin/PageLayout'
+import { PageLayout } from '@/app/dashboard/_components/PageLayout'
 import { apiGet } from '@/lib/api'
-import { withServerAuth } from '@/lib/api/with-server-auth'
 import { ApiTableData } from '@/lib/ApiTable/types'
 import { PageProps, ProductEntity } from '@/types'
 import type { Metadata } from 'next'
@@ -22,14 +21,10 @@ export const metadata: Metadata = {
 export default async function Page({ searchParams }: PageProps) {
   let { page = 1 } = await searchParams
   page = Number(page)
-  const initialData = await apiGet<ApiTableData<ProductEntity>>(
-    'products',
-    {
-      limit: 10,
-      page
-    },
-    await withServerAuth()
-  )
+  const initialData = await apiGet<ApiTableData<ProductEntity>>('products', {
+    limit: 10,
+    page
+  })
   return (
     <PageLayout title="Заказы">
       <Table>

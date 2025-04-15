@@ -1,10 +1,8 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-
-import { PageLayout } from '@/components/admin/PageLayout'
+import { PageLayout } from '@/app/dashboard/_components/PageLayout'
 import { Button } from '@/components/ui/button'
 import { apiGet } from '@/lib/api'
-import { withServerAuth } from '@/lib/api/with-server-auth'
 import { FindAllResult, PageProps, UserEntity } from '@/types'
 
 import { UsersList } from './_components/UsersList'
@@ -14,11 +12,7 @@ export const metadata: Metadata = {
 }
 
 export default async function Page({ searchParams }: PageProps) {
-  const fallbackData = await apiGet<FindAllResult<UserEntity>>(
-    'users',
-    await searchParams,
-    await withServerAuth()
-  )
+  const fallbackData = await apiGet<FindAllResult<UserEntity>>('users', await searchParams)
 
   const actions = [
     <Button asChild key="create">

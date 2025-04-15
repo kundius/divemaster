@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 
-import { PageLayout } from '@/components/admin/PageLayout'
+import { PageLayout } from '@/app/dashboard/_components/PageLayout'
 
 import { UserForm } from '../_components/UserForm'
 

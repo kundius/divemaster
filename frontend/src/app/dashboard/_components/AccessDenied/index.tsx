@@ -1,17 +1,14 @@
 'use client'
 
-import Image from 'next/image'
-import Link from 'next/link'
-import { useTransition } from 'react'
-import { toast } from 'sonner'
-
 import { LabeledInput } from '@/components/LabeledInput'
 import { Button, ButtonLoadingIcon } from '@/components/ui/button'
 import { apiPost } from '@/lib/api'
 import { useAuthStore } from '@/providers/auth-store-provider'
-
+import Image from 'next/image'
+import Link from 'next/link'
+import { useTransition } from 'react'
+import { toast } from 'sonner'
 import styles from './index.module.scss'
-import { ApiClient } from '@/lib/api-client'
 
 export function AccessDenied() {
   const login = useAuthStore((state) => state.login)
@@ -19,9 +16,8 @@ export function AccessDenied() {
 
   const submitHandler = (formData: FormData) => {
     startTransition(async () => {
-      const api = new ApiClient()
       try {
-        const data = await api.post<{ token: string }>('auth/signin', {
+        const data = await apiPost<{ token: string }>('auth/signin', {
           email: formData.get('email'),
           password: formData.get('password')
         })

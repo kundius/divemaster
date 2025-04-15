@@ -4,18 +4,19 @@ import { CheckCircleIcon, PencilIcon, TrashIcon, XCircleIcon } from '@heroicons/
 import Link from 'next/link'
 import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryStates } from 'nuqs'
 import useSWR from 'swr'
-
 import { DataTable, DataTableColumn, DataTableFilterField } from '@/components/DataTable'
 import { Button } from '@/components/ui/button'
 import { ApiRemoveDialog } from '@/lib/ApiRemoveDialog'
 import { clearEmpty, getFileUrl } from '@/lib/utils'
 import { CategoryEntity, FindAllResult } from '@/types'
+import { Badge } from '@/components/ui/badge'
+import Image from 'next/image'
 
-export interface CategoryListProps {
+export interface CategoriesListProps {
   fallbackData?: FindAllResult<CategoryEntity>
 }
 
-export function CategoryList({ fallbackData }: CategoryListProps) {
+export function CategoriesList({ fallbackData }: CategoriesListProps) {
   const [pagination, setPagination] = useQueryStates(
     {
       page: parseAsInteger.withDefault(1),
@@ -32,14 +33,14 @@ export function CategoryList({ fallbackData }: CategoryListProps) {
   })
 
   const [filter, setFilter] = useQueryStates({
-    query: parseAsString,
-    tags: parseAsArrayOf(parseAsString)
+    query: parseAsString
   })
 
   const { data, isLoading, mutate } = useSWR<FindAllResult<CategoryEntity>>(
     [
       `categories`,
       {
+        withParent: true,
         ...pagination,
         ...clearEmpty(sorting),
         ...clearEmpty(filter)
@@ -55,23 +56,44 @@ export function CategoryList({ fallbackData }: CategoryListProps) {
 
   const columns: DataTableColumn<CategoryEntity>[] = [
     {
-      key: 'id',
-      label: 'ID'
-    },
-    {
       key: 'title',
       label: 'Название',
       sortable: true,
+      headProps: {},
+      formatter: (title, row) => {
+        return (
+          <div className="flex gap-3 items-center">
+            {row.imageId && (
+              <div className="flex w-12 h-12 relative self-start">
+                <Image src={getFileUrl(row.imageId)} fill alt="" className="object-cover rounded" />
+              </div>
+            )}
+            <div className="space-y-1">
+              <div className="text-balance">{title}</div>
+              {row.parent && (
+                <div className="flex gap-1.5 flex-wrap">
+                  <Badge variant="outline" className="font-normal">
+                    {row.parent.title}
+                  </Badge>
+                </div>
+              )}
+            </div>
+          </div>
+        )
+      }
+    },
+    {
+      key: 'rank',
+      label: 'Порядок',
       headProps: {
-        className: 'w-5/12'
+      },
+      cellProps: {
       }
     },
     {
       key: 'active',
       label: 'Активна',
-      headProps: {
-        className: 'w-5/12'
-      },
+      headProps: {},
       formatter: (active) => {
         const Icon = active ? CheckCircleIcon : XCircleIcon
         const color = active ? 'text-green-500' : 'text-amber-500'

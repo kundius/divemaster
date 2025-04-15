@@ -53,37 +53,39 @@ export class CategoriesService {
   }
 
   async findAll(dto: FindAllCategoryQueryDto) {
-    const where: FindOptionsWhere<Category> = {}
-    const relations: FindOptionsRelations<Category> = {}
+    const qb = this.categoryRepository.createQueryBuilder('category')
 
     if (dto.withChildren) {
       // HIERARCHY_DEPTH_LIMIT
-      relations.children = true
+      qb.leftJoinAndSelect('category.children', 'children')
     }
 
     if (dto.withParent) {
       // HIERARCHY_DEPTH_LIMIT
-      relations.parent = true
+      qb.leftJoinAndSelect('category.parent', 'parent')
     }
 
     if (dto.active) {
-      where.active = true
+      qb.andWhere('category.active = :categoryActive', { categoryActive: true })
     }
 
     if (dto.query) {
-      where.title = Like(`%${dto.query}%`)
+      qb.andWhere('category.title LIKE :categoryTitle', { categoryTitle: `%${dto.query}%` })
     }
 
     if (typeof dto.parent !== 'undefined') {
-      where.parentId = dto.parent === 0 ? IsNull() : dto.parent
+      if (dto.parent === 0) {
+        qb.andWhere('category.parentId IS NULL')
+      } else {
+        qb.andWhere('category.parentId = :categoryParent', { categoryParent: dto.parent })
+      }
     }
 
-    const [rows, total] = await this.categoryRepository.findAndCount({
-      where,
-      skip: dto.skip,
-      take: dto.take,
-      order: { [dto.sort]: dto.dir }
-    })
+    qb.orderBy(`category.${dto.sort}`, dto.dir)
+    qb.skip(dto.skip)
+    qb.take(dto.take)
+
+    const [rows, total] = await qb.getManyAndCount()
 
     return { rows, total }
   }

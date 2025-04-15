@@ -1,5 +1,5 @@
 import { VerticalNav } from '@/components/VerticalNav'
-import { PageLayout } from '@/components/admin/PageLayout'
+import { PageLayout } from '@/app/dashboard/_components/PageLayout'
 import { Metadata } from 'next'
 import { PropsWithChildren } from 'react'
 

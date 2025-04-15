@@ -1,8 +1,6 @@
 'use client'
 
 import { api } from '@/lib/api'
-import { withClientAuth } from '@/lib/api/with-client-auth'
-import { withJsonContent } from '@/lib/api/with-json-content'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FieldValues, UseFormProps, UseFormReturn, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -42,12 +40,7 @@ export function useApiForm<TFieldValues extends FieldValues = FieldValues, TResu
     }
 
     try {
-      const data = await api<TResult>(url, {
-        ...withClientAuth(),
-        ...withJsonContent(),
-        method,
-        body: JSON.stringify(values)
-      })
+      const data = await api<TResult>(method, url, values)
 
       toast.success(successMessage)
 

@@ -1,12 +1,11 @@
 import { apiGet } from '@/lib/api'
-import { withServerAuth } from '@/lib/api/with-server-auth'
 import { PropertyType, PageProps, ProductEntity } from '@/types'
 import { ProductOptions, OptionsType } from '../../_components/ProductOptions'
 
 export default async function Page({ params }: PageProps<{ id: number }>) {
   const { id } = await params
   const [product] = await Promise.all([
-    apiGet<ProductEntity>(`products/${id}`, { withOptions: true }, await withServerAuth())
+    apiGet<ProductEntity>(`products/${id}`, { withOptions: true })
   ])
 
   const initialOptions: OptionsType = {}

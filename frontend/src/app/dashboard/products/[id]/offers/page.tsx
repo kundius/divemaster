@@ -1,15 +1,10 @@
 import { apiGet } from '@/lib/api'
-import { withServerAuth } from '@/lib/api/with-server-auth'
 import { PageProps, ProductEntity } from '@/types'
 import { ProductOffers, ProductOffersProps } from '../../_components/ProductOffers'
 
 export default async function Page({ params }: PageProps<{ id: number }>) {
   const { id } = await params
-  const product = await apiGet<ProductEntity>(
-    `products/${id}`,
-    { withOptions: true },
-    await withServerAuth()
-  )
+  const product = await apiGet<ProductEntity>(`products/${id}`, { withOptions: true })
 
   const properties: ProductOffersProps['properties'] = {}
   for (const property of product.properties || []) {

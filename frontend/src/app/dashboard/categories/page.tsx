@@ -1,33 +1,33 @@
-import { PageLayout } from '@/components/admin/PageLayout'
+import { PageLayout } from '@/app/dashboard/_components/PageLayout'
 import { Button } from '@/components/ui/button'
 import { ApiTableData } from '@/lib/ApiTable/types'
 import { apiGet } from '@/lib/api'
-import { withServerAuth } from '@/lib/api/with-server-auth'
 import { PageProps, CategoryEntity } from '@/types'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { CategoryList } from './_components/CategoryList'
+import { CategoriesList } from './_components/CategoryList'
 
 export const metadata: Metadata = {
   title: 'Категории'
 }
 
 export default async function Page({ searchParams }: PageProps) {
-  const fallbackData = await apiGet<ApiTableData<CategoryEntity>>(
-    'categories',
-    await searchParams,
-    await withServerAuth()
-  )
-
-  const actions = [
-    <Button asChild key="create">
-      <Link href="/dashboard/categories/create">Добавить категорию</Link>
-    </Button>
-  ]
+  const params = await searchParams
+  const fallbackData = await apiGet<ApiTableData<CategoryEntity>>('categories', {
+    ...params,
+    withParent: true
+  })
 
   return (
-    <PageLayout title="Блог" actions={actions}>
-      <CategoryList fallbackData={fallbackData} />
+    <PageLayout
+      title="Категории"
+      actions={
+        <Button asChild>
+          <Link href="/dashboard/categories/create">Добавить категорию</Link>
+        </Button>
+      }
+    >
+      <CategoriesList fallbackData={fallbackData} />
     </PageLayout>
   )
 }

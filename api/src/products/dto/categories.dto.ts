@@ -70,11 +70,11 @@ export class FindAllCategoryQueryDto extends PaginationQueryDto {
   @Type(() => String)
   @IsString()
   @IsOptional()
-  sort: keyof Category = 'id'
+  sort: keyof Category = 'rank'
 
   @IsString()
   @IsOptional()
-  dir: 'asc' | 'desc' = 'asc'
+  dir: 'ASC' | 'DESC' = 'ASC'
 }
 
 export class FindOneCategoryQueryDto {

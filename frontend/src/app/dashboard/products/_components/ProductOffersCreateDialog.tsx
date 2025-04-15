@@ -26,7 +26,6 @@ import {
   SelectValue
 } from '@/components/ui/select'
 import { apiPost } from '@/lib/api'
-import { withClientAuth } from '@/lib/api/with-client-auth'
 import { OfferEntity, PropertyEntity } from '@/types'
 import { useToggle } from '@reactuses/core'
 import { PropsWithChildren } from 'react'
@@ -66,15 +65,11 @@ export function ProductOffersCreateDialog({
     toggleLoading()
 
     try {
-      await apiPost(
-        `products/${productId}/offers`,
-        {
-          title: data.title,
-          price: Number(data.price),
-          options: data.options
-        },
-        withClientAuth()
-      )
+      await apiPost(`products/${productId}/offers`, {
+        title: data.title,
+        price: Number(data.price),
+        options: data.options
+      })
       toast.success('Сохранено')
       form.reset()
       onSuccess?.()

@@ -1,11 +1,8 @@
 import { deleteCookie, setCookie } from 'cookies-next'
 import { createStore } from 'zustand/vanilla'
-
-import { apiGet } from '@/lib/api'
-import { withClientAuth } from '@/lib/api/with-client-auth'
 import { MAX_AGE, TOKEN_NAME } from '@/constants'
 import { UserEntity } from '@/types'
-import { ApiClient } from '@/lib/api-client'
+import { apiGet } from '@/lib/api'
 
 export type AuthState = {
   user: UserEntity | null
@@ -34,10 +31,7 @@ export const createAuthStore = (initialUser?: UserEntity) =>
 
     async loadUser() {
       set({ loading: true })
-      const api = new ApiClient()
-      await api.withClientAuth()
-      const data = await api.get<{ user?: UserEntity }>('auth/profile')
-      // const data = await apiGet<{ user?: UserEntity }>('auth/profile', {}, withClientAuth())
+      const data = await apiGet<{ user?: UserEntity }>('auth/profile')
       set({ user: data.user || null, loading: false })
     },
 

@@ -7,7 +7,7 @@ import { useApiForm } from '@/lib/ApiForm'
 import { EditorInput } from '@/lib/EditorInput'
 import { ProductEntity } from '@/types'
 import { z } from 'zod'
-import { PageLayout } from '../PageLayout'
+import { PageLayout } from '../../../app/dashboard/_components/PageLayout'
 import { ProductLayout } from '../ProductLayout'
 
 export const ProductDescriptionSchema = z.object({

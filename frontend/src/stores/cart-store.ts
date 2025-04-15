@@ -1,7 +1,5 @@
 import { createStore } from 'zustand/vanilla'
-
 import { apiDelete, apiGet, apiPost, apiPut } from '@/lib/api'
-import { withClientAuth } from '@/lib/api/with-client-auth'
 import type { CartEntity, CartProductEntity } from '@/types'
 
 export type CartState = {
@@ -17,7 +15,11 @@ export type CartState = {
 
 export type CartActions = {
   loadCart(): Promise<void>
-  addToCart(item: { id: number; quantity?: number; options?: Record<string, string> }): Promise<void>
+  addToCart(item: {
+    id: number
+    quantity?: number
+    options?: Record<string, string>
+  }): Promise<void>
   removeFromCart(product: CartProductEntity): Promise<void>
   changeQuantity(product: CartProductEntity, quantity: number): Promise<void>
   deleteCart(): Promise<void>
@@ -40,7 +42,7 @@ export const createCartStore = () =>
     async createCart() {
       let cartId = null
       try {
-        const data = await apiPut<CartEntity>('cart', {}, withClientAuth())
+        const data = await apiPut<CartEntity>('cart')
         cartId = data.id
         get().setCartId(cartId)
       } catch (e) {}
@@ -55,11 +57,7 @@ export const createCartStore = () =>
 
       if (cartId) {
         try {
-          cartProducts = await apiGet<CartProductEntity[]>(
-            `cart/${cartId}/products`,
-            {},
-            withClientAuth()
-          )
+          cartProducts = await apiGet<CartProductEntity[]>(`cart/${cartId}/products`)
         } catch (e) {}
       }
 
@@ -78,11 +76,7 @@ export const createCartStore = () =>
           quantity: item.quantity || 1,
           options: item.options || {}
         }
-        const cartProducts = await apiPut<CartProductEntity[]>(
-          `cart/${cartId}/products`,
-          params,
-          withClientAuth()
-        )
+        const cartProducts = await apiPut<CartProductEntity[]>(`cart/${cartId}/products`, params)
         get().setCartProducts(cartProducts)
       } catch (e) {}
     },
@@ -95,9 +89,7 @@ export const createCartStore = () =>
 
       try {
         const cartProducts = await apiDelete<CartProductEntity[]>(
-          `cart/${cartId}/products/${product.id}`,
-          {},
-          withClientAuth()
+          `cart/${cartId}/products/${product.id}`
         )
         get().setCartProducts(cartProducts)
       } catch (e) {}
@@ -118,8 +110,7 @@ export const createCartStore = () =>
         const params = { quantity }
         const cartProducts = await apiPost<CartProductEntity[]>(
           `cart/${cartId}/products/${product.id}`,
-          params,
-          withClientAuth()
+          params
         )
         get().setCartProducts(cartProducts)
       } catch (e) {}
@@ -132,7 +123,7 @@ export const createCartStore = () =>
       if (!cartId) return
 
       try {
-        await apiDelete<CartProductEntity[]>(`cart/${cartId}`, {}, withClientAuth())
+        await apiDelete<CartProductEntity[]>(`cart/${cartId}`)
         // Удаление товаров и id корзины
         get().setCartProducts([])
         get().setCartId(null)

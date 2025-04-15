@@ -16,7 +16,6 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import { PageHeader, PageHeaderProps } from '../PageHeader'
-import { withClientAuth } from '@/lib/api/with-client-auth'
 import { useAuthStore } from '@/providers/auth-store-provider'
 
 const formSchema = z.object({
@@ -35,7 +34,7 @@ export function ProfilePage() {
     setIsLoading(true)
 
     try {
-      await apiPatch('auth/profile', values, withClientAuth())
+      await apiPatch('auth/profile', values)
 
       toast.success(`Сохранено`)
     } catch (e) {

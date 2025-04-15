@@ -23,9 +23,15 @@ import { SectionPage } from '@/components/SectionPage'
 import { Suspense } from 'react'
 
 export async function generateStaticParams() {
-  const categories = await apiGet<ApiTableData<CategoryEntity>>(`categories`, {
-    limit: 100
-  })
+  const categories = await apiGet<ApiTableData<CategoryEntity>>(
+    `categories`,
+    {
+      limit: 100
+    },
+    {
+      auth: false
+    }
+  )
   return categories.rows.map(({ alias }) => ({ alias }))
 }
 
@@ -41,6 +47,7 @@ export async function generateMetadata({
       active: true
     },
     {
+      auth: false,
       next: {
         revalidate: 60 * 5
       }
@@ -53,20 +60,12 @@ export async function generateMetadata({
 
 export default async function Page({ params }: PageProps<{ alias: string }>) {
   const { alias } = await params
-  const category = await apiGet<CategoryEntity>(
-    `categories/alias:${alias}`,
-    {
-      withParent: true,
-      withChildren: true,
-      withContent: true,
-      active: true
-    },
-    {
-      next: {
-        revalidate: 60 * 5
-      }
-    }
-  )
+  const category = await apiGet<CategoryEntity>(`categories/alias:${alias}`, {
+    withParent: true,
+    withChildren: true,
+    withContent: true,
+    active: true
+  })
 
   const crumbs: BreadcrumbsProps['items'] = [
     {

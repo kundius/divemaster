@@ -7,7 +7,6 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import useSWR from 'swr'
 import { z } from 'zod'
-
 import { Button, ButtonLoadingIcon } from '@/components/ui/button'
 import { CreateablePicker } from '@/components/ui/createable-picker'
 import {
@@ -30,10 +29,8 @@ import {
 import { ApiInputFile } from '@/lib/ApiInputFile'
 import { EditorInput } from '@/lib/EditorInput'
 import { apiPatch, apiPost } from '@/lib/api'
-import { withClientAuth } from '@/lib/api/with-client-auth'
 import { slugify } from '@/lib/utils'
 import { BlogPostEntity, BlogPostStatusEnum, BlogTagEntity, FindAllResult } from '@/types'
-
 import { BlogPostStatusLabels } from '../data'
 
 export const BlogPostFormSchema = z.object({
@@ -96,7 +93,7 @@ export function BlogPostForm({ record }: BlogPostFormProps) {
     }
 
     try {
-      await apiPatch(`blog/post/${record.id}`, values, withClientAuth())
+      await apiPatch(`blog/post/${record.id}`, values)
 
       toast.success('Пост изменен')
     } catch (e) {
@@ -106,7 +103,7 @@ export function BlogPostForm({ record }: BlogPostFormProps) {
 
   const create = async (values: BlogPostFormFields) => {
     try {
-      const result = await apiPost<BlogPostEntity>(`blog/post`, values, withClientAuth())
+      const result = await apiPost<BlogPostEntity>(`blog/post`, values)
 
       toast.success('Пост добавлен')
 

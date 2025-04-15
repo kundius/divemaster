@@ -15,7 +15,6 @@ import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { apiPatch } from '@/lib/api'
-import { withClientAuth } from '@/lib/api/with-client-auth'
 import { colors } from '@/lib/colors'
 import { PropertyEntity, PropertyType } from '@/types'
 import { useToggle } from '@reactuses/core'
@@ -162,7 +161,7 @@ export function ProductOptions({ productId, properties, initialOptions }: Produc
     pendingToggle()
 
     try {
-      await apiPatch(`products/${productId}/options`, options, withClientAuth())
+      await apiPatch(`products/${productId}/options`, options)
       toast.success('Сохранено')
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Unknown error')

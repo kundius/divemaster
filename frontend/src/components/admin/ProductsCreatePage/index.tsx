@@ -5,7 +5,7 @@ import { slugify } from '@/lib/utils'
 import { ProductEntity } from '@/types'
 import { useRouter } from 'next/navigation'
 import { ProductForm, ProductFormFields, ProductFormSchema } from '../ProductForm'
-import { PageLayout } from '../PageLayout'
+import { PageLayout } from '../../../app/dashboard/_components/PageLayout'
 import { ProductLayout } from '../ProductLayout'
 import { Button, ButtonLoadingIcon } from '@/components/ui/button'
 

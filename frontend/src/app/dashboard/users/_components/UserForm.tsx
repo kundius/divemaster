@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
-
 import { Button, ButtonLoadingIcon } from '@/components/ui/button'
 import {
   Form,
@@ -19,7 +18,6 @@ import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { ApiInputComboBox } from '@/lib/ApiInputComboBox'
 import { apiPatch, apiPost } from '@/lib/api'
-import { withClientAuth } from '@/lib/api/with-client-auth'
 import { UserEntity } from '@/types'
 
 export const UserFormSchema = z.object({
@@ -71,7 +69,7 @@ export function UserForm({ record }: UserFormProps) {
     }
 
     try {
-      await apiPatch(`users/${record.id}`, values, withClientAuth())
+      await apiPatch(`users/${record.id}`, values)
 
       toast.success('Пользователь изменен')
     } catch (e) {
@@ -81,7 +79,7 @@ export function UserForm({ record }: UserFormProps) {
 
   const create = async (values: UserFormFields) => {
     try {
-      const result = await apiPost<UserEntity>(`users`, values, withClientAuth())
+      const result = await apiPost<UserEntity>(`users`, values)
 
       toast.success('Пользователь добавлен')
 

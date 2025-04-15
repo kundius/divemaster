@@ -14,11 +14,9 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { useAuthStore } from '@/providers/auth-store-provider'
-import { apiPost } from '@/lib/api'
-import { withClientAuth } from '@/lib/api/with-client-auth'
 import { toast } from 'sonner'
 import { UserEntity } from '@/types'
-import { ApiClient, ValidationError } from '@/lib/api-client'
+import { apiPost, ValidationError } from '@/lib/api'
 
 interface AccountSettingsFields {
   name: string
@@ -67,10 +65,8 @@ export function AccountSettings() {
   })
 
   async function onSubmit(values: AccountSettingsFields) {
-    const api = new ApiClient()
-    await api.withClientAuth()
     try {
-      const response = await api.post<{ user: UserEntity }>(`auth/profile`, values)
+      const response = await apiPost<{ user: UserEntity }>(`auth/profile`, values)
       setUser(response.user)
       form.setValue('password', '')
       form.setValue('passwordConfirmation', '')

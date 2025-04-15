@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { PropsWithChildren } from 'react'
 
-import { PageLayout } from '@/components/admin/PageLayout'
+import { PageLayout } from '@/app/dashboard/_components/PageLayout'
 import { VerticalNav } from '@/components/VerticalNav'
 import { PageProps } from '@/types'
 

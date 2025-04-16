@@ -18,7 +18,7 @@ export interface PaymentContainerProps {
 }
 
 export function PaymentContainer({ hash }: PaymentContainerProps) {
-  const { data, mutate, isLoading } = useSWR<OrderEntity>([`order/hash:${hash}`, {}])
+  const { data, mutate, isLoading } = useSWR<OrderEntity>([`orders/hash:${hash}`, {}])
 
   const refetch = () => mutate(data, { revalidate: true })
 

@@ -14,6 +14,7 @@ import { AuthStoreProvider } from '@/providers/auth-store-provider'
 import { SWRGlobalProvider } from '@/providers/swr-global-provider'
 import { MobileNavigation } from '@/components/MobileNavigation'
 import { LoginDialog } from '@/components/LoginDialog'
+import { DateFnsInit } from '@/lib/date-fns-init'
 
 const fontSans = FontSans({
   weight: ['400', '500', '700'],
@@ -59,6 +60,7 @@ export default async function RootLayout({
           fontMontserrat.variable
         )}
       >
+        <DateFnsInit />
         <NuqsAdapter>
           <SWRGlobalProvider>
             <AuthStoreProvider>

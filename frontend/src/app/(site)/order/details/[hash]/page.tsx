@@ -1,28 +1,21 @@
+import { Headline } from '@/components/Headline'
+import { SectionPage } from '@/components/SectionPage'
+import { apiGet } from '@/lib/api'
+import labels from '@/lib/labels'
+import { formatPrice } from '@/lib/utils'
+import { OrderEntity, PageProps } from '@/types'
 import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
 import { Metadata } from 'next'
-
-import { Headline } from '@/components/Headline'
-import { Container } from '@/components/site/Container'
-import { apiGet } from '@/lib/api'
-import { formatPrice } from '@/lib/utils'
-import { DeliveryService, OrderEntity, PageProps } from '@/types'
-
 import { PaymentContainer } from './_components/PaymentContainer'
-import { SectionPage } from '@/components/SectionPage'
 
 export const metadata: Metadata = {
   title: 'Информация о заказе'
 }
 
-const DeliveryServiceNames: Record<DeliveryService, string> = {
-  [DeliveryService.Pickup]: 'Самовывоз',
-  [DeliveryService.Shipping]: 'Доставка'
-}
-
 export default async function Page({ params }: PageProps<{ hash: string }>) {
   const { hash } = await params
-  const order = await apiGet<OrderEntity>(`order/hash:${hash}`)
+  const order = await apiGet<OrderEntity>(`orders/hash:${hash}`)
   if (!order.delivery) {
     throw new Error('delivery not defined')
   }
@@ -39,7 +32,7 @@ export default async function Page({ params }: PageProps<{ hash: string }>) {
                   <div className="flex flex-col space-y-1">
                     <div className="text-neutral-500 text-sm leading-none">Способ получения:</div>
                     <div className="text-neutral-800">
-                      {DeliveryServiceNames[order.delivery.service]}
+                      {labels.DeliveryService[order.delivery.service]}
                     </div>
                   </div>
                   <div className="col-span-2 flex flex-col space-y-1 max-md:col-span-1">

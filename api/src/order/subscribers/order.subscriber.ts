@@ -8,6 +8,11 @@ export class OrderSubscriber implements EntitySubscriberInterface<Order> {
   }
 
   afterLoad(entity: Order) {
-    entity.number = `${entity.hash.split('-')[1]}-${entity.id.toString().padStart(4, '0')}`
+    const arr: string[] = []
+    if (entity.hash) {
+      arr.push(entity.hash.split('-')[1])
+    }
+    arr.push(entity.id.toString().padStart(4, '0'))
+    entity.number = arr.join('-')
   }
 }

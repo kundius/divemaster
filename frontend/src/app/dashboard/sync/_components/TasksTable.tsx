@@ -11,7 +11,6 @@ import {
   TrashIcon
 } from '@heroicons/react/24/outline'
 import { format } from 'date-fns'
-import { ru } from 'date-fns/locale'
 import { TasksFilterType, useTasks } from './TasksProvider'
 
 export function TasksTable() {
@@ -126,7 +125,7 @@ export function TasksTable() {
       headProps: {
         className: 'w-1/3 whitespace-nowrap'
       },
-      formatter: (createdAt) => format(createdAt, 'dd MMMM, HH:mm', { locale: ru })
+      formatter: (createdAt) => format(createdAt, 'dd MMMM, HH:mm')
     },
     {
       key: 'id',

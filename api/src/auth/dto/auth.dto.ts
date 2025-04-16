@@ -61,14 +61,3 @@ export class UpdateProfileDto {
   @IsObject()
   address: Record<string, string>
 }
-
-export class FindProfileOrdersDto extends PaginationQueryDto {
-  @Type(() => String)
-  @IsString()
-  @IsOptional()
-  sort: keyof Order = 'createdAt'
-
-  @IsString()
-  @IsOptional()
-  dir: 'ASC' | 'DESC' = 'DESC'
-}

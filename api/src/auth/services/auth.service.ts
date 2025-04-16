@@ -1,24 +1,16 @@
+import { Role } from '@/users/entities/role.entity'
+import { User } from '@/users/entities/user.entity'
 import { UsersService } from '@/users/services/users.service'
-import {
-  BadRequestException,
-  ForbiddenException,
-  Injectable,
-  UnauthorizedException
-} from '@nestjs/common'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
-import { FindProfileOrdersDto, SignInDto, SignUpDto, UpdateProfileDto } from '../dto/auth.dto'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { User } from '@/users/entities/user.entity'
-import { Role } from '@/users/entities/role.entity'
-import { Order } from '@/order/entities/order.entity'
+import { SignInDto, SignUpDto, UpdateProfileDto } from '../dto/auth.dto'
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
-    @InjectRepository(Order)
-    private orderRepository: Repository<Order>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
     @InjectRepository(Role)
@@ -108,19 +100,29 @@ export class AuthService {
     }
   }
 
-  async findProfileOrders(dto: FindProfileOrdersDto, user: User) {
-    const qb = this.orderRepository.createQueryBuilder('order')
+  hasScope(user?: User, scopes: string | string[] = []) {
+    if (!user || !user.role || !user.role.scope) {
+      return false
+    }
+    const { role } = user
 
-    qb.leftJoinAndSelect('order.payment', 'payment')
-    qb.leftJoinAndSelect('order.delivery', 'delivery')
-    qb.leftJoinAndSelect('order.user', 'user')
-    qb.where('user.id = :userId', { userId: user.id })
-    qb.orderBy(`order.${dto.sort}`, dto.dir)
-    qb.skip(dto.skip)
-    qb.take(dto.take)
+    const check = (scope: string) => {
+      if (!role.scope) return false
+      if (scope.includes('/')) {
+        return role.scope.includes(scope) || role.scope.includes(scope.replace(/\/.*/, ''))
+      }
+      return role.scope.includes(scope) || role.scope.includes(`${scope}/get`)
+    }
 
-    const [rows, total] = await qb.getManyAndCount()
+    if (Array.isArray(scopes)) {
+      for (const scope of scopes) {
+        if (check(scope)) {
+          return true
+        }
+      }
+      return false
+    }
 
-    return { rows, total }
+    return check(scopes)
   }
 }

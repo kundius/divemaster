@@ -9,6 +9,8 @@ import { Payment, PaymentServiceEnum } from '../entities/payment.entity'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Order } from '../entities/order.entity'
 import { Repository } from 'typeorm'
+import { FindAllForUserDto, FindAllOrderQueryDto } from '../dto/order.dto'
+import { User } from '@/users/entities/user.entity'
 
 @Injectable()
 export class OrderService {
@@ -51,6 +53,48 @@ export class OrderService {
         delivery: true
       }
     })
+  }
+
+  async findAll(dto: FindAllOrderQueryDto) {
+    const qb = this.orderRepository.createQueryBuilder('order')
+
+    qb.leftJoinAndSelect('order.payment', 'payment')
+    qb.leftJoinAndSelect('order.delivery', 'delivery')
+    qb.leftJoinAndSelect('order.user', 'user')
+    qb.leftJoinAndSelect('order.products', 'products')
+
+    qb.orderBy(`order.${dto.sort}`, dto.dir)
+    qb.skip(dto.skip)
+    qb.take(dto.take)
+
+    let [rows, total] = await qb.getManyAndCount()
+
+    if (dto.query) {
+      const query = dto.query
+      rows = rows.filter((row) => (row.number ? row.number.includes(query) : false))
+    }
+
+    return { rows, total }
+  }
+
+  async findAllForUser(dto: FindAllForUserDto, user: User) {
+    const qb = this.orderRepository.createQueryBuilder('order')
+
+    qb.leftJoinAndSelect('order.payment', 'payment')
+    qb.leftJoinAndSelect('order.delivery', 'delivery')
+    qb.leftJoinAndSelect('order.user', 'user')
+    qb.where('user.id = :userId', { userId: user.id })
+    qb.orderBy(`order.${dto.sort}`, dto.dir)
+    qb.skip(dto.skip)
+    qb.take(dto.take)
+
+    const [rows, total] = await qb.getManyAndCount()
+
+    return { rows, total }
+  }
+
+  async remove(id: number) {
+    return this.orderRepository.delete({ id })
   }
 
   async processPayment(payment: Payment) {

@@ -1,49 +1,23 @@
 import { PageLayout } from '@/app/dashboard/_components/PageLayout'
 import { apiGet } from '@/lib/api'
 import { ApiTableData } from '@/lib/ApiTable/types'
-import { PageProps, ProductEntity } from '@/types'
+import { OrderEntity, PageProps } from '@/types'
 import type { Metadata } from 'next'
-import { OrdersPagination } from './_components/Pagination'
-
-import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-  TableCell
-} from '@/components/ui/table'
+import { OrderList } from './_components/OrderList'
 
 export const metadata: Metadata = {
   title: 'Заказы'
 }
 
 export default async function Page({ searchParams }: PageProps) {
-  let { page = 1 } = await searchParams
-  page = Number(page)
-  const initialData = await apiGet<ApiTableData<ProductEntity>>('products', {
-    limit: 10,
-    page
+  const params = await searchParams
+  const fallbackData = await apiGet<ApiTableData<OrderEntity>>('orders', {
+    ...params,
+    withParent: true
   })
   return (
     <PageLayout title="Заказы">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>ID</TableHead>
-            <TableHead>title</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {initialData.rows.map((row, i) => (
-            <TableRow key={row.id}>
-              <TableCell>{row.id}</TableCell>
-              <TableCell>{row.title}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <OrdersPagination page={page} limit={20} total={initialData.total} />
+      <OrderList fallbackData={fallbackData} />
     </PageLayout>
   )
 }

@@ -37,7 +37,7 @@ export class Delivery {
   @Column()
   orderId: number
 
-  @OneToOne(() => Order, (order) => order.delivery)
+  @OneToOne(() => Order, (order) => order.delivery, { onDelete: 'CASCADE' })
   @JoinColumn()
   order!: Order
 

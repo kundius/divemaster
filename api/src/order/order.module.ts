@@ -15,11 +15,13 @@ import { Delivery } from './entities/delivery.entity'
 import { Payment } from './entities/payment.entity'
 import { OrderProduct } from './entities/order-product.entity'
 import { PickupPoint } from './entities/pickup-point.entity'
+import { AuthModule } from '@/auth/auth.module'
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([City, Order, Delivery, Payment, OrderProduct, PickupPoint]),
-    NotificationsModule
+    NotificationsModule,
+    AuthModule
   ],
   providers: [OrderService, PickupPointService, CityService, YookassaService, UponCashService],
   controllers: [OrderController, PickupPointController, CityController],

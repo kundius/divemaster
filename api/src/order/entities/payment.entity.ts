@@ -45,7 +45,7 @@ export class Payment {
   @Column()
   orderId: number
 
-  @OneToOne(() => Order, (order) => order.payment)
+  @OneToOne(() => Order, (order) => order.payment, { onDelete: 'CASCADE' })
   @JoinColumn()
   order!: Order
 

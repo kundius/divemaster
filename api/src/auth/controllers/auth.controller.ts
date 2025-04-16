@@ -10,7 +10,7 @@ import {
   Query
 } from '@nestjs/common'
 import { CurrentUser } from '../decorators/current-user.decorator'
-import { FindProfileOrdersDto, SignInDto, SignUpDto, UpdateProfileDto } from '../dto/auth.dto'
+import { SignInDto, SignUpDto, UpdateProfileDto } from '../dto/auth.dto'
 import { AuthService } from '../services/auth.service'
 
 @Controller('auth')
@@ -29,14 +29,6 @@ export class AuthController {
     }
     await this.authService.updateProfile(user, dto)
     return { user }
-  }
-
-  @Get('profile/orders')
-  async findProfileOrders(@Query() dto: FindProfileOrdersDto, @CurrentUser() user?: User) {
-    if (!user) {
-      throw new ForbiddenException()
-    }
-    return this.authService.findProfileOrders(dto, user)
   }
 
   @HttpCode(HttpStatus.OK)

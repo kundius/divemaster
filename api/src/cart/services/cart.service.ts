@@ -340,8 +340,7 @@ export class CartService {
     })
 
     // создать заказ
-    const order = new Order()
-    this.orderRepository.merge(order, {
+    const order = this.orderRepository.create({
       hash: v4(),
       cost: orderCost.cost,
       composition: orderCost.composition,

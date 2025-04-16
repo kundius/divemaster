@@ -75,11 +75,11 @@ const nav: Nav = [
           {
             title: 'Все заказы',
             route: '/dashboard/orders'
-          },
-          {
-            title: 'Пункты выдачи',
-            route: '/dashboard/orders/pickup-points'
           }
+          // {
+          //   title: 'Пункты выдачи',
+          //   route: '/dashboard/orders/pickup-points'
+          // }
         ]
       },
       {
@@ -106,12 +106,12 @@ const nav: Nav = [
         title: 'Блог',
         route: '/dashboard/blog',
         icon: PencilSquareIcon
-      },
-      {
-        title: 'Страницы',
-        route: '/dashboard/pages',
-        icon: DocumentTextIcon
       }
+      // {
+      //   title: 'Страницы',
+      //   route: '/dashboard/pages',
+      //   icon: DocumentTextIcon
+      // }
     ]
   }
 ]

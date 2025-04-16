@@ -11,10 +11,16 @@ import { PointsDetails } from './PointsDetails'
 import { PointsItem } from './PointsItem'
 import { usePointsQuery } from './PointsQuery'
 import { useLocationStore } from '@/providers/location-store-provider'
-import { CitySelectForm, CitySelectFormProps } from '@/components/site/Header/CitySelectForm'
 import { useState } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
 import { MapPinIcon } from '@heroicons/react/24/outline'
+import { CitySelectForm, CitySelectFormProps } from '@/components/HeaderExtra/CitySelectForm'
 
 export function PointsList() {
   const orderState = useOrderStore((state) => state)
@@ -122,14 +128,14 @@ export function PointsList() {
       {!locationStore.hasHydrated ? (
         <Skeleton className="w-full h-[16px] rounded bg-neutral-50/50" />
       ) : (
-        <div className='flex items-center justify-between'>
-          <div className='flex items-center gap-2'>
-            <div className='text-base text-neutral-500'>Ваш город:</div>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="text-base text-neutral-500">Ваш город:</div>
             <Dialog open={showCitySelect} onOpenChange={setShowCitySelect}>
               <DialogTrigger asChild>
-                <button className='group font-sans-narrow inline-flex gap-1 items-center text-primary uppercase font-bold text-sm tracking-wide'>
-                  <MapPinIcon className='w-4 h-4' />
-                  <span className='border-b border-t border-transparent group-hover:border-b-primary'>
+                <button className="group font-sans-narrow inline-flex gap-1 items-center text-primary uppercase font-bold text-sm tracking-wide">
+                  <MapPinIcon className="w-4 h-4" />
+                  <span className="border-b border-t border-transparent group-hover:border-b-primary">
                     {locationStore.city.name}
                   </span>
                 </button>

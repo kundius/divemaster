@@ -26,6 +26,9 @@ let _clientCookies:
   | undefined = undefined
 
 const applyAuthorization = async (headers: Headers) => {
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return headers
+  }
   if (typeof window === 'undefined') {
     if (!_serverCookies) {
       const { cookies } = await import('next/headers')

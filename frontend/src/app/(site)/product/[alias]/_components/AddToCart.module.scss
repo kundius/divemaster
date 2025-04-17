@@ -77,10 +77,6 @@
   transform: translateY(100%);
   box-shadow: none;
   transition: 0.3s ease;
-
-  @include min-md {
-    display: none;
-  }
 }
 
 .floatMenuVisible {

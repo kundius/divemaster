@@ -15,13 +15,9 @@ export default async function Page({ params }: PageProps<{ id: number }>) {
     withContent: true,
     withParent: true
   })
-  async function revalidateCategory(alias: string) {
-    'use server'
-    revalidatePath(`/category/${alias}`, 'page')
-  }
   return (
     <PageLayout title="Редактировать категорию">
-      <CategoriesUpdate initialData={initialData} revalidateCategory={revalidateCategory} />
+      <CategoriesUpdate initialData={initialData} />
     </PageLayout>
   )
 }

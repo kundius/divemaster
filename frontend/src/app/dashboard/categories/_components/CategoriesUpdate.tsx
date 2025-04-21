@@ -8,13 +8,13 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { CategoriesFormFields, CategoriesFormSchema, CategoryForm } from './CategoriesForm'
 import { apiPatch } from '@/lib/api'
+import revalidateCategory from '../_actions'
 
 export interface CategoriesUpdateProps {
   initialData: CategoryEntity
-  revalidateCategory: (alias: string) => Promise<void>
 }
 
-export function CategoriesUpdate({ initialData, revalidateCategory }: CategoriesUpdateProps) {
+export function CategoriesUpdate({ initialData }: CategoriesUpdateProps) {
   const form = useForm<CategoriesFormFields>({
     resolver: zodResolver(CategoriesFormSchema),
     defaultValues: {

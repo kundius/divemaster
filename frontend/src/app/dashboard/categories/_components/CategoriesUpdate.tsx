@@ -37,7 +37,7 @@ export function CategoriesUpdate({ initialData }: CategoriesUpdateProps) {
     try {
       await apiPatch(`categories/${initialData.id}`, values)
       toast.success('Категория сохранена')
-      revalidateCategory(values.alias)
+      await revalidateCategory(values.alias)
     } catch (e) {
       toast.error((e as Error).message)
     }

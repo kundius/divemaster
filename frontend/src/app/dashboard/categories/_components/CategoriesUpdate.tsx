@@ -11,9 +11,10 @@ import { apiPatch } from '@/lib/api'
 
 export interface CategoriesUpdateProps {
   initialData: CategoryEntity
+  revalidateCategory: (alias: string) => Promise<void>
 }
 
-export function CategoriesUpdate({ initialData }: CategoriesUpdateProps) {
+export function CategoriesUpdate({ initialData, revalidateCategory }: CategoriesUpdateProps) {
   const form = useForm<CategoriesFormFields>({
     resolver: zodResolver(CategoriesFormSchema),
     defaultValues: {
@@ -36,6 +37,7 @@ export function CategoriesUpdate({ initialData }: CategoriesUpdateProps) {
     try {
       await apiPatch(`categories/${initialData.id}`, values)
       toast.success('Категория сохранена')
+      revalidateCategory(values.alias)
     } catch (e) {
       toast.error((e as Error).message)
     }

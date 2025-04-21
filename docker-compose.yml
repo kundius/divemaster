@@ -55,6 +55,7 @@ services:
     restart: unless-stopped
     working_dir: /divemaster/api
     command: sh -c 'npm i && npm run build && npm run start'
+    user: "1000:1000"
 
   frontend:
     image: node:${NODE_VERSION:-21}
@@ -70,6 +71,7 @@ services:
     restart: unless-stopped
     working_dir: /divemaster/frontend
     command: sh -c 'npm i && npm run build && npm run start'
+    user: "1000:1000"
 
   ckeditor5:
     image: node:${NODE_VERSION:-21}

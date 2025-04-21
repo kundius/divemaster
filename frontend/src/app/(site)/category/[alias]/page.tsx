@@ -23,6 +23,7 @@ import { SectionPage } from '@/components/SectionPage'
 import { Suspense } from 'react'
 
 export async function generateStaticParams() {
+  return []
   const categories = await apiGet<ApiTableData<CategoryEntity>>(
     `categories`,
     {

@@ -54,7 +54,7 @@ services:
     network_mode: "service:nginx"
     restart: unless-stopped
     working_dir: /divemaster/api
-    command: sh -c 'npm i && npm run build && npm run start'
+    command: sh -c 'rm -rf dist && npm i && npm run build && npm run start'
     user: "1000:1000"
 
   frontend:
@@ -70,7 +70,7 @@ services:
     network_mode: "service:nginx"
     restart: unless-stopped
     working_dir: /divemaster/frontend
-    command: sh -c 'npm i && npm run build && npm run start'
+    command: sh -c 'rm -rf .next && npm i && npm run build && npm run start'
     user: "1000:1000"
 
   ckeditor5:

@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { CategoriesFormFields, CategoriesFormSchema, CategoryForm } from './CategoriesForm'
 import { apiPatch } from '@/lib/api'
-import revalidateCategory from '../_actions'
+import { revalidateCategory } from './actions'
 
 export interface CategoriesUpdateProps {
   initialData: CategoryEntity

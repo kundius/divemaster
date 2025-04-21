@@ -3,7 +3,6 @@ import { CategoryEntity, PageProps } from '@/types'
 import type { Metadata } from 'next'
 import { PageLayout } from '../../_components/PageLayout'
 import { apiGet } from '@/lib/api'
-import { revalidatePath } from 'next/cache'
 
 export const metadata: Metadata = {
   title: 'Редактировать категорию'

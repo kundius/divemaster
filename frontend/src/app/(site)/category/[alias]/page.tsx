@@ -41,11 +41,7 @@ export async function generateMetadata({
   const { alias } = await params
   const category = await apiGet<CategoryEntity>(
     `categories/alias:${alias}`,
-    {
-      withParent: true,
-      withChildren: true,
-      active: true
-    },
+    {},
     {
       auth: false
     }
@@ -57,20 +53,12 @@ export async function generateMetadata({
 
 export default async function Page({ params }: PageProps<{ alias: string }>) {
   const { alias } = await params
-  const category = await apiGet<CategoryEntity>(
-    `categories/alias:${alias}`,
-    {
-      withParent: true,
-      withChildren: true,
-      withContent: true,
-      active: true
-    },
-    {
-      next: {
-        revalidate: 60 * 5
-      }
-    }
-  )
+  const category = await apiGet<CategoryEntity>(`categories/alias:${alias}`, {
+    withParent: true,
+    withChildren: true,
+    withContent: true,
+    active: true
+  })
 
   const crumbs: BreadcrumbsProps['items'] = [
     {

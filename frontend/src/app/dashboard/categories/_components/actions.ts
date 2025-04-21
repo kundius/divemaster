@@ -4,5 +4,5 @@ import { revalidatePath } from 'next/cache'
 
 export async function revalidateCategory(alias: string) {
   console.log('revalidating category', `/category/${alias}`)
-  revalidatePath(`/category/${alias}`, 'layout')
+  revalidatePath(`/(site)/category/${alias}`, 'page')
 }

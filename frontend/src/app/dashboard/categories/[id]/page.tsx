@@ -17,7 +17,7 @@ export default async function Page({ params }: PageProps<{ id: number }>) {
   })
   async function revalidateCategory(alias: string) {
     'use server'
-    revalidatePath(`/category/${alias}`)
+    revalidatePath(`/category/${alias}`, 'page')
   }
   return (
     <PageLayout title="Редактировать категорию">

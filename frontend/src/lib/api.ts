@@ -24,6 +24,10 @@ let _clientCookies:
   | ((key: string, options?: OptionsType) => CookieValueTypes | Promise<CookieValueTypes>)
   | undefined = undefined
 
+// TODO сейчас серверная авторизация отключенна изза невозможности идентифицировать процесс сборки/пересборки
+// но, сборка всегда(?) выполняет гет запросы, а пользователь либо гет из клиента либо мутации из клиента
+// это можно как-то использовать, например для гет запросов оставить аутентификацию только на клиенте, а для мутаций и на сервере
+// или добавить флаги, и не включать их для запросов которые может выполнять сборщик
 const applyAuthorization = async (headers: Headers) => {
   if (typeof window === 'undefined') {
     // if (!_serverCookies) {

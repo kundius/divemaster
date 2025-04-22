@@ -23,47 +23,28 @@ import { SectionPage } from '@/components/SectionPage'
 import { Suspense } from 'react'
 
 export async function generateStaticParams() {
-  return []
-  // const categories = await apiGet<ApiTableData<CategoryEntity>>(
-  //   `categories`,
-  //   {
-  //     limit: 100
-  //   },
-  //   {
-  //     auth: false
-  //   }
-  // )
-  // return categories.rows.map(({ alias }) => ({ alias }))
+  const categories = await apiGet<ApiTableData<CategoryEntity>>(`categories`, {
+    limit: 100
+  })
+  return categories.rows.map(({ alias }) => ({ alias }))
 }
 
-// export async function generateMetadata({
-//   params
-// }: PageProps<{ alias: string }>): Promise<Metadata> {
-//   const { alias } = await params
-//   const category = await apiGet<CategoryEntity>(
-//     `categories/alias:${alias}`,
-//     {},
-//     {
-//       auth: false
-//     }
-//   )
-//   return {
-//     title: category.title
-//   }
-// }
+export async function generateMetadata({
+  params
+}: PageProps<{ alias: string }>): Promise<Metadata> {
+  const { alias } = await params
+  const category = await apiGet<CategoryEntity>(`categories/alias:${alias}`)
+  return { title: category.title }
+}
 
 export default async function Page({ params }: PageProps<{ alias: string }>) {
   const { alias } = await params
-  const category = await apiGet<CategoryEntity>(
-    `categories/alias:${alias}`,
-    {
-      withParent: true,
-      withChildren: true,
-      withContent: true,
-      active: true
-    },
-    { next: { tags: ['category'] } }
-  )
+  const category = await apiGet<CategoryEntity>(`categories/alias:${alias}`, {
+    withParent: true,
+    withChildren: true,
+    withContent: true,
+    active: true
+  })
 
   const crumbs: BreadcrumbsProps['items'] = [
     {

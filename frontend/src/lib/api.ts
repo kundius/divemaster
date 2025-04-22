@@ -1,6 +1,6 @@
 import { TOKEN_NAME } from '@/constants'
 import type { CookieValueTypes, OptionsType } from 'cookies-next'
-import type { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies'
+// import type { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies'
 import { notFound } from 'next/navigation'
 import { getApiUrl } from './utils'
 
@@ -16,29 +16,25 @@ export class ValidationError extends Error {
 
 interface ApiConfig {
   headers?: Record<string, string>
-  auth?: boolean
   next?: NextFetchRequestConfig | undefined
 }
 
-let _serverCookies: (() => Promise<ReadonlyRequestCookies>) | undefined = undefined
+// let _serverCookies: (() => Promise<ReadonlyRequestCookies>) | undefined = undefined
 let _clientCookies:
   | ((key: string, options?: OptionsType) => CookieValueTypes | Promise<CookieValueTypes>)
   | undefined = undefined
 
 const applyAuthorization = async (headers: Headers) => {
-  if (process.env.NEXT_PHASE === 'phase-production-build') {
-    return headers
-  }
   if (typeof window === 'undefined') {
-    if (!_serverCookies) {
-      const { cookies } = await import('next/headers')
-      _serverCookies = cookies
-    }
-    const cookieStore = await _serverCookies()
-    const token = cookieStore.get(TOKEN_NAME)
-    if (!!token) {
-      headers.set('Authorization', `Bearer ${token.value}`)
-    }
+    // if (!_serverCookies) {
+    //   const { cookies } = await import('next/headers')
+    //   _serverCookies = cookies
+    // }
+    // const cookieStore = await _serverCookies()
+    // const token = cookieStore.get(TOKEN_NAME)
+    // if (!!token) {
+    //   headers.set('Authorization', `Bearer ${token.value}`)
+    // }
   } else {
     if (!_clientCookies) {
       const { getCookie } = await import('cookies-next')
@@ -58,13 +54,11 @@ export async function api<TResult = unknown>(
   data?: Record<string, any> | FormData,
   config?: ApiConfig
 ): Promise<TResult> {
-  const { headers = {}, auth = true, next } = config || {}
+  const { headers = {}, next } = config || {}
 
   const headersObj = new Headers(headers)
 
-  if (auth) {
-    await applyAuthorization(headersObj)
-  }
+  await applyAuthorization(headersObj)
 
   let body: BodyInit | undefined = undefined
   if (data) {
@@ -77,7 +71,6 @@ export async function api<TResult = unknown>(
   }
 
   try {
-    console.log('fetch next', next)
     const response = await fetch(`${getApiUrl()}${endpoint}`, {
       method,
       headers: headersObj,

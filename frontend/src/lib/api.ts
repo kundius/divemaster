@@ -74,6 +74,8 @@ export async function api<TResult = unknown>(
     }
   }
 
+  console.log(headersObj)
+
   try {
     const response = await fetch(`${getApiUrl()}${endpoint}`, {
       method,

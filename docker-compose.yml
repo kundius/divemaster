@@ -80,3 +80,4 @@ services:
     restart: no
     working_dir: /divemaster/ckeditor5
     command: sh -c 'npm i && npm run build'
+    user: "1000:1000"

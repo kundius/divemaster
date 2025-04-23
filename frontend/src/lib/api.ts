@@ -67,14 +67,13 @@ export async function api<TResult = unknown>(
   let body: BodyInit | undefined = undefined
   if (data) {
     if (data instanceof FormData) {
+      console.log('data instanceof FormData')
       body = data
     } else {
       body = JSON.stringify(data)
       headersObj.set('Content-Type', 'application/json')
     }
   }
-
-  console.log(headersObj)
 
   try {
     const response = await fetch(`${getApiUrl()}${endpoint}`, {

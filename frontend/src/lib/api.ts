@@ -65,6 +65,7 @@ export async function api<TResult = unknown>(
   await applyAuthorization(headersObj)
 
   let body: BodyInit | undefined = undefined
+  console.log(typeof data)
   if (data) {
     if (data instanceof FormData) {
       console.log('data instanceof FormData')

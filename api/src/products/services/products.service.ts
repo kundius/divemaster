@@ -102,13 +102,11 @@ export class ProductsService {
   async findAll(dto: FindAllProductDto) {
     const qb = this.productRepository.createQueryBuilder('product')
 
-    qb.orderBy(`product.${dto.sort}`, dto.dir)
-
     if (dto.withImages) {
       qb.leftJoinAndSelect('product.images', 'images', 'images.active = :imagesActive', {
         imagesActive: true
       })
-      qb.addOrderBy('images.rank', 'ASC')
+      // qb.addOrderBy('images.rank', 'ASC')
     }
 
     if (dto?.withOffers) {
@@ -118,7 +116,7 @@ export class ProductsService {
 
     if (dto?.withOptions) {
       qb.leftJoinAndSelect('product.options', 'options')
-      qb.addOrderBy('options.rank', 'ASC')
+      // qb.addOrderBy('options.rank', 'ASC')
     }
 
     if (dto?.withBrand) {
@@ -166,6 +164,7 @@ export class ProductsService {
       }
     }
 
+    qb.orderBy(`product.${dto.sort}`, dto.dir)
     qb.skip(dto.skip)
     qb.take(dto.take)
 
@@ -185,7 +184,6 @@ export class ProductsService {
   async findOne(id: number, dto?: FindOneProductDto) {
     const qb = this.productRepository.createQueryBuilder('product')
 
-    qb.orderBy('product.title', 'ASC')
     qb.where('product.id = :id', { id })
 
     if (dto?.withOffers) {
@@ -195,14 +193,14 @@ export class ProductsService {
 
     if (dto?.withOptions) {
       qb.leftJoinAndSelect('product.options', 'options')
-      qb.addOrderBy('options.rank', 'ASC')
+      // qb.addOrderBy('options.rank', 'ASC')
     }
 
     if (dto?.withImages) {
       qb.leftJoinAndSelect('product.images', 'images', 'images.active = :imagesActive', {
         imagesActive: true
       })
-      qb.addOrderBy('images.rank', 'ASC')
+      // qb.addOrderBy('images.rank', 'ASC')
     }
 
     if (dto?.withBrand) {
@@ -229,7 +227,6 @@ export class ProductsService {
   async findOneByAlias(alias: string, dto?: FindOneProductDto) {
     const qb = this.productRepository.createQueryBuilder('product')
 
-    qb.orderBy('product.title', 'ASC')
     qb.where('product.alias = :alias', { alias })
 
     if (dto?.withOffers) {
@@ -239,14 +236,14 @@ export class ProductsService {
 
     if (dto?.withOptions) {
       qb.leftJoinAndSelect('product.options', 'options')
-      qb.addOrderBy('options.rank', 'ASC')
+      // qb.addOrderBy('options.rank', 'ASC')
     }
 
     if (dto?.withImages) {
       qb.leftJoinAndSelect('product.images', 'images', 'images.active = :imagesActive', {
         imagesActive: true
       })
-      qb.addOrderBy('images.rank', 'ASC')
+      // qb.addOrderBy('images.rank', 'ASC')
     }
 
     if (dto?.withBrand) {

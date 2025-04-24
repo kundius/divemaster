@@ -102,7 +102,7 @@ export function AddToCart() {
       </div>
 
       <div
-        className={cn('flex gap-4 pt-2 px-4 pb-1 md:hidden', styles.floatMenu, {
+        className={cn('flex items-center gap-4 pt-2 px-4 pb-1 md:hidden', styles.floatMenu, {
           [styles.floatMenuVisible]: showFloatMenu
         })}
         data-float-menu={showFloatMenu}

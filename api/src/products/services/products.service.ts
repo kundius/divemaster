@@ -106,7 +106,7 @@ export class ProductsService {
       qb.leftJoinAndSelect('product.images', 'images', 'images.active = :imagesActive', {
         imagesActive: true
       })
-      qb.orderBy('images.rank', 'ASC')
+      qb.addOrderBy('images.rank', 'ASC')
     }
 
     if (dto?.withOffers) {
@@ -116,7 +116,7 @@ export class ProductsService {
 
     if (dto?.withOptions) {
       qb.leftJoinAndSelect('product.options', 'options')
-      qb.orderBy('options.rank', 'ASC')
+      qb.addOrderBy('options.rank', 'ASC')
     }
 
     if (dto?.withBrand) {
@@ -164,7 +164,7 @@ export class ProductsService {
       }
     }
 
-    qb.orderBy(`product.${dto.sort}`, dto.dir)
+    qb.addOrderBy(`product.${dto.sort}`, dto.dir)
     qb.skip(dto.skip)
     qb.take(dto.take)
 
@@ -193,14 +193,14 @@ export class ProductsService {
 
     if (dto?.withOptions) {
       qb.leftJoinAndSelect('product.options', 'options')
-      qb.orderBy('options.rank', 'ASC')
+      qb.addOrderBy('options.rank', 'ASC')
     }
 
     if (dto?.withImages) {
       qb.leftJoinAndSelect('product.images', 'images', 'images.active = :imagesActive', {
         imagesActive: true
       })
-      qb.orderBy('images.rank', 'ASC')
+      qb.addOrderBy('images.rank', 'ASC')
     }
 
     if (dto?.withBrand) {
@@ -236,14 +236,14 @@ export class ProductsService {
 
     if (dto?.withOptions) {
       qb.leftJoinAndSelect('product.options', 'options')
-      qb.orderBy('options.rank', 'ASC')
+      qb.addOrderBy('options.rank', 'ASC')
     }
 
     if (dto?.withImages) {
       qb.leftJoinAndSelect('product.images', 'images', 'images.active = :imagesActive', {
         imagesActive: true
       })
-      qb.orderBy('images.rank', 'ASC')
+      qb.addOrderBy('images.rank', 'ASC')
     }
 
     if (dto?.withBrand) {

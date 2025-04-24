@@ -102,6 +102,8 @@ export class ProductsService {
   async findAll(dto: FindAllProductDto) {
     const qb = this.productRepository.createQueryBuilder('product')
 
+    qb.orderBy(`product.${dto.sort}`, dto.dir)
+
     if (dto.withImages) {
       qb.leftJoinAndSelect('product.images', 'images', 'images.active = :imagesActive', {
         imagesActive: true
@@ -164,7 +166,6 @@ export class ProductsService {
       }
     }
 
-    qb.addOrderBy(`product.${dto.sort}`, dto.dir)
     qb.skip(dto.skip)
     qb.take(dto.take)
 
@@ -184,6 +185,7 @@ export class ProductsService {
   async findOne(id: number, dto?: FindOneProductDto) {
     const qb = this.productRepository.createQueryBuilder('product')
 
+    qb.orderBy('product.title', 'ASC')
     qb.where('product.id = :id', { id })
 
     if (dto?.withOffers) {
@@ -227,6 +229,7 @@ export class ProductsService {
   async findOneByAlias(alias: string, dto?: FindOneProductDto) {
     const qb = this.productRepository.createQueryBuilder('product')
 
+    qb.orderBy('product.title', 'ASC')
     qb.where('product.alias = :alias', { alias })
 
     if (dto?.withOffers) {

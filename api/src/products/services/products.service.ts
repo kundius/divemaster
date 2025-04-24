@@ -11,6 +11,7 @@ import {
   FindOptionsRelations,
   FindOptionsWhere,
   In,
+  IsNull,
   Like,
   Not,
   Repository
@@ -100,36 +101,28 @@ export class ProductsService {
   }
 
   async findAll(dto: FindAllProductDto) {
-    const qb = this.productRepository.createQueryBuilder('product')
-
-    if (dto?.withBrand) {
-      qb.leftJoinAndSelect('product.brand', 'brand')
-    }
-
-    if (dto?.withCategories || typeof dto.category !== 'undefined') {
-      qb.leftJoinAndSelect('product.categories', 'categories')
-    }
+    const where: FindOptionsWhere<Product> = {}
 
     if (dto.favorite) {
-      qb.andWhere('product.favorite = :productFavorite', { productFavorite: true })
+      where.favorite = true
     }
 
     if (dto.recent) {
-      qb.andWhere('product.recent = :productRecent', { productRecent: true })
+      where.recent = true
     }
 
     if (dto.active) {
-      qb.andWhere('product.active = :productActive', { productActive: true })
+      where.active = true
     }
 
     if (dto.query) {
-      qb.andWhere('product.title LIKE :productTitle', { productTitle: `%${dto.query}%` })
+      where.title = Like(`%${dto.query}%`)
     }
 
     if (typeof dto.category !== 'undefined') {
       // TODO: HIERARCHY_DEPTH_LIMIT
       // товары выбираются без учета подкатегорий
-      qb.andWhere('categories.id IN (:...categoryIds)', { categoryIds: [dto.category] })
+      where.categories = { id: In([dto.category]) }
     }
 
     if (dto.filter) {
@@ -140,52 +133,60 @@ export class ProductsService {
       await this.productsFilterService.init(dto.category)
       const productIds = await this.productsFilterService.search(filter)
       if (productIds.length > 0) {
-        qb.andWhere('product.id IN (:...productIds)', { productIds })
+        where.id = In(productIds)
       } else {
-        qb.andWhere('1=0')
+        where.id = IsNull()
       }
     }
 
-    qb.orderBy(`product.${dto.sort}`, dto.dir)
-    qb.skip(dto.skip)
-    qb.take(dto.take)
-
-    const [rows, total] = await qb.getManyAndCount()
+    const [rows, total] = await this.productRepository.findAndCount({
+      where,
+      take: dto.take,
+      skip: dto.skip,
+      relations: {
+        brand: true,
+        categories: true
+      }
+    })
 
     await Promise.all(
       rows.map(async (row) => {
-        row.options = await this.productOptionRepository.find({
-          where: {
-            productId: row.id
-          },
-          order: {
-            rank: 'ASC'
-          }
-        })
+        const [options, images, offers, properties] = await Promise.all([
+          this.productOptionRepository.find({
+            where: {
+              productId: row.id
+            },
+            order: {
+              rank: 'ASC'
+            }
+          }),
+          this.productImageRepository.find({
+            where: {
+              productId: row.id,
+              active: true
+            },
+            order: {
+              rank: 'ASC'
+            }
+          }),
+          this.offerRepository.find({
+            where: {
+              productId: row.id
+            },
+            order: {
+              rank: 'ASC'
+            },
+            relations: {
+              options: true
+            }
+          }),
+          this.findPropertiesForProduct(row.id)
+        ])
 
-        row.images = await this.productImageRepository.find({
-          where: {
-            productId: row.id,
-            active: true
-          },
-          order: {
-            rank: 'ASC'
-          }
-        })
-
-        row.offers = await this.offerRepository.find({
-          where: {
-            productId: row.id
-          },
-          order: {
-            rank: 'ASC'
-          },
-          relations: {
-            options: true
-          }
-        })
-
-        row.properties = await this.findPropertiesForProduct(row.id)
+        row.options = options
+        row.images = images
+        row.offers = offers
+        row.properties = properties
       })
     )
 
@@ -193,116 +194,66 @@ export class ProductsService {
   }
 
   async findOne(id: number, dto?: FindOneProductDto) {
-    const qb = this.productRepository.createQueryBuilder('product')
-
-    qb.where('product.id = :id', { id })
-
-    if (dto?.withOffers) {
-      qb.leftJoinAndSelect('product.offers', 'offers')
-      qb.leftJoinAndSelect('offers.options', 'offersOptions')
-    }
-
-    if (dto?.withOptions) {
-      qb.leftJoinAndSelect('product.options', 'options')
-    }
-
-    if (dto?.withImages) {
-      qb.leftJoinAndSelect('product.images', 'images', 'images.active = :imagesActive', {
-        imagesActive: true
-      })
-    }
-
-    if (dto?.withBrand) {
-      qb.leftJoinAndSelect('product.brand', 'brand')
-    }
-
-    if (dto?.withCategories) {
-      qb.leftJoinAndSelect('product.categories', 'categories')
+    const where: FindOptionsWhere<Product> = {
+      id,
+      images: { active: true }
     }
 
     if (dto?.active) {
-      qb.andWhere('product.active = :productActive', { productActive: true })
+      where.active = true
     }
 
-    const product = await qb.getOneOrFail()
+    const product = await this.productRepository.findOne({
+      where,
+      relations: {
+        offers: { options: true },
+        options: true,
+        images: true,
+        brand: true,
+        categories: true
+      },
+      order: {
+        options: { rank: 'ASC' },
+        images: { rank: 'ASC' },
+        offers: { rank: 'ASC' }
+      }
+    })
 
-    if (dto?.withOptions) {
+    if (product) {
       product.properties = await this.findPropertiesForProduct(product.id)
-    }
-
-    if (dto?.withImages) {
-      product.images = product.images.sort((a, b) => {
-        if (a.rank < b.rank) return -1
-        if (a.rank > b.rank) return 1
-        return 0
-      })
-    }
-
-    if (dto?.withOptions) {
-      product.options = product.options.sort((a, b) => {
-        if (a.rank < b.rank) return -1
-        if (a.rank > b.rank) return 1
-        return 0
-      })
     }
 
     return product
   }
 
   async findOneByAlias(alias: string, dto?: FindOneProductDto) {
-    const qb = this.productRepository.createQueryBuilder('product')
-
-    qb.where('product.alias = :alias', { alias })
-
-    if (dto?.withOffers) {
-      qb.leftJoinAndSelect('product.offers', 'offers')
-      qb.leftJoinAndSelect('offers.options', 'offersOptions')
-    }
-
-    if (dto?.withOptions) {
-      qb.leftJoinAndSelect('product.options', 'options')
-    }
-
-    if (dto?.withImages) {
-      qb.leftJoinAndSelect('product.images', 'images', 'images.active = :imagesActive', {
-        imagesActive: true
-      })
-    }
-
-    if (dto?.withBrand) {
-      qb.leftJoinAndSelect('product.brand', 'brand')
-    }
-
-    if (dto?.withCategories) {
-      qb.leftJoinAndSelect('product.categories', 'categories')
+    const where: FindOptionsWhere<Product> = {
+      alias,
+      images: { active: true }
     }
 
     if (dto?.active) {
-      qb.andWhere('product.active = :productActive', { productActive: true })
+      where.active = true
     }
 
-    const product = await qb.getOne()
+    const product = await this.productRepository.findOne({
+      where,
+      relations: {
+        offers: { options: true },
+        options: true,
+        images: true,
+        brand: true,
+        categories: true
+      },
+      order: {
+        options: { rank: 'ASC' },
+        images: { rank: 'ASC' },
+        offers: { rank: 'ASC' }
+      }
+    })
 
     if (product) {
-      if (dto?.withOptions) {
-        product.properties = await this.findPropertiesForProduct(product.id)
-      }
-
-      if (dto?.withImages) {
-        product.images = product.images.sort((a, b) => {
-          if (a.rank < b.rank) return -1
-          if (a.rank > b.rank) return 1
-          return 0
-        })
-      }
-
-      if (dto?.withOptions) {
-        product.options = product.options.sort((a, b) => {
-          if (a.rank < b.rank) return -1
-          if (a.rank > b.rank) return 1
-          return 0
-        })
-      }
+      product.properties = await this.findPropertiesForProduct(product.id)
     }
 
     return product

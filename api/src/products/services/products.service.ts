@@ -102,28 +102,11 @@ export class ProductsService {
   async findAll(dto: FindAllProductDto) {
     const qb = this.productRepository.createQueryBuilder('product')
 
-    if (dto.withImages) {
-      qb.leftJoinAndSelect('product.images', 'images', 'images.active = :imagesActive', {
-        imagesActive: true
-      })
-      // qb.addOrderBy('images.rank', 'ASC')
-    }
-
-    if (dto?.withOffers) {
-      qb.leftJoinAndSelect('product.offers', 'offers')
-      qb.leftJoinAndSelect('offers.options', 'offersOptions')
-    }
-
-    if (dto?.withOptions) {
-      qb.leftJoinAndSelect('product.options', 'options')
-      // qb.addOrderBy('options.rank', 'ASC')
-    }
-
     if (dto?.withBrand) {
       qb.leftJoinAndSelect('product.brand', 'brand')
     }
 
-    if (dto?.withCategories) {
+    if (dto?.withCategories || typeof dto.category !== 'undefined') {
       qb.leftJoinAndSelect('product.categories', 'categories')
     }
 
@@ -146,7 +129,6 @@ export class ProductsService {
     if (typeof dto.category !== 'undefined') {
       // TODO: HIERARCHY_DEPTH_LIMIT
       // товары выбираются без учета подкатегорий
-      qb.leftJoinAndSelect('product.categories', 'categories')
       qb.andWhere('categories.id IN (:...categoryIds)', { categoryIds: [dto.category] })
     }
 
@@ -170,13 +152,42 @@ export class ProductsService {
 
     const [rows, total] = await qb.getManyAndCount()
 
-    if (dto.withOptions) {
-      await Promise.all(
-        rows.map(async (row) => {
-          row.properties = await this.findPropertiesForProduct(row.id)
+    await Promise.all(
+      rows.map(async (row) => {
+        row.options = await this.productOptionRepository.find({
+          where: {
+            productId: row.id
+          },
+          order: {
+            rank: 'ASC'
+          }
         })
-      )
-    }
+
+        row.images = await this.productImageRepository.find({
+          where: {
+            productId: row.id,
+            active: true
+          },
+          order: {
+            rank: 'ASC'
+          }
+        })
+
+        row.offers = await this.offerRepository.find({
+          where: {
+            productId: row.id
+          },
+          order: {
+            rank: 'ASC'
+          },
+          relations: {
+            options: true
+          }
+        })
+
+        row.properties = await this.findPropertiesForProduct(row.id)
+      })
+    )
 
     return { rows, total, filters: this.productsFilterService.filters }
   }
@@ -193,14 +204,12 @@ export class ProductsService {
 
     if (dto?.withOptions) {
       qb.leftJoinAndSelect('product.options', 'options')
-      // qb.addOrderBy('options.rank', 'ASC')
     }
 
     if (dto?.withImages) {
       qb.leftJoinAndSelect('product.images', 'images', 'images.active = :imagesActive', {
         imagesActive: true
       })
-      // qb.addOrderBy('images.rank', 'ASC')
     }
 
     if (dto?.withBrand) {
@@ -221,6 +230,22 @@ export class ProductsService {
       product.properties = await this.findPropertiesForProduct(product.id)
     }
 
+    if (dto?.withImages) {
+      product.images = product.images.sort((a, b) => {
+        if (a.rank < b.rank) return -1
+        if (a.rank > b.rank) return 1
+        return 0
+      })
+    }
+
+    if (dto?.withOptions) {
+      product.options = product.options.sort((a, b) => {
+        if (a.rank < b.rank) return -1
+        if (a.rank > b.rank) return 1
+        return 0
+      })
+    }
+
     return product
   }
 
@@ -236,14 +261,12 @@ export class ProductsService {
 
     if (dto?.withOptions) {
       qb.leftJoinAndSelect('product.options', 'options')
-      // qb.addOrderBy('options.rank', 'ASC')
     }
 
     if (dto?.withImages) {
       qb.leftJoinAndSelect('product.images', 'images', 'images.active = :imagesActive', {
         imagesActive: true
       })
-      // qb.addOrderBy('images.rank', 'ASC')
     }
 
     if (dto?.withBrand) {
@@ -260,8 +283,26 @@ export class ProductsService {
 
     const product = await qb.getOne()
 
-    if (dto?.withOptions && product) {
-      product.properties = await this.findPropertiesForProduct(product.id)
+    if (product) {
+      if (dto?.withOptions) {
+        product.properties = await this.findPropertiesForProduct(product.id)
+      }
+
+      if (dto?.withImages) {
+        product.images = product.images.sort((a, b) => {
+          if (a.rank < b.rank) return -1
+          if (a.rank > b.rank) return 1
+          return 0
+        })
+      }
+
+      if (dto?.withOptions) {
+        product.options = product.options.sort((a, b) => {
+          if (a.rank < b.rank) return -1
+          if (a.rank > b.rank) return 1
+          return 0
+        })
+      }
     }
 
     return product

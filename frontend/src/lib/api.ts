@@ -1,6 +1,6 @@
 import { TOKEN_NAME } from '@/constants'
 import type { CookieValueTypes, OptionsType } from 'cookies-next'
-// import type { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies'
+import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies'
 import { notFound } from 'next/navigation'
 import { getApiUrl } from './utils'
 
@@ -17,39 +17,38 @@ export class ValidationError extends Error {
 interface ApiConfig {
   headers?: Record<string, string>
   next?: NextFetchRequestConfig | undefined
+  /**
+   * Включает аутентификацию на сервере и динамический рендеринг.
+   */
+  ssr?: boolean
 }
 
-// let _serverCookies: (() => Promise<ReadonlyRequestCookies>) | undefined = undefined
+let _serverCookies: (() => Promise<ReadonlyRequestCookies>) | undefined = undefined
 let _clientCookies:
   | ((key: string, options?: OptionsType) => CookieValueTypes | Promise<CookieValueTypes>)
   | undefined = undefined
 
-// TODO сейчас серверная авторизация отключенна изза невозможности идентифицировать процесс сборки/пересборки
-// но, сборка всегда(?) выполняет гет запросы, а пользователь либо гет из клиента либо мутации из клиента
-// это можно как-то использовать, например для гет запросов оставить аутентификацию только на клиенте, а для мутаций и на сервере
-// или добавить флаги, и не включать их для запросов которые может выполнять сборщик
-const applyAuthorization = async (headers: Headers) => {
-  if (typeof window === 'undefined') {
-    // if (!_serverCookies) {
-    //   const { cookies } = await import('next/headers')
-    //   _serverCookies = cookies
-    // }
-    // const cookieStore = await _serverCookies()
-    // const token = cookieStore.get(TOKEN_NAME)
-    // if (!!token) {
-    //   headers.set('Authorization', `Bearer ${token.value}`)
-    // }
-  } else {
-    if (!_clientCookies) {
-      const { getCookie } = await import('cookies-next')
-      _clientCookies = getCookie
-    }
-    const token = _clientCookies(TOKEN_NAME)
-    if (!!token) {
-      headers.set('Authorization', `Bearer ${token}`)
-    }
+const applyServerAuth = async (headers: Headers) => {
+  if (!_serverCookies) {
+    const { cookies } = await import('next/headers')
+    _serverCookies = cookies
   }
-  return headers
+  const cookieStore = await _serverCookies()
+  const token = cookieStore.get(TOKEN_NAME)
+  if (!!token) {
+    headers.set('Authorization', `Bearer ${token.value}`)
+  }
+}
+
+const applyClientAuth = async (headers: Headers) => {
+  if (!_clientCookies) {
+    const { getCookie } = await import('cookies-next')
+    _clientCookies = getCookie
+  }
+  const token = _clientCookies(TOKEN_NAME)
+  if (!!token) {
+    headers.set('Authorization', `Bearer ${token}`)
+  }
 }
 
 export async function api<TResult = unknown>(
@@ -58,11 +57,15 @@ export async function api<TResult = unknown>(
   data?: Record<string, any> | FormData,
   config?: ApiConfig
 ): Promise<TResult> {
-  const { headers = {}, next } = config || {}
+  const { headers = {}, next, ssr = false } = config || {}
 
   const headersObj = new Headers(headers)
 
-  await applyAuthorization(headersObj)
+  if (typeof window !== 'undefined') {
+    await applyClientAuth(headersObj)
+  } else if (ssr) {
+    await applyServerAuth(headersObj)
+  }
 
   let body: BodyInit | undefined = undefined
   if (data) {

@@ -11,10 +11,16 @@ export const metadata: Metadata = {
 
 export default async function Page({ searchParams }: PageProps) {
   const params = await searchParams
-  const fallbackData = await apiGet<ApiTableData<OrderEntity>>('orders', {
-    ...params,
-    withParent: true
-  })
+  const fallbackData = await apiGet<ApiTableData<OrderEntity>>(
+    'orders',
+    {
+      ...params,
+      withParent: true
+    },
+    {
+      ssr: true
+    }
+  )
   return (
     <PageLayout title="Заказы">
       <OrderList fallbackData={fallbackData} />

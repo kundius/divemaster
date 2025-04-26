@@ -143,6 +143,9 @@ export class ProductsService {
       where,
       take: dto.take,
       skip: dto.skip,
+      order: {
+        [dto.sort]: dto.dir
+      },
       relations: {
         brand: true,
         categories: true

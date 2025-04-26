@@ -26,30 +26,6 @@ export class FindOneProductDto {
   @ParseBoolean()
   @IsBoolean()
   active: boolean = false
-
-  @ParseBoolean()
-  @IsBoolean()
-  withOffers: boolean = false
-
-  @ParseBoolean()
-  @IsBoolean()
-  withImages: boolean = false
-
-  @ParseBoolean()
-  @IsBoolean()
-  withContent: boolean = false
-
-  @ParseBoolean()
-  @IsBoolean()
-  withOptions: boolean = false
-
-  @ParseBoolean()
-  @IsBoolean()
-  withBrand: boolean = false
-
-  @ParseBoolean()
-  @IsBoolean()
-  withCategories: boolean = false
 }
 
 export class FindAllProductDto extends PaginationQueryDto {
@@ -79,30 +55,6 @@ export class FindAllProductDto extends PaginationQueryDto {
   @ParseBoolean()
   @IsBoolean()
   recent: boolean = false
-
-  @ParseBoolean()
-  @IsBoolean()
-  withImages: boolean = false
-
-  @ParseBoolean()
-  @IsBoolean()
-  withContent: boolean = false
-
-  @ParseBoolean()
-  @IsBoolean()
-  withOptions: boolean = false
-
-  @ParseBoolean()
-  @IsBoolean()
-  withOffers: boolean = false
-
-  @Type(() => Boolean)
-  @IsBoolean()
-  withBrand: boolean = false
-
-  @ParseBoolean()
-  @IsBoolean()
-  withCategories: boolean = false
 
   @Type(() => String)
   @IsString()

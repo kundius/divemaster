@@ -53,6 +53,8 @@ export class CategoriesService {
   }
 
   async findAll(dto: FindAllCategoryQueryDto) {
+    // const where: FindOptionsWhere<Category> = {}
+
     const qb = this.categoryRepository.createQueryBuilder('category')
 
     if (dto.withChildren) {

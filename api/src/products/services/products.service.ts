@@ -155,37 +155,11 @@ export class ProductsService {
     await Promise.all(
       rows.map(async (row) => {
         const [options, images, offers, properties] = await Promise.all([
-          this.productOptionRepository.find({
-            where: {
-              productId: row.id
-            },
-            order: {
-              rank: 'ASC'
-            }
-          }),
-          this.productImageRepository.find({
-            where: {
-              productId: row.id,
-              active: true
-            },
-            order: {
-              rank: 'ASC'
-            }
-          }),
-          this.offerRepository.find({
-            where: {
-              productId: row.id
-            },
-            order: {
-              rank: 'ASC'
-            },
-            relations: {
-              options: true
-            }
-          }),
+          this.findOptionsForProduct(row.id),
+          this.findImagesForProduct(row.id),
+          this.findOffersForProduct(row.id),
           this.findPropertiesForProduct(row.id)
         ])
-
         row.options = options
         row.images = images
         row.offers = offers
@@ -196,67 +170,65 @@ export class ProductsService {
     return { rows, total, filters: this.productsFilterService.filters }
   }
 
-  async findOne(id: number, dto?: FindOneProductDto) {
-    const where: FindOptionsWhere<Product> = {
-      id,
-      images: { active: true }
-    }
+  async findOne(id: number, dto: FindOneProductDto) {
+    const where: FindOptionsWhere<Product> = { id }
 
-    if (dto?.active) {
+    if (!dto.allowInactive) {
       where.active = true
     }
 
     const product = await this.productRepository.findOne({
       where,
       relations: {
-        offers: { options: true },
-        options: true,
-        images: true,
         brand: true,
         categories: true
-      },
-      order: {
-        options: { rank: 'ASC' },
-        images: { rank: 'ASC' },
-        offers: { rank: 'ASC' }
       }
     })
 
     if (product) {
-      product.properties = await this.findPropertiesForProduct(product.id)
+      const [options, images, offers, properties] = await Promise.all([
+        this.findOptionsForProduct(product.id),
+        this.findImagesForProduct(product.id),
+        this.findOffersForProduct(product.id),
+        this.findPropertiesForProduct(product.id)
+      ])
+
+      product.options = options
+      product.images = images
+      product.offers = offers
+      product.properties = properties
     }
 
     return product
   }
 
-  async findOneByAlias(alias: string, dto?: FindOneProductDto) {
-    const where: FindOptionsWhere<Product> = {
-      alias,
-      images: { active: true }
-    }
+  async findOneByAlias(alias: string, dto: FindOneProductDto) {
+    const where: FindOptionsWhere<Product> = { alias }
 
-    if (dto?.active) {
+    if (!dto.allowInactive) {
       where.active = true
     }
 
     const product = await this.productRepository.findOne({
       where,
       relations: {
-        offers: { options: true },
-        options: true,
-        images: true,
         brand: true,
         categories: true
-      },
-      order: {
-        options: { rank: 'ASC' },
-        images: { rank: 'ASC' },
-        offers: { rank: 'ASC' }
       }
     })
 
     if (product) {
-      product.properties = await this.findPropertiesForProduct(product.id)
+      const [options, images, offers, properties] = await Promise.all([
+        this.findOptionsForProduct(product.id),
+        this.findImagesForProduct(product.id),
+        this.findOffersForProduct(product.id),
+        this.findPropertiesForProduct(product.id)
+      ])
+
+      product.options = options
+      product.images = images
+      product.offers = offers
+      product.properties = properties
     }
 
     return product
@@ -364,6 +336,43 @@ export class ProductsService {
       },
       order: {
         rank: 'asc'
+      }
+    })
+  }
+
+  async findOffersForProduct(productId: number) {
+    return this.offerRepository.find({
+      where: {
+        productId
+      },
+      order: {
+        rank: 'ASC'
+      },
+      relations: {
+        options: true
+      }
+    })
+  }
+
+  async findImagesForProduct(productId: number) {
+    return this.productImageRepository.find({
+      where: {
+        productId,
+        active: true
+      },
+      order: {
+        rank: 'ASC'
+      }
+    })
+  }
+
+  async findOptionsForProduct(productId: number) {
+    return this.productOptionRepository.find({
+      where: {
+        productId
+      },
+      order: {
+        rank: 'ASC'
       }
     })
   }

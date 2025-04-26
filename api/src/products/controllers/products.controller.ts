@@ -53,8 +53,12 @@ export class ProductsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @Query() dto: FindOneProductDto) {
-    return this.productsService.findOne(+id, dto)
+  async findOne(@Param('id') id: string, @Query() dto: FindOneProductDto) {
+    const product = await this.productsService.findOne(+id, dto)
+    if (!product) {
+      throw new NotFoundException()
+    }
+    return product
   }
 
   @Patch(':id')

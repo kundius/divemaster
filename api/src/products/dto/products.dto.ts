@@ -25,7 +25,7 @@ export class SortProductImageDto {
 export class FindOneProductDto {
   @ParseBoolean()
   @IsBoolean()
-  active: boolean = false
+  allowInactive: boolean = false
 }
 
 export class FindAllProductDto extends PaginationQueryDto {

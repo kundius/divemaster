@@ -8,8 +8,8 @@ import styles from './AuthButton.module.scss'
 export function AuthButton() {
   const loginDialogToggle = useAuthStore((state) => state.loginDialogToggle)
   return (
-    <Button onClick={() => loginDialogToggle(true)} className={styles.button}>
+    <button onClick={() => loginDialogToggle(true)} className={styles.button}>
       Авторизоваться
-    </Button>
+    </button>
   )
 }

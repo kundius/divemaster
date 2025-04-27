@@ -1,6 +1,10 @@
 import { Headline } from '@/components/Headline'
 import { SectionPage } from '@/components/SectionPage'
+import { PrimaryButton } from '@/components/site/PrimaryButton'
+import { Button } from '@/components/ui/button'
 import Image from 'next/image'
+import Link from 'next/link'
+import { AuthButton } from './_components/AuthButton'
 
 export default function Page() {
   return (
@@ -33,6 +37,13 @@ export default function Page() {
           <div className="text-7xl font-bold text-primary mb-4 max-md:text-5xl">20%</div>
           <div className="text-2xl max-md:text-xl">от&nbsp;200&nbsp;000 ₽</div>
         </div>
+      </div>
+      <div className="flex items-center justify-center mt-12 gap-4 flex-wrap max-md:gap-2">
+        <PrimaryButton asChild>
+          <Link href="/catalog">В каталог</Link>
+        </PrimaryButton>
+        <span>или</span>
+        <AuthButton>Войти</AuthButton>
       </div>
     </SectionPage>
   )

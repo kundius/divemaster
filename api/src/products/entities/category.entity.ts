@@ -5,18 +5,6 @@ import { File } from '@/storage/entities/file.entity'
 
 @Entity()
 export class Category {
-  // @PrimaryGeneratedColumn()
-  // id: number
-
-  // @Column()
-  // firstName: string
-
-  // @Column()
-  // lastName: string
-
-  // @Column({ default: true })
-  // isActive: boolean
-
   @PrimaryGeneratedColumn()
   id: number
 
@@ -52,9 +40,6 @@ export class Category {
 
   @ManyToMany(() => Property, (option) => option.categories)
   options: Property[]
-
-  @OneToMany(() => Category, (category) => category.parent)
-  children: Category[]
 
   @Column({ nullable: true, type: 'integer' })
   parentId: number | null

@@ -6,11 +6,7 @@ import Link from 'next/link'
 import styles from './CatalogMenu.module.scss'
 
 export async function CatalogMenu() {
-  const data = await apiGet<ApiTableData<CategoryEntity>>('categories', {
-    limit: 100,
-    active: true,
-    sort: 'rank'
-  })
+  const data = await apiGet<ApiTableData<CategoryEntity>>('categories', { limit: 100 })
 
   const categories = arrayToTree<CategoryEntity>(data.rows)
 

@@ -10,10 +10,7 @@ export const metadata: Metadata = {
 
 export default async function Page({ params }: PageProps<{ id: number }>) {
   const { id } = await params
-  const initialData = await apiGet<CategoryEntity>(`categories/${id}`, {
-    withContent: true,
-    withParent: true
-  })
+  const initialData = await apiGet<CategoryEntity>(`categories/${id}`, { allowInactive: true })
   return (
     <PageLayout title="Редактировать категорию">
       <CategoriesUpdate initialData={initialData} />

@@ -11,13 +11,7 @@ import styles from './CatalogButtonContent.module.scss'
 import { brands } from './menu'
 
 export default function CatalogButtonContent() {
-  const query = useSWR<ApiTableData<CategoryEntity>>([
-    `categories`,
-    {
-      limit: 100,
-      active: true
-    }
-  ])
+  const query = useSWR<ApiTableData<CategoryEntity>>([`categories`, { limit: 100 }])
 
   const categories = arrayToTree<CategoryEntity>(query.data?.rows || [])
 

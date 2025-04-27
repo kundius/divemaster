@@ -225,7 +225,7 @@ export interface OfferOptionEntity {
 export interface CategoryEntity {
   id: number
   parentId: number | null
-  parent?: CategoryEntity | null
+  // parent?: CategoryEntity | null
   imageId: number | null
   image?: FileEntity | null
   title: string
@@ -234,7 +234,7 @@ export interface CategoryEntity {
   description: string | null
   active: boolean
   rank: number
-  children?: CategoryEntity[]
+  // children?: CategoryEntity[]
   properties?: PropertyEntity[]
   products?: ProductEntity[]
 }

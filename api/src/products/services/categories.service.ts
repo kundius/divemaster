@@ -53,92 +53,52 @@ export class CategoriesService {
   }
 
   async findAll(dto: FindAllCategoryQueryDto) {
-    // const where: FindOptionsWhere<Category> = {}
+    const where: FindOptionsWhere<Category> = {}
 
-    const qb = this.categoryRepository.createQueryBuilder('category')
-
-    if (dto.withChildren) {
-      // HIERARCHY_DEPTH_LIMIT
-      qb.leftJoinAndSelect('category.children', 'children')
-      qb.orderBy('children.rank', 'ASC')
-    }
-
-    if (dto.withParent) {
-      // HIERARCHY_DEPTH_LIMIT
-      qb.leftJoinAndSelect('category.parent', 'parent')
-    }
-
-    if (dto.active) {
-      qb.andWhere('category.active = :categoryActive', { categoryActive: true })
+    if (!dto.allowInactive) {
+      where.active = true
     }
 
     if (dto.query) {
-      qb.andWhere('category.title LIKE :categoryTitle', { categoryTitle: `%${dto.query}%` })
+      where.title = Like(`%${dto.query}%`)
     }
 
     if (typeof dto.parent !== 'undefined') {
-      if (dto.parent === 0) {
-        qb.andWhere('category.parentId IS NULL')
-      } else {
-        qb.andWhere('category.parentId = :categoryParent', { categoryParent: dto.parent })
-      }
+      where.parentId = dto.parent === 0 ? IsNull() : dto.parent
     }
 
-    qb.orderBy(`category.${dto.sort}`, dto.dir)
-    qb.skip(dto.skip)
-    qb.take(dto.take)
-
-    const [rows, total] = await qb.getManyAndCount()
+    const [rows, total] = await this.categoryRepository.findAndCount({
+      where,
+      take: dto.take,
+      skip: dto.skip,
+      order: {
+        [dto.sort]: dto.dir
+      }
+    })
 
     return { rows, total }
   }
 
-  async findOne(id: number, dto?: FindOneCategoryQueryDto) {
-    const qb = this.categoryRepository.createQueryBuilder('category')
+  async findOne(id: number, dto: FindOneCategoryQueryDto) {
+    const where: FindOptionsWhere<Category> = { id }
 
-    qb.andWhere('category.id = :categoryId', { categoryId: id })
-
-    if (dto?.withChildren) {
-      // HIERARCHY_DEPTH_LIMIT
-      qb.leftJoinAndSelect('category.children', 'children')
-      qb.orderBy('children.rank', 'ASC')
+    if (!dto.allowInactive) {
+      where.active = true
     }
 
-    if (dto?.withParent) {
-      // HIERARCHY_DEPTH_LIMIT
-      qb.leftJoinAndSelect('category.parent', 'parent')
-    }
-
-    if (dto?.active) {
-      qb.andWhere('category.active = :categoryActive', { categoryActive: true })
-    }
-
-    const record = await qb.getOne()
+    const record = await this.categoryRepository.findOne({ where })
 
     return record
   }
 
-  async findOneByAlias(alias: string, dto?: FindOneCategoryQueryDto) {
-    const qb = this.categoryRepository.createQueryBuilder('category')
+  async findOneByAlias(alias: string, dto: FindOneCategoryQueryDto) {
+    const where: FindOptionsWhere<Category> = { alias }
 
-    qb.andWhere('category.alias = :categoryAlias', { categoryAlias: alias })
-
-    if (dto?.withChildren) {
-      // HIERARCHY_DEPTH_LIMIT
-      qb.leftJoinAndSelect('category.children', 'children')
-      qb.orderBy('children.rank', 'ASC')
+    if (!dto.allowInactive) {
+      where.active = true
     }
 
-    if (dto?.withParent) {
-      // HIERARCHY_DEPTH_LIMIT
-      qb.leftJoinAndSelect('category.parent', 'parent')
-    }
-
-    if (dto?.active) {
-      qb.andWhere('category.active = :categoryActive', { categoryActive: true })
-    }
-
-    const record = await qb.getOne()
+    const record = await this.categoryRepository.findOne({ where })
 
     return record
   }

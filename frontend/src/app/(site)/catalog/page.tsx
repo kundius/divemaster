@@ -29,10 +29,7 @@ import { arrayToTree } from '@/lib/utils'
 import { Suspense } from 'react'
 
 export default async function Page() {
-  const data = await apiGet<ApiTableData<CategoryEntity>>(`categories`, {
-    limit: 100,
-    active: true
-  })
+  const data = await apiGet<ApiTableData<CategoryEntity>>(`categories`, { limit: 100 })
 
   const categories = arrayToTree<CategoryEntity>(data.rows)
 

@@ -15,7 +15,7 @@ export default async function Page({ searchParams }: PageProps) {
   const params = await searchParams
   const fallbackData = await apiGet<ApiTableData<CategoryEntity>>('categories', {
     ...params,
-    withParent: true
+    allowInactive: true
   })
 
   return (

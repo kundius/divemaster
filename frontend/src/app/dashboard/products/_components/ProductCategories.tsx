@@ -4,7 +4,7 @@ import { CheckboxTree, CheckboxTreeNode } from '@/components/ui/checkbox-tree'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ApiTableData } from '@/lib/ApiTable/types'
 import { apiPatch } from '@/lib/api'
-import { arrayToTree } from '@/lib/utils'
+import { arrayToTree, TTree } from '@/lib/utils'
 import { CategoryEntity } from '@/types'
 import { useEffect, useMemo, useState } from 'react'
 import useSWR from 'swr'
@@ -20,8 +20,8 @@ export function ProductCategories({ productId }: ProductCategoriesProps) {
   const categoriesQuery = useSWR<ApiTableData<CategoryEntity>>([`categories`, { limit: 100 }])
 
   const nodes = useMemo(() => {
-    const tree = arrayToTree<CategoryEntity>(categoriesQuery.data?.rows || [])
-    const fn = (list: CategoryEntity[]): CheckboxTreeNode[] => {
+    const tree = arrayToTree(categoriesQuery.data?.rows || [])
+    const fn = (list: TTree<CategoryEntity>[]): CheckboxTreeNode[] => {
       return list.map((item) => {
         const children = fn(item.children || [])
         return {

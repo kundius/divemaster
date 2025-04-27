@@ -1,6 +1,6 @@
 import { PaginationQueryDto } from '@/lib/pagination-query.dto'
 import { Type } from 'class-transformer'
-import { IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator'
 import { PartialType } from '@nestjs/mapped-types'
 import { Category } from '../entities/category.entity'
 
@@ -53,19 +53,7 @@ export class FindAllCategoryQueryDto extends PaginationQueryDto {
 
   @Type(() => Boolean)
   @IsBoolean()
-  active: boolean = false
-
-  @Type(() => Boolean)
-  @IsBoolean()
-  withChildren: boolean = false
-
-  @Type(() => Boolean)
-  @IsBoolean()
-  withParent: boolean = false
-
-  @Type(() => Boolean)
-  @IsBoolean()
-  withContent: boolean = false
+  allowInactive: boolean = false
 
   @Type(() => String)
   @IsString()
@@ -80,17 +68,5 @@ export class FindAllCategoryQueryDto extends PaginationQueryDto {
 export class FindOneCategoryQueryDto {
   @Type(() => Boolean)
   @IsBoolean()
-  active: boolean = false
-
-  @Type(() => Boolean)
-  @IsBoolean()
-  withChildren: boolean = false
-
-  @Type(() => Boolean)
-  @IsBoolean()
-  withParent: boolean = false
-
-  @Type(() => Boolean)
-  @IsBoolean()
-  withContent: boolean = false
+  allowInactive: boolean = false
 }

@@ -23,9 +23,7 @@ import { SectionPage } from '@/components/SectionPage'
 import { Suspense } from 'react'
 
 export async function generateStaticParams() {
-  const categories = await apiGet<ApiTableData<CategoryEntity>>(`categories`, {
-    limit: 100
-  })
+  const categories = await apiGet<ApiTableData<CategoryEntity>>(`categories`, { limit: 100 })
   return categories.rows.map(({ alias }) => ({ alias }))
 }
 
@@ -39,12 +37,10 @@ export async function generateMetadata({
 
 export default async function Page({ params }: PageProps<{ alias: string }>) {
   const { alias } = await params
-  const category = await apiGet<CategoryEntity>(`categories/alias:${alias}`, {
-    withParent: true,
-    withChildren: true,
-    withContent: true,
-    active: true
-  })
+  const [category, categories] = await Promise.all([
+    apiGet<CategoryEntity>(`categories/alias:${alias}`, {}),
+    apiGet<ApiTableData<CategoryEntity>>(`categories`, { limit: 100 })
+  ])
 
   const crumbs: BreadcrumbsProps['items'] = [
     {
@@ -58,28 +54,32 @@ export default async function Page({ params }: PageProps<{ alias: string }>) {
   ]
 
   // TODO: вынести на сервер, что-то вроде parents категории
-  const addParents = (category: CategoryEntity) => {
-    if (!!category.parent && typeof category.parent === 'object') {
-      addParents(category.parent)
-      crumbs.push({
-        title: category.parent.title,
-        href: `/category/${category.parent.alias}`
-      })
+  const addCategory = (c: CategoryEntity) => {
+    if (c.parentId) {
+      const parent = categories.rows.find((i) => i.id === c.parentId)
+      if (parent) {
+        addCategory(parent)
+      }
     }
+    crumbs.push({
+      title: c.title,
+      href: `/category/${c.alias}`
+    })
   }
 
-  addParents(category)
+  addCategory(category)
 
-  const isParent = category.children ? category.children.length > 0 : false
+  const child = categories.rows.filter((i) => i.parentId === category.id)
+  const hasChild = child.length > 0
 
   return (
     <>
       <SectionPage withBreadcrumbs>
         <Headline breadcrumbs={crumbs} separator title={category.title} />
 
-        {isParent && (
+        {hasChild && (
           <div className="grid grid-cols-5 gap-x-5 mt-10 gap-y-16 pb-10 border-b mb-14 border-neutral-100 max-2xl:grid-cols-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-md:gap-x-2">
-            {category.children?.map((item) => (
+            {child.map((item) => (
               <CategoryCard
                 key={item.id}
                 title={item.title}
@@ -91,10 +91,10 @@ export default async function Page({ params }: PageProps<{ alias: string }>) {
         )}
 
         <Suspense>
-          <ProductsStoreProvider categoryId={category.id} favorite={isParent}>
+          <ProductsStoreProvider categoryId={category.id} favorite={hasChild}>
             <div className="flex gap-x-5 mt-14">
               <div className="w-[320px] max-xl:w-[260px] flex-shrink-0 space-y-5 max-lg:hidden">
-                {!isParent && (
+                {!hasChild && (
                   <div className="mb-80">
                     <Filter />
                   </div>
@@ -119,7 +119,7 @@ export default async function Page({ params }: PageProps<{ alias: string }>) {
               </div>
               <div className="w-full">
                 <div className="hidden">
-                  {isParent ? (
+                  {hasChild ? (
                     <div className="mb-6 text-xl font-sans-narrow uppercase font-bold">
                       Популярные товары
                     </div>

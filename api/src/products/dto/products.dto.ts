@@ -46,7 +46,7 @@ export class FindAllProductDto extends PaginationQueryDto {
 
   @ParseBoolean()
   @IsBoolean()
-  active: boolean = false
+  allowInactive: boolean = false
 
   @ParseBoolean()
   @IsBoolean()

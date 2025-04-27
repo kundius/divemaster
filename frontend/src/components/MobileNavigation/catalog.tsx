@@ -12,14 +12,7 @@ import { CategoryEntity } from '@/types'
 import useSWR from 'swr'
 
 export default function MobileNavigationCatalog() {
-  const query = useSWR<ApiTableData<CategoryEntity>>([
-    `categories`,
-    {
-      limit: 100,
-      active: true
-    }
-  ])
-
+  const query = useSWR<ApiTableData<CategoryEntity>>([`categories`, { limit: 100 }])
   const categories = arrayToTree<CategoryEntity>(query.data?.rows || [])
 
   return (

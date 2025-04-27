@@ -4,7 +4,7 @@ import { CheckboxTree } from '@/components/ui/checkbox-tree'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ApiTableData } from '@/lib/ApiTable/types'
 import { apiPatch } from '@/lib/api'
-import { arrayToTree } from '@/lib/utils'
+import { arrayToTree, TTree } from '@/lib/utils'
 import { CategoryEntity } from '@/types'
 import { useEffect, useMemo, useState } from 'react'
 import useSWR from 'swr'
@@ -26,8 +26,8 @@ export function PropertyCategories({ propertyId }: PropertyCategoriesProps) {
   const categoriesQuery = useSWR<ApiTableData<CategoryEntity>>([`categories`, { limit: 100 }])
 
   const nodes = useMemo(() => {
-    const tree = arrayToTree<CategoryEntity>(categoriesQuery.data?.rows || [])
-    const fn = (list: CategoryEntity[]): NodeType[] => {
+    const tree = arrayToTree(categoriesQuery.data?.rows || [])
+    const fn = (list: TTree<CategoryEntity>[]): NodeType[] => {
       return list.map((item) => {
         const children = fn(item.children || [])
         return {
@@ -63,11 +63,7 @@ export function PropertyCategories({ propertyId }: PropertyCategoriesProps) {
           <Skeleton className="h-4 w-40 ml-8" />
         </div>
       ) : (
-        <CheckboxTree
-          items={nodes}
-          checked={checked}
-          onCheck={checkHandler}
-        />
+        <CheckboxTree items={nodes} checked={checked} onCheck={checkHandler} />
       )}
     </div>
   )

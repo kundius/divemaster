@@ -111,7 +111,7 @@ export class ProductsService {
       where.recent = true
     }
 
-    if (dto.active) {
+    if (!dto.allowInactive) {
       where.active = true
     }
 

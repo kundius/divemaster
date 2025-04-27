@@ -143,7 +143,10 @@ export function ApiInputComboBox<TRow extends unknown = unknown>(
             placeholder={'Поиск...'}
             className="h-9"
             value={query}
-            onValueChange={setQuery}
+            onValueChange={(search) => {
+              setQuery(search)
+              setPage(1)
+            }}
           />
           <CommandList>
             <CommandEmpty>Not found.</CommandEmpty>

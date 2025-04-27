@@ -40,7 +40,7 @@ export function CategoriesList({ fallbackData }: CategoriesListProps) {
     [
       `categories`,
       {
-        withParent: true,
+        allowInactive: true,
         ...pagination,
         ...clearEmpty(sorting),
         ...clearEmpty(filter)
@@ -68,16 +68,7 @@ export function CategoriesList({ fallbackData }: CategoriesListProps) {
                 <Image src={getFileUrl(row.imageId)} fill alt="" className="object-cover rounded" />
               </div>
             )}
-            <div className="space-y-1">
-              <div className="text-balance">{title}</div>
-              {row.parent && (
-                <div className="flex gap-1.5 flex-wrap">
-                  <Badge variant="outline" className="font-normal">
-                    {row.parent.title}
-                  </Badge>
-                </div>
-              )}
-            </div>
+            <div className="text-balance">{title}</div>
           </div>
         )
       }
@@ -85,10 +76,8 @@ export function CategoriesList({ fallbackData }: CategoriesListProps) {
     {
       key: 'rank',
       label: 'Порядок',
-      headProps: {
-      },
-      cellProps: {
-      }
+      headProps: {},
+      cellProps: {}
     },
     {
       key: 'active',

@@ -1,11 +1,6 @@
 import { createStore } from 'zustand/vanilla'
 import { apiDelete, apiGet, apiPost, apiPut } from '@/lib/api'
-import type { CartEntity, ProductEntity, WishlistEntity } from '@/types'
-
-export enum WishlistType {
-  FAVOURITES = 'favourites',
-  COMPARISON = 'comparison'
-}
+import type { CartEntity, ProductEntity, WishlistEntity, WishlistType } from '@/types'
 
 export type WichlistState = {
   ids: { [key in WishlistType]: string | null }
@@ -26,117 +21,96 @@ export const createWichlistStore = () =>
   createStore<WichlistState & WichlistActions>()((set, get) => ({
     ids: {
       favourites: null,
-      comparison: null
+      comparison: null,
+      viewed: null
     },
     products: {
       favourites: [],
-      comparison: []
+      comparison: [],
+      viewed: []
     },
 
     async createWishlist(type) {
-      let id = null
+      let wishlistId = null
       try {
         const data = await apiPut<WishlistEntity>(`wishlist/${type}`)
-        id = data.id
-        get().setWishlistId(id, type)
+        wishlistId = data.id
+        get().setWishlistId(wishlistId, type)
       } catch (e) {}
-      return id
+      return wishlistId
     },
 
     // Загрузка списка товаров. ID может не быть, если список не был инициализирован.
     // Это нужно чтобы не создавать пустые списки для каждого посетителя.
     async loadWishlist(type) {
-      const id = get().ids[type]
+      const wishlistId = get().ids[type]
 
       let products: ProductEntity[] = []
 
-      if (id) {
+      if (wishlistId) {
         try {
-          products = await apiGet<ProductEntity[]>(`wishlist/${type}/${id}/products`)
+          products = await apiGet<ProductEntity[]>(`wishlist/${type}/${wishlistId}/products`)
         } catch (e) {}
       }
 
       get().setWishlistProducts(products, type)
     },
 
-    // Добавление товара в корзину
-    async addToWishlist(item) {
-      let cartId = get().cartId
-      // корзина будет создана, если её нет
-      if (!cartId) cartId = await get().createCart()
-      if (!cartId) return
+    // Добавление товара в список
+    async addToWishlist(productId, type) {
+      let wishlistId = get().ids[type]
+      // список будет создан, если его нет
+      if (!wishlistId) wishlistId = await get().createWishlist(type)
+      if (!wishlistId) return
       try {
-        const params = {
-          id: item.id,
-          quantity: item.quantity || 1,
-          options: item.options || {}
-        }
-        const cartProducts = await apiPut<CartProductEntity[]>(`cart/${cartId}/products`, params)
-        get().setCartProducts(cartProducts)
+        const products = await apiPut<ProductEntity[]>(`wishlist/${type}/${wishlistId}/products`, {
+          id: productId
+        })
+        get().setWishlistProducts(products, type)
       } catch (e) {}
     },
 
-    // Удаление товара из корзины
-    async removeFromWishlist(product) {
-      const cartId = get().cartId
+    // Удаление товара из списка
+    async removeFromWishlist(productId, type) {
+      let wishlistId = get().ids[type]
 
-      if (!cartId) return
+      if (!wishlistId) return
 
       try {
-        const cartProducts = await apiDelete<CartProductEntity[]>(
-          `cart/${cartId}/products/${product.id}`
+        const products = await apiDelete<ProductEntity[]>(
+          `wishlist/${type}/${wishlistId}/products/${productId}`
         )
-        get().setCartProducts(cartProducts)
+        get().setWishlistProducts(products, type)
       } catch (e) {}
     },
 
-    // Удаление корзины
-    async deleteWishlist() {
-      const cartId = get().cartId
+    // Удаление списка
+    async deleteWishlist(type) {
+      let wishlistId = get().ids[type]
 
-      if (!cartId) return
+      if (!wishlistId) return
 
       try {
-        await apiDelete<CartProductEntity[]>(`cart/${cartId}`)
-        // Удаление товаров и id корзины
-        get().setCartProducts([])
-        get().setCartId(null)
+        await apiDelete<ProductEntity[]>(`wishlist/${type}/${wishlistId}`)
+        // Удаление товаров и id списка
+        get().setWishlistProducts([], type)
+        get().setWishlistId(null, type)
       } catch (e) {}
     },
 
-    // Обновляем товары корзины и сатистику
-    setWishlistProducts(cartProducts: CartProductEntity[]) {
-      let count: number = 0
-      let price: number = 0
-      let discount: number = 0
-      let oldPrice: number = 0
-
-      if (cartProducts.length > 0) {
-        count = cartProducts.reduce((acc, n) => {
-          return acc + n.quantity
-        }, 0)
-        price = cartProducts.reduce((acc, n) => {
-          return acc + (n.price || 0) * n.quantity
-        }, 0)
-        discount = cartProducts.reduce((acc, item) => {
-          return acc + ((item.oldPrice || item.price || 0) - (item.price || 0)) * item.quantity
-        }, 0)
-        oldPrice = cartProducts.reduce((acc, item) => {
-          return acc + (item.oldPrice || item.price || 0) * item.quantity
-        }, 0)
-      }
-
-      set({ cartProducts, total: { count, price, discount, oldPrice } })
+    // Обновляем товары списка и сатистику
+    setWishlistProducts(products: ProductEntity[], type) {
+      set((prev) => ({ products: { ...prev.products, [type]: products } }))
     },
 
     // Сохранение id списка в стор и localStorage
-    setWishlistId(id, type) {
-      set((prev) => ({ ids: { ...prev.ids, [type]: id } }))
+    setWishlistId(wishlistId, type) {
+      set((prev) => ({ ids: { ...prev.ids, [type]: wishlistId } }))
 
-      if (id) {
-        localStorage.setItem(`${type}:${id}`, id)
+      if (wishlistId) {
+        localStorage.setItem(`wishlist:${type}`, wishlistId)
       } else {
-        localStorage.removeItem(`${type}:${id}`)
+        localStorage.removeItem(`wishlist:${type}`)
       }
     }
   }))

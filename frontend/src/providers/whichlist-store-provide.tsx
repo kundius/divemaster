@@ -5,6 +5,7 @@ import { useStore } from 'zustand'
 import { apiPost } from '@/lib/api'
 import { WichlistActions, WichlistState, createWichlistStore } from '@/stores/wichlist-store'
 import { useAuthStore } from './auth-store-provider'
+import { WishlistType } from '@/types'
 
 export type WichlistStoreApi = ReturnType<typeof createWichlistStore>
 
@@ -27,23 +28,26 @@ export const WichlistStoreProvider = ({ children }: WichlistStoreProviderProps) 
 
     if (!store) return
 
-    const currentCartId = store.getState().cartId
-    let cartId: string | null = localStorage.getItem('cartId')
+    const currentIds = store.getState().ids
 
-    if (auth.user && auth.user.cart) {
-      cartId = auth.user.cart.id
-    }
+    const types = Object.values(WishlistType)
+    for (const type of types) {
+      let localId = localStorage.getItem(`wishlist:${type}`)
 
-    // если у пользователя корзины нет, но есть гостевая- прикрепить ее к пользователю
-    if (auth.user && !auth.user.cart && cartId) {
-      apiPost(`cart/${cartId}`)
-      localStorage.removeItem('cartId')
-    }
+      if (auth.user) {
+        const wishlist = auth.user.wishlists.find((i) => i.type === type)
+        if (wishlist) {
+          localId = wishlist.id
+        } else if (localId) {
+          apiPost(`wishlist/${type}/${localId}`)
+          localStorage.removeItem(`wishlist:${type}`)
+        }
+      }
 
-    // если в результате смены пользователя поменялась корзина обновить её в сторе
-    if (currentCartId !== cartId) {
-      store.setState({ cartId })
-      store.getState().loadCart()
+      if (currentIds[type] !== localId) {
+        store.setState((prev) => ({ ids: { ...prev.ids, [type]: localId } }))
+        store.getState().loadWishlist(type)
+      }
     }
   }, [auth.user])
 

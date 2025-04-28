@@ -192,6 +192,7 @@ export interface UserEntity {
   roleId: number
   role?: UserRoleEntity
   cart: CartEntity | null
+  wishlists: WishlistEntity[]
 }
 
 export interface UserRoleEntity {

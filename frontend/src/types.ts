@@ -354,6 +354,21 @@ export type PageProps<
   searchParams: Promise<TSearchParams>
 }
 
+export enum WishlistType {
+  FAVOURITES = 'favourites',
+  COMPARISON = 'comparison',
+  VIEWED = 'viewed'
+}
+
+export interface WishlistEntity {
+  id: string
+  userId: UserEntity['id'] | null
+  user?: UserEntity | null
+  products: ProductEntity[]
+  createdAt: string
+  type: WishlistType
+}
+
 export interface CartEntity {
   id: string
   userId: UserEntity['id'] | null

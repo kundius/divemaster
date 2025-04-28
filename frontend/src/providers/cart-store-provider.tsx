@@ -40,6 +40,7 @@ export const CartStoreProvider = ({ children }: CartStoreProviderProps) => {
       localStorage.removeItem('cartId')
     }
 
+    // если в результате смены пользователя поменялась корзина обновить её в сторе
     if (currentCartId !== cartId) {
       store.setState({ cartId })
       store.getState().loadCart()

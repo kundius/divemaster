@@ -72,7 +72,7 @@ export const createWichlistStore = () =>
 
     // Удаление товара из списка
     async removeFromWishlist(productId, type) {
-      let wishlistId = get().ids[type]
+      const wishlistId = get().ids[type]
 
       if (!wishlistId) return
 
@@ -87,7 +87,7 @@ export const createWichlistStore = () =>
 
     // Удаление списка
     async deleteWishlist(type) {
-      let wishlistId = get().ids[type]
+      const wishlistId = get().ids[type]
 
       if (!wishlistId) return
 

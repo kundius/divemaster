@@ -64,7 +64,7 @@ export const createWichlistStore = () =>
       if (!wishlistId) return
       try {
         const products = await apiPut<ProductEntity[]>(`wishlist/${type}/${wishlistId}/products`, {
-          id: productId
+          productId
         })
         get().setWishlistProducts(products, type)
       } catch (e) {}
@@ -78,7 +78,8 @@ export const createWichlistStore = () =>
 
       try {
         const products = await apiDelete<ProductEntity[]>(
-          `wishlist/${type}/${wishlistId}/products/${productId}`
+          `wishlist/${type}/${wishlistId}/products`,
+          { productId }
         )
         get().setWishlistProducts(products, type)
       } catch (e) {}

@@ -16,7 +16,7 @@ export interface WichlistStoreProviderProps {
 }
 
 export const WichlistStoreProvider = ({ children }: WichlistStoreProviderProps) => {
-  const auth = useAuthStore((state) => state)
+  const user = useAuthStore((state) => state.user)
 
   const storeRef = useRef<WichlistStoreApi>(null)
   if (!storeRef.current) {
@@ -24,6 +24,7 @@ export const WichlistStoreProvider = ({ children }: WichlistStoreProviderProps) 
   }
 
   useLayoutEffect(() => {
+    // после логаута нужно удалить ид списков из стора
     const store = storeRef.current
 
     if (!store) return
@@ -34,8 +35,8 @@ export const WichlistStoreProvider = ({ children }: WichlistStoreProviderProps) 
     for (const type of types) {
       let localId = localStorage.getItem(`wishlist:${type}`)
 
-      if (auth.user) {
-        const wishlist = auth.user.wishlists.find((i) => i.type === type)
+      if (user) {
+        const wishlist = user.wishlists.find((i) => i.type === type)
         if (wishlist) {
           localId = wishlist.id
         } else if (localId) {
@@ -49,7 +50,7 @@ export const WichlistStoreProvider = ({ children }: WichlistStoreProviderProps) 
         store.getState().loadWishlist(type)
       }
     }
-  }, [auth.user])
+  }, [user])
 
   return (
     <WichlistStoreContext.Provider value={storeRef.current}>

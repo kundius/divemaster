@@ -1,7 +1,8 @@
-import { Exclude } from "class-transformer"
-import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm"
-import { Role } from "./role.entity"
-import { Cart } from "@/cart/entities/cart.entity"
+import { Exclude } from 'class-transformer'
+import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { Role } from './role.entity'
+import { Cart } from '@/cart/entities/cart.entity'
+import { Wishlist } from '@/wishlist/entities/wishlist.entity'
 
 @Entity()
 export class User {
@@ -33,9 +34,12 @@ export class User {
   @Column({ nullable: true })
   roleId: number | null
 
-  @ManyToOne(() => Role)
+  @ManyToOne(() => Role, { eager: true })
   role: Role
 
-  @OneToOne(() => Cart, (cart) => cart.user, { nullable: true })
+  @OneToOne(() => Cart, (cart) => cart.user, { nullable: true, eager: true })
   cart: Cart | null
+
+  @OneToMany(() => Wishlist, (wishlist) => wishlist.user, { eager: true })
+  wishlists: Wishlist[]
 }

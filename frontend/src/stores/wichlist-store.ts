@@ -11,6 +11,7 @@ export type WichlistActions = {
   loadWishlist(type: WishlistType): Promise<void>
   addToWishlist(id: number, type: WishlistType): Promise<void>
   removeFromWishlist(id: number, type: WishlistType): Promise<void>
+  toggleInWishlist(id: number, type: WishlistType): Promise<void>
   deleteWishlist(type: WishlistType): Promise<void>
   setWishlistProducts(products: ProductEntity[], type: WishlistType): void
   setWishlistId(id: string | null, type: WishlistType): void
@@ -33,7 +34,7 @@ export const createWichlistStore = () =>
     async createWishlist(type) {
       let wishlistId = null
       try {
-        const data = await apiPut<WishlistEntity>(`wishlist/${type}`)
+        const data = await apiPut<WishlistEntity>(`wishlist`, { type })
         wishlistId = data.id
         get().setWishlistId(wishlistId, type)
       } catch (e) {}
@@ -49,7 +50,7 @@ export const createWichlistStore = () =>
 
       if (wishlistId) {
         try {
-          products = await apiGet<ProductEntity[]>(`wishlist/${type}/${wishlistId}/products`)
+          products = await apiGet<ProductEntity[]>(`wishlist/${wishlistId}/products`)
         } catch (e) {}
       }
 
@@ -61,9 +62,10 @@ export const createWichlistStore = () =>
       let wishlistId = get().ids[type]
       // список будет создан, если его нет
       if (!wishlistId) wishlistId = await get().createWishlist(type)
+      // если списка нет, то и добавлять нечего
       if (!wishlistId) return
       try {
-        const products = await apiPut<ProductEntity[]>(`wishlist/${type}/${wishlistId}/products`, {
+        const products = await apiPut<ProductEntity[]>(`wishlist/${wishlistId}/products`, {
           productId
         })
         get().setWishlistProducts(products, type)
@@ -73,16 +75,24 @@ export const createWichlistStore = () =>
     // Удаление товара из списка
     async removeFromWishlist(productId, type) {
       const wishlistId = get().ids[type]
-
+      // если списка нет, то и удалять нечего
       if (!wishlistId) return
-
       try {
-        const products = await apiDelete<ProductEntity[]>(
-          `wishlist/${type}/${wishlistId}/products`,
-          { productId }
-        )
+        const products = await apiDelete<ProductEntity[]>(`wishlist/${wishlistId}/products`, {
+          productId
+        })
         get().setWishlistProducts(products, type)
       } catch (e) {}
+    },
+
+    // Переключить товар в списке
+    async toggleInWishlist(productId, type) {
+      const wishlistProducts = get().products[type]
+      if (wishlistProducts.some((p) => p.id === productId)) {
+        get().removeFromWishlist(productId, type)
+      } else {
+        get().addToWishlist(productId, type)
+      }
     },
 
     // Удаление списка
@@ -92,7 +102,7 @@ export const createWichlistStore = () =>
       if (!wishlistId) return
 
       try {
-        await apiDelete<ProductEntity[]>(`wishlist/${type}/${wishlistId}`)
+        await apiDelete<ProductEntity[]>(`wishlist/${wishlistId}`)
         // Удаление товаров и id списка
         get().setWishlistProducts([], type)
         get().setWishlistId(null, type)

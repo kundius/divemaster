@@ -5,7 +5,9 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToOne,
   PrimaryColumn
 } from 'typeorm'
@@ -24,14 +26,14 @@ export class Wishlist {
   @Column({ type: 'int', nullable: true })
   userId: number | null
 
-  @OneToOne(() => User, (user) => user.cart, { nullable: true, onDelete: 'SET NULL' })
-  @JoinColumn()
+  @ManyToOne(() => User, (user) => user.cart, { nullable: true, onDelete: 'SET NULL' })
   user: User | null
 
   @Column({ type: 'enum', enum: WishlistType })
   type!: WishlistType
 
   @ManyToMany(() => Product)
+  @JoinTable()
   products: Product[]
 
   @CreateDateColumn()

@@ -55,10 +55,7 @@ export class UsersService {
   }
 
   async findOne(id: number) {
-    return this.userRepository.findOneOrFail({
-      where: { id },
-      relations: { role: true, cart: true }
-    })
+    return this.userRepository.findOneByOrFail({ id })
   }
 
   async update(id: number, { roleId, password, ...fillable }: UpdateUserDto) {

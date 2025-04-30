@@ -15,6 +15,7 @@ import { SWRGlobalProvider } from '@/providers/swr-global-provider'
 import { MobileNavigation } from '@/components/MobileNavigation'
 import { LoginDialog } from '@/components/LoginDialog'
 import { DateFnsInit } from '@/lib/date-fns-init'
+import { WichlistStoreProvider } from '@/providers/whichlist-store-provide'
 
 const fontSans = FontSans({
   weight: ['400', '500', '700'],
@@ -65,14 +66,16 @@ export default async function RootLayout({
           <SWRGlobalProvider>
             <AuthStoreProvider>
               <LocationStoreProvider>
-                <CartStoreProvider>
-                  <OrderStoreProvider>
-                    <MobileNavigation>
-                      {children}
-                      <LoginDialog />
-                    </MobileNavigation>
-                  </OrderStoreProvider>
-                </CartStoreProvider>
+                <WichlistStoreProvider>
+                  <CartStoreProvider>
+                    <OrderStoreProvider>
+                      <MobileNavigation>
+                        {children}
+                        <LoginDialog />
+                      </MobileNavigation>
+                    </OrderStoreProvider>
+                  </CartStoreProvider>
+                </WichlistStoreProvider>
               </LocationStoreProvider>
             </AuthStoreProvider>
           </SWRGlobalProvider>

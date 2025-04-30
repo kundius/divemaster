@@ -14,6 +14,7 @@ import { StorageModule } from './storage/storage.module'
 import { UsersModule } from './users/users.module'
 import { SyncModule } from './sync/sync.module'
 import { AppDataSource } from 'db/ormconfig'
+import { WishlistModule } from './wishlist/wishlist.module'
 
 @Module({
   imports: [
@@ -32,7 +33,8 @@ import { AppDataSource } from 'db/ormconfig'
     OrderModule,
     NotificationsModule,
     BlogModule,
-    SyncModule
+    SyncModule,
+    WishlistModule
   ],
   providers: [AppService]
 })

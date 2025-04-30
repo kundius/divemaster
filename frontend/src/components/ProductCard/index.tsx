@@ -1,21 +1,22 @@
 'use client'
 
+import { colorsObject } from '@/lib/colors'
+import { cn, getFileUrl } from '@/lib/utils'
+import { useProductStore } from '@/providers/product-store-provider'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useMemo, useRef, useState } from 'react'
-
-import { colorsObject } from '@/lib/colors'
-import { getFileUrl, pluck } from '@/lib/utils'
-import { useProductStore } from '@/providers/product-store-provider'
-
 import { AddToCart } from './AddToCart'
 import { BuyInClick } from './BuyInClick'
 import { Gallery } from './Gallery'
 import styles from './index.module.scss'
-import { PropertyType } from '@/types'
+import { useWichlistStore } from '@/providers/whichlist-store-provide'
+import { WishlistType } from '@/types'
 
 export function ProductCard() {
   const productStore = useProductStore((state) => state)
+  const toggleInWishlist = useWichlistStore((state) => state.toggleInWishlist)
+  const wishlistProducts = useWichlistStore((state) => state.products)
   const [showGallery, setShowGallery] = useState(false)
   const [galleryShowNav, setGalleryShowNav] = useState(false)
   const [thumbIndex, setThumbIndex] = useState(0)
@@ -103,12 +104,26 @@ export function ProductCard() {
         {productStore.product.title}
       </Link>
       {brand && <div className={styles.brand}>{brand}</div>}
-      {/* TODO: ИЗБРАННОЕ */}
-      {/* TODO: СРАВНЕНИЕ */}
-      {/* <div className={styles.actions}>
-        <button type="button" className={cn(styles.action, styles['action-favorite'])}></button>
-        <button type="button" className={cn(styles.action, styles['action-compare'])}></button>
-      </div> */}
+      <div className={styles.actions}>
+        <button
+          type="button"
+          className={cn(styles.action, styles['action-favorite'], {
+            [styles['action-active']]: wishlistProducts[WishlistType.FAVOURITES].some(
+              (p) => p.id === productStore.product.id
+            )
+          })}
+          onClick={() => toggleInWishlist(productStore.product.id, WishlistType.FAVOURITES)}
+        ></button>
+        <button
+          type="button"
+          className={cn(styles.action, styles['action-compare'], {
+            [styles['action-active']]: wishlistProducts[WishlistType.COMPARISON].some(
+              (p) => p.id === productStore.product.id
+            )
+          })}
+          onClick={() => toggleInWishlist(productStore.product.id, WishlistType.COMPARISON)}
+        ></button>
+      </div>
       {colors && (
         <div className={styles.colors}>
           {colors.map((color) => (

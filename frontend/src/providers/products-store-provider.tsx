@@ -16,20 +16,18 @@ export const ProductStoreContext = createContext<ProductStoreApi | undefined>(un
 
 export interface ProductsStoreProviderProps {
   children: ReactNode
-  categoryId?: number
-  favorite?: boolean
+  params?: Record<string, any>
 }
 
 export const ProductsStoreProvider = ({
   children,
-  categoryId,
-  favorite
+  params
 }: ProductsStoreProviderProps) => {
   const [initialized, setInitialized] = useState(false)
 
   const storeRef = useRef<ProductStoreApi>(null)
   if (!storeRef.current) {
-    storeRef.current = createProductsStore({ categoryId, favorite })
+    storeRef.current = createProductsStore({ params })
   }
 
   const searchParamsRef = useRef(defaultProductsStore)

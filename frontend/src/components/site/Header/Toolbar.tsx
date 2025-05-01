@@ -9,8 +9,10 @@ import { useCartStore } from '@/providers/cart-store-provider'
 import { SpriteIcon } from '@/components/SpriteIcon'
 import { Skeleton } from '@/components/ui/skeleton'
 import { MouseEvent } from 'react'
+import { useWishlistStore } from '@/providers/whishlist-store-provider'
 
 export function Toolbar() {
+  const wishlistProducts = useWishlistStore((state) => state.products)
   const cartTotal = useCartStore((state) => state.total)
   const authUser = useAuthStore((state) => state.user)
   const authLoading = useAuthStore((state) => state.loading)
@@ -66,7 +68,9 @@ export function Toolbar() {
           <SpriteIcon name="favorites" size={24} />
         </span>
         <span className={styles.title}>Избранное</span>
-        {/* <span className={styles.badge}>0</span> */}
+        {wishlistProducts.favourites.length > 0 && (
+          <span className={styles.badge}>{wishlistProducts.favourites.length}</span>
+        )}
       </Link>
       {!authLoading ? (
         !authUser ? (
@@ -103,7 +107,9 @@ export function Toolbar() {
           <SpriteIcon name="comparison" size={24} />
         </span>
         <span className={styles.title}>Сравнить</span>
-        {/* <span className={styles.badge}>0</span> */}
+        {wishlistProducts.comparison.length > 0 && (
+          <span className={styles.badge}>{wishlistProducts.comparison.length}</span>
+        )}
       </Link>
     </div>
   )

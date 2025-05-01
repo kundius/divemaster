@@ -19,10 +19,11 @@ export type ProductsState = {
 }
 
 export type ProductsActions = {
-  onChangePagination(page: number, limit: number): void
-  onChangeFilter(filter: string): void
-  onChangeSort(sort: string, dir: string): void
+  onChangePagination(page: number, limit: number): Promise<void>
+  onChangeFilter(filter: string): Promise<void>
+  onChangeSort(sort: string, dir: string): Promise<void>
   setListElement(listElement: HTMLElement | null): void
+  scrollIntoView(): void
   load(scroll?: boolean): Promise<void>
 }
 
@@ -36,7 +37,7 @@ export const defaultProductsStore = {
   dir: 'ASC'
 }
 
-export const createProductsStore = (prams?: { categoryId?: number; favorite?: boolean }) => {
+export const createProductsStore = (props: { params?: Record<string, any> } = {}) => {
   return createStore<ProductsStore>()((set, get) => ({
     page: defaultProductsStore.page,
     limit: defaultProductsStore.limit,
@@ -51,57 +52,47 @@ export const createProductsStore = (prams?: { categoryId?: number; favorite?: bo
       filters: []
     },
 
-    onChangePagination(page, limit) {
+    async onChangePagination(page, limit) {
       set({ page, limit })
-      get().load(true)
+      await get().load()
+      get().scrollIntoView()
     },
 
-    onChangeFilter(filter) {
+    async onChangeFilter(filter) {
       set({ filter, page: 1 })
-      get().load()
+      await get().load()
     },
 
-    onChangeSort(sort, dir) {
+    async onChangeSort(sort, dir) {
       set({ sort, dir })
-      get().load()
+      await get().load()
     },
 
     setListElement(el) {
       set({ listElement: el })
     },
 
-    async load(scroll = false) {
+    scrollIntoView() {
+      const listElement = get().listElement
+      if (listElement) {
+        listElement.scrollIntoView({
+          behavior: 'smooth'
+        })
+      }
+    },
+
+    async load() {
       set({ loading: true })
       const store = get()
-      const params: Record<string, any> = {
+      const query: Record<string, any> = {
         page: store.page,
         limit: store.limit,
         filter: store.filter,
-        withImages: true,
-        withBrand: true,
-        withOptions: true,
-        withOffers: true,
-        active: true,
         sort: store.sort,
         dir: store.dir
       }
-      if (prams?.categoryId) {
-        params.category = prams.categoryId
-      }
-      if (prams?.favorite) {
-        params.favorite = prams.favorite
-      }
-      const data = await apiGet<ProductsState['data']>('products', params)
+      const data = await apiGet<ProductsState['data']>('products', query)
       set({ data, loading: false })
-
-      if (scroll) {
-        const listElement = get().listElement
-        if (listElement) {
-          listElement.scrollIntoView({
-            behavior: 'smooth'
-          })
-        }
-      }
     }
   }))
 }

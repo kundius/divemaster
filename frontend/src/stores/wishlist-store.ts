@@ -1,13 +1,13 @@
+import { apiDelete, apiGet, apiPut } from '@/lib/api'
+import type { ProductEntity, WishlistEntity, WishlistType } from '@/types'
 import { createStore } from 'zustand/vanilla'
-import { apiDelete, apiGet, apiPost, apiPut } from '@/lib/api'
-import type { CartEntity, ProductEntity, WishlistEntity, WishlistType } from '@/types'
 
-export type WichlistState = {
+export type WishlistState = {
   ids: { [key in WishlistType]: string | null }
   products: { [key in WishlistType]: ProductEntity[] }
 }
 
-export type WichlistActions = {
+export type WishlistActions = {
   loadWishlist(type: WishlistType): Promise<void>
   addToWishlist(id: number, type: WishlistType): Promise<void>
   removeFromWishlist(id: number, type: WishlistType): Promise<void>
@@ -18,8 +18,8 @@ export type WichlistActions = {
   createWishlist(type: WishlistType): Promise<string | null>
 }
 
-export const createWichlistStore = () =>
-  createStore<WichlistState & WichlistActions>()((set, get) => ({
+export const createWishlistStore = () =>
+  createStore<WishlistState & WishlistActions>()((set, get) => ({
     ids: {
       favourites: null,
       comparison: null,
@@ -37,6 +37,10 @@ export const createWichlistStore = () =>
         const data = await apiPut<WishlistEntity>(`wishlist`, { type })
         wishlistId = data.id
         get().setWishlistId(wishlistId, type)
+        // только гостевые списки сохраняем локально
+        if (!data.userId) {
+          localStorage.setItem(`wishlist:${type}`, wishlistId)
+        }
       } catch (e) {}
       return wishlistId
     },
@@ -106,6 +110,7 @@ export const createWichlistStore = () =>
         // Удаление товаров и id списка
         get().setWishlistProducts([], type)
         get().setWishlistId(null, type)
+        localStorage.removeItem(`wishlist:${type}`)
       } catch (e) {}
     },
 
@@ -117,11 +122,5 @@ export const createWichlistStore = () =>
     // Сохранение id списка в стор и localStorage
     setWishlistId(wishlistId, type) {
       set((prev) => ({ ids: { ...prev.ids, [type]: wishlistId } }))
-
-      if (wishlistId) {
-        localStorage.setItem(`wishlist:${type}`, wishlistId)
-      } else {
-        localStorage.removeItem(`wishlist:${type}`)
-      }
     }
   }))

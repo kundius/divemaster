@@ -10,13 +10,13 @@ import { AddToCart } from './AddToCart'
 import { BuyInClick } from './BuyInClick'
 import { Gallery } from './Gallery'
 import styles from './index.module.scss'
-import { useWichlistStore } from '@/providers/whichlist-store-provide'
+import { useWishlistStore } from '@/providers/whishlist-store-provider'
 import { WishlistType } from '@/types'
 
 export function ProductCard() {
   const productStore = useProductStore((state) => state)
-  const toggleInWishlist = useWichlistStore((state) => state.toggleInWishlist)
-  const wishlistProducts = useWichlistStore((state) => state.products)
+  const toggleInWishlist = useWishlistStore((state) => state.toggleInWishlist)
+  const wishlistProducts = useWishlistStore((state) => state.products)
   const [showGallery, setShowGallery] = useState(false)
   const [galleryShowNav, setGalleryShowNav] = useState(false)
   const [thumbIndex, setThumbIndex] = useState(0)

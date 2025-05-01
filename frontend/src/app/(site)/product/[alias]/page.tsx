@@ -42,15 +42,7 @@ export default async function Page({ params }: PageProps<{ alias: string }>) {
   const [product] = await Promise.all([
     apiGet<ProductEntity>(
       `products/alias:${alias}`,
-      {
-        active: true,
-        withContent: true,
-        withBrand: true,
-        withOptions: true,
-        withOffers: true,
-        withImages: true,
-        withCategories: true
-      },
+      {},
       {
         next: {
           revalidate: 60 * 5
@@ -105,9 +97,7 @@ export default async function Page({ params }: PageProps<{ alias: string }>) {
                 <div className={styles.brand}>{product.brand.title}</div>
               )}
               <div />
-              {/* TODO: ИЗБРАННОЕ */}
-              {/* TODO: СРАВНЕНИЕ */}
-              {/* <ListActions /> */}
+              <ListActions />
             </div>
             <div className={styles.title}>
               <Title />

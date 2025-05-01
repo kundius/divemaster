@@ -9,7 +9,7 @@ import styles from './index.module.scss'
 
 export function Filter() {
   const filters = useProductsStore((state) => state.data.filters)
-  const filter = useProductsStore((state) => state.filter)
+  const filter = useProductsStore((state) => state.searchParams.filter)
   const onChangeFilter = useProductsStore((state) => state.onChangeFilter)
 
   const parsedFilter = useMemo(() => {

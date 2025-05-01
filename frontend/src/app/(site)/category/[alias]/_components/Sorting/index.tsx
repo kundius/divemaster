@@ -14,9 +14,9 @@ import { useProductsStore } from '@/providers/products-store-provider'
 import styles from './index.module.scss'
 
 export function Sorting() {
-  const filter = useProductsStore((state) => state.filter)
-  const sort = useProductsStore((state) => state.sort)
-  const dir = useProductsStore((state) => state.dir)
+  const filter = useProductsStore((state) => state.searchParams.filter)
+  const sort = useProductsStore((state) => state.searchParams.sort)
+  const dir = useProductsStore((state) => state.searchParams.dir)
   const onChangeSort = useProductsStore((state) => state.onChangeSort)
 
   const filtersCount = useMemo(() => {

@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { WishlistController } from './controllers/wishlist.controller'
 import { Wishlist } from './entities/wishlist.entity'
 import { WishlistService } from './services/wishlist.service'
+import { ProductsModule } from '@/products/products.module'
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { WishlistService } from './services/wishlist.service'
       Wishlist,
       Product
     ]),
+    ProductsModule
   ],
   providers: [WishlistService],
   controllers: [WishlistController],

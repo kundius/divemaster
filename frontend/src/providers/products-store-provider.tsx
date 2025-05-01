@@ -2,12 +2,22 @@
 
 import { shallowEqual } from '@/lib/utils'
 import {
+  ProductsStateParams,
+  ProductsStateSearchParams,
   type ProductsStore,
   createProductsStore,
-  defaultProductsStore
+  productsStoreDefaultSearchParams
 } from '@/stores/products-store'
 import { parseAsInteger, parseAsString, useQueryStates } from 'nuqs'
-import { type ReactNode, Suspense, createContext, useContext, useEffect, useRef, useState } from 'react'
+import {
+  type ReactNode,
+  Suspense,
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 import { useStore } from 'zustand'
 
 export type ProductStoreApi = ReturnType<typeof createProductsStore>
@@ -16,13 +26,10 @@ export const ProductStoreContext = createContext<ProductStoreApi | undefined>(un
 
 export interface ProductsStoreProviderProps {
   children: ReactNode
-  params?: Record<string, any>
+  params?: ProductsStateParams
 }
 
-export const ProductsStoreProvider = ({
-  children,
-  params
-}: ProductsStoreProviderProps) => {
+export const ProductsStoreProvider = ({ children, params }: ProductsStoreProviderProps) => {
   const [initialized, setInitialized] = useState(false)
 
   const storeRef = useRef<ProductStoreApi>(null)
@@ -30,28 +37,20 @@ export const ProductsStoreProvider = ({
     storeRef.current = createProductsStore({ params })
   }
 
-  const searchParamsRef = useRef(defaultProductsStore)
+  const searchParamsRef = useRef(productsStoreDefaultSearchParams)
   const [searchParams, setSearchParams] = useQueryStates(
     {
-      page: parseAsInteger.withDefault(defaultProductsStore.page),
-      limit: parseAsInteger.withDefault(defaultProductsStore.limit),
-      filter: parseAsString.withDefault(defaultProductsStore.filter),
-      sort: parseAsString.withDefault(defaultProductsStore.sort),
-      dir: parseAsString.withDefault(defaultProductsStore.dir)
+      page: parseAsInteger.withDefault(productsStoreDefaultSearchParams.page),
+      limit: parseAsInteger.withDefault(productsStoreDefaultSearchParams.limit),
+      filter: parseAsString.withDefault(productsStoreDefaultSearchParams.filter),
+      sort: parseAsString.withDefault(productsStoreDefaultSearchParams.sort),
+      dir: parseAsString.withDefault(productsStoreDefaultSearchParams.dir)
     },
     {
       history: 'push',
       clearOnDefault: true
     }
   )
-
-  const stateToSearchParams = (state: ProductsStore) => ({
-    page: state.page,
-    limit: state.limit,
-    filter: state.filter,
-    sort: state.sort,
-    dir: state.dir
-  })
 
   // при изменении параметров в адресной строке обновить состояние и загрузить товары
   useEffect(() => {
@@ -60,9 +59,9 @@ export const ProductsStoreProvider = ({
     const store = storeRef.current
     const state = store.getState()
 
-    if (!shallowEqual(searchParams, stateToSearchParams(state))) {
+    if (!shallowEqual(searchParams, state.searchParams)) {
       searchParamsRef.current = searchParams
-      store.setState(searchParams)
+      store.setState((prev) => ({ searchParams: { ...prev.searchParams, ...searchParams } }))
       store.getState().load(true)
     }
   }, [searchParams])
@@ -75,12 +74,12 @@ export const ProductsStoreProvider = ({
 
     // по умолчанию взять параметры из адресной строки и загрузить товары
     searchParamsRef.current = searchParams
-    store.setState(searchParams)
+    store.setState((prev) => ({ searchParams: { ...prev.searchParams, ...searchParams } }))
     store.getState().load()
 
     // при изменении параметров в сторе изменить их также адресной строке
     store.subscribe((state) => {
-      const stateParams = stateToSearchParams(state)
+      const stateParams = state.searchParams
       if (!shallowEqual(stateParams, searchParamsRef.current)) {
         searchParamsRef.current = stateParams
         setSearchParams(stateParams)

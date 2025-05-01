@@ -3,12 +3,21 @@ import { persist, StateStorage, createJSONStorage } from 'zustand/middleware'
 import { ProductsFilter, type ProductEntity } from '@/types'
 import { apiGet } from '@/lib/api'
 
-export type ProductsState = {
+export type ProductsStateSearchParams = {
   page: number
   limit: number
   filter: string
   sort: string
   dir: string
+}
+
+export type ProductsStateParams = {
+  [key: string]: string | number
+}
+
+export type ProductsState = {
+  searchParams: ProductsStateSearchParams
+  params: ProductsStateParams
   loading: boolean
   listElement: HTMLElement | null
   data: {
@@ -29,7 +38,7 @@ export type ProductsActions = {
 
 export type ProductsStore = ProductsState & ProductsActions
 
-export const defaultProductsStore = {
+export const productsStoreDefaultSearchParams: ProductsStateSearchParams = {
   page: 1,
   limit: 24,
   filter: '{}',
@@ -37,13 +46,14 @@ export const defaultProductsStore = {
   dir: 'ASC'
 }
 
-export const createProductsStore = (props: { params?: Record<string, any> } = {}) => {
+export interface CreateProductsStoreProps {
+  params?: ProductsStateParams
+}
+
+export const createProductsStore = ({ params }: CreateProductsStoreProps) => {
   return createStore<ProductsStore>()((set, get) => ({
-    page: defaultProductsStore.page,
-    limit: defaultProductsStore.limit,
-    filter: defaultProductsStore.filter,
-    sort: defaultProductsStore.sort,
-    dir: defaultProductsStore.dir,
+    searchParams: productsStoreDefaultSearchParams,
+    params: params || {},
     loading: false,
     listElement: null,
     data: {
@@ -53,18 +63,18 @@ export const createProductsStore = (props: { params?: Record<string, any> } = {}
     },
 
     async onChangePagination(page, limit) {
-      set({ page, limit })
+      set((prev) => ({ searchParams: { ...prev.searchParams, page, limit } }))
       await get().load()
       get().scrollIntoView()
     },
 
     async onChangeFilter(filter) {
-      set({ filter, page: 1 })
+      set((prev) => ({ searchParams: { ...prev.searchParams, filter, page: 1 } }))
       await get().load()
     },
 
     async onChangeSort(sort, dir) {
-      set({ sort, dir })
+      set((prev) => ({ searchParams: { ...prev.searchParams, sort, dir } }))
       await get().load()
     },
 
@@ -84,14 +94,10 @@ export const createProductsStore = (props: { params?: Record<string, any> } = {}
     async load() {
       set({ loading: true })
       const store = get()
-      const query: Record<string, any> = {
-        page: store.page,
-        limit: store.limit,
-        filter: store.filter,
-        sort: store.sort,
-        dir: store.dir
-      }
-      const data = await apiGet<ProductsState['data']>('products', query)
+      const data = await apiGet<ProductsState['data']>('products', {
+        ...store.searchParams,
+        ...store.params
+      })
       set({ data, loading: false })
     }
   }))

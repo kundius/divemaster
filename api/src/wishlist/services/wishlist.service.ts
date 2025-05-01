@@ -4,10 +4,12 @@ import { Repository } from 'typeorm'
 import { Wishlist, WishlistType } from '../entities/wishlist.entity'
 import { User } from '@/users/entities/user.entity'
 import { Product } from '@/products/entities/product.entity'
+import { ProductsService } from '@/products/services/products.service'
 
 @Injectable()
 export class WishlistService {
   constructor(
+    private productsService: ProductsService,
     @InjectRepository(Wishlist)
     private wishlistRepository: Repository<Wishlist>,
     @InjectRepository(Product)
@@ -55,10 +57,29 @@ export class WishlistService {
   async findProducts(wishlistId: string) {
     const wishlist = await this.wishlistRepository.findOne({
       where: { id: wishlistId },
-      relations: { products: true }
+      relations: {
+        products: {
+          brand: true,
+          categories: true
+        }
+      }
     })
 
     if (wishlist) {
+      await Promise.all(
+        wishlist.products.map(async (row) => {
+          const [options, images, offers, properties] = await Promise.all([
+            this.productsService.findOptionsForProduct(row.id),
+            this.productsService.findImagesForProduct(row.id),
+            this.productsService.findOffersForProduct(row.id),
+            this.productsService.findPropertiesForProduct(row.id)
+          ])
+          row.options = options
+          row.images = images
+          row.offers = offers
+          row.properties = properties
+        })
+      )
       return wishlist.products
     }
 

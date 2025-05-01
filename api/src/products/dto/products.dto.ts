@@ -37,7 +37,12 @@ export class FindOneProductDto {
 }
 
 export class FindAllProductDto extends PaginationQueryDto {
-  @Transform(({ value }) => value.split(','))
+  @Transform(({ value }) =>
+    value
+      .split(',')
+      .filter((n: string) => !!n)
+      .map((n: string) => parseInt(n))
+  )
   @IsArray()
   @IsOptional()
   ids?: number[]

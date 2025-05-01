@@ -119,6 +119,10 @@ export class ProductsService {
       where.title = Like(`%${dto.query}%`)
     }
 
+    if (dto.ids) {
+      where.id = In(dto.ids)
+    }
+
     if (typeof dto.category !== 'undefined') {
       // TODO: HIERARCHY_DEPTH_LIMIT
       // товары выбираются без учета подкатегорий
@@ -133,7 +137,11 @@ export class ProductsService {
       await this.productsFilterService.init(dto.category)
       const productIds = await this.productsFilterService.search(filter)
       if (productIds.length > 0) {
-        where.id = In(productIds)
+        if (dto.ids) {
+          where.id = In(productIds.filter((n) => dto.ids!.includes(n)))
+        } else {
+          where.id = In(productIds)
+        }
       } else {
         where.id = IsNull()
       }

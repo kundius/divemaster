@@ -91,7 +91,7 @@ export default async function Page({ params }: PageProps<{ alias: string }>) {
         )}
 
         <Suspense>
-          <ProductsStoreProvider params={{ categoryId: category.id }}>
+          <ProductsStoreProvider params={{ category: category.id }}>
             <div className="flex gap-x-5 mt-14">
               <div className="w-[320px] max-xl:w-[260px] flex-shrink-0 space-y-5 max-lg:hidden">
                 {!hasChild && (

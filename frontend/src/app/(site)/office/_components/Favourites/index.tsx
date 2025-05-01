@@ -2,18 +2,21 @@
 
 import { ProductCard } from '@/components/ProductCard'
 import { ProductStoreProvider } from '@/providers/product-store-provider'
-import { ProductsStoreProvider } from '@/providers/products-store-provider'
 import { useWishlistStore } from '@/providers/whishlist-store-provider'
-import { Suspense } from 'react'
-import { Products } from './Products'
-import { Pagination } from './Pagination'
 
 export function Favourites() {
   const products = useWishlistStore((state) => state.products.favourites)
   return (
-    <ProductsStoreProvider params={{ ids: products.map((p) => p.id).join(',') }}>
-      <Products />
-      <Pagination />
-    </ProductsStoreProvider>
+    <div>
+      <div className="grid grid-cols-4 max-2xl:grid-cols-3 max-sm:grid-cols-2 gap-5 max-lg:gap-3 max-sm:gap-2 scroll-mt-60 max-2xl:scroll-mt-40 relative">
+        {products.map((item) => {
+          return (
+            <ProductStoreProvider key={item.id} product={item}>
+              <ProductCard />
+            </ProductStoreProvider>
+          )
+        })}
+      </div>
+    </div>
   )
 }

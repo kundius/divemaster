@@ -6,9 +6,7 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { ProductStoreProvider } from '@/providers/product-store-provider'
 import { useWishlistStore } from '@/providers/whishlist-store-provider'
-import { GitCompare, HeartIcon } from 'lucide-react'
 import Link from 'next/link'
-import { title } from 'process'
 import { useMemo, useState } from 'react'
 
 export function Comparison() {

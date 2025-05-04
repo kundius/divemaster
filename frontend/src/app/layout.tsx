@@ -7,7 +7,6 @@ import { CartStoreProvider } from '@/providers/cart-store-provider'
 import { LocationStoreProvider } from '@/providers/location-store-provider'
 import { OrderStoreProvider } from '@/providers/order-store-provider'
 import '@/styles/globals.scss'
-import '@/styles/cbk.css'
 import Script from 'next/script'
 import { Suspense } from 'react'
 import YandexMetrika from '@/components/YandexMetrika'
@@ -82,6 +81,7 @@ export default async function RootLayout({
           </SWRGlobalProvider>
         </NuqsAdapter>
         <Toaster richColors position="top-center" />
+        <link rel="stylesheet" href="https://cdn.envybox.io/widget/cbk.css" />
         <Script id="envybox" strategy="afterInteractive" src='https://cdn.envybox.io/widget/cbk.js?cbk_code=c549f90bcefff12c01d8687328263643' async />
         <Script id="metrika-counter" strategy="afterInteractive">
           {`(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};

@@ -56,6 +56,11 @@ export class CreateOrderDto {
   @IsString()
   deliveryAddress: string
 
+  @ParseObject()
+  @IsObject()
+  @IsOptional()
+  deliveryProperties?: Record<string, unknown>
+
   @Type(() => String)
   @IsString()
   recipientEmail: string

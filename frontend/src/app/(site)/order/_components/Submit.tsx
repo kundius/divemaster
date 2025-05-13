@@ -40,6 +40,7 @@ export function Submit() {
 
     const result = await apiPost<OrderEntity>(`cart/${cartId}/create-order`, {
       deliveryService: orderState.delivery?.service,
+      deliveryProperties: orderState.delivery ? JSON.stringify(orderState.delivery.properties) : {},
       deliveryAddress: orderState.delivery?.address,
       paymentService: orderState.payment?.service,
       recipientName: orderState.recipient?.name,

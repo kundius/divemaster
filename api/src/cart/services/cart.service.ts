@@ -9,8 +9,6 @@ import { CartProduct } from '../entities/cart-product.entity'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import { User } from '@/users/entities/user.entity'
-import { Offer } from '@/products/entities/offer.entity'
-import { OptionValue } from '@/products/entities/option-value.entity'
 import { Delivery, DeliveryService } from '@/order/entities/delivery.entity'
 import { PickupPointTypeEnum } from '@/order/entities/pickup-point.entity'
 import { Payment, PaymentServiceEnum } from '@/order/entities/payment.entity'
@@ -339,6 +337,7 @@ export class CartService {
     const orderCost = await this.getOrderCost(cartId, {
       personalDiscount: dto.personalDiscount,
       deliveryService: dto.deliveryService,
+      deliveryProperties: dto.deliveryProperties,
       paymentService: dto.paymentService
     })
 

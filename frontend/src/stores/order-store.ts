@@ -9,7 +9,6 @@ export type OrderState = {
   legalEntity: boolean
   delivery?: {
     service: DeliveryService
-    address: string
     properties: Record<string, unknown>
   }
   payment?: {

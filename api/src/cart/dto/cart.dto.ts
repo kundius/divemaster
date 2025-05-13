@@ -52,14 +52,9 @@ export class CreateOrderDto {
   @IsEnum(DeliveryService)
   deliveryService: DeliveryService
 
-  @Type(() => String)
-  @IsString()
-  deliveryAddress: string
-
   @ParseObject()
   @IsObject()
-  @IsOptional()
-  deliveryProperties?: Record<string, unknown>
+  deliveryProperties: Record<string, unknown>
 
   @Type(() => String)
   @IsString()

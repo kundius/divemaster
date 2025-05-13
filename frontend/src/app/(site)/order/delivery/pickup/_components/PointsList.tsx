@@ -44,7 +44,6 @@ export function PointsList() {
   const selectEntity = async (entity: PickupPointEntity) => {
     orderState.setDelivery({
       service: DeliveryService.Pickup,
-      address: entity.fullAddress,
       properties: {
         pickupPointId: entity.id
       }

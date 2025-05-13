@@ -229,6 +229,34 @@ export class CartService {
     return this.findProducts(cartId)
   }
 
+  /**
+   * Функция возвращает полный адрес доставки в виде строки исходя из параметров доставки
+   */
+  async makeAddress(service: DeliveryService, properties: Record<string, unknown>) {
+    if (service === DeliveryService.Pickup) {
+      if (typeof properties.pickupPointId !== 'string') {
+        throw new Error('pickupPointId not defined')
+      }
+      const pickupPoint = await this.pickupPointService.findOne(properties.pickupPointId)
+      if (!pickupPoint) {
+        throw new Error('pickupPoint not found')
+      }
+      return pickupPoint.fullAddress
+    }
+    if (service === DeliveryService.Shipping) {
+      const tmp: string[] = []
+      if (properties.city) tmp.push(`${properties.city}`)
+      if (properties.street) tmp.push(`${properties.street}`)
+      if (properties.house) tmp.push(`${properties.house}`)
+      if (properties.apartment) tmp.push(`кв/офис ${properties.apartment}`)
+      if (properties.entrance) tmp.push(`подъезд ${properties.entrance}`)
+      if (properties.floor) tmp.push(`этаж ${properties.floor}`)
+      if (properties.intercom) tmp.push(`домофон ${properties.intercom}`)
+      return tmp.join(', ')
+    }
+    throw new Error('unknown delivery service')
+  }
+
   async getOrderCost(cartId: string, dto?: GetOrderCostDto) {
     const cart = await this.cartRepository.findOneOrFail({
       where: { id: cartId },
@@ -362,7 +390,7 @@ export class CartService {
     const delivery = new Delivery()
     this.deliveryRepository.merge(delivery, {
       service: dto.deliveryService,
-      address: dto.deliveryAddress,
+      address: await this.makeAddress(dto.deliveryService, dto.deliveryProperties),
       recipient: {
         name: dto.recipientName,
         email: dto.recipientEmail,

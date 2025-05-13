@@ -43,28 +43,9 @@ export function ShippingForm() {
   })
 
   function onSubmit(values: ShippingFormFields) {
-    const tmp = [values.city, values.street, values.house]
-
-    if (values.apartment) {
-      tmp.push(`кв/офис ${values.apartment}`)
-    }
-
-    if (values.entrance) {
-      tmp.push(`подъезд ${values.entrance}`)
-    }
-
-    if (values.floor) {
-      tmp.push(`этаж ${values.floor}`)
-    }
-
-    if (values.intercom) {
-      tmp.push(`домофон ${values.intercom}`)
-    }
-
     orderState.setDelivery({
       service: DeliveryService.Shipping,
-      address: tmp.join(', '),
-      properties: {}
+      properties: { ...values }
     })
     router.push('/order')
   }

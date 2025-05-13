@@ -9,17 +9,27 @@ import { useOrderStore } from '@/providers/order-store-provider'
 import { DeliveryService } from '@/types'
 
 import css from './Delivery.module.scss'
+import { DeliveryPickupAddress } from './DeliveryPickupAddress'
+import { DeliveryShippingAddress } from './DeliveryShippingAddress'
 import { Errors } from './Errors'
 import { Products } from './Products'
-import { SelectedAddress } from './SelectedAddress'
-
-const SelectedAddressTitle = {
-  [DeliveryService.Shipping]: 'Доставим курьером',
-  [DeliveryService.Pickup]: 'Забрать самостоятельно'
-}
 
 export function Delivery() {
   const orderState = useOrderStore((state) => state)
+
+  const renderDeliveryAddress = () => {
+    if (!orderState.delivery) {
+      throw new Error('delivery not defined')
+    }
+    switch (orderState.delivery.service) {
+      case DeliveryService.Shipping:
+        return <DeliveryShippingAddress properties={orderState.delivery.properties} />
+      case DeliveryService.Pickup:
+        return <DeliveryPickupAddress properties={orderState.delivery.properties} />
+      default:
+        throw new Error('unknown delivery service')
+    }
+  }
 
   if (!orderState.delivery) {
     return (
@@ -73,12 +83,7 @@ export function Delivery() {
           selected={orderState.delivery.service}
         />
       </div>
-      <div className="mt-4">
-        <SelectedAddress
-          title={SelectedAddressTitle[orderState.delivery.service]}
-          description={orderState.delivery.address}
-        />
-      </div>
+      <div className="mt-4">{renderDeliveryAddress()}</div>
       <div className="mt-6">
         <Products />
       </div>

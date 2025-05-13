@@ -25,7 +25,7 @@ export class OrderController {
 
   @Get()
   findAll(@Query() query: FindAllOrderQueryDto, @CurrentUser() user?: User) {
-    if (!(this.authService.hasScope(user, 'orders'))) {
+    if (!this.authService.hasScope(user, 'orders')) {
       throw new ForbiddenException()
     }
     return this.orderService.findAll(query)
@@ -50,15 +50,16 @@ export class OrderController {
 
   @Post('checkout/yookassa')
   async checkoutYookassa(@Body() dto: YookassaServiceCheckoutDto) {
+    console.log('checkout/yookassa', dto)
     const order = await this.orderService.findOneById(+dto.object.metadata.orderId)
     if (!order || !order.payment) {
       throw new NotFoundException()
     }
     await this.orderService.checkoutPayment(order.payment, dto)
   }
-  
-    @Delete(':id')
-    remove(@Param('id') id: string) {
-      return this.orderService.remove(+id)
-    }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.orderService.remove(+id)
+  }
 }

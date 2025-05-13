@@ -313,14 +313,11 @@ export class CartService {
         case DeliveryService.Shipping:
         case DeliveryService.Pickup:
           let inStore = false
-          console.log(1, dto.deliveryProperties)
           if (dto.deliveryProperties?.pickupPointId) {
             const pickupPoint = await this.pickupPointService.findOne(
               String(dto.deliveryProperties.pickupPointId)
             )
-            console.log(2, pickupPoint)
             if (pickupPoint) {
-              console.log(3, pickupPoint.type)
               inStore = pickupPoint.type === PickupPointTypeEnum.store
             }
           }

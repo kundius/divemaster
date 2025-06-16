@@ -71,7 +71,7 @@ export default function Page() {
           <Image src={image5} alt="" width={854} height={854} style={{ margin: 0 }} />
         </p>
         <p>
-          Телефон для записи <strong>+7 (906) 586-55-55</strong>
+          Телефон для записи <strong>8 800 7000 354</strong>
         </p>
       </div>
     </SectionPage>

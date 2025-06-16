@@ -166,7 +166,7 @@ export function HomeAbout() {
         <div className={styles.questions}>
           <div className={styles.questionsTitle}>Остались вопросы?</div>
           <div className={styles.questionsContent}>
-            Позвоните нам по телефону +7 (906) 586-55-55 или напишите
+            Позвоните нам по телефону 8 800 7000 354 или напишите
             <br />
             на <a href="mailto:info@divemaster.pro">info@divemaster.pro</a>
           </div>

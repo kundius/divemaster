@@ -11,7 +11,7 @@ export function About() {
           <Image src="/logo.png" alt="" width={148} height={71} className={styles.logo} />
         </Link>
         <div className={styles.phone}>
-          <div className={styles.phoneNumber}>+7 (906) 586-55-55</div>
+          <div className={styles.phoneNumber}>8 800 7000 354</div>
           <div className={styles.phoneTime}>ежедневно с 10:00 до 18:00</div>
         </div>
       </div>

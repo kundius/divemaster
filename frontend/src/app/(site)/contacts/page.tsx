@@ -16,7 +16,8 @@ export default async function Page() {
           title="Позвоните по телефону"
           icon={<SpriteIcon name="contacts-phone" className="w-12 h-12 mt-0.5 -ml-2" />}
         >
-          +7 (906) 586-55-55
+          <div>8 800 7000 354</div>
+          <div>8 909 2154 344</div>
         </Group>
         <Group
           title="Приходите в магазин"

@@ -29,13 +29,13 @@ export function Payment() {
     <div>
       <div className={css.title}>Способ оплаты</div>
       <div className="mt-4 grid lg:grid-cols-2 gap-3">
-        <MethodCard
+        {/* <MethodCard
           title="Онлайн на сайте"
           description="Быстро и удобно"
           icon={<SpriteIcon name="payment-card" size={40} />}
           action={() => orderState.setPayment({ service: PaymentService.Yookassa })}
           active={orderState.payment?.service === PaymentService.Yookassa}
-        />
+        /> */}
         <MethodCard
           title="При получении"
           description="Наличными или картой"

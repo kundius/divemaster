@@ -17,36 +17,43 @@ export function HeaderExtra() {
             <TopMenu
               primary={[
                 {
-                  title: 'Доставка и оплата',
-                  href: '/info/delivery-and-payment',
+                  title: 'Доставка',
+                  href: '/info/delivery',
                   icon: 'delivery'
                 },
                 {
-                  title: 'Оптовикам',
-                  href: '/info/wholesalers',
-                  icon: 'salers'
+                  title: 'Оплата',
+                  href: '/info/payment',
+                  icon: 'wallet'
+                },
+                {
+                  title: 'Гарантии',
+                  href: '/info/guarantee',
+                  icon: 'guarantee'
                 },
                 {
                   title: 'Контакты',
                   href: '/contacts',
-                  icon: 'contacts'
+                  icon: 'marker'
                 },
                 {
                   title: 'Блог',
                   href: '/blog',
-                  icon: 'blog',
-                  className: 'max-lg:hidden'
+                  icon: 'comments'
                 }
               ]}
               secondary={[
                 {
-                  title: 'Блог',
-                  href: '/blog',
-                  className: 'lg:hidden'
-                },
-                {
                   title: 'О магазине',
                   href: '/info/about'
+                },
+                {
+                  title: 'Оптовикам',
+                  href: '/info/wholesalers'
+                },
+                {
+                  title: 'Как сделать заказ',
+                  href: '/info/buy'
                 },
                 {
                   title: 'Скидочные карты',

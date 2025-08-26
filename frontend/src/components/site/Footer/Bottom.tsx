@@ -9,7 +9,7 @@ export function Bottom() {
       <Container>
         <div className={styles.grid}>
           <div className={styles.copyright}>
-            © 2008-2024 «ДАЙВМАСТЕР». Все&nbsp;права&nbsp;защищены
+            © 2008-2025 «ДАЙВМАСТЕР». Все&nbsp;права&nbsp;защищены
           </div>
           <div className={styles.links}>
             <Link href="/info/user-agreement">Пользовательское соглашение</Link>

@@ -15,10 +15,13 @@ export default function Page() {
             <a href="/info/about">О магазине</a>
           </li>
           <li>
-            <a href="/info/delivery-and-payment">Доставка и оплата</a>
+            <a href="/info/delivery">Доставка</a>
           </li>
           <li>
-            <a href="/info/returns">Возврат и обмен</a>
+            <a href="/info/payment">Оплата</a>
+          </li>
+          <li>
+            <a href="/info/guarantee">Гарантии</a>
           </li>
           <li>
             <a href="/info/discount">Скидки</a>

@@ -25,25 +25,24 @@ export function Footer() {
                 title="Информация"
                 items={[
                   {
-                    title: 'Каталог',
-                    href: '/catalog'
-                  },
-                  {
                     title: 'О магазине',
                     href: '/info/about'
                   },
-                  // TODO: brands
-                  // {
-                  //   title: 'Бренды',
-                  //   href: '/brand'
-                  // },
                   {
-                    title: 'Доставка и оплата',
-                    href: '/info/delivery-and-payment'
+                    title: 'Доставка',
+                    href: '/info/delivery'
                   },
                   {
-                    title: 'Возврат и обмен',
-                    href: '/info/returns'
+                    title: 'Оплата',
+                    href: '/info/payment'
+                  },
+                  {
+                    title: 'Гарантии',
+                    href: '/info/guarantee'
+                  },
+                  {
+                    title: 'Как заказать',
+                    href: '/info/buy'
                   },
                   {
                     title: 'Скидки',
@@ -60,6 +59,10 @@ export function Footer() {
               <Menu
                 title="Оптовикам"
                 items={[
+                  {
+                    title: 'Каталог',
+                    href: '/catalog'
+                  },
                   {
                     title: 'Прайс-лист',
                     href: '/info/wholesalers'

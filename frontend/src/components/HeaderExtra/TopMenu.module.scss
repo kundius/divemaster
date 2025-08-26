@@ -28,41 +28,13 @@
   background: #272f76;
 }
 
-.with-icon::before {
-  content: '';
-  width: 22px;
-  height: 22px;
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
+.link .icon {
+  font-size: 18px;
   opacity: 0.7;
 }
 
-.with-icon:hover::before {
+.link:hover .icon {
   opacity: 1;
-}
-
-.icon-delivery::before {
-  background-image: url('/icons/top/delivery.svg');
-}
-
-.icon-salers::before {
-  background-image: url('/icons/top/salers.svg');
-}
-
-.icon-contacts::before {
-  background-image: url('/icons/top/contacts.svg');
-}
-
-.icon-blog::before {
-  background-image: url('/icons/top/blog.svg');
-}
-
-.icon-gift::before {
-  background-image: url('/icons/top/gift.svg');
-}
-
-.icon-school::before {
-  background-image: url('/icons/top/school.svg');
 }
 
 .more {
@@ -74,7 +46,7 @@
 .more-toggle {
   width: 22px;
   height: 22px;
-  background-color: rgba(255,255,255,0.4);
+  background-color: rgba(255, 255, 255, 0.4);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -95,7 +67,7 @@
 
 .more:hover .more-toggle,
 .more-toggle:hover {
-  background-color: rgba(255,255,255,0.7);
+  background-color: rgba(255, 255, 255, 0.7);
   color: #535353;
 }
 
@@ -109,7 +81,7 @@
   position: absolute;
   background: rgba(255, 255, 255, 0.9);
   box-shadow: 0px 6px 7px 0px rgba(0, 8, 35, 0.19);
-  transition: all .3s ease;
+  transition: all 0.3s ease;
   visibility: hidden;
   opacity: 0;
   transform: scaleY(0.8) translateX(-50%);

@@ -22,12 +22,8 @@ export function TopMenu({ className, primary, secondary = [] }: TopMenuProps) {
     <ul className={cn(styles.list, className)}>
       {primary.map((item, i) => (
         <li key={i} className={cn(styles.item, item.className)}>
-          <Link
-            href={item.href}
-            className={cn(styles.link, styles[`icon-${item.icon}`], {
-              [styles['with-icon']]: `icon-${item.icon}` in styles
-            })}
-          >
+          <Link href={item.href} className={styles.link}>
+            <span className={`${styles.icon} icon icon-${item.icon}`}></span>
             {item.title}
           </Link>
         </li>

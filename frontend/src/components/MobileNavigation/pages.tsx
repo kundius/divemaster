@@ -18,20 +18,27 @@ export default function MobileNavigationPages() {
             <VerticalMenuItem>
               <VerticalMenuLink href="/info/discount">Скидочные карты</VerticalMenuLink>
             </VerticalMenuItem>
-            {/* <VerticalMenuItem>
-                <VerticalMenuLink href="#Программа лояльности">
-                  Программа лояльности
-                </VerticalMenuLink>
-              </VerticalMenuItem> */}
             <VerticalMenuItem>
               <VerticalMenuLink href="/info/school">
                 Школа подводной охоты и дайвинга
               </VerticalMenuLink>
             </VerticalMenuItem>
+            <VerticalMenuItem>
+              <VerticalMenuLink href="/info/legal">Юридическая информация</VerticalMenuLink>
+            </VerticalMenuItem>
           </VerticalMenuList>
         </VerticalMenuItem>
         <VerticalMenuItem>
-          <VerticalMenuLink href="/info/delivery-and-payment">Доставка и оплата</VerticalMenuLink>
+          <VerticalMenuLink href="/info/delivery">Доставка</VerticalMenuLink>
+        </VerticalMenuItem>
+        <VerticalMenuItem>
+          <VerticalMenuLink href="/info/payment">Оплата</VerticalMenuLink>
+        </VerticalMenuItem>
+        <VerticalMenuItem>
+          <VerticalMenuLink href="/info/guarantee">Гарантии</VerticalMenuLink>
+        </VerticalMenuItem>
+        <VerticalMenuItem>
+          <VerticalMenuLink href="/info/buy">Как сделать заказ</VerticalMenuLink>
         </VerticalMenuItem>
         <VerticalMenuItem>
           <VerticalMenuLink href="/info/wholesalers">Оптовикам</VerticalMenuLink>
@@ -44,9 +51,6 @@ export default function MobileNavigationPages() {
         </VerticalMenuItem>
         <VerticalMenuItem>
           <VerticalMenuLink href="/contacts">Контакты</VerticalMenuLink>
-        </VerticalMenuItem>
-        <VerticalMenuItem>
-          <VerticalMenuLink href="/info/legal">Юридическая информация</VerticalMenuLink>
         </VerticalMenuItem>
       </VerticalMenuList>
     </VerticalMenu>

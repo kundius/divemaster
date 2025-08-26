@@ -6,7 +6,16 @@ services:
       - ${MARIADB_PORT:-3333}:3306
 
   phpmyadmin:
-    restart: no
+    image: phpmyadmin
+    restart: unless-stopped
+    ports:
+      - ${PHPMYADMIN_PORT:-10003}:80
+    environment:
+      - PMA_ARBITRARY=1
+      - TZ=${TZ:-Europe/Moscow}
+      - UPLOAD_LIMIT=300M
+    depends_on:
+      - db
 
   nginx:
     restart: no

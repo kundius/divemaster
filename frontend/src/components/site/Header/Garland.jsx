@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import styles from './Garland.module.scss'
+import styles from './Garland.module.css'
 
 export function useWindowDimensions() {
   const [windowDimensions, setWindowDimensions] = useState({ height: 0, width: 0 });

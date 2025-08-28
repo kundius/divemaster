@@ -5,7 +5,7 @@ import { Share } from '@/components/Share'
 import { Badge } from '@/components/ui/badge'
 import { BlogPostEntity } from '@/types'
 
-import css from './PostMeta.module.scss'
+import css from './PostMeta.module.css'
 import { ClockIcon } from '@heroicons/react/24/outline'
 
 export interface PostMetaProps {

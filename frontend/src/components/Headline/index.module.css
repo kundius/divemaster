@@ -1,0 +1,133 @@
+.wrapper {
+}
+
+.breadcrumbs {
+  margin-bottom: 6px;
+}
+
+.titleContainer {
+  display: flex;
+  align-items: center;
+  gap: 64px;
+
+  @media (--max-lg) {
+    gap: 32px;
+  }
+  @media (--max-md) {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}
+
+.title {
+  color: rgb(10, 10, 10);
+  font-family: var(--font-sans-narrow);
+  font-size: 36px;
+  line-height: 40px;
+  font-weight: bold;
+  letter-spacing: -0.0125em;
+
+  @media (--max-lg) {
+    font-size: 32px;
+    line-height: 36px;
+  }
+  @media (--max-md) {
+    font-size: 18px;
+    line-height: 22px;
+    letter-spacing: 0;
+  }
+}
+
+.titleSingle {
+  text-transform: uppercase;
+
+  @media (--max-md) {
+    font-size: 24px;
+    line-height: 32px;
+  }
+}
+
+.description {
+  font-size: 14px;
+  color: var(--color-neutral-400);
+}
+
+.actions {
+  margin-left: auto;
+}
+
+.back {
+  display: flex;
+  margin-top: 20px;
+
+  @media (--max-lg) {
+    margin-top: 16px;
+  }
+  @media (--max-md) {
+    margin-top: 8px;
+  }
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  height: 24px;
+  text-transform: uppercase;
+  color: #a90083;
+  font-weight: bold;
+  font-family: var(--font-sans-narrow);
+  line-height: 1.25;
+
+  @media (--max-lg) {
+    font-size: 12px;
+  }
+  @media (--max-md) {
+    font-size: 11px;
+  }
+}
+
+.backLink span {
+  display: inline-block;
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+  margin-top: 2px;
+
+  @media (--max-lg) {
+    margin-top: 0;
+  }
+}
+
+.backLink:hover span {
+  border-bottom-color: currentColor;
+}
+
+.backLink::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-left: 2px solid currentColor;
+  border-top: 2px solid currentColor;
+  transform: rotate(-45deg);
+  flex-shrink: 0;
+}
+
+.separator {
+  display: block;
+  height: 0;
+  border-bottom-width: 1px;
+  width: 100%;
+  margin-top: 16px;
+}
+
+.back + .separator {
+  margin-top: 20px;
+
+  @media (--max-lg) {
+    margin-top: 16px;
+  }
+  @media (--max-md) {
+    margin-top: 8px;
+  }
+}

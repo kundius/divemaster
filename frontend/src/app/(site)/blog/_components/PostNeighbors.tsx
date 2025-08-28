@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 import { BlogPostEntity } from '@/types'
 
-import css from './PostNeighbors.module.scss'
+import css from './PostNeighbors.module.css'
 
 export interface PostNeighborsProps {
   previous?: BlogPostEntity

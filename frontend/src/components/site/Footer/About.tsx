@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import styles from './About.module.scss'
+import styles from './About.module.css'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 

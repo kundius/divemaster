@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import styles from './drawer.module.scss'
+import styles from './drawer.module.css'
 import { Drawer as DrawerPrimitive } from 'vaul'
 
 import { cn } from '@/lib/utils'
@@ -41,9 +41,7 @@ const DrawerContent = React.forwardRef<
     <DrawerPrimitive.Content ref={ref} className={cn(styles.content, className)} {...props}>
       <div className="flex flex-col h-full p-2 pr-6">
         <div className="flex flex-col h-full overflow-y-auto">
-          <div className="flex flex-col h-full p-2">
-            {children}
-          </div>
+          <div className="flex flex-col h-full p-2">{children}</div>
         </div>
       </div>
     </DrawerPrimitive.Content>

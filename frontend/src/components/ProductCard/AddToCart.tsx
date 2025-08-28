@@ -1,7 +1,7 @@
 import { SpriteIcon } from '@/components/SpriteIcon'
 
 import { AddToCartDialog } from '../AddToCartDialog'
-import styles from './AddToCart.module.scss'
+import styles from './AddToCart.module.css'
 
 export function AddToCart() {
   return (

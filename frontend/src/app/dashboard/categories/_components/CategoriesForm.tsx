@@ -1,12 +1,13 @@
 'use client'
 
-import { Button, ButtonLoadingIcon } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { ApiInputComboBox } from '@/lib/ApiInputComboBox'
 import { ApiInputFile } from '@/lib/ApiInputFile'
 import { EditorInput } from '@/lib/EditorInput'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 import { useRouter } from 'next/navigation'
 import { useFormContext } from 'react-hook-form'
 import { z } from 'zod'
@@ -165,7 +166,7 @@ export function CategoryForm() {
           Отмена
         </Button>
         <Button disabled={formState.isSubmitting} type="submit">
-          {formState.isSubmitting && <ButtonLoadingIcon />}
+          {formState.isSubmitting && <ArrowPathIcon className="h-4 w-4 animate-spin" />}
           Сохранить
         </Button>
       </div>

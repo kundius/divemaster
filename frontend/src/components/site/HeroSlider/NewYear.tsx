@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-import styles from './NewYear.module.scss'
+import styles from './NewYear.module.css'
 import { AuthButton } from './AuthButton'
 
 export function NewYear() {

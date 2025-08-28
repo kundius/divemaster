@@ -13,7 +13,7 @@ import assetsDive from './assets/dive.png'
 import assetsMaster from './assets/master.png'
 import assetsRing from './assets/ring.png'
 import assetsS from './assets/s.png'
-import css from './index.module.scss'
+import css from './index.module.css'
 
 export function ProductBuyDialog({ children, title }: PropsWithChildren<{ title: string }>) {
   const productStore = useProductStore((state) => state)

@@ -5,7 +5,7 @@ import { useMemo } from 'react'
 import { FilterOptions } from './FilterOptions'
 import { FilterRange } from './FilterRange'
 import { FilterToggle } from './FilterToggle'
-import styles from './index.module.scss'
+import styles from './index.module.css'
 
 export function Filter() {
   const filters = useProductsStore((state) => state.data.filters)

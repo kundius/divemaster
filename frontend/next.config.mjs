@@ -51,11 +51,6 @@ const nextConfig = {
         port: '10002'
       }
     ]
-  },
-  sassOptions: {
-    prependData: `
-    @use 'src/styles/variables.scss' as *;
-    `
   }
 }
 

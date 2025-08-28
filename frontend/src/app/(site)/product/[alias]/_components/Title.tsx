@@ -2,7 +2,7 @@
 
 import { useProductStore } from '@/providers/product-store-provider'
 
-import styles from './Title.module.scss'
+import styles from './Title.module.css'
 
 export function Title() {
   const { product, offer: selectedOffer } = useProductStore((state) => state)

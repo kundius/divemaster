@@ -9,7 +9,7 @@ import { useMemo, useRef, useState } from 'react'
 import { AddToCart } from './AddToCart'
 import { BuyInClick } from './BuyInClick'
 import { Gallery } from './Gallery'
-import styles from './index.module.scss'
+import styles from './index.module.css'
 import { useWishlistStore } from '@/providers/whishlist-store-provider'
 import { WishlistType } from '@/types'
 

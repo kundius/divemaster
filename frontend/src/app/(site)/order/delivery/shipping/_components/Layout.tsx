@@ -3,7 +3,7 @@ import { PropsWithChildren } from 'react'
 import { Container } from '@/components/site/Container'
 import { cn } from '@/lib/utils'
 
-import css from './Layout.module.scss'
+import css from './Layout.module.css'
 
 export function Layout({ children }: PropsWithChildren) {
   return (

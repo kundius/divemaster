@@ -8,7 +8,7 @@ import { MenuButton } from './MenuButton'
 import { Search } from './Search'
 import { Sticky } from './Sticky'
 import { Toolbar } from './Toolbar'
-import styles from './index.module.scss'
+import styles from './index.module.css'
 import { SecondaryContainer } from './SecondaryContainer'
 // import { Garland } from './Garland'
 

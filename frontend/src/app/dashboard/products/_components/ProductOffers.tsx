@@ -118,7 +118,7 @@ export function ProductOffers({ productId, properties }: ProductOffersProps) {
                     properties={properties}
                     onSuccess={refetch}
                   >
-                    <Button variant="outline" size="sm-icon">
+                    <Button variant="outline" size="icon">
                       <PencilIcon className="w-4 h-4" />
                     </Button>
                   </ProductOffersUpdateDialog>
@@ -126,7 +126,7 @@ export function ProductOffers({ productId, properties }: ProductOffersProps) {
                     url={`products/${productId}/offers/${offer.id}`}
                     onSuccess={refetch}
                   >
-                    <Button variant="destructive-outline" size="sm-icon">
+                    <Button variant="outline-destructive" size="icon">
                       <TrashIcon className="w-4 h-4" />
                     </Button>
                   </ApiRemoveDialog>

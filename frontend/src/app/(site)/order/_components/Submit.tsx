@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { useOrderStore } from '@/providers/order-store-provider'
 
-import css from './Submit.module.scss'
+import css from './Submit.module.css'
 import { apiPost } from '@/lib/api'
 import { useCartStore } from '@/providers/cart-store-provider'
 import { useRouter } from 'next/navigation'

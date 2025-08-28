@@ -1,6 +1,6 @@
 import { Switch } from '@/components/ui/switch'
 import { SwitchProps } from '@radix-ui/react-switch'
-import styles from './FilterToggle.module.scss'
+import styles from './FilterToggle.module.css'
 import { ProductsToggleFilter } from '@/types'
 
 export interface FilterToggleProps extends Pick<SwitchProps, 'checked' | 'onCheckedChange'> {

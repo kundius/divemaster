@@ -1,0 +1,59 @@
+.top {
+  background: rgba(0, 11, 27, 0.5);
+  position: relative;
+  z-index: 50;
+
+  @media (--max-md) {
+    background-color: rgb(12, 3, 2);
+  }
+}
+
+.top-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  @media (--max-md) {
+    margin-left: -16px;
+    margin-right: -16px;
+    padding-left: 4px;
+    padding-right: 8px;
+  }
+}
+
+.mobile-contacts {
+  @media (--min-md) {
+    display: none;
+  }
+}
+
+.top-menu-primary {
+  margin-left: -10px;
+
+  @media (--max-md) {
+    display: none;
+  }
+}
+
+.top-menu-secondary {
+  @media (--max-2xl) {
+    display: none;
+  }
+}
+
+.city-select {
+  margin-right: -10px;
+  min-width: 180px;
+
+  @media (--max-2xl) {
+    min-width: auto;
+  }
+
+  @media (--max-md) {
+    margin-right: -4px;
+  }
+
+  @media (--max-sm) {
+    max-width: 140px;
+  }
+}

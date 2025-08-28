@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import styles from './Discount.module.scss'
+import styles from './Discount.module.css'
 import { AuthButton } from './AuthButton'
 
 export function Discount() {
@@ -28,13 +28,11 @@ export function Discount() {
         />
       </div>
       <div className={styles.content}>
-        <div className={styles.title}>
-          Покупайте выгодно!
-        </div>
+        <div className={styles.title}>Покупайте выгодно!</div>
         <div className={styles.desc}>
-        При первой покупке в нашем магазине Вы&nbsp;получаете
-        <span>накопительную&nbsp;скидочную&nbsp;карту</span>. Совершая покупки
-        по&nbsp;карте «DiveMaster», Вы увеличиваете свою персональную скидку.
+          При первой покупке в нашем магазине Вы&nbsp;получаете
+          <span>накопительную&nbsp;скидочную&nbsp;карту</span>. Совершая покупки по&nbsp;карте
+          «DiveMaster», Вы увеличиваете свою персональную скидку.
         </div>
         <AuthButton />
       </div>

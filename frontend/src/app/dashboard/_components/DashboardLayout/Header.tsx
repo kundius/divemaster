@@ -3,7 +3,7 @@
 import React from 'react'
 import { User } from './User'
 
-import styles from './Header.module.scss'
+import styles from './Header.module.css'
 import { NavDrawer } from './NavDrawer'
 import Link from 'next/link'
 import Image from 'next/image'

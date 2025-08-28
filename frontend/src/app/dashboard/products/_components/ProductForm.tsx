@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, ButtonLoadingIcon } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -12,6 +12,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { ApiInputComboBox } from '@/lib/ApiInputComboBox'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { UseFormReturn } from 'react-hook-form'
 import { z } from 'zod'
@@ -217,7 +218,7 @@ export function ProductForm({ form, onSubmit }: ProductFormProps) {
             </Button>
           </Link>
           <Button disabled={form.formState.isSubmitting} type="submit">
-            {form.formState.isSubmitting && <ButtonLoadingIcon />}
+            {form.formState.isSubmitting && <ArrowPathIcon className="h-4 w-4 animate-spin" />}
             Сохранить
           </Button>
         </div>

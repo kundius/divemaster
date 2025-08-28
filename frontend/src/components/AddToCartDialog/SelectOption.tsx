@@ -1,7 +1,7 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import styles from './SelectOption.module.scss'
+import styles from './SelectOption.module.css'
 
 export interface SelectOptionProps {
   caption: string

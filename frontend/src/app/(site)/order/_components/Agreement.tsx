@@ -2,7 +2,7 @@
 
 import { useOrderStore } from '@/providers/order-store-provider'
 
-import css from './Agreement.module.scss'
+import css from './Agreement.module.css'
 
 export function Agreement() {
   const orderState = useOrderStore((state) => state)

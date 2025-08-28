@@ -1,4 +1,4 @@
-import styles from './DesktopContacts.module.scss'
+import styles from './DesktopContacts.module.css'
 
 export function DesktopContacts() {
   return (

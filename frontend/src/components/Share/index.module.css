@@ -1,0 +1,24 @@
+.share {
+  display: flex;
+  gap: 16px;
+
+  @media (--max-md) {
+    gap: 12px;
+  }
+}
+
+.button {
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+
+  @media (--max-md) {
+    width: 32px;
+    height: 32px;
+  }
+}

@@ -1,6 +1,6 @@
 import { SpriteIcon } from '@/components/SpriteIcon'
 import { ReactNode } from 'react'
-import css from './SelectedAddress.module.scss'
+import css from './SelectedAddress.module.css'
 
 export interface SelectedAddressProps {
   title: ReactNode

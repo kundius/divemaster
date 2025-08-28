@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import styles from './DeliveryInfo.module.scss'
+import styles from './DeliveryInfo.module.css'
 
 export function DeliveryInfo() {
   return (

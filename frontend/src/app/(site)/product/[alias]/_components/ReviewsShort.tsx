@@ -1,5 +1,5 @@
 import { cn, declOfNum, formatPrice } from '@/lib/utils'
-import styles from './ReviewsShort.module.scss'
+import styles from './ReviewsShort.module.css'
 
 export interface ReviewsShortProps {
   count: number

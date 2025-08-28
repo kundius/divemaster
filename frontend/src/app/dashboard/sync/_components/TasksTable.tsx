@@ -7,9 +7,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { ApiRemoveDialog } from '@/lib/ApiRemoveDialog'
 import { cn } from '@/lib/utils'
 import { SyncTaskEntity, SyncTaskStatus } from '@/types'
-import {
-  TrashIcon
-} from '@heroicons/react/24/outline'
+import { TrashIcon } from '@heroicons/react/24/outline'
 import { format } from 'date-fns'
 import { TasksFilterType, useTasks } from './TasksProvider'
 
@@ -66,7 +64,7 @@ export function TasksTable() {
             `progress-background relative overflow-hidden rounded border border-transparent bg-slate-100 w-full flex items-center justify-center`,
             {
               'animate-stripe-move': record.status === SyncTaskStatus.SYNCHRONIZATION,
-              'bg-[linear-gradient(135deg,var(--slate200)_25%,transparent_25%,transparent_50%,var(--slate200)_50%,var(--slate200)_75%,transparent_75%,transparent)] bg-[length:24px_24px]':
+              'bg-[linear-gradient(135deg,var(--color-slate-200)_25%,transparent_25%,transparent_50%,var(--color-slate-200)_50%,var(--color-slate-200)_75%,transparent_75%,transparent)] bg-[length:24px_24px]':
                 [SyncTaskStatus.SYNCHRONIZATION, SyncTaskStatus.SUSPENDED].includes(record.status)
             }
           )}
@@ -135,7 +133,7 @@ export function TasksTable() {
       formatter: (id) => (
         <div className="flex gap-2">
           <ApiRemoveDialog url={`sync/task/${id}`} onSuccess={refetch}>
-            <Button variant="destructive-outline" size="sm-icon">
+            <Button variant="outline-destructive" size="icon">
               <TrashIcon className="w-4 h-4" />
             </Button>
           </ApiRemoveDialog>

@@ -3,7 +3,7 @@
 import { Switch } from '@/components/ui/switch'
 import { SwitchProps } from '@radix-ui/react-switch'
 
-import styles from './PersonalDiscount.module.scss'
+import styles from './PersonalDiscount.module.css'
 
 export interface PersonalDiscountProps extends SwitchProps {
   discount: number

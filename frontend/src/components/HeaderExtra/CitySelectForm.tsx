@@ -6,7 +6,7 @@ import useSWR from 'swr'
 import { Button } from '@/components/ui/button'
 import { CityEntity } from '@/types'
 
-import css from './CitySelectForm.module.scss'
+import css from './CitySelectForm.module.css'
 import { cn } from '@/lib/utils'
 
 export interface CitySelectFormProps {

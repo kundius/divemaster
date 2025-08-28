@@ -1,0 +1,67 @@
+.wrap {
+  background: #f7fbff;
+  border-radius: 12px;
+  padding: 24px;
+  transition: 0.3s ease;
+
+  @media (--max-lg) {
+    padding: 20px;
+  }
+}
+
+label.wrap {
+  display: block;
+  cursor: pointer;
+}
+
+label.wrap:hover {
+  background: var(--color-blue-50);
+}
+
+.title {
+  font-size: 16px;
+  line-height: 20px;
+  color: #000;
+  margin-bottom: 16px;
+  font-weight: bold;
+  display: block;
+}
+
+.desc {
+  font-size: 14px;
+  line-height: 16px;
+  color: #3a3a3a;
+  display: block;
+}
+
+.authorize {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.authorizeButton {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #a90083;
+  font-weight: bold;
+}
+
+.apply {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.applyLabel {
+  font-size: 16px;
+  line-height: 1.25;
+  color: #000;
+  font-weight: bold;
+  font-family: var(--font-sans-narrow);
+}
+
+.applyControl {
+  display: flex;
+}

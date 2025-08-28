@@ -1,0 +1,42 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wrapper {
+}
+
+.previous {
+}
+
+.page {
+}
+
+.next {
+}
+
+.button {
+  width: 24px;
+  height: 24px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: #515151;
+  font-size: 14px;
+}
+
+.button:disabled {
+  display: none;
+}
+
+.button:hover {
+  background-color: var(--color-neutral-200);
+}
+
+.active {
+  background-color: rgb(221, 226, 241);
+  color: #151515;
+}

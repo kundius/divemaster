@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, ButtonLoadingIcon } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { PropertyType } from '@/types'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { UseFormReturn } from 'react-hook-form'
 import { z } from 'zod'
@@ -148,7 +149,7 @@ export function PropertyForm({ form, onSubmit }: PropertyFormProps) {
               </Button>
             </Link>
             <Button disabled={form.formState.isSubmitting} type="submit">
-              {form.formState.isSubmitting && <ButtonLoadingIcon />}
+              {form.formState.isSubmitting && <ArrowPathIcon className="h-4 w-4 animate-spin" />}
               Сохранить
             </Button>
           </div>

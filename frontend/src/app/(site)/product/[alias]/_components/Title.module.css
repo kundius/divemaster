@@ -1,0 +1,20 @@
+.title {
+  font-size: 36px;
+  font-family: var(--font-sans-narrow);
+  color: rgb(0, 0, 0);
+  text-transform: uppercase;
+  line-height: 1.2;
+  margin: 0;
+  font-weight: bold;
+
+  @media (--max-xl) {
+    font-size: 32px;
+  }
+  @media (--max-lg) {
+    font-size: 28px;
+  }
+  @media (--max-md) {
+    font-size: 18px;
+    line-height: 20px;
+  }
+}

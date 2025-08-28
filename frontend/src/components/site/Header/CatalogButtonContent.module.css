@@ -1,0 +1,144 @@
+.root {
+  padding: 12px 0 24px;
+}
+
+.spearfishing-spacer {
+  height: calc(48px + 48px + 160px + 160px);
+
+  @media (--max-xl) {
+    display: none;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: auto 160px 160px;
+  grid-column-gap: 48px;
+  grid-row-gap: 48px;
+
+  @media (--max-xl) {
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(3, auto);
+  }
+}
+
+.grid-spearfishing {
+  grid-row-start: 1;
+  grid-row-end: 4;
+  grid-column-start: 1;
+  grid-column-end: 3;
+
+  @media (--max-xl) {
+    grid-row-start: 1;
+    grid-row-end: 2;
+    grid-column-start: 1;
+    grid-column-end: 4;
+  }
+}
+
+.grid-diving {
+  grid-row-start: 1;
+  grid-row-end: 4;
+  grid-column-start: 3;
+  grid-column-end: 4;
+
+  @media (--max-xl) {
+    grid-row-start: 1;
+    grid-row-end: 2;
+    grid-column-start: 4;
+    grid-column-end: 7;
+  }
+}
+
+.grid-brands {
+  grid-row-start: 1;
+  grid-row-end: 4;
+  grid-column-start: 4;
+  grid-column-end: 5;
+
+  @media (--max-xl) {
+    grid-row-start: 3;
+    grid-row-end: 4;
+    grid-column-start: 1;
+    grid-column-end: 7;
+  }
+}
+
+.grid-swimming {
+  grid-row-start: 2;
+  grid-row-end: 3;
+  grid-column-start: 2;
+  grid-column-end: 3;
+
+  @media (--max-xl) {
+    grid-row-start: 2;
+    grid-row-end: 3;
+    grid-column-start: 1;
+    grid-column-end: 3;
+  }
+  @media (--max-lg) {
+    grid-column-start: 1;
+    grid-column-end: 4;
+  }
+}
+
+.grid-sale {
+  grid-row-start: 3;
+  grid-row-end: 4;
+  grid-column-start: 2;
+  grid-column-end: 3;
+
+  @media (--max-xl) {
+    grid-row-start: 2;
+    grid-row-end: 3;
+    grid-column-start: 3;
+    grid-column-end: 5;
+  }
+  @media (--max-lg) {
+    grid-column-start: 4;
+    grid-column-end: 7;
+  }
+}
+
+.headline {
+  display: block;
+}
+
+.headline:hover .headline-title {
+  color: rgb(169, 0, 131);
+}
+
+.headline-icon {
+  display: flex;
+  height: 80px;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.headline-title {
+  font-size: 24px;
+  color: rgb(0, 0, 0);
+  font-weight: bold;
+  line-height: 1;
+  display: block;
+}
+
+.list {
+  display: block;
+  font-size: 16px;
+  color: rgb(0, 0, 0);
+  line-height: 1.625;
+  margin-top: 32px;
+}
+
+.list a {
+  text-decoration: none;
+  color: inherit;
+  display: inline-block;
+  line-height: 1.25;
+}
+
+.list a:hover {
+  color: rgb(169, 0, 131);
+}

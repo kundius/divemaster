@@ -16,7 +16,7 @@ import {
   useRef,
   useState
 } from 'react'
-import styles from './vertical-menu.module.scss'
+import styles from './vertical-menu.module.css'
 
 interface TRootContext {
   active: string | null

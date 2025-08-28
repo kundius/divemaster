@@ -31,7 +31,7 @@ services:
       - db
 
   api:
-    image: node:${NODE_VERSION:-21}
+    image: node:${NODE_VERSION:-22}
     volumes:
       - ./frontend:/divemaster/frontend
       - ./api:/divemaster/api
@@ -46,7 +46,7 @@ services:
     user: "1000:1000"
 
   frontend:
-    image: node:${NODE_VERSION:-21}
+    image: node:${NODE_VERSION:-22}
     volumes:
       - ./frontend:/divemaster/frontend
       - ./ckeditor5:/divemaster/ckeditor5

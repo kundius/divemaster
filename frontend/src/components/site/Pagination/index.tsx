@@ -14,7 +14,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon
 } from '@heroicons/react/24/outline'
-import styles from './index.module.scss'
+import styles from './index.module.css'
 import { cn } from '@/lib/utils'
 
 export interface PaginationProps {

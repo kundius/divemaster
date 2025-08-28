@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils'
 import { Slot } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
 import * as React from 'react'
-import styles from './index.module.scss'
+import styles from './index.module.css'
 import { ArrowPathIcon } from '@heroicons/react/24/outline'
 
 const buttonVariants = cva(styles.button, {

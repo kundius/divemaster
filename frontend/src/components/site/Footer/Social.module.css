@@ -1,0 +1,53 @@
+.root {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.title {
+  font-size: 16px;
+  font-family: var(--font-sans-narrow);
+  color: rgb(255, 255, 255);
+  font-weight: bold;
+  text-transform: uppercase;
+  line-height: 1;
+  padding: 10px 0;
+
+  @media (--max-md) {
+    font-weight: 500;
+    letter-spacing: -0.05em;
+  }
+}
+
+.list {
+  display: flex;
+  gap: 12px;
+}
+
+.item {
+  display: flex;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s ease;
+  color: #4a4e50;
+  background: #808080;
+  border-radius: 8px;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+.itemOk:hover {
+  background: #ff7700;
+}
+
+.itemVk:hover {
+  background: #0077ff;
+}
+
+.itemRutube:hover {
+  background: #0b1d37;
+}

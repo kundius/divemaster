@@ -1,5 +1,5 @@
 // import ReactTagsInput, { ReactTagsInputProps, TagProps } from 'react-tagsinput'
-// import styles from './tags-input.module.scss'
+// import styles from './tags-input.module.css'
 // import { cn } from '@/lib/utils'
 // import { forwardRef, useEffect, useRef, useState } from 'react'
 // import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from './popover'
@@ -142,7 +142,7 @@
 //   )
 // }
 import ReactTagsInput, { ReactTagsInputProps, TagProps } from 'react-tagsinput'
-import styles from './tags-input.module.scss'
+import styles from './tags-input.module.css'
 import { cn } from '@/lib/utils'
 import { forwardRef } from 'react'
 

@@ -1,0 +1,18 @@
+.layout {
+  height: calc(100vh - 32px - 90px);
+  min-height: calc(640px - 32px - 90px);
+
+  @media (--max-md) {
+    height: calc(100vh - 58px - 42px - 59px);
+    min-height: calc(480px - 58px - 42px - 59px);
+  }
+}
+
+.map {
+  position: absolute;
+  background: #1574b4;
+  right: calc((100vw - var(--container-width)) / 2 * -1);
+  top: 0;
+  bottom: 0;
+  left: 0;
+}

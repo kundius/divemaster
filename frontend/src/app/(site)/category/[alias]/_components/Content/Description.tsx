@@ -1,4 +1,4 @@
-import styles from './Description.module.scss'
+import styles from './Description.module.css'
 
 export interface DescriptionProps {
   content: string

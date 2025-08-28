@@ -1,4 +1,4 @@
-import styles from './SpecButton.module.scss'
+import styles from './SpecButton.module.css'
 
 export function SpecButton() {
   return (

@@ -1,7 +1,7 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import styles from './OptionsVariant.module.scss'
+import styles from './OptionsVariant.module.css'
 
 export interface OptionsVariantProps {
   caption: string

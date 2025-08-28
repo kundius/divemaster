@@ -1,0 +1,79 @@
+.box {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+  white-space: nowrap;
+  padding: 0 10px;
+  gap: 4px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 11px;
+  line-height: 16px;
+  max-width: 100%;
+
+  @media (--max-md) {
+    padding-left: 4px;
+    padding-right: 4px;
+    min-height: 42px;
+  }
+}
+
+.button:hover {
+  color: rgba(255, 255, 255, 1);
+  background: #272f76;
+}
+
+.button:hover::before {
+  opacity: 1;
+}
+
+.button:hover .affix {
+  color: #fff;
+  border-bottom-color: rgba(255, 255, 255, 0.6);
+}
+
+.button::before {
+  content: '';
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-image: url('/icons/marker-outline.svg');
+  display: block;
+  width: 22px;
+  height: 22px;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.affix {
+  display: inline-flex;
+  align-items: center;
+  border-bottom: 1px dashed #787575;
+  border-bottom-color: rgba(255, 255, 255, 0.4);
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+/* .affix::after {
+  content: '';
+  display: block;
+  margin-left: 10px;
+  border-style: solid;
+  border-color: currentColor transparent transparent;
+  border-width: 5px 5px 0;
+  opacity: 0.8;
+  flex-shrink: 0;
+
+  @media (--max-md) {
+    margin-left: 4px;
+  }
+} */
+
+.label {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

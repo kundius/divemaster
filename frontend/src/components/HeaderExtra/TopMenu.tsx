@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import styles from './TopMenu.module.scss'
+import styles from './TopMenu.module.css'
 import { cn } from '@/lib/utils'
 
 export interface TopMenuProps {

@@ -1,7 +1,7 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import styles from './MenuButton.module.scss'
+import styles from './MenuButton.module.css'
 import { useMobileNavigation } from '@/components/MobileNavigation'
 
 export function MenuButton() {

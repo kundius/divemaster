@@ -1,7 +1,7 @@
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn, formatPrice } from '@/lib/utils'
 
-import styles from './OrderInfo.module.scss'
+import styles from './OrderInfo.module.css'
 
 export interface OrderInfoProps {
   items?: {

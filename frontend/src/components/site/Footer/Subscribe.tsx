@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import styles from './Subscribe.module.scss'
+import styles from './Subscribe.module.css'
 import Link from 'next/link'
 
 export function Subscribe() {

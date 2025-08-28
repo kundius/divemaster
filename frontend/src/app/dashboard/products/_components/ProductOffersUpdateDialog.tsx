@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, ButtonLoadingIcon } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -27,6 +27,7 @@ import {
 } from '@/components/ui/select'
 import { apiPatch, apiPost } from '@/lib/api'
 import { OfferEntity, PropertyEntity } from '@/types'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 import { useToggle } from '@reactuses/core'
 import { PropsWithChildren } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
@@ -162,7 +163,7 @@ export function ProductOffersUpdateDialog({
             </div>
             <DialogFooter>
               <Button disabled={loading} type="submit">
-                {loading && <ButtonLoadingIcon />}
+                {loading && <ArrowPathIcon className="h-4 w-4 animate-spin" />}
                 Сохранить
               </Button>
             </DialogFooter>

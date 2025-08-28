@@ -13,8 +13,9 @@ import {
 import { apiPost } from '@/lib/api'
 import { useAuthStore } from '@/providers/auth-store-provider'
 import { LabeledInput } from '@/components/LabeledInput'
-import { Button, ButtonLoadingIcon } from '@/components/ui/button'
-import css from './index.module.scss'
+import { Button } from '@/components/ui/button'
+import css from './index.module.css'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 
 export function LoginDialog() {
   const [showRegistration, setShowRegistration] = useState(false)
@@ -113,7 +114,7 @@ export function LoginDialog() {
               defaultValue={(formState['passwordConfirmation'] as string) || ''}
             />
             <Button type="submit" className="w-full" size="lg" disabled={pending}>
-              {pending && <ButtonLoadingIcon />}
+              {pending && <ArrowPathIcon className="h-4 w-4 animate-spin" />}
               Зарегистрироваться
             </Button>
           </form>
@@ -134,7 +135,7 @@ export function LoginDialog() {
               defaultValue={(formState['password'] as string) || ''}
             />
             <Button type="submit" className="w-full" size="lg" disabled={pending}>
-              {pending && <ButtonLoadingIcon />}
+              {pending && <ArrowPathIcon className="h-4 w-4 animate-spin" />}
               Войти
             </Button>
           </form>

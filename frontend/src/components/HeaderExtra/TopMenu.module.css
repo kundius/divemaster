@@ -1,0 +1,123 @@
+.list {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+  @media (--max-lg) {
+    gap: 12px;
+  }
+}
+
+.link {
+  font-family: var(--font-sans-narrow);
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 0 10px;
+  display: flex;
+  min-height: 32px;
+  align-items: center;
+  white-space: nowrap;
+  gap: 4px;
+}
+
+.link:hover {
+  color: rgba(255, 255, 255, 1);
+  background: #272f76;
+}
+
+.link .icon {
+  font-size: 18px;
+  opacity: 0.7;
+}
+
+.link:hover .icon {
+  opacity: 1;
+}
+
+.more {
+  position: relative;
+  display: flex;
+  padding: 5px;
+}
+
+.more-toggle {
+  width: 22px;
+  height: 22px;
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  cursor: default;
+}
+
+.more-toggle::before {
+  content: '';
+  width: 3px;
+  height: 3px;
+  background: currentColor;
+  border-radius: 50%;
+  display: block;
+  box-shadow: 5px 0 0 0 currentColor, -5px 0 0 0 currentColor;
+}
+
+.more:hover .more-toggle,
+.more-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.7);
+  color: #535353;
+}
+
+.more:hover .more-list {
+  visibility: visible;
+  transform: scaleY(1) translateX(-50%);
+  opacity: 1;
+}
+
+.more-list {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0px 6px 7px 0px rgba(0, 8, 35, 0.19);
+  transition: all 0.3s ease;
+  visibility: hidden;
+  opacity: 0;
+  transform: scaleY(0.8) translateX(-50%);
+  transform-origin: 0 0;
+  min-width: 146px;
+  left: 50%;
+  top: 100%;
+  border-radius: 0 0 20px 20px;
+  padding: 10px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.more-list::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -4px;
+  transform: translateX(-50%);
+  border-width: 0 4px 4px;
+  border-style: solid;
+  border-color: transparent transparent rgba(255, 255, 255, 0.9);
+}
+
+.more-link {
+  font-size: 12px;
+  color: #4e565d;
+  font-family: var(--font-sans-narrow);
+  line-height: 20px;
+  text-transform: uppercase;
+  font-weight: bold;
+  display: block;
+  white-space: nowrap;
+}
+
+.more-link:hover {
+  color: #000;
+}

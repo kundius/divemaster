@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useAuthStore } from '@/providers/auth-store-provider'
 import Link from 'next/link'
-import styles from './User.module.scss'
+import styles from './User.module.css'
 
 export function User() {
   const { user, logout } = useAuthStore((state) => state)
@@ -19,7 +19,7 @@ export function User() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <div className={styles.button}>
-          <Avatar className='rounded-md'>
+          <Avatar className="rounded-md">
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>{user?.name?.slice(0, 1)}</AvatarFallback>
           </Avatar>

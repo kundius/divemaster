@@ -1,7 +1,7 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import styles from './Toolbar.module.scss'
+import styles from './Toolbar.module.css'
 import Link from 'next/link'
 import { useMobileNavigation } from '../../MobileNavigation'
 import { useAuthStore } from '@/providers/auth-store-provider'

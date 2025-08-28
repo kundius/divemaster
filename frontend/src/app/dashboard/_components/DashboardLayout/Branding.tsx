@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 
-import styles from './Branding.module.scss'
+import styles from './Branding.module.css'
 
 export function Branding() {
   return (

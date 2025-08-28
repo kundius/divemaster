@@ -1,0 +1,117 @@
+.root {
+  display: flex;
+  padding-top: 150px;
+  padding-bottom: 100px;
+  position: relative;
+
+  @media (--max-2xl) {
+    padding-top: 120px;
+    padding-bottom: 80px;
+  }
+  @media (--max-xl) {
+    padding-top: 100px;
+    padding-bottom: 60px;
+  }
+  @media (--max-md) {
+    padding-top: 264px;
+    padding-bottom: 24px;
+  }
+}
+
+.content {
+  flex-shrink: 0;
+  width: 50%;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+  position: relative;
+  z-index: 30;
+
+  @media (--max-xl) {
+    width: 60%;
+  }
+  @media (--max-lg) {
+    width: 70%;
+  }
+  @media (--max-md) {
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.title {
+  font-size: 30px;
+  line-height: 1;
+  text-transform: uppercase;
+  color: #fefefe;
+  font-weight: 700;
+  font-family: var(--font-sans-wide);
+  margin-bottom: 34px;
+
+  @media (--max-md) {
+    font-size: 18px;
+    margin-bottom: 14px;
+  }
+}
+
+.desc {
+  font-size: 16px;
+  line-height: 30px;
+  color: #ffffff;
+  margin-bottom: 14px;
+
+  @media (--max-md) {
+    font-size: 12px;
+    line-height: 18px;
+    margin-bottom: 16px;
+  }
+}
+
+.desc span {
+  display: inline-block;
+  padding: 0 8px;
+  background: #21c9ed;
+  color: #000;
+  font-weight: 500;
+}
+
+.action {
+  display: flex;
+}
+
+.image {
+  position: absolute;
+  top: -36px;
+  right: -63px;
+  max-width: none;
+  pointer-events: none;
+  z-index: 20;
+  width: 1230px;
+  height: 617px;
+
+  @media (--max-2xl) {
+    width: calc(1230px * 0.8);
+    height: calc(617px * 0.8);
+    top: -16px;
+  }
+  @media (--max-xl) {
+    width: calc(1230px * 0.725);
+    height: calc(617px * 0.725);
+    right: -192px;
+  }
+  @media (--max-lg) {
+    width: calc(1230px * 0.6);
+    height: calc(617px * 0.6);
+    right: -232px;
+    top: 24px;
+  }
+  @media (--max-md) {
+    width: calc(1230px * 0.4);
+    height: calc(617px * 0.4);
+    right: auto;
+    left: 50%;
+    margin-left: -40px;
+    top: 32px;
+    transform: translateX(-50%);
+  }
+}

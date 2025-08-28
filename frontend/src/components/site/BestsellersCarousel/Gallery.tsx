@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import useEmblaCarousel from 'embla-carousel-react'
 import { EmblaCarouselType } from 'embla-carousel'
-import styles from './Gallery.module.scss'
+import styles from './Gallery.module.css'
 import { usePrevNextButtons } from '@/lib/EmblaCarousel/usePrevNextButtons'
 import { RefObject, useEffect } from 'react'
 import { cn } from '@/lib/utils'
@@ -30,9 +30,11 @@ export function Gallery({ items, startIndex, onChangeIndex, showNav }: GalleryPr
   }, [emblaApi])
 
   return (
-    <div className={cn(styles.root, {
-      [styles.showNav]: showNav
-    })}>
+    <div
+      className={cn(styles.root, {
+        [styles.showNav]: showNav
+      })}
+    >
       <div className={styles.slider}>
         <div className={styles.viewport} ref={emblaRef}>
           <div className={styles.container}>

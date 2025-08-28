@@ -6,7 +6,7 @@ import { useOrderStore } from '@/providers/order-store-provider'
 import { PaymentService } from '@/types'
 
 import { Errors } from './Errors'
-import css from './Payment.module.scss'
+import css from './Payment.module.css'
 
 export function Payment() {
   const orderState = useOrderStore((state) => state)

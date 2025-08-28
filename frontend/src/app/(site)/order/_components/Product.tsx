@@ -6,7 +6,7 @@ import { useMemo } from 'react'
 import { getFileUrl } from '@/lib/utils'
 import { CartProductEntity } from '@/types'
 
-import css from './Product.module.scss'
+import css from './Product.module.css'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 export interface ProductProps {
@@ -15,7 +15,11 @@ export interface ProductProps {
 
 export function Product({ cartProduct }: ProductProps) {
   const thumbnail = useMemo(() => {
-    if (!cartProduct.product || !cartProduct.product.images || cartProduct.product.images.length === 0) {
+    if (
+      !cartProduct.product ||
+      !cartProduct.product.images ||
+      cartProduct.product.images.length === 0
+    ) {
       return '/noimage.png'
     }
     return cartProduct.product.images.map((item) => getFileUrl(item.fileId))[0]

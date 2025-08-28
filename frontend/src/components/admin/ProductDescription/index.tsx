@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, ButtonLoadingIcon } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useApiForm } from '@/lib/ApiForm'
@@ -9,6 +9,7 @@ import { ProductEntity } from '@/types'
 import { z } from 'zod'
 import { PageLayout } from '../../../app/dashboard/_components/PageLayout'
 import { ProductLayout } from '../ProductLayout'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 
 export const ProductDescriptionSchema = z.object({
   description: z.string().trim().nullable(),
@@ -38,7 +39,7 @@ export function ProductDescription({ initialData }: ProductDescriptionProps) {
       title="Описание товара"
       actions={
         <Button disabled={form.formState.isSubmitting} onClick={form.handleSubmit(onSubmit)}>
-          {form.formState.isSubmitting && <ButtonLoadingIcon />}
+          {form.formState.isSubmitting && <ArrowPathIcon className="h-4 w-4 animate-spin" />}
           Сохранить
         </Button>
       }

@@ -2,7 +2,7 @@ import Image from 'next/image'
 import { PropsWithChildren } from 'react'
 import Link from 'next/link'
 
-import styles from './index.module.scss'
+import styles from './index.module.css'
 import { Navigation } from './Navigation'
 import { User } from './User'
 import { Header } from './Header'

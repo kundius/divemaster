@@ -1,0 +1,164 @@
+.root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background: #8a854d;
+  padding-top: calc(var(--slide-header-offset) + calc(40px * var(--slide-height-factor)));
+  padding-bottom: calc(
+    16px + calc(40px * var(--slide-height-factor)) +
+      calc(var(--slide-dots-offset) * var(--slide-height-factor))
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  @media (--max-2xl) {
+  }
+  @media (--max-md) {
+  }
+}
+
+.root::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 480px;
+  background: linear-gradient(to bottom, #011522 0%, transparent 100%);
+  opacity: 0.51;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  box-shadow: 1.113px 7.922px 9px 0px rgba(0, 25, 41, 0.15);
+}
+
+.bg img {
+  max-width: none;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.content {
+  width: var(--container-width);
+  flex-grow: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 0 calc(100px * var(--slide-width-factor));
+
+  @media (--max-lg) {
+    padding: 0;
+  }
+  @media (--max-md) {
+    justify-content: flex-end;
+  }
+}
+
+.salvimar {
+  background: url('/hero/Spearfishing/salvimar.png') no-repeat 50% 50%;
+  width: 340px;
+  height: 65px;
+  background-size: cover;
+  margin: 0 0 25px -30px;
+
+  @media (--max-lg) {
+    width: calc(340px * 0.9);
+    height: calc(65px * 0.9);
+  }
+  @media (--max-md) {
+    width: calc(340px * 0.8);
+    height: calc(65px * 0.8);
+    margin-bottom: 100px;
+  }
+}
+
+.title {
+  font-size: 52px;
+  font-family: var(--font-sans-wide);
+  color: rgb(254, 254, 254);
+  font-weight: bold;
+  text-transform: uppercase;
+  line-height: 1.2;
+  text-shadow: 0px 0px 9px rgba(0, 25, 41, 0.08);
+  margin-bottom: calc(38px * var(--slide-height-factor));
+
+  @media (--max-lg) {
+    font-size: 48px;
+  }
+  @media (--max-md) {
+    font-size: 24px;
+    line-height: 1.25;
+    margin-bottom: 12px;
+  }
+}
+
+.desc {
+  font-size: 18px;
+  font-family: var(--font-sans-wide);
+  color: rgb(255, 255, 255);
+  line-height: 1.778;
+  width: 580px;
+  max-width: 100%;
+  margin-bottom: calc(38px * var(--slide-height-factor));
+
+  @media (--max-lg) {
+    font-size: 16px;
+  }
+  @media (--max-md) {
+    font-size: 12px;
+    width: 288px;
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+}
+
+.desc span {
+  background: #22c9ed;
+  margin: 0 4px;
+}
+
+.button {
+  font-size: 16px;
+  color: rgb(0, 0, 0);
+  font-weight: bold;
+  text-transform: uppercase;
+  text-decoration: none;
+  line-height: 48px;
+  text-align: center;
+  padding: 0 36px;
+  display: inline-block;
+  letter-spacing: 0.01em;
+  font-family: var(--font-sans-narrow);
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0px 0px 9.8px 0.2px rgba(0, 29, 47, 0.22);
+
+  @media (--max-md) {
+    font-size: 12px;
+    line-height: 32px;
+    padding: 0 14px;
+  }
+}
+
+.button:hover {
+  background-image: linear-gradient(53deg, rgb(160, 45, 250) 0%, rgb(164, 25, 198) 100%);
+  box-shadow: 0px 0px 26.46px 0.54px rgba(0, 29, 47, 0.28);
+  color: #fff;
+}

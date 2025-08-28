@@ -21,7 +21,7 @@ import { CartProductEntity, PropertyType } from '@/types'
 import { useToggle } from '@reactuses/core'
 import Image from 'next/image'
 import { ChangeEvent, useMemo } from 'react'
-import styles from './Product.module.scss'
+import styles from './Product.module.css'
 
 export interface ProductProps {
   cartProduct: CartProductEntity

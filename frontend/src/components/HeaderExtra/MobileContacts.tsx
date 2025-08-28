@@ -1,4 +1,4 @@
-import styles from './MobileContacts.module.scss'
+import styles from './MobileContacts.module.css'
 
 export function MobileContacts() {
   return (

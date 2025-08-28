@@ -5,7 +5,7 @@ import { getCookie } from 'cookies-next'
 import { ArrowPathIcon } from '@heroicons/react/24/outline'
 
 import { TOKEN_NAME } from '@/constants'
-import styles from './styles.module.scss'
+import styles from './styles.module.css'
 import { UploadAdapter } from './UploadAdapter.mjs'
 
 export interface EditorInputProps {

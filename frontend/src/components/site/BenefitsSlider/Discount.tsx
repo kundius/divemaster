@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import styles from './Discount.module.scss'
+import styles from './Discount.module.css'
 import { PrimaryButton, PrimaryButtonArrow } from '../PrimaryButton'
 
 export function Discount() {

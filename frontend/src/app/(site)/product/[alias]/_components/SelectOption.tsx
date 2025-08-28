@@ -1,7 +1,7 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import styles from './SelectOption.module.scss'
+import styles from './SelectOption.module.css'
 import { PropertyType } from '@/types'
 import { colorsObject } from '@/lib/colors'
 

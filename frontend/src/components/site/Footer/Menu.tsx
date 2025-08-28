@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import styles from './Menu.module.scss'
+import styles from './Menu.module.css'
 
 export interface MenuProps {
   title: string

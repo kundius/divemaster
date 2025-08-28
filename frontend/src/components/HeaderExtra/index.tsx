@@ -1,6 +1,6 @@
 import { Container } from '../site/Container'
 import { CitySelect } from './CitySelect'
-import styles from './index.module.scss'
+import styles from './index.module.css'
 import { MobileContacts } from './MobileContacts'
 import { TopMenu } from './TopMenu'
 

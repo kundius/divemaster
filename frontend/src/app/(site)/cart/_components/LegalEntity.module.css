@@ -1,0 +1,36 @@
+.wrap {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  border-radius: 12px;
+  padding: 12px 24px;
+  transition: 0.3s ease;
+
+  @media (--max-lg) {
+    padding: 20px;
+  }
+}
+
+label.wrap {
+  cursor: pointer;
+}
+
+label.wrap:hover {
+  background: var(--color-neutral-50);
+}
+
+.label {
+  font-size: 16px;
+  line-height: 1.25;
+  font-weight: bold;
+  color: #000;
+  font-family: var(--font-sans-narrow);
+
+  @media (--max-xl) {
+    font-size: 14px;
+  }
+}
+
+.control {
+  display: flex;
+}

@@ -1,4 +1,4 @@
-import styles from './Questions.module.scss'
+import styles from './Questions.module.css'
 
 export function Questions() {
   return (

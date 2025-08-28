@@ -6,7 +6,7 @@ import { Menu } from './Menu'
 import { Payment } from './Payment'
 import { Social } from './Social'
 import { Subscribe } from './Subscribe'
-import styles from './index.module.scss'
+import styles from './index.module.css'
 
 export function Footer() {
   return (

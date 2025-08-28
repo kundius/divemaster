@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, ButtonLoadingIcon } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -32,6 +32,7 @@ import { PropsWithChildren } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { ProductOffersProps } from './ProductOffers'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 
 export interface ProductOffersCreateDialogProps {
   productId: number
@@ -157,7 +158,7 @@ export function ProductOffersCreateDialog({
             </div>
             <DialogFooter>
               <Button disabled={loading} type="submit">
-                {loading && <ButtonLoadingIcon />}
+                {loading && <ArrowPathIcon className="h-4 w-4 animate-spin" />}
                 Сохранить
               </Button>
             </DialogFooter>

@@ -3,7 +3,7 @@
 import { usePrevNextButtons } from '@/lib/EmblaCarousel/usePrevNextButtons'
 import { ProductCard } from '@/components/ProductCard'
 import useEmblaCarousel from 'embla-carousel-react'
-import styles from './index.module.scss'
+import styles from './index.module.css'
 import { ProductEntity } from '@/types'
 import { getFileUrl } from '@/lib/utils'
 import { ProductStoreProvider } from '@/providers/product-store-provider'

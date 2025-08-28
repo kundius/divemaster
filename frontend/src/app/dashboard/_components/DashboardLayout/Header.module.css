@@ -1,0 +1,15 @@
+.wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 12px;
+
+  @media (--min-lg) {
+    display: none;
+  }
+}
+
+.logo {
+  display: flex;
+  margin-top: -9px;
+}

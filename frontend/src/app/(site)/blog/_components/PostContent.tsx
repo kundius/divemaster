@@ -1,4 +1,4 @@
-import css from './PostContent.module.scss'
+import css from './PostContent.module.css'
 
 export interface PostContentProps {
   content: string

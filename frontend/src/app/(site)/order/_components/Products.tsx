@@ -2,7 +2,7 @@
 
 import { useCartStore } from '@/providers/cart-store-provider'
 
-import css from './Products.module.scss'
+import css from './Products.module.css'
 import { Product } from './Product'
 
 export function Products() {

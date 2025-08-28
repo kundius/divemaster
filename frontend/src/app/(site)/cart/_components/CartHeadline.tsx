@@ -12,7 +12,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
-import styles from './CartHeadline.module.scss'
+import styles from './CartHeadline.module.css'
 
 export function CartHeadline() {
   const total = useCartStore((state) => state.total)

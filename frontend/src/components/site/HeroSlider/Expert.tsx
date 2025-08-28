@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import styles from './Expert.module.scss'
+import styles from './Expert.module.css'
 
 export function Expert() {
   return (

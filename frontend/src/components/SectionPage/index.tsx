@@ -3,7 +3,7 @@ import { PropsWithChildren } from 'react'
 import { Container } from '@/components/site/Container'
 import { cn } from '@/lib/utils'
 
-import css from './index.module.scss'
+import css from './index.module.css'
 
 export function SectionPage({
   children,

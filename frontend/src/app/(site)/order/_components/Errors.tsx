@@ -16,7 +16,7 @@ export function Errors({ field }: FieldErrorsProps) {
   return (
     <div className="grid grid-cols-1 gap-3">
       {filtered.map((item, i) => (
-        <Alert variant="destructive" key={i}>
+        <Alert variant="outline-destructive" key={i}>
           <ExclamationTriangleIcon className="h-4 w-4" />
           <AlertTitle>Внимание!</AlertTitle>
           <AlertDescription>{item.message}</AlertDescription>

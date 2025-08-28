@@ -1,7 +1,7 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import styles from './ListActions.module.scss'
+import styles from './ListActions.module.css'
 import { useWishlistStore } from '@/providers/whishlist-store-provider'
 import { WishlistType } from '@/types'
 import { useProductStore } from '@/providers/product-store-provider'

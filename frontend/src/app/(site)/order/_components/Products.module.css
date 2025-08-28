@@ -1,0 +1,14 @@
+.title {
+  font-weight: bold;
+  margin-bottom: 16px;
+
+  @media (--max-md) {
+    font-size: 14px;
+  }
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}

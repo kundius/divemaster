@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
 import { useOrderStore } from '@/providers/order-store-provider'
 import { DeliveryService } from '@/types'
 
-import css from './Delivery.module.scss'
+import css from './Delivery.module.css'
 import { DeliveryPickupAddress } from './DeliveryPickupAddress'
 import { DeliveryShippingAddress } from './DeliveryShippingAddress'
 import { Errors } from './Errors'

@@ -2,7 +2,7 @@ import { DetailedHTMLProps, InputHTMLAttributes } from 'react'
 
 import { cn } from '@/lib/utils'
 
-import css from './index.module.scss'
+import css from './index.module.css'
 
 export interface LabeledInputProps
   extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {

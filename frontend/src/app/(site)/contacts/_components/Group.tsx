@@ -1,6 +1,6 @@
 import { PropsWithChildren, ReactNode } from 'react'
 
-import css from './Group.module.scss'
+import css from './Group.module.css'
 
 export function Group({
   icon,

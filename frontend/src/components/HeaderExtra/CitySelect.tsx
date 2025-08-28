@@ -12,7 +12,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton'
 import { useLocationStore } from '@/providers/location-store-provider'
 
-import styles from './CitySelect.module.scss'
+import styles from './CitySelect.module.css'
 import { CitySelectForm, CitySelectFormProps } from './CitySelectForm'
 
 export function CitySelect() {

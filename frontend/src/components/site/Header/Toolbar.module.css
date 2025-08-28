@@ -1,0 +1,97 @@
+.wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.button {
+  position: relative;
+  padding: 0 5px;
+  border-right: 1px solid rgba(255, 255, 255, 0.102);
+  position: relative;
+  z-index: 1;
+  flex-grow: 1;
+  min-width: 58px;
+}
+
+.button:last-child {
+  border-right: none;
+}
+
+.button::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  border-radius: 4px;
+  left: 2px;
+  top: -2px;
+  right: 2px;
+  bottom: -2px;
+  background: linear-gradient(53deg, rgb(159, 0, 169) 0%, rgb(141, 45, 250) 100%);
+  opacity: 0;
+  transition: 0.3s ease;
+}
+
+.button.active::before,
+.button:hover::before {
+  opacity: 1;
+}
+
+.button.active .title,
+.button:hover .title {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.button.active .badge,
+.button:hover .badge {
+  background: rgb(169, 0, 131);
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  margin: 0 auto;
+  background-size: 24px auto;
+  color: var(--color-neutral-100);
+
+  .button.active &,
+  .button:hover & {
+    color: #fff;
+  }
+
+  @media (--max-md) {
+    color: rgb(133, 138, 142);
+  }
+}
+
+.title {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.702);
+  line-height: 12px;
+  text-align: center;
+  transition: 0.3s ease;
+  display: block;
+
+  @media (--max-md) {
+    color: rgb(133, 138, 142);
+  }
+}
+
+.badge {
+  position: absolute;
+  top: 0;
+  right: 4px;
+  width: 16px;
+  height: 16px;
+  background: linear-gradient(53deg, rgb(169, 0, 131) 0%, rgb(160, 45, 250) 100%);
+  color: rgb(255, 255, 255);
+  font-weight: bold;
+  text-align: center;
+  line-height: 16px;
+  font-size: 9px;
+  border-radius: 50%;
+}

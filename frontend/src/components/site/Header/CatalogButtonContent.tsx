@@ -7,7 +7,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import useSWR from 'swr'
 import { Container } from '../Container'
-import styles from './CatalogButtonContent.module.scss'
+import styles from './CatalogButtonContent.module.css'
 import { brands } from './menu'
 
 export default function CatalogButtonContent() {

@@ -1,7 +1,7 @@
 'use client'
 
 import { cn, formatPrice } from '@/lib/utils'
-import styles from './Item.module.scss'
+import styles from './Item.module.css'
 import Image from 'next/image'
 import { Gallery } from './Gallery'
 import { useRef, useState } from 'react'

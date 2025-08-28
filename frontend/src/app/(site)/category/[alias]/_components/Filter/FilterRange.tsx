@@ -1,5 +1,5 @@
 import { Slider } from '@/components/ui/slider'
-import styles from './FilterRange.module.scss'
+import styles from './FilterRange.module.css'
 import { useEffect, useRef, useState } from 'react'
 import { useElementSize, useToggle } from '@reactuses/core'
 import { cn } from '@/lib/utils'

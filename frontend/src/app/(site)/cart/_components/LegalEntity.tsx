@@ -3,7 +3,7 @@
 import { Switch } from '@/components/ui/switch'
 import { useOrderStore } from '@/providers/order-store-provider'
 
-import styles from './LegalEntity.module.scss'
+import styles from './LegalEntity.module.css'
 
 export function LegalEntity() {
   const isLegalEntity = useOrderStore((state) => state.legalEntity)

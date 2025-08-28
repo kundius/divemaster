@@ -3,7 +3,7 @@ import { apiGet } from '@/lib/api'
 import { arrayToTree, cn } from '@/lib/utils'
 import { CategoryEntity } from '@/types'
 import Link from 'next/link'
-import styles from './CatalogMenu.module.scss'
+import styles from './CatalogMenu.module.css'
 
 export async function CatalogMenu() {
   const data = await apiGet<ApiTableData<CategoryEntity>>('categories', { limit: 100 })

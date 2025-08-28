@@ -1,14 +1,15 @@
 'use client'
 
 import { LabeledInput } from '@/components/LabeledInput'
-import { Button, ButtonLoadingIcon } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import { apiPost } from '@/lib/api'
 import { useAuthStore } from '@/providers/auth-store-provider'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useTransition } from 'react'
 import { toast } from 'sonner'
-import styles from './index.module.scss'
+import styles from './index.module.css'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 
 export function AccessDenied() {
   const login = useAuthStore((state) => state.login)
@@ -47,7 +48,7 @@ export function AccessDenied() {
           <LabeledInput type="email" name="email" label="E-mail" required />
           <LabeledInput type="password" name="password" label="Пароль" required />
           <Button type="submit" className="w-full" size="lg" disabled={pending}>
-            {pending && <ButtonLoadingIcon />}
+            {pending && <ArrowPathIcon className="h-4 w-4 animate-spin" />}
             Войти
           </Button>
         </form>

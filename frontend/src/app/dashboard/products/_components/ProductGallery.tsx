@@ -107,7 +107,7 @@ export function SortableItem(props: SortableItemProps) {
       <div className="flex gap-2 justify-end mt-2">
         {props.active ? (
           <Button
-            size="sm-icon"
+            size="icon"
             variant="outline"
             onClick={onDisable}
             className="relative z-20"
@@ -121,7 +121,7 @@ export function SortableItem(props: SortableItemProps) {
           </Button>
         ) : (
           <Button
-            size="sm-icon"
+            size="icon"
             variant="outline"
             onClick={onEnable}
             className="relative z-20"
@@ -135,7 +135,7 @@ export function SortableItem(props: SortableItemProps) {
           </Button>
         )}
         <Button
-          size="sm-icon"
+          size="icon"
           variant="outline"
           onClick={onDelete}
           className="relative z-20"

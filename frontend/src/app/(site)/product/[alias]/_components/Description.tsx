@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import styles from './Description.module.scss'
+import styles from './Description.module.css'
 import { useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
 
@@ -44,7 +44,9 @@ export function Description({ title, content }: DescriptionProps) {
 
   return (
     <div className={styles.wrapper}>
-      <div className={styles.title} id={title}>{title}</div>
+      <div className={styles.title} id={title}>
+        {title}
+      </div>
       <div
         className={cn(styles.collapse, { [styles.shaded]: isCollapsed && isNeedCollapse })}
         ref={collapseRef}

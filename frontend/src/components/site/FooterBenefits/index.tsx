@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import { Container } from '../Container'
-import styles from './index.module.scss'
+import styles from './index.module.css'
 
 export function FooterBenefits() {
   return (

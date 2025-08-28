@@ -1,4 +1,4 @@
-import { Button, ButtonLoadingIcon } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { apiGet } from '@/lib/api'
 import { getApiUrl, uploadFile } from '@/lib/utils'
@@ -180,12 +180,13 @@ export function ApiInputFile({
         <Button
           type="button"
           disabled={isLoading || isValueWithoutEntity}
-          variant={!!loadingError ? 'destructive-outline' : 'outline'}
+          variant={!!loadingError ? 'destructive' : 'outline'}
           {...getRootProps({
             className: 'max-w-full'
           })}
         >
-          {isLoading || (isValueWithoutEntity && <ButtonLoadingIcon />)}
+          {isLoading ||
+            (isValueWithoutEntity && <ArrowPathIcon className="h-4 w-4 animate-spin" />)}
           <input {...getInputProps()} />
           <span className="block max-w-full overflow-hidden text-ellipsis">
             {isValueWithoutEntity ? 'Загрузка...' : fileEntity ? fileEntity.file : placeholder}

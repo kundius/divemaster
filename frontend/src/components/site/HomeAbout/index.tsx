@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Container } from '../Container'
 import { PrimaryButton, PrimaryButtonArrow } from '../PrimaryButton'
-import styles from './index.module.scss'
+import styles from './index.module.css'
 import Image from 'next/image'
 
 export function HomeAbout() {

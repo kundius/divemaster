@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, ButtonLoadingIcon } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -10,6 +10,7 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 import { UseFormReturn } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -47,7 +48,7 @@ export function BrandForm({ form, onSubmit }: BrandFormProps) {
             </div>
           </div>
           <Button disabled={form.formState.isSubmitting} type="submit">
-            {form.formState.isSubmitting && <ButtonLoadingIcon />}
+            {form.formState.isSubmitting && <ArrowPathIcon className="h-4 w-4 animate-spin" />}
             Сохранить
           </Button>
         </div>

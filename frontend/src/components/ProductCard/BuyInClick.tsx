@@ -1,7 +1,7 @@
 import { ProductBuyDialog } from '@/components/ProductBuyDialog'
 import { SpriteIcon } from '@/components/SpriteIcon'
 
-import css from './BuyInClick.module.scss'
+import css from './BuyInClick.module.css'
 
 export function BuyInClick() {
   return (

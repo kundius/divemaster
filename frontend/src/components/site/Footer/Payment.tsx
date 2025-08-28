@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import styles from './Payment.module.scss'
+import styles from './Payment.module.css'
 
 export function Payment() {
   return (

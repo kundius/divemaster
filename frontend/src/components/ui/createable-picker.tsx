@@ -3,7 +3,7 @@ import { XMarkIcon } from '@heroicons/react/24/outline'
 import { useCombobox, useMultipleSelection } from 'downshift'
 import { matchSorter } from 'match-sorter'
 import { ReactNode, useMemo, useRef, useState } from 'react'
-import styles from './createable-picker.module.scss'
+import styles from './createable-picker.module.css'
 import { Popover, PopoverAnchor, PopoverContent } from './popover'
 import { useElementSize } from '@reactuses/core'
 

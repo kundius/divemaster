@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import styles from './index.module.scss'
+import styles from './index.module.css'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/providers/auth-store-provider'
 import { usePathname } from 'next/navigation'

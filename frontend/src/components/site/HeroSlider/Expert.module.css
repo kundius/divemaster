@@ -1,0 +1,133 @@
+.root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background: #8a854d;
+  padding-top: calc(var(--slide-header-offset) + calc(48px * var(--slide-height-factor)));
+  padding-bottom: calc(
+    16px + calc(48px * var(--slide-height-factor)) +
+      calc(var(--slide-dots-offset) * var(--slide-height-factor))
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  @media (--max-2xl) {
+  }
+  @media (--max-md) {
+  }
+}
+
+.root::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 480px;
+  background: linear-gradient(to bottom, #011522 0%, transparent 100%);
+  opacity: 0.51;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -2;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  box-shadow: 1.113px 7.922px 9px 0px rgba(0, 25, 41, 0.15);
+}
+
+.bg img {
+  max-width: none;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.content {
+  width: var(--container-width);
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  @media (--max-md) {
+    align-items: center;
+  }
+}
+
+.label {
+  align-self: flex-start;
+  font-size: 36px;
+  font-family: var(--font-sans-wide);
+  color: rgb(255, 255, 255);
+  font-weight: 900;
+  line-height: 78px;
+  padding: 0 34px;
+  position: relative;
+  z-index: 1;
+  margin: 0 -18px;
+
+  @media (--max-2xl) {
+    font-size: 32px;
+    line-height: 68px;
+  }
+  @media (--max-lg) {
+    font-size: 24px;
+    line-height: 48px;
+  }
+  @media (--max-md) {
+    margin: 0 auto;
+  }
+  @media (--max-sm) {
+    font-size: 20px;
+    padding: 0 24px;
+  }
+}
+
+.label::before {
+  content: '';
+  z-index: -1;
+  background-image: linear-gradient(53deg, rgb(73, 87, 254) 0%, rgb(123, 66, 255) 100%);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  transform: skew(-25deg);
+}
+
+.title {
+  font-size: 110px;
+  font-family: var(--font-sans-wide);
+  color: rgb(255, 255, 255);
+  font-weight: bold;
+  line-height: 1;
+  text-align: center;
+  text-shadow: 0px 0px 9px rgba(0, 25, 41, 0.08);
+  text-align: center;
+  width: min-content;
+
+  @media (--max-2xl) {
+    font-size: 92px;
+  }
+  @media (--max-lg) {
+    font-size: 68px;
+  }
+  @media (--max-md) {
+    font-size: 48px;
+  }
+  @media (--max-sm) {
+    font-size: 40px;
+  }
+}

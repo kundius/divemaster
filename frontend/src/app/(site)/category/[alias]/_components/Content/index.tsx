@@ -2,7 +2,7 @@ import { Description } from './Description'
 import { Discount } from './Discount'
 import { Guest } from './Guest'
 import { Questions } from './Questions'
-import styles from './index.module.scss'
+import styles from './index.module.css'
 
 export interface ContentProps {
   title?: string

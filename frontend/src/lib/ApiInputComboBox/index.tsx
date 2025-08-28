@@ -1,5 +1,5 @@
 import { Pagination } from '@/components/DataTable/Pagination'
-import { Button, ButtonLoadingIcon } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   Command,
   CommandEmpty,
@@ -11,7 +11,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { apiGet } from '@/lib/api'
 import { cn } from '@/lib/utils'
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline'
+import { ArrowPathIcon, CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline'
 import { ReactNode, useEffect, useRef, useState } from 'react'
 import useSWR from 'swr'
 
@@ -132,7 +132,7 @@ export function ApiInputComboBox<TRow extends unknown = unknown>(
           disabled={isValueWithoutSelected}
           ref={buttonRef}
         >
-          {isValueWithoutSelected && <ButtonLoadingIcon />}
+          {isValueWithoutSelected && <ArrowPathIcon className="h-4 w-4 animate-spin" />}
           {isValueWithoutSelected ? 'Загрузка...' : selected ? renderText(selected) : placeholder}
           <ChevronUpDownIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
         </Button>

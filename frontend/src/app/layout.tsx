@@ -1,12 +1,11 @@
 import type { Metadata } from 'next'
-import { Roboto as FontSans, Roboto_Condensed as FontSansAlt, Montserrat } from 'next/font/google'
+import { Roboto, Roboto_Condensed, Montserrat } from 'next/font/google'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { Toaster } from '@/components/ui/sonner'
 import { cn } from '@/lib/utils'
 import { CartStoreProvider } from '@/providers/cart-store-provider'
 import { LocationStoreProvider } from '@/providers/location-store-provider'
 import { OrderStoreProvider } from '@/providers/order-store-provider'
-import '@/styles/globals.scss'
 import Script from 'next/script'
 import { Suspense } from 'react'
 import YandexMetrika from '@/components/YandexMetrika'
@@ -16,8 +15,9 @@ import { MobileNavigation } from '@/components/MobileNavigation'
 import { LoginDialog } from '@/components/LoginDialog'
 import { DateFnsInit } from '@/lib/date-fns-init'
 import { WishlistStoreProvider } from '@/providers/whishlist-store-provider'
+import './globals.css'
 
-const fontSans = FontSans({
+const fontRoboto = Roboto({
   weight: ['400', '500', '700'],
   subsets: ['latin', 'cyrillic'],
   style: ['normal', 'italic'],
@@ -25,7 +25,7 @@ const fontSans = FontSans({
   display: 'swap'
 })
 
-const fontSansAlt = FontSansAlt({
+const fontRoboto_Condensed = Roboto_Condensed({
   weight: ['400', '500', '700'],
   subsets: ['latin', 'cyrillic'],
   style: ['normal', 'italic'],
@@ -56,8 +56,8 @@ export default async function RootLayout({
       <body
         className={cn(
           'min-h-screen bg-background font-sans antialiased',
-          fontSans.variable,
-          fontSansAlt.variable,
+          fontRoboto.variable,
+          fontRoboto_Condensed.variable,
           fontMontserrat.variable
         )}
       >
@@ -82,7 +82,12 @@ export default async function RootLayout({
         </NuqsAdapter>
         <Toaster richColors position="top-center" />
         <link rel="stylesheet" href="https://cdn.envybox.io/widget/cbk.css" />
-        <Script id="envybox" strategy="afterInteractive" src='https://cdn.envybox.io/widget/cbk.js?cbk_code=c549f90bcefff12c01d8687328263643' async />
+        <Script
+          id="envybox"
+          strategy="afterInteractive"
+          src="https://cdn.envybox.io/widget/cbk.js?cbk_code=c549f90bcefff12c01d8687328263643"
+          async
+        />
         <Script id="metrika-counter" strategy="afterInteractive">
           {`(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
             m[i].l=1*new Date();

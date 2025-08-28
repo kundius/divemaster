@@ -1,7 +1,7 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import styles from './index.module.scss'
+import styles from './index.module.css'
 
 import { useDotButton } from '@/lib/EmblaCarousel/useDotButton'
 import { usePrevNextButtons } from '@/lib/EmblaCarousel/usePrevNextButtons'

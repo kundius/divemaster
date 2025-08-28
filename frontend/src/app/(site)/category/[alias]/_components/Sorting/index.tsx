@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/select'
 import { useProductsStore } from '@/providers/products-store-provider'
 
-import styles from './index.module.scss'
+import styles from './index.module.css'
 
 export function Sorting() {
   const filter = useProductsStore((state) => state.searchParams.filter)

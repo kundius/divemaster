@@ -1,10 +1,11 @@
 'use client'
 
-import { Button, ButtonLoadingIcon } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { useTasks } from './TasksProvider'
 import { apiPost } from '@/lib/api'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 
 export function Upload() {
   const { refetch } = useTasks()
@@ -49,7 +50,7 @@ export function Upload() {
 
   return (
     <Button onClick={onFileSelect} disabled={isPending}>
-      {isPending && <ButtonLoadingIcon />}
+      {isPending && <ArrowPathIcon className="h-4 w-4 animate-spin" />}
       Загрузить архив
     </Button>
   )

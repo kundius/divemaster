@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import styles from './Guest.module.scss'
+import styles from './Guest.module.css'
 
 export function Guest() {
   return (

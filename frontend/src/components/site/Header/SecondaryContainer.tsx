@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation'
 import { PropsWithChildren } from 'react'
 
-import styles from './index.module.scss'
+import styles from './index.module.css'
 
 export function SecondaryContainer({ children }: PropsWithChildren) {
   const pathname = usePathname()

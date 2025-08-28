@@ -1,4 +1,4 @@
-import css from './Agreements.module.scss'
+import css from './Agreements.module.css'
 
 export function Agreements() {
   return (

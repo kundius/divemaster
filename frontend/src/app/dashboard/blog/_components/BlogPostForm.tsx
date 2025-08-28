@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import useSWR from 'swr'
 import { z } from 'zod'
-import { Button, ButtonLoadingIcon } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import { CreateablePicker } from '@/components/ui/createable-picker'
 import {
   Form,
@@ -32,6 +32,7 @@ import { apiPatch, apiPost } from '@/lib/api'
 import { slugify } from '@/lib/utils'
 import { BlogPostEntity, BlogPostStatusEnum, BlogTagEntity, FindAllResult } from '@/types'
 import { BlogPostStatusLabels } from '../data'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 
 export const BlogPostFormSchema = z.object({
   title: z.string().trim().min(1),
@@ -242,7 +243,7 @@ export function BlogPostForm({ record }: BlogPostFormProps) {
             </Button>
           </Link>
           <Button disabled={form.formState.isSubmitting} type="submit">
-            {form.formState.isSubmitting && <ButtonLoadingIcon />}
+            {form.formState.isSubmitting && <ArrowPathIcon className="h-4 w-4 animate-spin" />}
             Сохранить
           </Button>
         </div>

@@ -1,0 +1,58 @@
+.form {
+  display: flex;
+  position: relative;
+}
+
+.input {
+  display: block;
+  width: 100%;
+  background: rgba(245, 245, 245, 0.8);
+  min-height: 44px;
+  padding: 0 64px 0 20px;
+  border-radius: 22px;
+  font-size: 14px;
+  font-family: inherit;
+  color: rgb(0, 0, 0);
+  min-width: 264px;
+
+  &::placeholder {
+    color: rgb(155, 155, 155);
+  }
+
+  @media (--max-lg) {
+    padding-left: 16px;
+    padding-right: 60px;
+    min-width: 160px;
+  }
+}
+
+.submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 44px;
+  border-radius: 0 22px 22px 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  background: linear-gradient(53deg, rgb(73, 87, 254) 0%, rgb(123, 66, 255) 100%);
+  width: 48px;
+
+  @media (--max-lg) {
+    width: 44px;
+    border-radius: 22px;
+  }
+}
+
+.submit::before {
+  content: '';
+  background: url('/icons/search.svg') no-repeat 50% 50%;
+  display: block;
+  width: 14px;
+  height: 14px;
+}
+
+.submit:hover {
+  background: linear-gradient(53deg, rgb(159, 0, 169) 0%, rgb(141, 45, 250) 100%);
+}

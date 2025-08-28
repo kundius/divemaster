@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 import { EmblaCarouselType, EmblaEventType } from 'embla-carousel'
 import useEmblaCarousel from 'embla-carousel-react'
 import { ReactNode, useCallback, useEffect, useRef } from 'react'
-import styles from './index.module.scss'
+import styles from './index.module.css'
 import { Discount } from './Discount'
 
 const TWEEN_FACTOR_BASE = 1

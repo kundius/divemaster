@@ -81,12 +81,12 @@ export function UserRolesList({ fallbackData }: UserRolesListProps) {
       formatter: (id) => (
         <div className="flex gap-2">
           <Link href={`/dashboard/user-roles/${id}`}>
-            <Button variant="outline" size="sm-icon">
+            <Button variant="outline" size="icon">
               <PencilIcon className="w-4 h-4" />
             </Button>
           </Link>
           <ApiRemoveDialog url={`roles/${id}`} onSuccess={refetch}>
-            <Button variant="destructive-outline" size="sm-icon">
+            <Button variant="outline-destructive" size="icon">
               <TrashIcon className="w-4 h-4" />
             </Button>
           </ApiRemoveDialog>

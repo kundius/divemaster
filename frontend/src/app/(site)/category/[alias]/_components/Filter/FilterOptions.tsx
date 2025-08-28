@@ -2,7 +2,7 @@ import { colors } from '@/lib/colors'
 import { cn } from '@/lib/utils'
 import { useElementSize, useToggle } from '@reactuses/core'
 import { ChangeEvent, useRef } from 'react'
-import styles from './FilterOptions.module.scss'
+import styles from './FilterOptions.module.css'
 import { ProductsOptionsFilter } from '@/types'
 
 export interface FilterOptionsProps {

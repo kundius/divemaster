@@ -1,7 +1,7 @@
 'use client'
 
 import { diving } from '@/components/site/Header/menu'
-import { Button, ButtonLoadingIcon } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import { CreateablePicker, CreateablePickerItem } from '@/components/ui/createable-picker'
 import { Input } from '@/components/ui/input'
 import {
@@ -17,6 +17,7 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { apiPatch } from '@/lib/api'
 import { colors } from '@/lib/colors'
 import { PropertyEntity, PropertyType } from '@/types'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 import { useToggle } from '@reactuses/core'
 import Link from 'next/link'
 import { FormEvent, useState } from 'react'
@@ -187,7 +188,7 @@ export function ProductOptions({ productId, properties, initialOptions }: Produc
           </Button>
         </Link>
         <Button type="submit" disabled={pending}>
-          {pending && <ButtonLoadingIcon />}
+          {pending && <ArrowPathIcon className="h-4 w-4 animate-spin" />}
           Сохранить
         </Button>
       </div>

@@ -1,5 +1,5 @@
 import { cn, formatPrice } from '@/lib/utils'
-import styles from './Card.module.scss'
+import styles from './Card.module.css'
 import Image from 'next/image'
 
 export interface CardProps {
@@ -55,7 +55,9 @@ export function Card(props: CardProps) {
       </div>
       <div className={styles.purchaseActions}>
         <button className={cn(styles.purchaseAction, styles.purchaseActionCart)}>В корзину</button>
-        <button className={cn(styles.purchaseAction, styles.purchaseActionOneClick)}>Купить в 1 клик</button>
+        <button className={cn(styles.purchaseAction, styles.purchaseActionOneClick)}>
+          Купить в 1 клик
+        </button>
       </div>
     </div>
   )

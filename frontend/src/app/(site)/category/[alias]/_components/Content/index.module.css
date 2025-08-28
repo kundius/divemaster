@@ -1,0 +1,37 @@
+.grid {
+  --gap: 48px;
+
+  background: url('./assets/divemaster.png') no-repeat 50% 50%;
+  display: grid;
+  gap: var(--gap);
+  grid-template-columns: calc(50% - calc(var(--gap) / 2)) calc(50% - calc(var(--gap) / 2));
+
+  @media (--max-xl) {
+    --gap: 36px;
+  }
+  @media (--max-lg) {
+    --gap: 24px;
+  }
+  @media (--max-md) {
+    --gap: 24px;
+    grid-template-columns: 100%;
+  }
+}
+
+.title {
+  font-size: 36px;
+  color: rgb(0, 0, 0);
+  font-weight: bold;
+  line-height: 1.2;
+  text-align: center;
+  margin-bottom: 64px;
+
+  @media (--max-lg) {
+    font-size: 32px;
+    margin-bottom: 48px;
+  }
+  @media (--max-md) {
+    font-size: 24px;
+    margin-bottom: 32px;
+  }
+}

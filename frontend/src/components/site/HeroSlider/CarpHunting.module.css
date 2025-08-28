@@ -1,0 +1,215 @@
+.root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background: #8a854d;
+  padding-top: calc(var(--slide-header-offset) + calc(48px * var(--slide-height-factor)));
+  padding-bottom: calc(
+    16px + calc(48px * var(--slide-height-factor)) +
+      calc(var(--slide-dots-offset) * var(--slide-height-factor))
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.root::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 480px;
+  background: linear-gradient(to bottom, #011522 0%, transparent 100%);
+  opacity: 0.51;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -2;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  box-shadow: 1.113px 7.922px 9px 0px rgba(0, 25, 41, 0.15);
+}
+
+.bg img {
+  max-width: none;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.content {
+  background-color: rgba(0, 0, 0, 0.122);
+  width: 1480px;
+  height: 460px;
+  padding: 40px 44px 34px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  @media (--max-3xl) {
+    width: 1320px;
+  }
+  @media (--max-2xl) {
+    width: 1120px;
+    padding: 32px 32px;
+  }
+  @media (--max-xl) {
+    width: 900px;
+  }
+  @media (--max-lg) {
+    width: 736px;
+  }
+  @media (--max-md) {
+    width: calc(100vw - 32px);
+    padding: 16px;
+    align-items: center;
+  }
+}
+
+.label {
+  display: block;
+  text-decoration: none;
+  background-color: rgb(149, 190, 19);
+  font-size: 14px;
+  color: rgb(24, 26, 7);
+  font-weight: bold;
+  text-transform: uppercase;
+  line-height: 28px;
+  text-align: center;
+  padding: 0 10px;
+  border-bottom: 2px solid rgb(29, 32, 32);
+  border-top: 9px solid rgb(29, 32, 32);
+  font-family: var(--font-sans-wide);
+  letter-spacing: 0.2em;
+  margin-bottom: 20px;
+
+  @media (--max-2xl) {
+    margin-bottom: 12px;
+  }
+  @media (--max-md) {
+    line-height: 24px;
+    font-size: 12px;
+    border-top-width: 6px;
+    letter-spacing: 0.1em;
+    margin-bottom: 16px;
+  }
+}
+
+.label:hover {
+  color: #fff;
+  background: #84ac06;
+}
+
+.title {
+  font-size: 52px;
+  font-family: var(--font-sans-wide);
+  color: rgb(254, 254, 254);
+  font-weight: bold;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-bottom: 30px;
+
+  @media (--max-2xl) {
+    font-size: 48px;
+    margin-bottom: 20px;
+  }
+  @media (--max-md) {
+    font-size: 32px;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+
+  @media (--max-md) {
+    align-items: center;
+  }
+}
+
+.links a {
+  font-size: 18px;
+  font-family: var(--font-sans-wide);
+  color: rgba(255, 255, 255, 0.71);
+  text-decoration: underline;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+
+  @media (--max-md) {
+    font-size: 12px;
+    letter-spacing: 0.05em;
+  }
+}
+
+.links a:hover {
+  color: #fff;
+}
+
+.button {
+  position: relative;
+  margin-top: auto;
+  font-size: 14px;
+  font-family: var(--font-sans-wide);
+  color: rgba(255, 255, 255, 0.71);
+  font-weight: bold;
+  text-transform: uppercase;
+  line-height: 56px;
+  border-radius: 24px;
+  letter-spacing: 0.15em;
+  background-color: rgba(0, 0, 0, 0.102);
+  padding-left: 16px;
+  padding-right: 60px;
+  margin-left: -12px;
+
+  @media (--max-md) {
+    font-size: 12px;
+    line-height: 44px;
+    padding-left: 12px;
+    padding-right: 48px;
+    margin-left: -8px;
+  }
+}
+
+.button:hover {
+  background-color: rgba(0, 0, 0, 0.102);
+  color: #fff;
+}
+
+.button::after {
+  content: '';
+  position: absolute;
+  right: 11px;
+  top: 11px;
+  width: 36px;
+  height: 36px;
+  background: url('/icons/play.svg') no-repeat 50% 50%;
+  background-size: cover;
+  opacity: 0.71;
+
+  @media (--max-md) {
+    width: 32px;
+    height: 32px;
+    right: 7px;
+    top: 7px;
+  }
+}
+
+.button:hover::after {
+  opacity: 1;
+}

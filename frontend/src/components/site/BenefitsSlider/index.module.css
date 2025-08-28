@@ -1,0 +1,94 @@
+.root {
+  --slide-spacing: var(--container-padding);
+  --slide-size: var(--container-width);
+  position: relative;
+  display: flow-root;
+  background: url('/benefits/bg.jpg') no-repeat 50% 50%;
+  background-size: cover;
+}
+
+.root::after {
+  content: '';
+  background: url('/benefits/logo.png') no-repeat 50% 50%;
+  position: absolute;
+  bottom: -215px;
+  right: 0;
+  width: 153px;
+  height: 323px;
+  pointer-events: none;
+
+  @media (--max-2xl) {
+    display: none;
+  }
+}
+
+.overflow {
+  overflow: hidden;
+  padding-top: 80px;
+  margin-top: -80px;
+  padding-bottom: 120px;
+  margin-bottom: -120px;
+  pointer-events: none;
+}
+
+.viewport {
+  position: relative;
+  pointer-events: all;
+}
+
+.container {
+  backface-visibility: hidden;
+  display: flex;
+  touch-action: pan-y;
+  margin-left: calc(var(--slide-spacing) * -1);
+}
+
+.slide {
+  flex: 0 0 var(--slide-size);
+  min-width: 0;
+  padding-left: var(--slide-spacing);
+  box-sizing: content-box;
+}
+
+.dots {
+  display: flex;
+  position: absolute;
+  left: calc(50% - calc(var(--container-width) / 2) + var(--container-padding));
+  top: 82px;
+  margin-left: -8px;
+
+  @media (--max-2xl) {
+    top: 52px;
+  }
+  @media (--max-xl) {
+    top: 32px;
+  }
+  @media (--max-md) {
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+.dot {
+  width: 24px;
+  height: 24px;
+  position: relative;
+  cursor: pointer;
+}
+
+.dot::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #bcbcbc;
+}
+
+.dotSelected::before {
+  background: linear-gradient(37deg, #a90083 0%, #9f2df9 100%);
+}

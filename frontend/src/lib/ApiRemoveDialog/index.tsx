@@ -10,8 +10,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
-import { Button, ButtonLoadingIcon } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import { apiDelete } from '@/lib/api'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 import { PropsWithChildren, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -60,8 +61,8 @@ export function ApiRemoveDialog({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isPending}>Отмена</AlertDialogCancel>
-          <Button disabled={isPending} onClick={handleSubmit} variant="destructive">
-            {isPending && <ButtonLoadingIcon />}
+          <Button disabled={isPending} onClick={handleSubmit} variant="outline-destructive">
+            {isPending && <ArrowPathIcon className="h-4 w-4 animate-spin" />}
             Удалить
           </Button>
         </AlertDialogFooter>

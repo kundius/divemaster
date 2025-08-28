@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { Container } from '../Container'
-import styles from './Bottom.module.scss'
+import styles from './Bottom.module.css'
 import Image from 'next/image'
 
 export function Bottom() {

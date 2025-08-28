@@ -1,0 +1,135 @@
+.root {
+  display: flow-root;
+}
+
+.headline {
+  display: flex;
+  align-items: center;
+  gap: 60px;
+  margin-bottom: 16px;
+
+  @media (--max-md) {
+    display: none;
+  }
+}
+
+.title {
+  font-size: 18px;
+  text-transform: uppercase;
+  color: #000000;
+  font-weight: bold;
+  font-family: var(--font-sans-narrow);
+  padding-top: 4px;
+}
+
+.nav {
+  display: flex;
+}
+
+.prev,
+.next {
+  display: block;
+  width: 24px;
+  height: 24px;
+  position: relative;
+  color: #000;
+
+  &[disabled] {
+    color: #9e9e9e;
+  }
+  &:not([disabled]):hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
+}
+
+.prev::before,
+.next::before {
+  content: '';
+  height: 2px;
+  width: 8px;
+  background: currentColor;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.prev::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+  border-left: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  margin-left: -1px;
+}
+
+.next::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(-45deg);
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  margin-left: 1px;
+}
+
+.all {
+  font-size: 12px;
+  text-decoration: underline;
+  color: #23538b;
+
+  &:hover {
+    color: rgb(169, 0, 131);
+  }
+}
+
+.slider {
+  --slide-spacing: 80px;
+  --slide-size: auto;
+
+  @media (--max-2xl) {
+    --slide-spacing: 40px;
+  }
+  @media (--max-md) {
+    --slide-spacing: 16px;
+  }
+}
+
+.viewport {
+  overflow: hidden;
+}
+
+.container {
+  backface-visibility: hidden;
+  display: flex;
+  touch-action: pan-y;
+  margin-left: calc(var(--slide-spacing) * -1);
+}
+
+.slide {
+  min-width: 0;
+  flex: 0 0 var(--slide-size);
+  padding-left: var(--slide-spacing);
+  display: flex;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    @media (--max-md) {
+      width: 120px;
+      height: 36px;
+      object-fit: contain;
+    }
+  }
+}

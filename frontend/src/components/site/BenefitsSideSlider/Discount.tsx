@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import styles from './Discount.module.scss'
+import styles from './Discount.module.css'
 import { PrimaryButton, PrimaryButtonArrow } from '../PrimaryButton'
 import discountImage from './assets/discount.jpg'
 
@@ -22,11 +22,7 @@ export function Discount() {
           </PrimaryButton>
         </div>
       </div>
-      <Image
-        className={styles.image}
-        src={discountImage}
-        alt="Увеличивайте скидку"
-      />
+      <Image className={styles.image} src={discountImage} alt="Увеличивайте скидку" />
     </div>
   )
 }

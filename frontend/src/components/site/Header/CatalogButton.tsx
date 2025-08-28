@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import styles from './CatalogButton.module.scss'
+import styles from './CatalogButton.module.css'
 import { createPortal } from 'react-dom'
 import { cn, disableScroll, enableScroll } from '@/lib/utils'
 import dynamic from 'next/dynamic'

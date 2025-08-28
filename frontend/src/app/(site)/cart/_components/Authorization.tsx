@@ -2,7 +2,7 @@
 
 import { useAuthStore } from '@/providers/auth-store-provider'
 
-import styles from './Authorization.module.scss'
+import styles from './Authorization.module.css'
 
 export function Authorization() {
   const loginDialogToggle = useAuthStore((state) => state.loginDialogToggle)

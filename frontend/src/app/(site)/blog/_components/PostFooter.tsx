@@ -4,7 +4,7 @@ import { Share } from '@/components/Share'
 import { Badge } from '@/components/ui/badge'
 import { BlogPostEntity } from '@/types'
 
-import css from './PostFooter.module.scss'
+import css from './PostFooter.module.css'
 
 export interface PostFooterProps {
   record: BlogPostEntity

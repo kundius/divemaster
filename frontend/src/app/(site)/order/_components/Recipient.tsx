@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label'
 import { useOrderStore } from '@/providers/order-store-provider'
 
 import { Errors } from './Errors'
-import css from './Recipient.module.scss'
+import css from './Recipient.module.css'
 
 export function Recipient() {
   const orderState = useOrderStore((state) => state)

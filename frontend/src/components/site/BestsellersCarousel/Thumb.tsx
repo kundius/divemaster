@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import styles from './Thumb.module.scss'
+import styles from './Thumb.module.css'
 
 export interface ThumbProps {
   url: string

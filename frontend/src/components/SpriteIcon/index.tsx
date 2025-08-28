@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
 
-import css from './index.module.scss'
+import css from './index.module.css'
 
 export interface SpriteIconProps {
   className?: string

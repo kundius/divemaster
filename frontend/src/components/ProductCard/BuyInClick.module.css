@@ -1,0 +1,44 @@
+.action {
+  container-type: size;
+  display: flex;
+  font-size: 16px;
+  line-height: 1;
+  height: 54px;
+  width: 100%;
+  font-weight: 500;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-family: var(--font-sans-wide);
+  background: #e5b2da;
+  position: relative;
+  transition: 0.3s ease;
+  z-index: 1;
+
+  &:hover {
+    background: #d37cc0;
+  }
+
+  @media (--max-3xl) {
+    font-size: 14px;
+    height: 48px;
+  }
+  @media (--max-xl) {
+    font-size: 12px;
+    height: 44px;
+  }
+  @media (--max-md) {
+    font-size: 9px;
+    height: 28px;
+  }
+}
+
+.inner {
+  width: min-content;
+}
+
+@container (min-width: 164px) {
+  .inner {
+    width: max-content;
+  }
+}

@@ -1,5 +1,5 @@
 import { cn, formatPrice } from '@/lib/utils'
-import styles from './index.module.scss'
+import styles from './index.module.css'
 import Image from 'next/image'
 import Link from 'next/link'
 

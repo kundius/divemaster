@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, ButtonLoadingIcon } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import { useApiForm } from '@/lib/ApiForm'
 import { slugify } from '@/lib/utils'
 import { ProductEntity } from '@/types'
@@ -8,6 +8,7 @@ import { PageLayout } from '../../../app/dashboard/_components/PageLayout'
 import { ProductForm, ProductFormFields, ProductFormSchema } from '../ProductForm'
 import { ProductLayout } from '../ProductLayout'
 import { revalidatePath } from 'next/cache'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 
 export interface ProductsUpdatePageProps {
   initialData: ProductEntity
@@ -45,7 +46,7 @@ export function ProductsUpdatePage({ initialData }: ProductsUpdatePageProps) {
       title="Свойства товара"
       actions={
         <Button disabled={form.formState.isSubmitting} onClick={form.handleSubmit(onSubmit)}>
-          {form.formState.isSubmitting && <ButtonLoadingIcon />}
+          {form.formState.isSubmitting && <ArrowPathIcon className="h-4 w-4 animate-spin" />}
           Сохранить
         </Button>
       }

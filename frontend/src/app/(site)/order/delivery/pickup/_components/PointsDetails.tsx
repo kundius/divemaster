@@ -1,7 +1,7 @@
 import { SpriteIcon } from '@/components/SpriteIcon'
 import { PickupPointEntity } from '@/types'
 
-import css from './PointsDetails.module.scss'
+import css from './PointsDetails.module.css'
 
 export interface PointsDetailsProps {
   entity: PickupPointEntity

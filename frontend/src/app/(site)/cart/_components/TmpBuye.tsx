@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { Button, ButtonLoadingIcon } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -16,6 +16,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { apiPut } from '@/lib/api'
 import { useCartStore } from '@/providers/cart-store-provider'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 
 export function TmpBuye() {
   const cartId = useCartStore((state) => state.cartId)
@@ -78,7 +79,7 @@ export function TmpBuye() {
         </div>
         <DialogFooter>
           <Button type="submit" onClick={submitHandler} disabled={loading}>
-            {loading && <ButtonLoadingIcon />}
+            {loading && <ArrowPathIcon className="h-4 w-4 animate-spin" />}
             Отправить
           </Button>
         </DialogFooter>

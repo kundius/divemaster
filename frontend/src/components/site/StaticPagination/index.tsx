@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 import { cn } from '@/lib/utils'
 
-import styles from './index.module.scss'
+import styles from './index.module.css'
 
 export interface StaticPaginationProps {
   defaultPage?: number

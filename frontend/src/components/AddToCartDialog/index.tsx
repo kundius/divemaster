@@ -18,7 +18,7 @@ import { cn, getFileUrl } from '@/lib/utils'
 import { useProductStore } from '@/providers/product-store-provider'
 import { useCartStore } from '@/providers/cart-store-provider'
 
-import css from './index.module.scss'
+import css from './index.module.css'
 import { PrimaryButton, PrimaryButtonArrow, PrimaryButtonSpinner } from '../site/PrimaryButton'
 import { LabeledInput } from '../LabeledInput'
 import { ProductBuyDialog } from '../ProductBuyDialog'

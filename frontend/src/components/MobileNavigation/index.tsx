@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import { PropsWithChildren, createContext, useContext, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Skeleton } from '../ui/skeleton'
-import styles from './index.module.scss'
+import styles from './index.module.css'
 
 const MobileNavigationSkeleton = () => {
   return (

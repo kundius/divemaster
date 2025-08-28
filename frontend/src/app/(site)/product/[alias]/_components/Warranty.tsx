@@ -1,5 +1,5 @@
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import styles from './Warranty.module.scss'
+import styles from './Warranty.module.css'
 
 export function Warranty() {
   return (
@@ -16,7 +16,9 @@ export function Warranty() {
           </div>
         </PopoverTrigger>
         <PopoverContent className={styles.content}>
-          <p><strong>Срок гарантии на все товары 1 год</strong></p>
+          <p>
+            <strong>Срок гарантии на все товары 1 год</strong>
+          </p>
           <p>
             Убедительно просим вас внимательно ознакомиться с условиями гарантийных обязательств, а
             также правильно заполнять гарантийный талон. Гарантия действует, только если указаны
@@ -37,7 +39,9 @@ export function Warranty() {
           </div>
         </PopoverTrigger>
         <PopoverContent className={styles.content}>
-          <p><strong>Гарантия подлинности</strong></p>
+          <p>
+            <strong>Гарантия подлинности</strong>
+          </p>
           <p>
             Убедительно просим вас внимательно ознакомиться с условиями гарантийных обязательств, а
             также правильно заполнять гарантийный талон. Гарантия действует, только если указаны
@@ -58,7 +62,9 @@ export function Warranty() {
           </div>
         </PopoverTrigger>
         <PopoverContent className={styles.content}>
-          <p><strong>Гарантия возврата</strong></p>
+          <p>
+            <strong>Гарантия возврата</strong>
+          </p>
           <p>
             Убедительно просим вас внимательно ознакомиться с условиями гарантийных обязательств, а
             также правильно заполнять гарантийный талон. Гарантия действует, только если указаны

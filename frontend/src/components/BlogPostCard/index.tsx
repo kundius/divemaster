@@ -1,6 +1,6 @@
 import { BlogPostEntity } from '@/types'
 
-import css from './index.module.scss'
+import css from './index.module.css'
 import { getFileUrl } from '@/lib/utils'
 import Image from 'next/image'
 import Link from 'next/link'

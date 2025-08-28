@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import { Button, ButtonLoadingIcon } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -116,7 +116,7 @@ export function UserRoleForm({ record }: UserRoleFormProps) {
           />
 
           <Button disabled={form.formState.isSubmitting} type="submit">
-            {form.formState.isSubmitting && <ButtonLoadingIcon />}
+            {form.formState.isSubmitting && <ArrowPathIcon className="h-4 w-4 animate-spin" />}
             Сохранить
           </Button>
         </div>

@@ -1,7 +1,7 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import styles from './OptionsColor.module.scss'
+import styles from './OptionsColor.module.css'
 import { colors } from '@/lib/colors'
 
 export interface OptionsColorProps {

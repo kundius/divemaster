@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { Breadcrumbs, BreadcrumbsProps } from '../site/Breadcrumbs'
-import css from './index.module.scss'
+import css from './index.module.css'
 import { ChevronLeftIcon } from '@heroicons/react/24/outline'
 import { cn } from '@/lib/utils'
 import { MouseEventHandler, ReactNode } from 'react'

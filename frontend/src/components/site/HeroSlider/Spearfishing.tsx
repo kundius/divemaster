@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import styles from './Spearfishing.module.scss'
+import styles from './Spearfishing.module.css'
 import Link from 'next/link'
 
 export function Spearfishing() {
@@ -30,11 +30,12 @@ export function Spearfishing() {
       <div className={styles.content}>
         <div className={styles.salvimar} />
         <div className={styles.title}>
-        Для настоящего<br />
-        «подвоха»
+          Для настоящего
+          <br />
+          «подвоха»
         </div>
         <div className={styles.desc}>
-        С классикой от легендарного бренда удачная охота гарантирована
+          С классикой от легендарного бренда удачная охота гарантирована
         </div>
         <Link href="/catalog" className={styles.button}>
           Перейти к товарам

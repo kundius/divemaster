@@ -4,7 +4,7 @@ import { usePrevNextButtons } from '@/lib/EmblaCarousel/usePrevNextButtons'
 import Autoplay from 'embla-carousel-autoplay'
 import useEmblaCarousel from 'embla-carousel-react'
 import { useMediaQuery } from 'react-responsive'
-import styles from './index.module.scss'
+import styles from './index.module.css'
 import Image from 'next/image'
 
 export interface BrandsCarouselProps {

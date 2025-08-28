@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import styles from './Discount.module.scss'
+import styles from './Discount.module.css'
 
 export function Discount() {
   return (

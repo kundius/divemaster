@@ -26,7 +26,7 @@ export function useApiForm<TFieldValues extends FieldValues = FieldValues, TResu
   mapValues,
   onSuccess
 }: ApiFormProps<TFieldValues, TResult>): [
-  UseFormReturn<TFieldValues, any, undefined>,
+  UseFormReturn<TFieldValues, any, TFieldValues>,
   (values: TFieldValues) => Promise<void>
 ] {
   const form = useForm<TFieldValues>({

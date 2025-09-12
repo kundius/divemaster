@@ -21,7 +21,7 @@ export const BrandFormSchema = z.object({
 export type BrandFormFields = z.infer<typeof BrandFormSchema>
 
 export interface BrandFormProps {
-  form: UseFormReturn<BrandFormFields, any, undefined>
+  form: UseFormReturn<BrandFormFields, any, BrandFormFields>
   onSubmit: (values: BrandFormFields) => Promise<void>
 }
 

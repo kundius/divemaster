@@ -17,6 +17,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { apiPatch, apiPost } from '@/lib/api'
 import { UserRoleEntity } from '@/types'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 
 export const UserRoleFormSchema = z.object({
   title: z.string().trim().min(1),

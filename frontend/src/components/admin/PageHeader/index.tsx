@@ -1,8 +1,15 @@
-import { Button, ButtonProps } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
+import { VariantProps } from 'class-variance-authority'
 import Link from 'next/link'
 import { ReactNode } from 'react'
 
-type ActionTypeObj = Omit<ButtonProps, 'title'> & {
+type ActionTypeObj = Omit<
+  React.ComponentProps<'button'> &
+    VariantProps<typeof buttonVariants> & {
+      asChild?: boolean
+    },
+  'title'
+> & {
   title: string
   route?: string
 }

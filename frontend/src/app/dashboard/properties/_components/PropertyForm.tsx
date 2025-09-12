@@ -36,7 +36,7 @@ export const PropertyFormSchema = z.object({
 export type PropertyFormFields = z.infer<typeof PropertyFormSchema>
 
 export interface PropertyFormProps {
-  form: UseFormReturn<PropertyFormFields, any, undefined>
+  form: UseFormReturn<PropertyFormFields, any, PropertyFormFields>
   onSubmit: (values: PropertyFormFields) => Promise<void>
 }
 

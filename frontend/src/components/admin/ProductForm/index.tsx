@@ -33,7 +33,7 @@ export const ProductFormSchema = z.object({
 export type ProductFormFields = z.infer<typeof ProductFormSchema>
 
 export interface ProductFormProps {
-  form: UseFormReturn<ProductFormFields, any, undefined>
+  form: UseFormReturn<ProductFormFields, any, ProductFormFields>
   onSubmit: (values: ProductFormFields) => Promise<void>
 }
 

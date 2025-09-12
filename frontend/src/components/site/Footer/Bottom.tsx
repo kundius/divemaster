@@ -13,7 +13,6 @@ export function Bottom() {
           </div>
           <div className={styles.links}>
             <Link href="/info/user-agreement">Пользовательское соглашение</Link>
-            <Link href="/info/personal-data">Согласие на обработку ПД</Link>
             <Link href="/info/privacy-policy">Политика конфиденциальности</Link>
           </div>
           {/* <Link href="https://domenart-studio.ru/" target="_blank" className={styles.creator}>

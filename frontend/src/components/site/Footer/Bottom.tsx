@@ -14,6 +14,7 @@ export function Bottom() {
           <div className={styles.links}>
             <Link href="/info/user-agreement">Пользовательское соглашение</Link>
             <Link href="/info/privacy-policy">Политика конфиденциальности</Link>
+            <Link href="/info/privacy-agreement">Согласие на обработку персональных данных</Link>
           </div>
           {/* <Link href="https://domenart-studio.ru/" target="_blank" className={styles.creator}>
             <Image src="/creator.png" width={98} height={27} alt="" />

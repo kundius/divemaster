@@ -4,7 +4,10 @@ import { SectionPage } from '@/components/SectionPage'
 export default function Page() {
   return (
     <SectionPage>
-      <Headline className="mb-12 max-lg:mb-8 max-md:mb-6" title="Пользовательское соглашение" />
+      <Headline
+        className="mb-12 max-lg:mb-8 max-md:mb-6"
+        title="Политика обработки персональных данных"
+      />
       <div className="mx-auto prose lg:prose-xl">
         <p>
           <b>1. Общие положения</b>

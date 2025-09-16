@@ -12,9 +12,9 @@ export function Bottom() {
             © 2008-2025 «ДАЙВМАСТЕР». Все&nbsp;права&nbsp;защищены
           </div>
           <div className={styles.links}>
-            <Link href="/info/user-agreement">Пользовательское соглашение</Link>
-            <Link href="/info/privacy-policy">Политика конфиденциальности</Link>
-            <Link href="/info/privacy-agreement">Согласие на обработку персональных данных</Link>
+            <Link href="/info/privacy">Политика конфиденциальности</Link>
+            <Link href="/info/regulation">Политика обработки персональных данных</Link>
+            <Link href="/info/regulation">Согласие на обработку персональных данных</Link>
           </div>
           {/* <Link href="https://domenart-studio.ru/" target="_blank" className={styles.creator}>
             <Image src="/creator.png" width={98} height={27} alt="" />

@@ -13,8 +13,8 @@ export default function Page() {
         <p>
           Сайт использует cookie-файлы, и передает данные службе веб-аналитики Яндекс Метрика.
           Оставаясь на сайте, Вы соглашаетесь с{' '}
-          <Link herf="/info/user-agreement">Пользовательским соглашением</Link> и{' '}
-          <Link herf="/info/privacy-policy">Политикой обработки персональных данных</Link>
+          <Link href="/info/user-agreement">Пользовательским соглашением</Link> и{' '}
+          <Link href="/info/privacy-policy">Политикой обработки персональных данных</Link>
         </p>
       </div>
     </SectionPage>

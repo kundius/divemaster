@@ -1,4 +1,5 @@
 import css from './Agreements.module.css'
+import Link from 'next/link'
 
 export function Agreements() {
   return (

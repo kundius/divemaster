@@ -35,7 +35,7 @@ export function Delivery() {
     return (
       <div>
         <div className={cn(css.title, 'mb-4')}>Выберите способ получения</div>
-        <Alert variant="default">
+        <Alert variant="destructive">
           <SpriteIcon name="exclamation-circle" size={16} />
           <AlertDescription>
             Пожалуйста, обратите внимание. В связи с большим объёмом заказов срок доставки может

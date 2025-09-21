@@ -22,6 +22,14 @@ export default async function Page({ searchParams }: PageProps) {
 
   return (
     <PageLayout title="Пользователи" actions={actions}>
+      {/* <PageLayoutHeader>
+        <PageLayoutTitle>Пользователи</PageLayoutTitle>
+        <PageLayoutActions>
+          <Button asChild key="create">
+            <Link href="/dashboard/users/create">Добавить пользователя</Link>
+          </Button>
+        </PageLayoutActions>
+      </PageLayoutHeader> */}
       <UsersList fallbackData={fallbackData} />
     </PageLayout>
   )

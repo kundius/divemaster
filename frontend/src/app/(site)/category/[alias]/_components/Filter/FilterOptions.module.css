@@ -44,7 +44,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: hsl(var(--primary));
+  background: var(--primary);
   color: #fff;
   font-size: 12px;
   font-weight: 600;
@@ -99,8 +99,8 @@
   width: 10px;
   height: 6px;
   margin-top: -2px;
-  border-bottom: 2px solid hsl(var(--primary));
-  border-left: 2px solid hsl(var(--primary));
+  border-bottom: 2px solid var(--primary);
+  border-left: 2px solid var(--primary);
 }
 
 .optionValue {

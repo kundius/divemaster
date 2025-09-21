@@ -43,7 +43,7 @@
 
 .item_active {
   color: #fff;
-  background: hsl(var(--primary));
+  background: var(--primary);
 }
 
 a.item:hover {

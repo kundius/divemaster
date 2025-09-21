@@ -146,8 +146,8 @@
 }
 
 .tag:hover {
-  background: hsl(var(--primary));
+  background: var(--primary);
   color: #fff;
-  border-color: hsl(var(--primary));
+  border-color: var(--primary);
   text-decoration: none;
 }

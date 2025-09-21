@@ -116,30 +116,32 @@ export function AddToCartDialog({
           </div>
         </div>
         <DialogFooter className="flex gap-2">
-          <DialogClose asChild>
-            <Button className="w-full" size="lg" variant="secondary">
-              Отмена
-            </Button>
-          </DialogClose>
-          {!productStore.isAllOptionsSelected(productStore.selected) ? (
-            <Button className="w-full" size="lg" disabled key="available">
-              <SpriteIcon name="cart" size={19} className="mr-2 -ml-2" />
-              Выберите параметры
-            </Button>
-          ) : productStore.offer ? (
-            <Button className="w-full" size="lg" onClick={addHandler} key="available">
-              <SpriteIcon name="cart" size={19} className="mr-2 -ml-2" />В корзину
-            </Button>
-          ) : (
-            <div className="w-full">
+          <div className="w-full">
+            <DialogClose asChild>
+              <Button className="w-full" size="lg" variant="secondary">
+                Отмена
+              </Button>
+            </DialogClose>
+          </div>
+          <div className="w-full">
+            {!productStore.isAllOptionsSelected(productStore.selected) ? (
+              <Button className="w-full" size="lg" disabled key="available">
+                <SpriteIcon name="cart" size={19} className="mr-2 -ml-2" />
+                Выберите параметры
+              </Button>
+            ) : productStore.offer ? (
+              <Button className="w-full" size="lg" onClick={addHandler} key="available">
+                <SpriteIcon name="cart" size={19} className="mr-2 -ml-2" />В корзину
+              </Button>
+            ) : (
               <ProductBuyDialog title="Заказать от 1 дня">
                 <Button className="w-full leading-none" size="lg">
                   <SpriteIcon name="one-click" size={22} className="mr-2 -ml-2" />
                   Заказать
                 </Button>
               </ProductBuyDialog>
-            </div>
-          )}
+            )}
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -1,6 +1,4 @@
 import { getCookie } from 'cookies-next'
-
-import { TOKEN_NAME } from '@/constants'
 import { getApiUrl, getClientUrl } from '@/lib/utils'
 
 export class UploadAdapter {
@@ -85,7 +83,7 @@ export class UploadAdapter {
 
   // Prepares the data and sends the request.
   _sendRequest(file) {
-    const token = getCookie(TOKEN_NAME)
+    const token = getCookie(String(process.env.NEXT_PUBLIC_JWT_TOKEN_NAME))
     if (token) {
       this.xhr.setRequestHeader('Authorization', 'Bearer ' + token)
     }

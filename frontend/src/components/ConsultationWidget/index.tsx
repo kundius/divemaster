@@ -3,10 +3,10 @@
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
-import { PrimaryButton, PrimaryButtonArrow } from '../PrimaryButton'
 import styles from './index.module.css'
 import { useState } from 'react'
 import { CheckIcon } from '@heroicons/react/24/outline'
+import { PrimaryButton, PrimaryButtonArrow } from '../PrimaryButton'
 
 interface Fields {
   name: string

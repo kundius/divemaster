@@ -1,4 +1,4 @@
-import { Container } from '@/components/site/Container'
+import { Container } from '@/components/Container'
 
 export default async function Page() {
   return (

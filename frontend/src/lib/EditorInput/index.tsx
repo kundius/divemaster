@@ -1,10 +1,7 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import { getCookie } from 'cookies-next'
 import { ArrowPathIcon } from '@heroicons/react/24/outline'
-
-import { TOKEN_NAME } from '@/constants'
+import { useEffect, useRef } from 'react'
 import styles from './styles.module.css'
 import { UploadAdapter } from './UploadAdapter.mjs'
 

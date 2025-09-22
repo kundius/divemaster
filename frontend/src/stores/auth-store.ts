@@ -1,13 +1,11 @@
-import { deleteCookie, setCookie } from 'cookies-next'
 import { createStore } from 'zustand/vanilla'
-import { MAX_AGE, TOKEN_NAME } from '@/constants'
 import { UserEntity } from '@/types'
-import { apiGet } from '@/lib/api'
+import { apiGet, apiPost } from '@/lib/api'
+import { deleteCookie, setCookie } from 'cookies-next'
 
 export type AuthState = {
   user: UserEntity | null
   loginDialogOpened: boolean
-  loading: boolean
 }
 
 export type AuthActions = {
@@ -15,24 +13,22 @@ export type AuthActions = {
   login(token: string): Promise<void>
   logout(): Promise<void>
   loadUser(): Promise<void>
-  setUser(user: UserEntity): void
+  setUser(user: UserEntity | null): void
   loginDialogToggle(value?: boolean): void
 }
 
-export const createAuthStore = (initialUser?: UserEntity) =>
+export const createAuthStore = () =>
   createStore<AuthState & AuthActions>()((set, get) => ({
-    user: initialUser || null,
+    user: null,
     loginDialogOpened: false,
-    loading: false,
 
     setUser(user) {
       set({ user })
     },
 
     async loadUser() {
-      set({ loading: true })
-      const data = await apiGet<{ user?: UserEntity }>('auth/profile')
-      set({ user: data.user || null, loading: false })
+      const { user = null } = await apiGet<{ user?: UserEntity }>('auth/profile')
+      get().setUser(user)
     },
 
     hasScope(scopes) {
@@ -64,13 +60,16 @@ export const createAuthStore = (initialUser?: UserEntity) =>
     },
 
     async login(token) {
-      setCookie(TOKEN_NAME, token, { path: '/', maxAge: MAX_AGE })
+      setCookie(String(process.env.NEXT_PUBLIC_JWT_TOKEN_NAME), token, {
+        path: '/',
+        maxAge: Number(process.env.NEXT_PUBLIC_JWT_EXPIRE)
+      })
       await get().loadUser()
     },
 
     async logout() {
-      deleteCookie(TOKEN_NAME)
-      set({ user: null })
+      deleteCookie(String(process.env.NEXT_PUBLIC_JWT_TOKEN_NAME))
+      get().setUser(null)
     },
 
     loginDialogToggle(loginDialogOpened) {

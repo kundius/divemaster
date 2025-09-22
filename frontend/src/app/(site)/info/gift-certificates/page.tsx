@@ -1,6 +1,6 @@
 import { Headline } from '@/components/Headline'
 import { SectionPage } from '@/components/SectionPage'
-import { PrimaryButton, PrimaryButtonArrow } from '@/components/site/PrimaryButton'
+import { PrimaryButton, PrimaryButtonArrow } from '@/components/PrimaryButton'
 import Image from 'next/image'
 import Link from 'next/link'
 

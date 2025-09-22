@@ -1,6 +1,7 @@
+import { PrimaryButton, PrimaryButtonArrow } from '@/components/PrimaryButton'
 import Image from 'next/image'
 import styles from './Discount.module.css'
-import { PrimaryButton, PrimaryButtonArrow } from '../PrimaryButton'
+import discountImage from './assets/discount.jpg'
 
 export function Discount() {
   return (
@@ -13,21 +14,15 @@ export function Discount() {
           персональную скидку.
         </div>
         <div className={styles.action}>
-          <PrimaryButton asChild>
-            <a href="/info/discount">
+          <PrimaryButton asChild variant="outline" size="sm">
+            <a href="#">
               Узнать больше
               <PrimaryButtonArrow />
             </a>
           </PrimaryButton>
         </div>
       </div>
-      <Image
-        className={styles.image}
-        src="/benefits/discount.png"
-        width={1920}
-        height={664}
-        alt="Увеличивайте скидку"
-      />
+      <Image className={styles.image} src={discountImage} alt="Увеличивайте скидку" />
     </div>
   )
 }

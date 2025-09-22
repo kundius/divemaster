@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react'
 
-import { Container } from '@/components/site/Container'
+import { Container } from '@/components/Container'
 import { cn } from '@/lib/utils'
 
 import css from './index.module.css'

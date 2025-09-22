@@ -1,6 +1,6 @@
 'use client'
 
-import { PrimaryButton } from '@/components/site/PrimaryButton'
+import { PrimaryButton } from '@/components/PrimaryButton'
 import { useAuthStore } from '@/providers/auth-store-provider'
 import { PropsWithChildren } from 'react'
 

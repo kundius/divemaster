@@ -2,7 +2,7 @@
 
 import { PropsWithChildren } from 'react'
 
-import { PrimaryButton } from '@/components/site/PrimaryButton'
+import { PrimaryButton } from '@/components/PrimaryButton'
 import { useAuthStore } from '@/providers/auth-store-provider'
 import { useCartStore } from '@/providers/cart-store-provider'
 import { Headline } from '@/components/Headline'

@@ -1,8 +1,8 @@
 import { HeaderExtra } from '@/components/HeaderExtra'
-import { Footer } from '@/components/site/Footer'
-import { Header } from '@/components/site/Header'
 import { Metadata } from 'next'
 import { PropsWithChildren } from 'react'
+import { Header } from './_components/Header'
+import { Footer } from './_components/Footer'
 
 export async function generateMetadata(): Promise<Metadata> {
   return {

@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 
-import { Container } from '@/components/site/Container'
+import { Container } from '@/components/Container'
 
 import { Headline } from '@/components/Headline'
 import { Button } from '@/components/ui/button'

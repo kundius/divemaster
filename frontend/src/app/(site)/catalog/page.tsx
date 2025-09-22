@@ -1,35 +1,18 @@
-import {
-  BenefitsSideSlider,
-  BenefitsSideSliderDiscount
-} from '@/components/site/BenefitsSideSlider'
-import { Breadcrumbs, BreadcrumbsProps } from '@/components/site/Breadcrumbs'
-import { ConsultationWidget } from '@/components/site/ConsultationWidget'
-import { Container } from '@/components/site/Container'
-import { ProductsStoreProvider } from '@/providers/products-store-provider'
-import { Content } from '../category/[alias]/_components/Content'
-
-import { Pagination } from './_components/Pagination'
-import { Products } from './_components/Products'
+import { BreadcrumbsProps } from '@/components/Breadcrumbs'
+import { Container } from '@/components/Container'
 import { Headline } from '@/components/Headline'
 import { SectionPage } from '@/components/SectionPage'
+import { apiGet } from '@/lib/api'
+import { arrayToTree } from '@/lib/utils'
+import { CategoryEntity, FindAllResult } from '@/types'
+import { Content } from '../category/[alias]/_components/Content'
+import vsyoDlyaDajvingaJpg from './_assets/vsyo-dlya-dajvinga.jpg'
+import vsyoDlyaPlavaniyaJpg from './_assets/vsyo-dlya-plavaniya.jpg'
+import vsyoDlyaPodvodnojOhotyJpg from './_assets/vsyo-dlya-podvodnoj-ohoty.jpg'
 import { BigCard } from './_components/BigCard'
 
-import vsyoDlyaDajvingaJpg from './_assets/vsyo-dlya-dajvinga.jpg'
-import vsyoDlyaPodvodnojOhotyJpg from './_assets/vsyo-dlya-podvodnoj-ohoty.jpg'
-import vsyoDlyaPlavaniyaJpg from './_assets/vsyo-dlya-plavaniya.jpg'
-import brandsJpg from './_assets/brands.jpg'
-import saleJpg from './_assets/sale.jpg'
-import newJpg from './_assets/new.jpg'
-import { apiGet } from '@/lib/api'
-import { ApiTableData } from '@/lib/ApiTable/types'
-import { CategoryEntity } from '@/types'
-import Link from 'next/link'
-import { SmallCard } from './_components/SmallCard'
-import { arrayToTree } from '@/lib/utils'
-import { Suspense } from 'react'
-
 export default async function Page() {
-  const data = await apiGet<ApiTableData<CategoryEntity>>(`categories`, { limit: 100 })
+  const data = await apiGet<FindAllResult<CategoryEntity>>(`categories`, { limit: 100 })
 
   const categories = arrayToTree<CategoryEntity>(data.rows)
 

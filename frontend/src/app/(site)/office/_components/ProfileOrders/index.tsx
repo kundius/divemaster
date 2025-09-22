@@ -1,6 +1,6 @@
 'use client'
 
-import { Pagination } from '@/components/site/Pagination'
+import { Pagination } from '@/components/Pagination'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'

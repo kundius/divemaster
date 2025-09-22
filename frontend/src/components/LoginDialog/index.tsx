@@ -1,8 +1,7 @@
 'use client'
 
-import { useState, useTransition } from 'react'
-import { toast } from 'sonner'
-import Link from 'next/link'
+import { LabeledInput } from '@/components/LabeledInput'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -12,10 +11,10 @@ import {
 } from '@/components/ui/dialog'
 import { apiPost } from '@/lib/api'
 import { useAuthStore } from '@/providers/auth-store-provider'
-import { LabeledInput } from '@/components/LabeledInput'
-import { Button } from '@/components/ui/button'
-import css from './index.module.css'
+import { UserEntity } from '@/types'
 import { ArrowPathIcon } from '@heroicons/react/24/outline'
+import { useState, useTransition } from 'react'
+import { toast } from 'sonner'
 
 export function LoginDialog() {
   const [showRegistration, setShowRegistration] = useState(false)

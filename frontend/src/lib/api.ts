@@ -1,4 +1,3 @@
-import { TOKEN_NAME } from '@/constants'
 import type { CookieValueTypes, OptionsType } from 'cookies-next'
 import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies'
 import { notFound } from 'next/navigation'
@@ -34,7 +33,7 @@ const applyServerAuth = async (headers: Headers) => {
     _serverCookies = cookies
   }
   const cookieStore = await _serverCookies()
-  const token = cookieStore.get(TOKEN_NAME)
+  const token = cookieStore.get(String(process.env.NEXT_PUBLIC_JWT_TOKEN_NAME))
   if (!!token) {
     headers.set('Authorization', `Bearer ${token.value}`)
   }
@@ -45,7 +44,7 @@ const applyClientAuth = async (headers: Headers) => {
     const { getCookie } = await import('cookies-next')
     _clientCookies = getCookie
   }
-  const token = _clientCookies(TOKEN_NAME)
+  const token = _clientCookies(String(process.env.NEXT_PUBLIC_JWT_TOKEN_NAME))
   if (!!token) {
     headers.set('Authorization', `Bearer ${token}`)
   }

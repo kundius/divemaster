@@ -2,7 +2,7 @@ import { ClockIcon } from '@heroicons/react/24/outline'
 import { Metadata } from 'next'
 
 import { Headline } from '@/components/Headline'
-import { Container } from '@/components/site/Container'
+import { Container } from '@/components/Container'
 import { apiGet } from '@/lib/api'
 import { getFileUrl } from '@/lib/utils'
 import { BlogPostEntity, PageProps } from '@/types'

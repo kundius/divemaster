@@ -1,17 +1,16 @@
 'use client'
 
-import { ApiTableData } from '@/lib/ApiTable/types'
 import { arrayToTree, cn } from '@/lib/utils'
-import { CategoryEntity } from '@/types'
+import { CategoryEntity, FindAllResult } from '@/types'
 import Image from 'next/image'
 import Link from 'next/link'
 import useSWR from 'swr'
-import { Container } from '../Container'
 import styles from './CatalogButtonContent.module.css'
 import { brands } from './menu'
+import { Container } from '@/components/Container'
 
 export default function CatalogButtonContent() {
-  const query = useSWR<ApiTableData<CategoryEntity>>([`categories`, { limit: 100 }])
+  const query = useSWR<FindAllResult<CategoryEntity>>([`categories`, { limit: 100 }])
 
   const categories = arrayToTree<CategoryEntity>(query.data?.rows || [])
 

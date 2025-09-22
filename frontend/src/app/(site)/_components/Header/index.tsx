@@ -1,6 +1,5 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { Container } from '../Container'
 import { CatalogButton } from './CatalogButton'
 import { CatalogMenu } from './CatalogMenu'
 import { DesktopContacts } from './DesktopContacts'
@@ -10,6 +9,7 @@ import { Sticky } from './Sticky'
 import { Toolbar } from './Toolbar'
 import styles from './index.module.css'
 import { SecondaryContainer } from './SecondaryContainer'
+import { Container } from '@/components/Container'
 // import { Garland } from './Garland'
 
 export function Header() {

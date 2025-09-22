@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { Container } from '../Container'
 import { About } from './About'
 import { Bottom } from './Bottom'
 import { Menu } from './Menu'
@@ -7,6 +6,7 @@ import { Payment } from './Payment'
 import { Social } from './Social'
 import { Subscribe } from './Subscribe'
 import styles from './index.module.css'
+import { Container } from '@/components/Container'
 
 export function Footer() {
   return (

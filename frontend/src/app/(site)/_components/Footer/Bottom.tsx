@@ -1,7 +1,7 @@
 import Link from 'next/link'
-import { Container } from '../Container'
 import styles from './Bottom.module.css'
 import Image from 'next/image'
+import { Container } from '@/components/Container'
 
 export function Bottom() {
   return (

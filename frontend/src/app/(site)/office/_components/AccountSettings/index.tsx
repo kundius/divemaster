@@ -1,6 +1,6 @@
 'use client'
 
-import { PrimaryButton } from '@/components/site/PrimaryButton'
+import { PrimaryButton } from '@/components/PrimaryButton'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -88,7 +88,9 @@ export function AccountSettings() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="min-h-full flex flex-col gap-4">
         <div className="max-w-4xl">
           <div>
-            <div className="text-xl font-medium mb-6 max-md:text-base max-md:mb-4">Личная информация</div>
+            <div className="text-xl font-medium mb-6 max-md:text-base max-md:mb-4">
+              Личная информация
+            </div>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-1">
                 <FormField
@@ -260,7 +262,9 @@ export function AccountSettings() {
           </div>
 
           <div className="mt-16">
-            <div className="text-xl font-medium mb-6 max-md:text-base max-md:mb-4">Изменение пароля</div>
+            <div className="text-xl font-medium mb-6 max-md:text-base max-md:mb-4">
+              Изменение пароля
+            </div>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-1">
                 <FormField

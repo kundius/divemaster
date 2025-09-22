@@ -1,10 +1,8 @@
 'use client'
 
+import { AuthActions, AuthState, createAuthStore } from '@/stores/auth-store'
 import { type ReactNode, createContext, useContext, useLayoutEffect, useRef } from 'react'
 import { useStore } from 'zustand'
-
-import { AuthActions, AuthState, createAuthStore } from '@/stores/auth-store'
-import { UserEntity } from '@/types'
 
 export type AuthStoreApi = ReturnType<typeof createAuthStore>
 
@@ -12,13 +10,12 @@ export const AuthStoreContext = createContext<AuthStoreApi | undefined>(undefine
 
 export interface AuthStoreProviderProps {
   children: ReactNode
-  initialUser?: UserEntity
 }
 
-export const AuthStoreProvider = ({ children, initialUser }: AuthStoreProviderProps) => {
+export const AuthStoreProvider = ({ children }: AuthStoreProviderProps) => {
   const storeRef = useRef<AuthStoreApi>(null)
   if (!storeRef.current) {
-    storeRef.current = createAuthStore(initialUser)
+    storeRef.current = createAuthStore()
   }
 
   useLayoutEffect(() => {
@@ -26,9 +23,7 @@ export const AuthStoreProvider = ({ children, initialUser }: AuthStoreProviderPr
 
     if (!store) return
 
-    if (!initialUser) {
-      store.getState().loadUser()
-    }
+    store.getState().loadUser()
   }, [])
 
   return <AuthStoreContext.Provider value={storeRef.current}>{children}</AuthStoreContext.Provider>

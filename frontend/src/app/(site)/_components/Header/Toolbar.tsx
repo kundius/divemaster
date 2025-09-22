@@ -1,21 +1,18 @@
 'use client'
 
+import { SpriteIcon } from '@/components/SpriteIcon'
 import { cn } from '@/lib/utils'
-import styles from './Toolbar.module.css'
-import Link from 'next/link'
-import { useMobileNavigation } from '../../MobileNavigation'
 import { useAuthStore } from '@/providers/auth-store-provider'
 import { useCartStore } from '@/providers/cart-store-provider'
-import { SpriteIcon } from '@/components/SpriteIcon'
-import { Skeleton } from '@/components/ui/skeleton'
-import { MouseEvent } from 'react'
 import { useWishlistStore } from '@/providers/whishlist-store-provider'
+import Link from 'next/link'
+import styles from './Toolbar.module.css'
+import { useMobileNavigation } from '@/components/MobileNavigation'
 
 export function Toolbar() {
   const wishlistProducts = useWishlistStore((state) => state.products)
   const cartTotal = useCartStore((state) => state.total)
   const authUser = useAuthStore((state) => state.user)
-  const authLoading = useAuthStore((state) => state.loading)
   const loginDialogToggle = useAuthStore((state) => state.loginDialogToggle)
   const mobileNavigation = useMobileNavigation()
 
@@ -72,36 +69,29 @@ export function Toolbar() {
           <span className={styles.badge}>{wishlistProducts.favourites.length}</span>
         )}
       </Link>
-      {!authLoading ? (
-        !authUser ? (
-          <button onClick={() => loginDialogToggle(true)} className={cn(styles.button, 'block')}>
-            <span className={styles.icon}>
-              <SpriteIcon name="login" size={24} />
-            </span>
-            <span className={styles.title}>Войти</span>
-          </button>
-        ) : (
-          <Link
-            href="/office"
-            className={cn(styles.button, 'block')}
-            onNavigate={officeClickHandler}
-          >
-            <span className={styles.icon}>
-              <SpriteIcon name="toolbar-profile" size={24} />
-            </span>
-            <span className={styles.title}>Профиль</span>
-          </Link>
-        )
+      {!authUser ? (
+        <button onClick={() => loginDialogToggle(true)} className={cn(styles.button, 'block')}>
+          <span className={styles.icon}>
+            <SpriteIcon name="login" size={24} />
+          </span>
+          <span className={styles.title}>Войти</span>
+        </button>
       ) : (
-        <div className={cn(styles.button, 'block')}>
+        <Link href="/office" className={cn(styles.button, 'block')} onNavigate={officeClickHandler}>
+          <span className={styles.icon}>
+            <SpriteIcon name="toolbar-profile" size={24} />
+          </span>
+          <span className={styles.title}>Профиль</span>
+        </Link>
+      )}
+      {/* <div className={cn(styles.button, 'block')}>
           <span className={styles.icon}>
             <Skeleton className="w-[24px] h-[24px] rounded bg-neutral-50/50" />
           </span>
           <span className={styles.title}>
             <Skeleton className="w-[47px] h-[12px] rounded bg-neutral-50/50" />
           </span>
-        </div>
-      )}
+        </div> */}
       <Link href="/office/comparison#" className={cn(styles.button, 'block')}>
         <span className={styles.icon}>
           <SpriteIcon name="comparison" size={24} />

@@ -8,11 +8,11 @@ import { usePrevNextButtons } from '@/lib/EmblaCarousel/usePrevNextButtons'
 import { EmblaCarouselType, EmblaEventType } from 'embla-carousel'
 import useEmblaCarousel from 'embla-carousel-react'
 import { ReactNode, useCallback, useEffect, useRef } from 'react'
-import { CarpHunting } from '@/components/site/HeroSlider/CarpHunting'
-import { Discount } from '@/components/site/HeroSlider/Discount'
-import { Expert } from '@/components/site/HeroSlider/Expert'
-import { NewYear } from '@/components/site/HeroSlider/NewYear'
-import { Spearfishing } from '@/components/site/HeroSlider/Spearfishing'
+import { CarpHunting } from './CarpHunting'
+import { Discount } from './Discount'
+import { Expert } from './Expert'
+import { NewYear } from './NewYear'
+import { Spearfishing } from './Spearfishing'
 
 const TWEEN_FACTOR_BASE = 0.2
 

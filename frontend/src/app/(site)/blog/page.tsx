@@ -1,7 +1,7 @@
 import { BlogPostCard } from '@/components/BlogPostCard'
 import { Headline } from '@/components/Headline'
 import { SectionPage } from '@/components/SectionPage'
-import { StaticPagination } from '@/components/site/StaticPagination'
+import { StaticPagination } from '@/components/StaticPagination'
 import { Button } from '@/components/ui/button'
 import { apiGet } from '@/lib/api'
 import { BlogPostEntity, FindAllResult, PageProps } from '@/types'

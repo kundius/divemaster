@@ -1,5 +1,5 @@
-import { Breadcrumbs, BreadcrumbsProps } from '@/components/site/Breadcrumbs'
-import { Container } from '@/components/site/Container'
+import { Breadcrumbs, BreadcrumbsProps } from '@/components/Breadcrumbs'
+import { Container } from '@/components/Container'
 import { ApiTableData } from '@/lib/ApiTable/types'
 import { apiGet } from '@/lib/api'
 import { cn, getFileUrl } from '@/lib/utils'

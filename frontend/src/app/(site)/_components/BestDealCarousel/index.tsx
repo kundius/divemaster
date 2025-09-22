@@ -5,14 +5,13 @@ import { ProductCard } from '@/components/ProductCard'
 import useEmblaCarousel from 'embla-carousel-react'
 import styles from './index.module.css'
 import { ProductEntity } from '@/types'
-import { getFileUrl } from '@/lib/utils'
 import { ProductStoreProvider } from '@/providers/product-store-provider'
 
-export interface BestDdealCarouselProps {
+export interface BestDealCarouselProps {
   items: ProductEntity[]
 }
 
-export function BestDdealCarousel({ items }: BestDdealCarouselProps) {
+export function BestDealCarousel({ items }: BestDealCarouselProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: false
   })

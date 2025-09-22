@@ -1,17 +1,11 @@
 import type { Metadata } from 'next'
 
-import {
-  BenefitsSideSlider,
-  BenefitsSideSliderDiscount
-} from '@/components/site/BenefitsSideSlider'
-import { Breadcrumbs, BreadcrumbsProps } from '@/components/site/Breadcrumbs'
-import { ConsultationWidget } from '@/components/site/ConsultationWidget'
-import { Container } from '@/components/site/Container'
-import { ApiTableData } from '@/lib/ApiTable/types'
+import { Breadcrumbs, BreadcrumbsProps } from '@/components/Breadcrumbs'
+import { Container } from '@/components/Container'
 import { apiGet } from '@/lib/api'
 import { getFileUrl } from '@/lib/utils'
 import { ProductsStoreProvider } from '@/providers/products-store-provider'
-import { CategoryEntity, PageProps } from '@/types'
+import { CategoryEntity, FindAllResult, PageProps } from '@/types'
 import { CategoryCard } from './_components/CategoryCard'
 import { Filter } from './_components/Filter'
 import { Sorting } from './_components/Sorting'
@@ -21,9 +15,14 @@ import { Content } from './_components/Content'
 import { Headline } from '@/components/Headline'
 import { SectionPage } from '@/components/SectionPage'
 import { Suspense } from 'react'
+import { ConsultationWidget } from '@/components/ConsultationWidget'
+import {
+  BenefitsSideSlider,
+  BenefitsSideSliderDiscount
+} from '../../_components/BenefitsSideSlider'
 
 export async function generateStaticParams() {
-  const categories = await apiGet<ApiTableData<CategoryEntity>>(`categories`, { limit: 100 })
+  const categories = await apiGet<FindAllResult<CategoryEntity>>(`categories`, { limit: 100 })
   return categories.rows.map(({ alias }) => ({ alias }))
 }
 
@@ -39,7 +38,7 @@ export default async function Page({ params }: PageProps<{ alias: string }>) {
   const { alias } = await params
   const [category, categories] = await Promise.all([
     apiGet<CategoryEntity>(`categories/alias:${alias}`, {}),
-    apiGet<ApiTableData<CategoryEntity>>(`categories`, { limit: 100 })
+    apiGet<FindAllResult<CategoryEntity>>(`categories`, { limit: 100 })
   ])
 
   const crumbs: BreadcrumbsProps['items'] = [

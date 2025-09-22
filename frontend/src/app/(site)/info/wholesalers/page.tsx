@@ -1,8 +1,8 @@
 import { Headline } from '@/components/Headline'
 import { LabeledInput } from '@/components/LabeledInput'
 import { SectionPage } from '@/components/SectionPage'
-import { Container } from '@/components/site/Container'
-import { PrimaryButton, PrimaryButtonArrow } from '@/components/site/PrimaryButton'
+import { Container } from '@/components/Container'
+import { PrimaryButton, PrimaryButtonArrow } from '@/components/PrimaryButton'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
@@ -108,11 +108,11 @@ export default function Page() {
           <div className="grid gap-12 text-center md:grid-cols-2">
             <div>
               <p className="mb-4 text-xl text-neutral-500">
-              &ldquo;Хочу отметить хорошее качество товара и в меру мягкий силикон масок и трубок.
+                &ldquo;Хочу отметить хорошее качество товара и в меру мягкий силикон масок и трубок.
                 Оптимальный вариант для воды в нашем регионе и контуров лиц. Для ласт хорошо
                 подобрана толщина бортиков и жёсткость, ласты стали помягче, чем их
-                модель-предшественник бора-бора. В целом соотношение &ldquo;цена/качество&rdquo; очень хорошее,
-                всем рекомендую!&rdquo;
+                модель-предшественник бора-бора. В целом соотношение &ldquo;цена/качество&rdquo;
+                очень хорошее, всем рекомендую!&rdquo;
               </p>
               <p className="italic">
                 Магазины подводного снаряжения &ldquo;Акула&rdquo;, г. Анапа - Юрий Трунев
@@ -131,8 +131,9 @@ export default function Page() {
 
             <div>
               <p className="mb-4 text-xl text-neutral-500">
-                &ldquo;Продукцию Divemaster приобретаем с момента появления бренда, всем довольны. Продажи
-                товаров отличные, покупателям всё нравится, никаких претензий не поступало.&rdquo;
+                &ldquo;Продукцию Divemaster приобретаем с момента появления бренда, всем довольны.
+                Продажи товаров отличные, покупателям всё нравится, никаких претензий не
+                поступало.&rdquo;
               </p>
               <p className="italic">
                 Магазин &ldquo;Всё для подводной охоты&rdquo;, г. Новороссийск - Михаил Кузнецов
@@ -141,9 +142,9 @@ export default function Page() {
 
             <div>
               <p className="mb-4 text-xl text-neutral-500">
-                &ldquo;О продукции можем сказать только самое хорошее. &ldquo;Цена/качество&rdquo; - просто отлично.
-                Расширяйтесь, с вами приятно работать! Самые лучшие наши партнёры по поставкам
-                товаров для подводного плавания.&rdquo;
+                &ldquo;О продукции можем сказать только самое хорошее. &ldquo;Цена/качество&rdquo; -
+                просто отлично. Расширяйтесь, с вами приятно работать! Самые лучшие наши партнёры по
+                поставкам товаров для подводного плавания.&rdquo;
               </p>
               <p className="italic">
                 Магазин подводного снаряжения, г. Геленджик - Валентина Рудавина

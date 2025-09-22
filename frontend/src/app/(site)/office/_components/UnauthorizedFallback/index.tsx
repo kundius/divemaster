@@ -1,11 +1,11 @@
 'use client'
 
-import { PrimaryButton } from '@/components/site/PrimaryButton'
+import { PrimaryButton } from '@/components/PrimaryButton'
 import { useAuthStore } from '@/providers/auth-store-provider'
 
 export function UnauthorizedFallback() {
   const loginDialogToggle = useAuthStore((state) => state.loginDialogToggle)
-  
+
   return (
     <div className="space-y-4">
       <div className="space-y-1">

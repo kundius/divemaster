@@ -3,7 +3,6 @@ import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import slugifyFn from 'slugify'
 import { getCookie } from 'cookies-next'
-import { TOKEN_NAME } from '../constants'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -86,7 +85,7 @@ export function slugify(value: string) {
 }
 
 export const uploadFile = async (file: File): Promise<FileEntity> => {
-  const Bearer = getCookie(TOKEN_NAME)
+  const Bearer = getCookie(String(process.env.NEXT_PUBLIC_JWT_TOKEN_NAME))
   const fd = new FormData()
   fd.append('file', file)
   const uploadResponse = await fetch(`${getApiUrl()}storage/upload`, {
@@ -187,4 +186,28 @@ export const arrayToTree = <T>(
     }
   }
   return roots
+}
+
+export function proxyHeaders(input: Headers) {
+  const SAFE_HEADERS = [
+    'content-type',
+    'accept',
+    'user-agent',
+    'referer',
+    'accept-language',
+    'accept-encoding',
+    'x-forwarded-for',
+    'x-forwarded-proto',
+    'x-forwarded-host'
+  ]
+
+  const headers = new Headers()
+
+  for (const [key, value] of input.entries()) {
+    if (SAFE_HEADERS.includes(key.toLowerCase())) {
+      headers.set(key, value)
+    }
+  }
+
+  return headers
 }

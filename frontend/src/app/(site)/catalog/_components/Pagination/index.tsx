@@ -1,6 +1,6 @@
 'use client'
 
-import { Pagination as SitePagination } from '@/components/site/Pagination'
+import { Pagination as SitePagination } from '@/components/Pagination'
 import { useProductsStore } from '@/providers/products-store-provider'
 
 export function Pagination() {

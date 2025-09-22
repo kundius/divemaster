@@ -1,8 +1,8 @@
-import Link from 'next/link'
-import { Container } from '../Container'
-import { PrimaryButton, PrimaryButtonArrow } from '../PrimaryButton'
-import styles from './index.module.css'
+import { Container } from '@/components/Container'
+import { PrimaryButton, PrimaryButtonArrow } from '@/components/PrimaryButton'
 import Image from 'next/image'
+import Link from 'next/link'
+import styles from './index.module.css'
 
 export function HomeAbout() {
   return (

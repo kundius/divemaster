@@ -1,11 +1,11 @@
-import { ApiTableData } from '@/lib/ApiTable/types'
-import { AllCategories } from '@/components/site/AllCategories'
-import { BenefitsSlider, BenefitsSliderDiscount } from '@/components/site/BenefitsSlider'
-import { BestDdealCarousel } from '@/components/site/BestDdealCarousel'
-import { BestsellersCarousel } from '@/components/site/BestsellersCarousel'
-import { BrandsCarousel } from '@/components/site/BrandsCarousel'
-import { Container } from '@/components/site/Container'
-import { FooterBenefits } from '@/components/site/FooterBenefits'
+import { AllCategories } from '@/app/(site)/_components/AllCategories'
+import { BestDealCarousel } from '@/app/(site)/_components/BestDealCarousel'
+import { BestsellersCarousel } from '@/app/(site)/_components/BestsellersCarousel'
+import { BrandsCarousel } from '@/app/(site)/_components/BrandsCarousel'
+import { Container } from '@/components/Container'
+import { FooterBenefits } from '@/app/(site)/_components/FooterBenefits'
+import { apiGet } from '@/lib/api'
+import { FindAllResult, ProductEntity } from '@/types'
 import {
   HeroSlider,
   HeroSliderCarpHunting,
@@ -13,14 +13,13 @@ import {
   HeroSliderExpert,
   HeroSliderNewYear,
   HeroSliderSpearfishing
-} from '@/components/site/HeroSlider'
-import { HomeAbout } from '@/components/site/HomeAbout'
-import { apiGet } from '@/lib/api'
-import { ProductEntity } from '@/types'
+} from './_components/HeroSlider'
+import { BenefitsSlider, BenefitsSliderDiscount } from './_components/BenefitsSlider'
+import { HomeAbout } from './_components/HomeAbout'
 
 export default async function Page() {
   const [favoriteProducts, recentProducts] = await Promise.all([
-    apiGet<ApiTableData<ProductEntity>>(
+    apiGet<FindAllResult<ProductEntity>>(
       `products`,
       {
         limit: 10,
@@ -37,7 +36,7 @@ export default async function Page() {
         }
       }
     ),
-    apiGet<ApiTableData<ProductEntity>>(
+    apiGet<FindAllResult<ProductEntity>>(
       `products`,
       {
         limit: 10,
@@ -150,7 +149,7 @@ export default async function Page() {
       />
       <div className="pt-32 pb-16 overflow-hidden max-md:pt-12 max-md:pb-8">
         <Container className="space-y-20 max-md:space-y-16">
-          <BestDdealCarousel items={recentProducts.rows} />
+          <BestDealCarousel items={recentProducts.rows} />
           <div className="space-y-6">
             <div className="text-lg font-bold font-sans-narrow uppercase max-md:text-base ">
               Снаряжение для подводной охоты, дайвинга и плавания

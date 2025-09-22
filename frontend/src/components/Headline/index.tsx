@@ -1,10 +1,8 @@
 import Link from 'next/link'
-import { Breadcrumbs, BreadcrumbsProps } from '../site/Breadcrumbs'
+import { Breadcrumbs, BreadcrumbsProps } from '../Breadcrumbs'
 import css from './index.module.css'
-import { ChevronLeftIcon } from '@heroicons/react/24/outline'
 import { cn } from '@/lib/utils'
 import { MouseEventHandler, ReactNode } from 'react'
-import { diving } from '../site/Header/menu'
 
 export interface HeadlineProps {
   breadcrumbs?: BreadcrumbsProps['items']

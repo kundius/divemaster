@@ -1,16 +1,15 @@
 'use client'
 
-import { CheckCircleIcon, PencilIcon, TrashIcon, XCircleIcon } from '@heroicons/react/24/outline'
-import Link from 'next/link'
-import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryStates } from 'nuqs'
-import useSWR from 'swr'
 import { DataTable, DataTableColumn, DataTableFilterField } from '@/components/DataTable'
 import { Button } from '@/components/ui/button'
 import { ApiRemoveDialog } from '@/lib/ApiRemoveDialog'
 import { clearEmpty, getFileUrl } from '@/lib/utils'
 import { CategoryEntity, FindAllResult } from '@/types'
-import { Badge } from '@/components/ui/badge'
+import { CheckCircleIcon, PencilIcon, TrashIcon, XCircleIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
+import Link from 'next/link'
+import { parseAsInteger, parseAsString, useQueryStates } from 'nuqs'
+import useSWR from 'swr'
 
 export interface CategoriesListProps {
   fallbackData?: FindAllResult<CategoryEntity>

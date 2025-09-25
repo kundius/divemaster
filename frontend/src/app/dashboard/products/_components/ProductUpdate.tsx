@@ -1,37 +1,53 @@
 'use client'
 
-import { useApiForm } from '@/lib/ApiForm'
+import { Form } from '@/components/ui/form'
+import { apiPatch } from '@/lib/api'
 import { slugify } from '@/lib/utils'
 import { ProductEntity } from '@/types'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { ProductForm, ProductFormFields, ProductFormSchema } from './ProductForm'
 
 export interface ProductUpdateProps {
-  initialData: ProductEntity
+  record: ProductEntity
 }
 
-export function ProductUpdate({ initialData }: ProductUpdateProps) {
-  const [form, onSubmit] = useApiForm<ProductFormFields>({
-    url: `products/${initialData.id}`,
-    method: 'PATCH',
-    schema: ProductFormSchema,
+export function ProductUpdate({ record }: ProductUpdateProps) {
+  const form = useForm<ProductFormFields>({
+    resolver: zodResolver(ProductFormSchema),
     defaultValues: {
-      title: initialData.title,
-      alias: initialData.alias,
-      priceDecrease: initialData.priceDecrease,
-      longTitle: initialData.longTitle,
-      sku: initialData.sku,
-      rank: initialData.rank,
-      brandId: initialData.brandId || null,
-      active: initialData.active,
-      recent: initialData.recent,
-      favorite: initialData.favorite,
-      inStock: initialData.inStock
-    },
-    mapValues: (values) => {
-      values.alias = slugify(values.alias || values.title)
-      form.setValue('alias', values.alias)
-      return values
+      title: record.title,
+      alias: record.alias,
+      priceDecrease: record.priceDecrease,
+      longTitle: record.longTitle,
+      sku: record.sku,
+      rank: record.rank,
+      brandId: record.brandId || null,
+      active: record.active,
+      recent: record.recent,
+      favorite: record.favorite,
+      inStock: record.inStock
     }
   })
-  return <ProductForm form={form} onSubmit={onSubmit} />
+
+  const onSubmit = async (values: ProductFormFields) => {
+    values.alias = slugify(values.alias || values.title)
+    form.setValue('alias', values.alias)
+
+    try {
+      await apiPatch(`products/${record.id}`, values)
+      toast.success('Товар изменен')
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Unknown error')
+    }
+  }
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <ProductForm />
+      </form>
+    </Form>
+  )
 }

@@ -66,31 +66,20 @@ export function PropertyList({ fallbackData }: PropertyListProps) {
     },
     {
       key: 'key',
-      label: 'Ключ',
-      headProps: {
-        className: 'w-5/12'
-      }
+      label: 'Ключ'
     },
     {
       key: 'caption',
-      label: 'Подпись',
-      headProps: {
-        className: 'w-5/12'
-      }
+      label: 'Подпись'
     },
     {
       key: 'type',
-      label: 'Тип',
-      headProps: {
-        className: 'w-5/12'
-      }
+      label: 'Тип'
     },
     {
       key: 'inFilter',
       label: 'Фильтр',
-      headProps: {
-        className: 'w-1/12'
-      },
+      headProps: {},
       formatter: (active) => {
         const Icon = active ? CheckCircleIcon : XCircleIcon
         const color = active ? 'text-green-500' : 'text-amber-500'

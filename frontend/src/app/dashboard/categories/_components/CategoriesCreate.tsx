@@ -1,6 +1,7 @@
 'use client'
 
 import { Form } from '@/components/ui/form'
+import { apiPost } from '@/lib/api'
 import { slugify } from '@/lib/utils'
 import { CategoryEntity } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -8,7 +9,6 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { CategoriesFormFields, CategoriesFormSchema, CategoryForm } from './CategoriesForm'
-import { apiPost } from '@/lib/api'
 
 export function CategoriesCreate() {
   const router = useRouter()

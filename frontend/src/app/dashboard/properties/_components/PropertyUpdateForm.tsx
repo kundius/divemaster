@@ -1,30 +1,43 @@
 'use client'
 
-import { useApiForm } from '@/lib/ApiForm'
+import { Form } from '@/components/ui/form'
+import { apiPatch } from '@/lib/api'
 import { PropertyEntity } from '@/types'
-import { useRouter } from 'next/navigation'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { PropertyForm, PropertyFormFields, PropertyFormSchema } from './PropertyForm'
 
 export interface PropertyUpdateFormProps {
-  initialData: PropertyEntity
+  record: PropertyEntity
 }
 
-export function PropertyUpdateForm({ initialData }: PropertyUpdateFormProps) {
-  const router = useRouter()
-  const [form, onSubmit] = useApiForm<PropertyFormFields, PropertyEntity>({
-    url: `properties/${initialData.id}`,
-    method: 'PATCH',
-    schema: PropertyFormSchema,
+export function PropertyUpdateForm({ record }: PropertyUpdateFormProps) {
+  const form = useForm<PropertyFormFields>({
+    resolver: zodResolver(PropertyFormSchema),
     defaultValues: {
-      inFilter: initialData.inFilter,
-      key: initialData.key,
-      caption: initialData.caption,
-      type: initialData.type,
-      rank: initialData.rank
-    },
-    onSuccess() {
-      router.push(`/dashboard/properties`)
+      inFilter: record.inFilter,
+      key: record.key,
+      caption: record.caption,
+      type: record.type,
+      rank: record.rank
     }
   })
-  return <PropertyForm form={form} onSubmit={onSubmit} />
+
+  const onSubmit = async (values: PropertyFormFields) => {
+    try {
+      await apiPatch(`properties/${record.id}`, values)
+      toast.success('Характеристика изменена')
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Unknown error')
+    }
+  }
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <PropertyForm />
+      </form>
+    </Form>
+  )
 }

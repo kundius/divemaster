@@ -1,10 +1,9 @@
-import { VerticalNav } from '@/components/VerticalNav'
-import { PageLayout } from '@/app/dashboard/_components/PageLayout'
 import { Metadata } from 'next'
-import { PropsWithChildren } from 'react'
+import { AppPage, AppPageContent, AppPageHeader, AppPageTitle } from '../../_components/AppPage'
+import { SubNav } from '../../_components/SubNav'
 
 export const metadata: Metadata = {
-  title: 'Редактировать параметр'
+  title: 'Редактировать характеристику'
 }
 
 export default async function Layout({
@@ -15,19 +14,25 @@ export default async function Layout({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const items = [
+  const nav = [
     {
       title: 'Свойства',
-      href: `/dashboard/properties/${id}`
+      url: `/dashboard/properties/${id}`
     },
     {
       title: 'Категории',
-      href: `/dashboard/properties/${id}/categories`
+      url: `/dashboard/properties/${id}/categories`
     }
   ]
   return (
-    <PageLayout title="Редактировать параметр" aside={<VerticalNav items={items} />}>
-      {children}
-    </PageLayout>
+    <AppPage>
+      <AppPageHeader>
+        <AppPageTitle>Редактировать характеристику</AppPageTitle>
+      </AppPageHeader>
+      <AppPageContent>
+        <SubNav items={nav} />
+        {children}
+      </AppPageContent>
+    </AppPage>
   )
 }

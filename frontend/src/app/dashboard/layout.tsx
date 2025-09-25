@@ -1,14 +1,12 @@
-import { PropsWithChildren } from 'react'
-
 import { HasScope } from '@/lib/HasScope'
-
+import { PropsWithChildren } from 'react'
 import { AccessDenied } from './_components/AccessDenied'
-import { DashboardLayout } from './_components/DashboardLayout'
+import { AppLayout } from './_components/AppLayout'
 
 export default async function Layout({ children }: PropsWithChildren) {
   return (
     <HasScope fallback={<AccessDenied />} scopes="admin">
-      <DashboardLayout>{children}</DashboardLayout>
+      <AppLayout>{children}</AppLayout>
     </HasScope>
   )
 }

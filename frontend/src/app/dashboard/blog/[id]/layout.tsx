@@ -1,9 +1,6 @@
 import type { Metadata } from 'next'
-import { PropsWithChildren } from 'react'
-
-import { PageLayout } from '@/app/dashboard/_components/PageLayout'
-import { VerticalNav } from '@/components/VerticalNav'
-import { PageProps } from '@/types'
+import { AppPage, AppPageContent, AppPageHeader, AppPageTitle } from '../../_components/AppPage'
+import { SubNav } from '../../_components/SubNav'
 
 export const metadata: Metadata = {
   title: 'Редактировать пост'
@@ -13,23 +10,29 @@ export default async function Page({
   children,
   params
 }: {
-  children: React.ReactNode,
+  children: React.ReactNode
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const items = [
+  const nav = [
     {
       title: 'Свойства',
-      href: `/dashboard/blog/${id}`
+      url: `/dashboard/blog/${id}`
     },
     {
       title: 'Метаданные',
-      href: `/dashboard/blog/${id}/metadata`
+      url: `/dashboard/blog/${id}/metadata`
     }
   ]
   return (
-    <PageLayout title="Редактировать пост" aside={<VerticalNav items={items} />}>
-      {children}
-    </PageLayout>
+    <AppPage>
+      <AppPageHeader>
+        <AppPageTitle>Редактировать пост</AppPageTitle>
+      </AppPageHeader>
+      <AppPageContent>
+        <SubNav items={nav} />
+        {children}
+      </AppPageContent>
+    </AppPage>
   )
 }

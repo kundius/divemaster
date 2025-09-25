@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
-
-import { PageLayout } from '@/app/dashboard/_components/PageLayout'
-
-import { UserForm } from '../_components/UserForm'
+import { AppPage, AppPageContent, AppPageHeader, AppPageTitle } from '../../_components/AppPage'
+import { UserCreate } from '../_components/UserCreate'
 
 export const metadata: Metadata = {
   title: 'Добавить пользователя'
@@ -10,9 +8,13 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   return (
-    <PageLayout title="Добавить пользователя">
-      <UserForm />
-    </PageLayout>
+    <AppPage>
+      <AppPageHeader>
+        <AppPageTitle>Добавить пользователя</AppPageTitle>
+      </AppPageHeader>
+      <AppPageContent>
+        <UserCreate />
+      </AppPageContent>
+    </AppPage>
   )
 }
-

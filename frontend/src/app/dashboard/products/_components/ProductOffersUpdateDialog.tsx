@@ -25,7 +25,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { apiPatch, apiPost } from '@/lib/api'
+import { apiPatch } from '@/lib/api'
 import { OfferEntity, PropertyEntity } from '@/types'
 import { ArrowPathIcon } from '@heroicons/react/24/outline'
 import { useToggle } from '@reactuses/core'

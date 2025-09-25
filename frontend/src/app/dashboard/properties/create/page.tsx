@@ -1,25 +1,33 @@
-import { PageLayout } from '@/app/dashboard/_components/PageLayout'
 import type { Metadata } from 'next'
+import { AppPage, AppPageContent, AppPageHeader, AppPageTitle } from '../../_components/AppPage'
+import { SubNav } from '../../_components/SubNav'
 import { PropertyCreateForm } from '../_components/PropertyCreateForm'
-import { VerticalNav } from '@/components/VerticalNav'
 
 export const metadata: Metadata = {
-  title: 'Добавить параметр'
+  title: 'Добавить характеристику'
 }
 
 export default function Page() {
-  const items = [
+  const nav = [
     {
       title: 'Свойства',
-      href: `/dashboard/properties/create`
+      url: `/dashboard/properties/create`
     },
     {
-      title: 'Категории'
+      title: 'Категории',
+      url: '#',
+      disabled: true
     }
   ]
   return (
-    <PageLayout title="Добавить параметр" aside={<VerticalNav items={items} />}>
-      <PropertyCreateForm />
-    </PageLayout>
+    <AppPage>
+      <AppPageHeader>
+        <AppPageTitle>Добавить характеристику</AppPageTitle>
+      </AppPageHeader>
+      <AppPageContent>
+        <SubNav items={nav} />
+        <PropertyCreateForm />
+      </AppPageContent>
+    </AppPage>
   )
 }

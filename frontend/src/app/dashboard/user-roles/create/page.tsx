@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
-
-import { PageLayout } from '@/app/dashboard/_components/PageLayout'
-
-import { UserRoleForm } from '../_components/UserRoleForm'
+import { AppPage, AppPageContent, AppPageHeader, AppPageTitle } from '../../_components/AppPage'
+import { UserRoleCreate } from '../_components/UserRoleCreate'
 
 export const metadata: Metadata = {
   title: 'Добавить доступ'
@@ -10,9 +8,13 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   return (
-    <PageLayout title="Добавить доступ">
-      <UserRoleForm />
-    </PageLayout>
+    <AppPage>
+      <AppPageHeader>
+        <AppPageTitle>Добавить доступ</AppPageTitle>
+      </AppPageHeader>
+      <AppPageContent>
+        <UserRoleCreate />
+      </AppPageContent>
+    </AppPage>
   )
 }
-

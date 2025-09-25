@@ -1,19 +1,9 @@
 'use client'
 
-import { diving } from '@/components/site/Header/menu'
 import { Button } from '@/components/ui/button'
 import { CreateablePicker, CreateablePickerItem } from '@/components/ui/createable-picker'
 import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
-import { Textarea } from '@/components/ui/textarea'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { apiPatch } from '@/lib/api'
 import { colors } from '@/lib/colors'
 import { PropertyEntity, PropertyType } from '@/types'

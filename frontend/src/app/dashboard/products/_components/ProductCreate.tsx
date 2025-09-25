@@ -1,17 +1,20 @@
 'use client'
 
-import { useApiForm } from '@/lib/ApiForm'
+import { Form } from '@/components/ui/form'
+import { apiPost } from '@/lib/api'
 import { slugify } from '@/lib/utils'
 import { ProductEntity } from '@/types'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { ProductForm, ProductFormFields, ProductFormSchema } from './ProductForm'
 
 export function ProductCreate() {
   const router = useRouter()
-  const [form, onSubmit] = useApiForm<ProductFormFields, ProductEntity>({
-    url: `products`,
-    method: 'POST',
-    schema: ProductFormSchema,
+
+  const form = useForm<ProductFormFields>({
+    resolver: zodResolver(ProductFormSchema),
     defaultValues: {
       title: '',
       alias: '',
@@ -24,15 +27,27 @@ export function ProductCreate() {
       recent: false,
       favorite: false,
       inStock: false
-    },
-    mapValues: (values) => {
-      values.alias = slugify(values.alias || values.title)
-      form.setValue('alias', values.alias)
-      return values
-    },
-    onSuccess: (data) => {
-      router.push(`/dashboard/products/${data.id}`)
     }
   })
-  return <ProductForm form={form} onSubmit={onSubmit} />
+
+  const onSubmit = async (values: ProductFormFields) => {
+    values.alias = slugify(values.alias || values.title)
+    form.setValue('alias', values.alias)
+
+    try {
+      const result = await apiPost<ProductEntity>(`products`, values)
+      toast.success('Товар добавлен')
+      router.push(`/dashboard/products/${result.id}`)
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Unknown error')
+    }
+  }
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <ProductForm />
+      </form>
+    </Form>
+  )
 }

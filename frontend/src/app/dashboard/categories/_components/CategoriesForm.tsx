@@ -29,7 +29,7 @@ export function CategoryForm() {
   const router = useRouter()
   const { control, formState } = useFormContext<CategoriesFormFields>()
   return (
-    <div className="space-y-6">
+    <div className="flex flex-1 flex-col gap-4 md:gap-6">
       <div className="flex gap-6">
         <div className="w-1/2">
           <FormField

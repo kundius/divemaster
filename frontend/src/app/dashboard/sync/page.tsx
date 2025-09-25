@@ -1,5 +1,11 @@
-import { PageLayout } from '@/app/dashboard/_components/PageLayout'
 import type { Metadata } from 'next'
+import {
+  AppPage,
+  AppPageActions,
+  AppPageContent,
+  AppPageHeader,
+  AppPageTitle
+} from '../_components/AppPage'
 import { TasksProvider } from './_components/TasksProvider'
 import { TasksTable } from './_components/TasksTable'
 import { Upload } from './_components/Upload'
@@ -9,12 +15,19 @@ export const metadata: Metadata = {
 }
 
 export default async function Page() {
-  const actions = [<Upload key="create" />]
   return (
     <TasksProvider>
-      <PageLayout title="Синхронизация" actions={actions}>
-        <TasksTable />
-      </PageLayout>
+      <AppPage>
+        <AppPageHeader>
+          <AppPageTitle>Синхронизация</AppPageTitle>
+          <AppPageActions>
+            <Upload />
+          </AppPageActions>
+        </AppPageHeader>
+        <AppPageContent>
+          <TasksTable />
+        </AppPageContent>
+      </AppPage>
     </TasksProvider>
   )
 }

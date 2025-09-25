@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
+import { AppPage, AppPageContent, AppPageHeader, AppPageTitle } from '../../_components/AppPage'
 import { CategoriesCreate } from '../_components/CategoriesCreate'
-import { PageLayout } from '../../_components/PageLayout'
 
 export const metadata: Metadata = {
   title: 'Добавить категорию'
@@ -8,8 +8,13 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <PageLayout title="Добавить категорию">
-      <CategoriesCreate />
-    </PageLayout>
+    <AppPage>
+      <AppPageHeader>
+        <AppPageTitle>Добавить категорию</AppPageTitle>
+      </AppPageHeader>
+      <AppPageContent>
+        <CategoriesCreate />
+      </AppPageContent>
+    </AppPage>
   )
 }

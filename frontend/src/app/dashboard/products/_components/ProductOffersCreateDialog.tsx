@@ -26,13 +26,12 @@ import {
   SelectValue
 } from '@/components/ui/select'
 import { apiPost } from '@/lib/api'
-import { OfferEntity, PropertyEntity } from '@/types'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 import { useToggle } from '@reactuses/core'
 import { PropsWithChildren } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { ProductOffersProps } from './ProductOffers'
-import { ArrowPathIcon } from '@heroicons/react/24/outline'
 
 export interface ProductOffersCreateDialogProps {
   productId: number

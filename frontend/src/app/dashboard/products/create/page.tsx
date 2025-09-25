@@ -1,40 +1,58 @@
-import { PageLayout } from '@/app/dashboard/_components/PageLayout'
 import type { Metadata } from 'next'
+import { AppPage, AppPageContent, AppPageHeader, AppPageTitle } from '../../_components/AppPage'
+import { SubNav } from '../../_components/SubNav'
 import { ProductCreate } from '../_components/ProductCreate'
-import { VerticalNav } from '@/components/VerticalNav'
 
 export const metadata: Metadata = {
   title: 'Добавить товар'
 }
 
 export default function Page() {
-  const items = [
+  const nav = [
     {
       title: 'Свойства',
-      href: `/dashboard/products/create`
+      url: `/dashboard/products/create`
     },
     {
-      title: 'Описание'
+      title: 'Описание',
+      url: '#',
+      disabled: true
     },
     {
-      title: 'Категории'
+      title: 'Категории',
+      url: '#',
+      disabled: true
     },
     {
-      title: 'Галерея'
+      title: 'Галерея',
+      url: '#',
+      disabled: true
     },
     {
-      title: 'Характеристики'
+      title: 'Характеристики',
+      url: '#',
+      disabled: true
     },
     {
-      title: 'Отзывы'
+      title: 'Отзывы',
+      url: '#',
+      disabled: true
     },
     {
-      title: 'Связи'
+      title: 'Связи',
+      url: '#',
+      disabled: true
     }
   ]
   return (
-    <PageLayout title="Добавить товар" aside={<VerticalNav items={items} />}>
-      <ProductCreate />
-    </PageLayout>
+    <AppPage>
+      <AppPageHeader>
+        <AppPageTitle>Добавить товар</AppPageTitle>
+      </AppPageHeader>
+      <AppPageContent>
+        <SubNav items={nav} />
+        <ProductCreate />
+      </AppPageContent>
+    </AppPage>
   )
 }

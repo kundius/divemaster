@@ -2,10 +2,9 @@
 
 import { CheckboxTree } from '@/components/ui/checkbox-tree'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ApiTableData } from '@/lib/ApiTable/types'
 import { apiPatch } from '@/lib/api'
 import { arrayToTree, TTree } from '@/lib/utils'
-import { CategoryEntity } from '@/types'
+import { CategoryEntity, FindAllResult } from '@/types'
 import { useEffect, useMemo, useState } from 'react'
 import useSWR from 'swr'
 
@@ -23,7 +22,7 @@ export function PropertyCategories({ propertyId }: PropertyCategoriesProps) {
   const [checked, setChecked] = useState<string[]>([])
 
   const propertyCategoriesQuery = useSWR<CategoryEntity[]>(`properties/${propertyId}/categories`)
-  const categoriesQuery = useSWR<ApiTableData<CategoryEntity>>([`categories`, { limit: 100 }])
+  const categoriesQuery = useSWR<FindAllResult<CategoryEntity>>([`categories`, { limit: 100 }])
 
   const nodes = useMemo(() => {
     const tree = arrayToTree(categoriesQuery.data?.rows || [])

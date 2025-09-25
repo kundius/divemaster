@@ -4,7 +4,7 @@ import { ProductDescription } from '../../_components/ProductDescription'
 
 export default async function Page({ params }: PageProps<{ id: number }>) {
   const { id } = await params
-  const initialData = await apiGet<ProductEntity>(`products/${id}`, { withContent: true })
+  const record = await apiGet<ProductEntity>(`products/${id}`, { withContent: true })
 
-  return <ProductDescription initialData={initialData} />
+  return <ProductDescription record={record} />
 }

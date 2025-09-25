@@ -1,27 +1,33 @@
 import type { Metadata } from 'next'
-
-import { PageLayout } from '@/app/dashboard/_components/PageLayout'
-
-import { BlogPostForm } from '../_components/BlogPostForm'
-import { VerticalNav } from '@/components/VerticalNav'
+import { AppPage, AppPageContent, AppPageHeader, AppPageTitle } from '../../_components/AppPage'
+import { SubNav } from '../../_components/SubNav'
+import { BlogPostCreate } from '../_components/BlogPostCreate'
 
 export const metadata: Metadata = {
   title: 'Добавить пост'
 }
 
-export default async function Page() {
-  const items = [
+export default async function Page({ children }: { children: React.ReactNode }) {
+  const nav = [
     {
-      title: 'Свойства',
-      href: `/dashboard/blog/create`
+      title: 'Документ',
+      url: `/dashboard/blog/create`
     },
     {
-      title: 'Метаданные'
+      title: 'Метаданные',
+      url: '#',
+      disabled: true
     }
   ]
   return (
-    <PageLayout title="Добавить пост" aside={<VerticalNav items={items} />}>
-      <BlogPostForm />
-    </PageLayout>
+    <AppPage>
+      <AppPageHeader>
+        <AppPageTitle>Добавить пост</AppPageTitle>
+      </AppPageHeader>
+      <AppPageContent>
+        <SubNav items={nav} />
+        <BlogPostCreate />
+      </AppPageContent>
+    </AppPage>
   )
 }

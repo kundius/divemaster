@@ -1,17 +1,15 @@
 'use client'
 
-import { Trash2Icon, InfoIcon } from 'lucide-react'
-import Link from 'next/link'
-import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryStates } from 'nuqs'
-import useSWR from 'swr'
 import { DataTable, DataTableColumn, DataTableFilterField } from '@/components/DataTable'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ApiRemoveDialog } from '@/lib/ApiRemoveDialog'
-import { clearEmpty, formatPrice, getFileUrl } from '@/lib/utils'
-import { OrderEntity, FindAllResult } from '@/types'
-import { Badge } from '@/components/ui/badge'
+import { clearEmpty, formatPrice } from '@/lib/utils'
+import { FindAllResult, OrderEntity } from '@/types'
 import { format } from 'date-fns'
-import Image from 'next/image'
+import { InfoIcon, Trash2Icon } from 'lucide-react'
+import { parseAsInteger, parseAsString, useQueryStates } from 'nuqs'
+import useSWR from 'swr'
 import { OrderDetailsDialog } from './OrderDetailsDialog'
 
 export interface OrderListProps {

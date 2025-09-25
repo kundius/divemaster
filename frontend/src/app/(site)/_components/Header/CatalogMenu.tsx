@@ -1,12 +1,11 @@
-import { ApiTableData } from '@/lib/ApiTable/types'
 import { apiGet } from '@/lib/api'
 import { arrayToTree, cn } from '@/lib/utils'
-import { CategoryEntity } from '@/types'
+import { CategoryEntity, FindAllResult } from '@/types'
 import Link from 'next/link'
 import styles from './CatalogMenu.module.css'
 
 export async function CatalogMenu() {
-  const data = await apiGet<ApiTableData<CategoryEntity>>('categories', { limit: 100 })
+  const data = await apiGet<FindAllResult<CategoryEntity>>('categories', { limit: 100 })
 
   const categories = arrayToTree<CategoryEntity>(data.rows)
 

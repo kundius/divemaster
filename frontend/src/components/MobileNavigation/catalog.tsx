@@ -6,13 +6,12 @@ import {
   VerticalMenuLink,
   VerticalMenuList
 } from '@/components/ui/vertical-menu'
-import { ApiTableData } from '@/lib/ApiTable/types'
 import { arrayToTree } from '@/lib/utils'
-import { CategoryEntity } from '@/types'
+import { CategoryEntity, FindAllResult } from '@/types'
 import useSWR from 'swr'
 
 export default function MobileNavigationCatalog() {
-  const query = useSWR<ApiTableData<CategoryEntity>>([`categories`, { limit: 100 }])
+  const query = useSWR<FindAllResult<CategoryEntity>>([`categories`, { limit: 100 }])
   const categories = arrayToTree<CategoryEntity>(query.data?.rows || [])
 
   return (

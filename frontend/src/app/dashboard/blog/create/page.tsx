@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: 'Добавить пост'
 }
 
-export default async function Page({ children }: { children: React.ReactNode }) {
+export default async function Page() {
   const nav = [
     {
       title: 'Документ',

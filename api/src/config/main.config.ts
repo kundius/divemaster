@@ -34,5 +34,11 @@ export default () => ({
     password: process.env.SMTP_PASSWORD || '',
     port: process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT) : 25,
     secure: process.env.SMTP_SECURE === 'true'
+  },
+  typesense: {
+    host: process.env.TYPESENSE_HOST || '127.0.0.1',
+    port: process.env.TYPESENSE_PORT || '10004',
+    protocol: process.env.TYPESENSE_PROTOCOL || 'http',
+    apiKey: process.env.TYPESENSE_API_KEY || 'xyz'
   }
 })

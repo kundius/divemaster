@@ -28,6 +28,7 @@ import {
   OrderByClickProductDto
 } from '../dto/products.dto'
 import { ProductsService } from '../services/products.service'
+import { ProductsSearchService } from '../services/products-search.service'
 
 @Controller('products')
 export class ProductsController {

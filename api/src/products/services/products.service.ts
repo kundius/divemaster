@@ -1,21 +1,12 @@
-import { nanoid, njk, pluck, slugify } from '@/lib/utils'
+import { nanoid, njk, slugify } from '@/lib/utils'
 import { NotificationsService } from '@/notifications/services/notifications.service'
 import { StorageService } from '@/storage/services/storage.service'
 import { isArray, isBoolean, isDeepEqual, isNumber, isString, isUndefined } from '@modyqyw/utils'
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { InjectRepository } from '@nestjs/typeorm'
 import { join } from 'path'
-import {
-  FindOptionsOrder,
-  FindOptionsRelations,
-  FindOptionsWhere,
-  In,
-  IsNull,
-  Like,
-  Not,
-  Repository
-} from 'typeorm'
+import { FindOptionsWhere, In, IsNull, Not, Repository } from 'typeorm'
 import {
   CreateOfferDto,
   CreateProductDto,
@@ -31,17 +22,17 @@ import {
 } from '../dto/products.dto'
 import { Brand } from '../entities/brand.entity'
 import { Category } from '../entities/category.entity'
-import { Offer } from '../entities/offer.entity'
-// import { OptionValue } from '../entities/option-value.entity'
-import { Property, PropertyType } from '../entities/property.entity'
-import { ProductImage } from '../entities/product-image.entity'
-import { Product } from '../entities/product.entity'
-import { ProductsFilterService } from './products-filter.service'
-import { ProductOption } from '../entities/product-option.entity'
 import { OfferOption } from '../entities/offer-option.entity'
+import { Offer } from '../entities/offer.entity'
+import { ProductImage } from '../entities/product-image.entity'
+import { ProductOption } from '../entities/product-option.entity'
+import { Product } from '../entities/product.entity'
+import { Property, PropertyType } from '../entities/property.entity'
+import { ProductsFilterService } from './products-filter.service'
+import { ProductsSearchService } from './products-search.service'
 
 @Injectable()
-export class ProductsService {
+export class ProductsService implements OnModuleInit {
   constructor(
     @InjectRepository(ProductOption)
     private productOptionRepository: Repository<ProductOption>,
@@ -53,8 +44,6 @@ export class ProductsService {
     private productImageRepository: Repository<ProductImage>,
     @InjectRepository(Property)
     private propertyRepository: Repository<Property>,
-    // @InjectRepository(OptionValue)
-    // private optionValueRepository: Repository<OptionValue>,
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
     @InjectRepository(Offer)
@@ -64,8 +53,28 @@ export class ProductsService {
     private readonly notificationsService: NotificationsService,
     private readonly storageService: StorageService,
     private readonly productsFilterService: ProductsFilterService,
+    private readonly productsSearchService: ProductsSearchService,
     private readonly configService: ConfigService
   ) {}
+
+  async onModuleInit() {
+    if (!(await this.productsSearchService.isCollectionEmpty())) {
+      console.info('Индексация товаров не требуется.')
+      return
+    }
+
+    try {
+      const [rows, total] = await this.productRepository.findAndCount()
+
+      for (const row of rows) {
+        await this.productsSearchService.index(row)
+      }
+
+      console.info('Товаров проиндексировано: ' + total)
+    } catch (error) {
+      console.error('Не удалось проиндексировать товары:', error)
+    }
+  }
 
   async makeAlias(from: string, unique: boolean = false) {
     let alias = slugify(from)
@@ -97,6 +106,8 @@ export class ProductsService {
 
     await this.productRepository.save(record)
 
+    await this.productsSearchService.index(record)
+
     return record
   }
 
@@ -116,7 +127,16 @@ export class ProductsService {
     }
 
     if (dto.query) {
-      where.title = Like(`%${dto.query}%`)
+      const productIds = await this.productsSearchService.search(dto.query)
+      if (productIds.length > 0) {
+        if (dto.ids) {
+          where.id = In(productIds.filter((n) => dto.ids!.includes(n)))
+        } else {
+          where.id = In(productIds)
+        }
+      } else {
+        where.id = IsNull()
+      }
     }
 
     if (dto.ids) {
@@ -253,10 +273,13 @@ export class ProductsService {
 
     await this.productRepository.save(record)
 
+    await this.productsSearchService.index(record)
+
     return record
   }
 
   async remove(id: number) {
+    await this.productsSearchService.deleteFromIndex(id)
     await this.productRepository.delete({ id })
   }
 

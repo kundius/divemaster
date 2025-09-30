@@ -20,6 +20,8 @@ import { Property } from './entities/property.entity'
 import { ProductsFilterService } from './services/products-filter.service'
 import { OfferOption } from './entities/offer-option.entity'
 import { ProductOption } from './entities/product-option.entity'
+import { ProductsSearchService } from './services/products-search.service'
+import { TypesenseModule } from '@/typesense/typesense.module'
 
 @Module({
   imports: [
@@ -35,7 +37,8 @@ import { ProductOption } from './entities/product-option.entity'
       ProductImage
     ]),
     NotificationsModule,
-    StorageModule
+    StorageModule,
+    TypesenseModule
   ],
   controllers: [ProductsController, CategoriesController, BrandsController, PropertiesController],
   exports: [ProductsService, CategoriesService],
@@ -44,7 +47,8 @@ import { ProductOption } from './entities/product-option.entity'
     CategoriesService,
     BrandsService,
     PropertiesService,
-    ProductsFilterService
+    ProductsFilterService,
+    ProductsSearchService
   ]
 })
 export class ProductsModule {}

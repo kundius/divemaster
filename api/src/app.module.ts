@@ -15,6 +15,7 @@ import { UsersModule } from './users/users.module'
 import { SyncModule } from './sync/sync.module'
 import { AppDataSource } from 'db/ormconfig'
 import { WishlistModule } from './wishlist/wishlist.module'
+import { TypesenseModule } from './typesense/typesense.module'
 
 @Module({
   imports: [
@@ -34,7 +35,8 @@ import { WishlistModule } from './wishlist/wishlist.module'
     NotificationsModule,
     BlogModule,
     SyncModule,
-    WishlistModule
+    WishlistModule,
+    TypesenseModule
   ],
   providers: [AppService]
 })

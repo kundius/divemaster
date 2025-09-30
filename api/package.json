@@ -9,6 +9,7 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
+    "start:cli": "ts-node -r tsconfig-paths/register src/cli.ts",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -41,12 +42,14 @@
     "mime-types": "^2.1.35",
     "mysql2": "^3.12.0",
     "nanoid": "^3.3.7",
+    "nest-commander": "^3.20.0",
     "nodemailer": "^6.9.14",
     "nunjucks": "^3.2.4",
     "reflect-metadata": "^0.2.1",
     "rxjs": "^7.8.1",
     "slugify": "^1.6.6",
-    "typeorm": "^0.3.22"
+    "typeorm": "^0.3.22",
+    "typesense": "^2.1.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.3.1",

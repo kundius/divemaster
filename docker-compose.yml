@@ -11,6 +11,13 @@ services:
       - ./docker/db:/var/lib/mysql
     restart: unless-stopped
 
+  typesense:
+    image: typesense/typesense:29.0
+    restart: unless-stopped
+    volumes:
+      - ./docker/typesense:/data
+    command: '--data-dir /data --api-key=${TYPESENSE_API_KEY:-xyz} --enable-cors'
+
   nginx:
     image: nginx:${NGINX_VERSION:-1.25}
     environment:
@@ -27,8 +34,6 @@ services:
       - ${NGINX_HOST:-127.0.0.1}:${NGINX_FRONTEND_PORT:-10001}:${NGINX_FRONTEND_PORT:-10001}
       - ${NGINX_HOST:-127.0.0.1}:${NGINX_API_PORT:-10002}:${NGINX_API_PORT:-10002}
     restart: unless-stopped
-    depends_on:
-      - db
 
   api:
     image: node:${NODE_VERSION:-22}
@@ -37,6 +42,7 @@ services:
       - ./api:/divemaster/api
     depends_on:
       - db
+      - typesense
     environment:
       - TZ=${TZ:-Europe/Moscow}
     network_mode: "service:nginx"

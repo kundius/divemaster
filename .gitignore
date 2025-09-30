@@ -13,6 +13,7 @@
 /docker/mariadb
 /docker/shadow
 /docker/shadowdb
+/docker/typesense
 /docker-compose.override.yml
 /api/dist
 /frontend/node_modules

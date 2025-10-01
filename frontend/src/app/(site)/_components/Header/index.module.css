@@ -1,33 +1,51 @@
 .logo {
-  margin-top: -26px;
-  margin-bottom: -15px;
+  grid-area: logo;
   flex-shrink: 0;
-  margin-right: 22px;
+  width: 148px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+
+  a {
+    display: flex;
+    position: relative;
+    top: -5px;
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
 
   @media (--max-lg) {
-    margin-right: 16px;
+    width: 132px;
   }
 
   @media (--max-md) {
-    margin: 0;
     background: #a90083;
     width: 58px;
     height: 58px;
     display: flex;
     align-items: center;
     justify-content: center;
+
+    a {
+      top: 0;
+    }
   }
 }
 
 .search {
-  flex-grow: 22;
-  visibility: hidden;
+  grid-area: search;
+
+  @media (--max-md) {
+    padding: 7px 0;
+  }
 }
 
 .primary-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: grid;
+  grid-template-areas: 'logo . catalog . search . actions';
+  grid-template-columns: auto 24px auto 50fr 50fr 10fr auto;
   padding-bottom: 18px;
   padding-top: 28px;
   transition: 0.3s ease;
@@ -37,49 +55,34 @@
     padding-top: 22px;
   }
 
+  @media (--max-xl) {
+    grid-template-columns: auto 24px auto 10fr 30fr 10fr auto;
+  }
+
+  @media (--max-lg) {
+    grid-template-columns: auto 16px auto 16px 1fr 16px auto;
+  }
+
   @media (--max-md) {
     padding-top: 0;
     padding-bottom: 0;
     margin-left: -16px;
     margin-right: -16px;
-  }
-}
-
-.space1 {
-  flex-grow: 52;
-  min-width: 22px;
-
-  @media (--max-lg) {
-    min-width: 16px;
-  }
-
-  @media (--max-md) {
-    min-width: 8px;
-    flex-grow: 10;
-  }
-}
-
-.space2 {
-  flex-grow: 10;
-  min-width: 22px;
-
-  @media (--max-lg) {
-    min-width: 16px;
-  }
-
-  @media (--max-md) {
-    min-width: 8px;
-    flex-grow: 10;
+    grid-template-areas: 'logo . search . menu';
+    grid-template-columns: auto minmax(16px, 1fr) minmax(160px, 320px) minmax(16px, 1fr) auto;
   }
 }
 
 .catalog-button {
+  grid-area: catalog;
+
   @media (--max-md) {
     display: none;
   }
 }
 
 .menu-button {
+  grid-area: menu;
   padding: 7px;
 
   @media (--min-md) {
@@ -88,6 +91,7 @@
 }
 
 .toolbar {
+  grid-area: actions;
   margin-right: -5px;
 
   @media (--max-md) {

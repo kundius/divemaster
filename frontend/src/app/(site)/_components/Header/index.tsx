@@ -29,13 +29,9 @@ export function Header() {
             <CatalogButton />
           </div>
 
-          <div className={styles.space1} />
-
           <div className={styles.search}>
             <Search />
           </div>
-
-          <div className={styles.space2} />
 
           <div className={styles.toolbar} data-header-toolbar="">
             <Toolbar />

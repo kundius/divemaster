@@ -35,6 +35,7 @@
     "@radix-ui/react-toggle-group": "^1.1.11",
     "@radix-ui/react-tooltip": "^1.2.8",
     "@reactuses/core": "^6.0.1",
+    "@uidotdev/usehooks": "^2.4.1",
     "ckeditor5-custom-build": "file:../ckeditor5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

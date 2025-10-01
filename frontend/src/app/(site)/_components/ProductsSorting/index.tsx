@@ -13,7 +13,7 @@ import { useProductsStore } from '@/providers/products-store-provider'
 
 import styles from './index.module.css'
 
-export function Sorting() {
+export function ProductsSorting() {
   const filter = useProductsStore((state) => state.searchParams.filter)
   const sort = useProductsStore((state) => state.searchParams.sort)
   const dir = useProductsStore((state) => state.searchParams.dir)

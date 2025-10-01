@@ -3,7 +3,7 @@
 import { Pagination as SitePagination } from '@/components/Pagination'
 import { useProductsStore } from '@/providers/products-store-provider'
 
-export function Pagination() {
+export function ProductsPagination() {
   const total = useProductsStore((state) => state.data.total)
   const page = useProductsStore((state) => state.searchParams.page)
   const limit = useProductsStore((state) => state.searchParams.limit)

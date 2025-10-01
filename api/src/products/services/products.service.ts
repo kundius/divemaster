@@ -113,6 +113,11 @@ export class ProductsService implements OnModuleInit {
 
   async findAll(dto: FindAllProductDto) {
     const where: FindOptionsWhere<Product> = {}
+    let whereIds: number[] | null = null
+
+    if (dto.ids) {
+      whereIds = dto.ids
+    }
 
     if (dto.favorite) {
       where.favorite = true
@@ -127,20 +132,12 @@ export class ProductsService implements OnModuleInit {
     }
 
     if (dto.query) {
-      const productIds = await this.productsSearchService.search(dto.query)
-      if (productIds.length > 0) {
-        if (dto.ids) {
-          where.id = In(productIds.filter((n) => dto.ids!.includes(n)))
-        } else {
-          where.id = In(productIds)
-        }
+      const searchIds = await this.productsSearchService.search(dto.query)
+      if (whereIds === null) {
+        whereIds = searchIds
       } else {
-        where.id = IsNull()
+        whereIds = whereIds.filter((id) => searchIds.includes(id))
       }
-    }
-
-    if (dto.ids) {
-      where.id = In(dto.ids)
     }
 
     if (typeof dto.category !== 'undefined') {
@@ -155,16 +152,16 @@ export class ProductsService implements OnModuleInit {
         filter = JSON.parse(dto.filter)
       } catch {}
       await this.productsFilterService.init(dto.category)
-      const productIds = await this.productsFilterService.search(filter)
-      if (productIds.length > 0) {
-        if (dto.ids) {
-          where.id = In(productIds.filter((n) => dto.ids!.includes(n)))
-        } else {
-          where.id = In(productIds)
-        }
+      const filterIds = await this.productsFilterService.search(filter)
+      if (whereIds === null) {
+        whereIds = filterIds
       } else {
-        where.id = IsNull()
+        whereIds = whereIds.filter((id) => filterIds.includes(id))
       }
+    }
+
+    if (whereIds !== null) {
+      where.id = whereIds.length > 0 ? In(whereIds) : IsNull()
     }
 
     const [rows, total] = await this.productRepository.findAndCount({

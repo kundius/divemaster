@@ -4,7 +4,7 @@ import { ProductCard } from '@/components/ProductCard'
 import { ProductStoreProvider } from '@/providers/product-store-provider'
 import { useProductsStore } from '@/providers/products-store-provider'
 
-export function Products() {
+export function ProductsList() {
   const rows = useProductsStore((state) => state.data.rows)
   const loading = useProductsStore((state) => state.loading)
   const setListElement = useProductsStore((state) => state.setListElement)

@@ -7,10 +7,10 @@ import { getFileUrl } from '@/lib/utils'
 import { ProductsStoreProvider } from '@/providers/products-store-provider'
 import { CategoryEntity, FindAllResult, PageProps } from '@/types'
 import { CategoryCard } from './_components/CategoryCard'
-import { Filter } from './_components/Filter'
-import { Sorting } from './_components/Sorting'
-import { Products } from './_components/Products'
-import { Pagination } from './_components/Pagination'
+import { ProductsFilter } from '../../_components/ProductsFilter'
+import { ProductsSorting } from '../../_components/ProductsSorting'
+import { ProductsList } from '../../_components/ProductsList'
+import { ProductsPagination } from '../../_components/ProductsPagination'
 import { Content } from './_components/Content'
 import { Headline } from '@/components/Headline'
 import { SectionPage } from '@/components/SectionPage'
@@ -95,7 +95,7 @@ export default async function Page({ params }: PageProps<{ alias: string }>) {
               <div className="w-[320px] max-xl:w-[260px] flex-shrink-0 space-y-5 max-lg:hidden">
                 {!hasChild && (
                   <div className="mb-80">
-                    <Filter />
+                    <ProductsFilter />
                   </div>
                 )}
                 <ConsultationWidget />
@@ -123,11 +123,11 @@ export default async function Page({ params }: PageProps<{ alias: string }>) {
                       Популярные товары
                     </div>
                   ) : (
-                    <Sorting />
+                    <ProductsSorting />
                   )}
                 </div>
-                <Products />
-                <Pagination />
+                <ProductsList />
+                <ProductsPagination />
               </div>
             </div>
           </ProductsStoreProvider>

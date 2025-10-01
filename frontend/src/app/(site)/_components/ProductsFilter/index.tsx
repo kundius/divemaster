@@ -7,7 +7,7 @@ import { FilterRange } from './FilterRange'
 import { FilterToggle } from './FilterToggle'
 import styles from './index.module.css'
 
-export function Filter() {
+export function ProductsFilter() {
   const filters = useProductsStore((state) => state.data.filters)
   const filter = useProductsStore((state) => state.searchParams.filter)
   const onChangeFilter = useProductsStore((state) => state.onChangeFilter)

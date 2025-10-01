@@ -146,22 +146,18 @@ export class ProductsService implements OnModuleInit {
       where.categories = { id: In([dto.category]) }
     }
 
+    if (whereIds !== null) {
+      where.id = whereIds.length > 0 ? In(whereIds) : IsNull()
+    }
+
     if (dto.filter) {
       let filter = {}
       try {
         filter = JSON.parse(dto.filter)
       } catch {}
-      await this.productsFilterService.init(dto.category)
+      await this.productsFilterService.init(where)
       const filterIds = await this.productsFilterService.search(filter)
-      if (whereIds === null) {
-        whereIds = filterIds
-      } else {
-        whereIds = whereIds.filter((id) => filterIds.includes(id))
-      }
-    }
-
-    if (whereIds !== null) {
-      where.id = whereIds.length > 0 ? In(whereIds) : IsNull()
+      where.id = filterIds.length > 0 ? In(filterIds) : IsNull()
     }
 
     const [rows, total] = await this.productRepository.findAndCount({

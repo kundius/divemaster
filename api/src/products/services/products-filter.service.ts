@@ -46,11 +46,11 @@ export class ProductsFilterService {
   filters: Filter[] = []
   data: DataRecord[] = []
 
-  async init(categoryId?: number) {
+  async init(where: FindOptionsWhere<Product>) {
     // определить фильтры
-    this.filters = await this.loadFilters(categoryId)
+    this.filters = await this.loadFilters(where)
     // загрузить товары
-    this.data = await this.loadData(categoryId)
+    this.data = await this.loadData(where)
   }
 
   // типы полей должны соответствовать типам фильтра:
@@ -58,12 +58,7 @@ export class ProductsFilterService {
   // options: string[]
   // colors: string[]
   // toggle: boolean
-  async loadData(categoryId?: number): Promise<DataRecord[]> {
-    const where: FindOptionsWhere<Product> = {}
-    // TODO: HIERARCHY_DEPTH_LIMIT
-    if (categoryId) {
-      where.categories = { id: categoryId }
-    }
+  async loadData(where: FindOptionsWhere<Product>): Promise<DataRecord[]> {
     const products = await this.productRepository.find({
       where,
       relations: {
@@ -89,7 +84,9 @@ export class ProductsFilterService {
       }
 
       for (const productOption of product.options) {
-        const property = await this.propertyRepository.findOne({ where: { key: productOption.name } })
+        const property = await this.propertyRepository.findOne({
+          where: { key: productOption.name }
+        })
 
         // этой опции больше не существует, пропускаем
         if (!property) continue
@@ -125,14 +122,11 @@ export class ProductsFilterService {
   }
 
   // по умолчанию фильтры имеют не заполненные варианты
-  async loadFilters(categoryId?: number): Promise<Filter[]> {
-    const where: FindOptionsWhere<Property> = {}
-    // TODO: HIERARCHY_DEPTH_LIMIT
-    if (categoryId) {
-      where.categories = { id: categoryId }
-    }
+  async loadFilters(where: FindOptionsWhere<Product>): Promise<Filter[]> {
     const properties = await this.propertyRepository.find({
-      where,
+      where: {
+        categories: where.categories
+      },
       order: { rank: 'asc' }
     })
 
@@ -242,7 +236,7 @@ export class ProductsFilterService {
 
       const matched = Object.values(matches).every((match) => match === true)
 
-      // наполнение фильров значениями
+      // наполнение фильтров значениями
       for (const key of Object.keys(row)) {
         const field = row[key]
         const filter = this.filters.find((item) => item.name === key)

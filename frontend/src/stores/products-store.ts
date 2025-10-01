@@ -9,15 +9,16 @@ export type ProductsStateSearchParams = {
   filter: string
   sort: string
   dir: string
+  query: string
 }
 
-export type ProductsStateParams = {
+export type ProductsStateBaseParams = {
   [key: string]: string | number
 }
 
 export type ProductsState = {
   searchParams: ProductsStateSearchParams
-  params: ProductsStateParams
+  baseParams: ProductsStateBaseParams
   loading: boolean
   listElement: HTMLElement | null
   data: {
@@ -43,17 +44,18 @@ export const productsStoreDefaultSearchParams: ProductsStateSearchParams = {
   limit: 24,
   filter: '{}',
   sort: 'id',
-  dir: 'ASC'
+  dir: 'ASC',
+  query: ''
 }
 
 export interface CreateProductsStoreProps {
-  params?: ProductsStateParams
+  initialBaseParams?: ProductsStateBaseParams
 }
 
-export const createProductsStore = ({ params }: CreateProductsStoreProps) => {
+export const createProductsStore = ({ initialBaseParams = {} }: CreateProductsStoreProps) => {
   return createStore<ProductsStore>()((set, get) => ({
     searchParams: productsStoreDefaultSearchParams,
-    params: params || {},
+    baseParams: initialBaseParams,
     loading: false,
     listElement: null,
     data: {
@@ -96,7 +98,7 @@ export const createProductsStore = ({ params }: CreateProductsStoreProps) => {
       const store = get()
       const data = await apiGet<ProductsState['data']>('products', {
         ...store.searchParams,
-        ...store.params
+        ...store.baseParams
       })
       set({ data, loading: false })
     }

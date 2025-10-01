@@ -57,8 +57,8 @@ export function Search() {
         setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : -1))
         break
       case 'Enter':
-        e.preventDefault()
         if (highlightedIndex >= 0 && products[highlightedIndex]) {
+          e.preventDefault()
           selectSuggestion(products[highlightedIndex])
         }
         break

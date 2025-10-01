@@ -2,22 +2,13 @@
 
 import { shallowEqual } from '@/lib/utils'
 import {
-  ProductsStateParams,
-  ProductsStateSearchParams,
+  ProductsStateBaseParams,
   type ProductsStore,
   createProductsStore,
   productsStoreDefaultSearchParams
 } from '@/stores/products-store'
 import { parseAsInteger, parseAsString, useQueryStates } from 'nuqs'
-import {
-  type ReactNode,
-  Suspense,
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-  useState
-} from 'react'
+import { type ReactNode, createContext, useContext, useEffect, useRef, useState } from 'react'
 import { useStore } from 'zustand'
 
 export type ProductStoreApi = ReturnType<typeof createProductsStore>
@@ -26,15 +17,18 @@ export const ProductStoreContext = createContext<ProductStoreApi | undefined>(un
 
 export interface ProductsStoreProviderProps {
   children: ReactNode
-  params?: ProductsStateParams
+  initialBaseParams?: ProductsStateBaseParams
 }
 
-export const ProductsStoreProvider = ({ children, params }: ProductsStoreProviderProps) => {
+export const ProductsStoreProvider = ({
+  children,
+  initialBaseParams
+}: ProductsStoreProviderProps) => {
   const [initialized, setInitialized] = useState(false)
 
   const storeRef = useRef<ProductStoreApi>(null)
   if (!storeRef.current) {
-    storeRef.current = createProductsStore({ params })
+    storeRef.current = createProductsStore({ initialBaseParams })
   }
 
   const searchParamsRef = useRef(productsStoreDefaultSearchParams)
@@ -44,7 +38,8 @@ export const ProductsStoreProvider = ({ children, params }: ProductsStoreProvide
       limit: parseAsInteger.withDefault(productsStoreDefaultSearchParams.limit),
       filter: parseAsString.withDefault(productsStoreDefaultSearchParams.filter),
       sort: parseAsString.withDefault(productsStoreDefaultSearchParams.sort),
-      dir: parseAsString.withDefault(productsStoreDefaultSearchParams.dir)
+      dir: parseAsString.withDefault(productsStoreDefaultSearchParams.dir),
+      query: parseAsString.withDefault(productsStoreDefaultSearchParams.query)
     },
     {
       history: 'push',

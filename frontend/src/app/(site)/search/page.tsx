@@ -1,20 +1,12 @@
-import type { Metadata } from 'next'
-import { Breadcrumbs, BreadcrumbsProps } from '@/components/Breadcrumbs'
-import { Container } from '@/components/Container'
-import { apiGet } from '@/lib/api'
-import { getFileUrl } from '@/lib/utils'
-import { ProductsStoreProvider } from '@/providers/products-store-provider'
-import { CategoryEntity, FindAllResult, PageProps } from '@/types'
-import { Headline } from '@/components/Headline'
-import { SectionPage } from '@/components/SectionPage'
-import { Suspense } from 'react'
 import { ConsultationWidget } from '@/components/ConsultationWidget'
+import { SectionPage } from '@/components/SectionPage'
+import { ProductsStoreProvider } from '@/providers/products-store-provider'
+import type { Metadata } from 'next'
 import { BenefitsSideSlider, BenefitsSideSliderDiscount } from '../_components/BenefitsSideSlider'
-import { ProductsSorting } from '../_components/ProductsSorting'
-import { ProductsList } from '../_components/ProductsList'
 import { ProductsFilter } from '../_components/ProductsFilter'
+import { ProductsList } from '../_components/ProductsList'
 import { ProductsPagination } from '../_components/ProductsPagination'
-import { SearchProductsStoreProvider } from './_components/SearchProductsStoreProvider'
+import { ProductsSorting } from '../_components/ProductsSorting'
 import { SearchHeadline } from './_components/SearchHeadline'
 
 export const metadata: Metadata = {
@@ -24,7 +16,7 @@ export const metadata: Metadata = {
 export default async function Page() {
   return (
     <SectionPage>
-      <SearchProductsStoreProvider>
+      <ProductsStoreProvider>
         <SearchHeadline />
 
         <div className="flex gap-x-5 mt-14">
@@ -58,7 +50,7 @@ export default async function Page() {
             <ProductsPagination />
           </div>
         </div>
-      </SearchProductsStoreProvider>
+      </ProductsStoreProvider>
     </SectionPage>
   )
 }

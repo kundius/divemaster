@@ -53,14 +53,16 @@ export function ProductsFilter() {
           )
         }
         if (item.type === 'options') {
-          return (
-            <FilterOptions
-              filter={item}
-              key={item.name}
-              selected={parsedFilter?.[item.name]}
-              onSelect={(value) => changeHandler(item.name, value.length > 0 ? value : undefined)}
-            />
-          )
+          if (item.options.length > 0) {
+            return (
+              <FilterOptions
+                filter={item}
+                key={item.name}
+                selected={parsedFilter?.[item.name]}
+                onSelect={(value) => changeHandler(item.name, value.length > 0 ? value : undefined)}
+              />
+            )
+          }
         }
         return null
       })}

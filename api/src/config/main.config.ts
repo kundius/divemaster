@@ -22,8 +22,8 @@ export default () => ({
     password: process.env.PAYMENT_YOOKASSA_PASSWORD || ''
   },
   vtb: {
-    token_endpoint: process.env.PAYMENT_VTB_API_ENDPOINT || '',
-    api_endpoint: process.env.PAYMENT_VTB_TOKEN_ENDPOINT || '',
+    token_endpoint: process.env.PAYMENT_VTB_TOKEN_ENDPOINT || '',
+    api_endpoint: process.env.PAYMENT_VTB_API_ENDPOINT || '',
     client_id: process.env.PAYMENT_VTB_CLIENT_ID || '',
     client_secret: process.env.PAYMENT_VTB_CLIENT_SECRET || ''
   },

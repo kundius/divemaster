@@ -11,6 +11,7 @@ import { Order } from '../entities/order.entity'
 import { Repository } from 'typeorm'
 import { FindAllForUserDto, FindAllOrderQueryDto } from '../dto/order.dto'
 import { User } from '@/users/entities/user.entity'
+import { VtbService } from './vtb.service'
 
 @Injectable()
 export class OrderService {
@@ -20,7 +21,8 @@ export class OrderService {
     private notificationsService: NotificationsService,
     private configService: ConfigService,
     private paymentUponCashService: UponCashService,
-    private paymentYookassaService: YookassaService
+    private paymentYookassaService: YookassaService,
+    private paymentVtbService: VtbService
   ) {}
 
   // Получение сервиса оплаты
@@ -30,6 +32,8 @@ export class OrderService {
         return this.paymentUponCashService
       case PaymentServiceEnum.Yookassa:
         return this.paymentYookassaService
+      case PaymentServiceEnum.Vtb:
+        return this.paymentVtbService
     }
   }
 

@@ -109,7 +109,7 @@ export function Search() {
         {products.length > 0 && (
           <PopoverContent
             className="p-0 overflow-hidden"
-            style={{ width: 'var(--radix-popover-trigger-width)', minWidth: 320 }}
+            style={{ width: 'var(--radix-popover-trigger-width)', minWidth: 320, zIndex: 400 }}
             align="center"
             sideOffset={8}
             onOpenAutoFocus={(e) => e.preventDefault()}

@@ -16,6 +16,7 @@ import { Payment } from './entities/payment.entity'
 import { OrderProduct } from './entities/order-product.entity'
 import { PickupPoint } from './entities/pickup-point.entity'
 import { AuthModule } from '@/auth/auth.module'
+import { VtbService } from './services/vtb.service'
 
 @Module({
   imports: [
@@ -23,8 +24,22 @@ import { AuthModule } from '@/auth/auth.module'
     NotificationsModule,
     AuthModule
   ],
-  providers: [OrderService, PickupPointService, CityService, YookassaService, UponCashService],
+  providers: [
+    OrderService,
+    PickupPointService,
+    CityService,
+    YookassaService,
+    UponCashService,
+    VtbService
+  ],
   controllers: [OrderController, PickupPointController, CityController],
-  exports: [OrderService, PickupPointService, CityService, YookassaService, UponCashService]
+  exports: [
+    OrderService,
+    PickupPointService,
+    CityService,
+    YookassaService,
+    UponCashService,
+    VtbService
+  ]
 })
 export class OrderModule {}

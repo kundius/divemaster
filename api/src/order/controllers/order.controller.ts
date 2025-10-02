@@ -15,6 +15,7 @@ import { FindAllForUserDto, FindAllOrderQueryDto } from '../dto/order.dto'
 import { CurrentUser } from '@/auth/decorators/current-user.decorator'
 import { User } from '@/users/entities/user.entity'
 import { AuthService } from '@/auth/services/auth.service'
+import { VtbServiceCheckoutDto } from '../services/vtb.service'
 
 @Controller('orders')
 export class OrderController {
@@ -52,6 +53,16 @@ export class OrderController {
   async checkoutYookassa(@Body() dto: YookassaServiceCheckoutDto) {
     console.log('checkout/yookassa', dto)
     const order = await this.orderService.findOneById(+dto.object.metadata.orderId)
+    if (!order || !order.payment) {
+      throw new NotFoundException()
+    }
+    await this.orderService.checkoutPayment(order.payment, dto)
+  }
+
+  @Post('checkout/vtb')
+  async checkoutVtb(@Body() dto: VtbServiceCheckoutDto) {
+    console.log('checkout/vtb', dto)
+    const order = await this.orderService.findOneById(+dto.object.orderId)
     if (!order || !order.payment) {
       throw new NotFoundException()
     }

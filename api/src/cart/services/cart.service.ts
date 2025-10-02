@@ -339,6 +339,7 @@ export class CartService {
     // Стоимость оплаты, вынести в сервис
     if (dto?.paymentService) {
       switch (dto.paymentService) {
+        case PaymentServiceEnum.Vtb:
         case PaymentServiceEnum.UponCash:
         case PaymentServiceEnum.Yookassa:
           break

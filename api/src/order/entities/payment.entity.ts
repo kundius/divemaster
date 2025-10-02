@@ -9,6 +9,7 @@ import {
 import { Order } from './order.entity'
 
 export enum PaymentServiceEnum {
+  Vtb = 'Vtb',
   Yookassa = 'Yookassa',
   UponCash = 'UponCash'
 }

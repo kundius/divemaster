@@ -102,6 +102,7 @@ export enum DeliveryService {
 }
 
 export enum PaymentService {
+  Vtb = 'Vtb',
   Yookassa = 'Yookassa',
   UponCash = 'UponCash'
 }

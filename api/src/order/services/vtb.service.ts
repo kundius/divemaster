@@ -57,14 +57,14 @@ export class VtbService implements PaymentService {
     console.log(
       '[ВТБ] Получить токен',
       String(this.configService.get('vtb.token_endpoint')),
-      params
+      params.toString()
     )
     const response = await fetch(String(this.configService.get('vtb.token_endpoint')), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: params
+      body: params.toString()
     })
     const data = await response.json()
     console.log('[ВТБ] Токен получен', data)

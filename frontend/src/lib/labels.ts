@@ -9,6 +9,7 @@ export const labels: {
     [DeliveryService.Shipping]: 'Доставка'
   },
   PaymentService: {
+    [PaymentService.Vtb]: 'Онлайн',
     [PaymentService.UponCash]: 'Наличными',
     [PaymentService.Yookassa]: 'Онлайн'
   }

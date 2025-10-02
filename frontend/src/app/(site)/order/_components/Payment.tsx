@@ -29,13 +29,15 @@ export function Payment() {
     <div>
       <div className={css.title}>Способ оплаты</div>
       <div className="mt-4 grid lg:grid-cols-2 gap-3">
-        <MethodCard
-          title="Онлайн на сайте"
-          description="Быстро и удобно"
-          icon={<SpriteIcon name="payment-card" size={40} />}
-          action={() => orderState.setPayment({ service: PaymentService.Vtb })}
-          active={orderState.payment?.service === PaymentService.Vtb}
-        />
+        <div className="hidden">
+          <MethodCard
+            title="Онлайн на сайте"
+            description="Быстро и удобно"
+            icon={<SpriteIcon name="payment-card" size={40} />}
+            action={() => orderState.setPayment({ service: PaymentService.Vtb })}
+            active={orderState.payment?.service === PaymentService.Vtb}
+          />
+        </div>
         <MethodCard
           title="При получении"
           description="Наличными или картой"

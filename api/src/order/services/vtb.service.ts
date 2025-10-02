@@ -50,11 +50,15 @@ export class VtbService implements PaymentService {
   ) {}
 
   async getAuthorizationHeader() {
-    console.log('[ВТБ] Получить токен')
     const params = new URLSearchParams()
     params.append('grant_type', 'client_credentials')
     params.append('client_id', String(this.configService.get('vtb.client_id')))
     params.append('client_secret', String(this.configService.get('vtb.client_secret')))
+    console.log(
+      '[ВТБ] Получить токен',
+      String(this.configService.get('vtb.token_endpoint')),
+      params
+    )
     const response = await fetch(String(this.configService.get('vtb.token_endpoint')), {
       method: 'POST',
       headers: {

@@ -50,6 +50,7 @@ export class VtbService implements PaymentService {
   ) {}
 
   async getAuthorizationHeader() {
+    console.log('[ВТБ] Получить токен')
     const params = new URLSearchParams()
     params.append('grant_type', 'client_credentials')
     params.append('client_id', String(this.configService.get('vtb.client_id')))
@@ -62,6 +63,7 @@ export class VtbService implements PaymentService {
       body: params
     })
     const data = await response.json()
+    console.log('[ВТБ] Токен получен', data)
     return {
       'X-IBM-Client-Id': this.configService.get('vtb.client_id'),
       Authorization: `${data.token_type} ${data.access_token}`
@@ -97,6 +99,8 @@ export class VtbService implements PaymentService {
 
     const data = await response.json()
 
+    console.log('[ВТБ] Заказ создан', data)
+
     await this.paymentRepository.update(
       { id: payment.id },
       {
@@ -108,6 +112,8 @@ export class VtbService implements PaymentService {
 
   async checkout(payment: Payment, dto: VtbServiceCheckoutDto) {
     // const status = await this.getStatus(payment)
+
+    console.log('[ВТБ] Получен колбек', dto.object)
 
     if (dto.object.orderCode !== payment.remoteId) {
       throw new BadRequestException('Status failed verification')

@@ -54,11 +54,6 @@ export class VtbService implements PaymentService {
     params.append('grant_type', 'client_credentials')
     params.append('client_id', String(this.configService.get('vtb.client_id')))
     params.append('client_secret', String(this.configService.get('vtb.client_secret')))
-    console.log(
-      '[ВТБ] Получить токен',
-      String(this.configService.get('vtb.token_endpoint')),
-      params.toString()
-    )
     const response = await fetch(String(this.configService.get('vtb.token_endpoint')), {
       method: 'POST',
       headers: {
@@ -67,7 +62,6 @@ export class VtbService implements PaymentService {
       body: params.toString()
     })
     const data = await response.json()
-    console.log('[ВТБ] Токен получен', data)
     return {
       'X-IBM-Client-Id': this.configService.get('vtb.client_id'),
       Authorization: `${data.token_type} ${data.access_token}`
@@ -83,7 +77,7 @@ export class VtbService implements PaymentService {
     const returnUrl = await this.getSuccessUrl(payment)
 
     const params = {
-      orderId: order.id,
+      orderId: String(order.id),
       orderName: `Заказ №${order.number}`,
       amount: {
         value: order.cost,

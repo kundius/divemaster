@@ -12,6 +12,7 @@ import { PaidPeending } from './PaidPeending'
 import { PaidSuccess } from './PaidSuccess'
 import { UponCash } from './UponCash'
 import { Yookassa } from './Yookassa'
+import { Vtb } from './Vtb'
 
 export interface PaymentContainerProps {
   hash: string
@@ -66,6 +67,8 @@ export function PaymentContainer({ hash }: PaymentContainerProps) {
     switch (data.payment.service) {
       case PaymentService.Yookassa:
         return <Yookassa link={data.payment.link || '#'} />
+      case PaymentService.Vtb:
+        return <Vtb link={data.payment.link || '#'} />
       case PaymentService.UponCash:
         return <UponCash />
     }

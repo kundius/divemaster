@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import styles from './CatalogButton.module.css'
 import { createPortal } from 'react-dom'
 import { cn, disableScroll, enableScroll } from '@/lib/utils'
@@ -17,6 +17,8 @@ export function CatalogButton() {
   const [offsetTop, setOffsetTop] = useState(0)
   const [isLoaded, setIsLoaded] = useState(false)
   const [isOpened, setIsOpened] = useState(false)
+  const modalRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     close()
@@ -51,14 +53,28 @@ export function CatalogButton() {
     // enableScroll()
   }
 
+  const handlePointerDown = (event: PointerEvent) => {
+    if (
+      modalRef.current &&
+      !modalRef.current.contains(event.target as Node) &&
+      triggerRef.current &&
+      !triggerRef.current.contains(event.target as Node)
+    ) {
+      close()
+    }
+  }
+
   useEffect(() => {
     if (isOpened) {
+      document.addEventListener('pointerdown', handlePointerDown)
       window.addEventListener('scroll', close)
     } else {
+      document.removeEventListener('pointerdown', handlePointerDown)
       window.removeEventListener('scroll', close)
     }
     return () => {
       window.removeEventListener('scroll', close)
+      document.removeEventListener('pointerdown', handlePointerDown)
     }
   }, [isOpened])
 
@@ -67,6 +83,7 @@ export function CatalogButton() {
       <button
         className={cn(styles.button, { [styles['button-opened']]: isOpened })}
         onClick={handleToggle}
+        ref={triggerRef}
       >
         Каталог<span className={styles.arrow}></span>
       </button>
@@ -75,6 +92,11 @@ export function CatalogButton() {
           <div
             className={cn(styles.modal, { [styles.opened]: isOpened })}
             style={{ '--offset-top': `${offsetTop}px` } as React.CSSProperties}
+            ref={modalRef}
+            // onPointerDownOutside={() => {
+            //   setIsOpen(false)
+            //   setHighlightedIndex(-1)
+            // }}
           >
             <div className={styles['modal-content']}>
               <CatalogButtonContentDynamic />

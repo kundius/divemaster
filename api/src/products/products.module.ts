@@ -41,7 +41,7 @@ import { TypesenseModule } from '@/typesense/typesense.module'
     TypesenseModule
   ],
   controllers: [ProductsController, CategoriesController, BrandsController, PropertiesController],
-  exports: [ProductsService, CategoriesService],
+  exports: [ProductsService, CategoriesService, BrandsService],
   providers: [
     ProductsService,
     CategoriesService,

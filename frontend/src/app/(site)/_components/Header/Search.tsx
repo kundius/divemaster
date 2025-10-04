@@ -225,14 +225,18 @@ import { Container } from '@/components/Container'
 
 export function Search() {
   const limit = 5
+
   const router = useRouter()
-  const [query, setQuery] = useState('')
-  const [isLoaded, setIsLoaded] = useState(false)
-  const debouncedQuery = useDebounce(query, 300)
-  const [offsetTop, setOffsetTop] = useState(0)
   const pathname = usePathname()
+
+  const [query, setQuery] = useState('')
+  const debouncedQuery = useDebounce(query, 300)
+
+  const [offsetTop, setOffsetTop] = useState(0)
+  const [isLoaded, setIsLoaded] = useState(false)
   const [isOpened, setIsOpened] = useState(false)
   const [highlightedIndex, setHighlightedIndex] = useState(-1)
+
   const inputRef = useRef<HTMLInputElement>(null)
   const suggestionRefs = useRef<(HTMLLIElement | null)[]>([])
   const modalRef = useRef<HTMLDivElement>(null)

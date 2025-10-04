@@ -35,6 +35,7 @@ import { SyncTask, SyncTaskStatus } from '../entities/sync-task.entity'
 import { ProductOption } from '@/products/entities/product-option.entity'
 import { OfferOption } from '@/products/entities/offer-option.entity'
 import { isDeepEqual } from '@modyqyw/utils'
+import { BrandsService } from '@/products/services/brands.service'
 
 const swap = (json) => {
   var ret = {}
@@ -125,6 +126,7 @@ export class SyncService {
     @InjectRepository(OfferOption)
     private offerOptionRepository: Repository<OfferOption>,
     private productsService: ProductsService,
+    private brandsService: BrandsService,
     private categoriesService: CategoriesService,
     private storageService: StorageService,
     private configService: ConfigService
@@ -439,10 +441,11 @@ export class SyncService {
 
         // связать с существующим или новым брендом
         if (data.brand) {
-          let brand = await this.brandRepository.findOneBy({ title: data.brand })
+          let brand = await this.brandRepository.findOneBy({ name: data.brand })
           if (!brand) {
             brand = new Brand()
-            brand.title = data.brand
+            brand.name = data.brand
+            brand.alias = await this.brandsService.makeAlias(data.brand, true)
           }
           product.brand = brand
         }

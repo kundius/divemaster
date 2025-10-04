@@ -1,16 +1,16 @@
 'use client'
 
 import { arrayToTree, cn } from '@/lib/utils'
-import { CategoryEntity, FindAllResult } from '@/types'
+import { BrandEntity, CategoryEntity, FindAllResult } from '@/types'
 import Image from 'next/image'
 import Link from 'next/link'
 import useSWR from 'swr'
 import styles from './CatalogButtonContent.module.css'
-import { brands } from './menu'
 import { Container } from '@/components/Container'
 
 export default function CatalogButtonContent() {
   const query = useSWR<FindAllResult<CategoryEntity>>([`categories`, { limit: 100 }])
+  const queryBrands = useSWR<FindAllResult<BrandEntity>>([`brands`, { limit: 100 }])
 
   const categories = arrayToTree<CategoryEntity>(query.data?.rows || [])
 
@@ -62,22 +62,23 @@ export default function CatalogButtonContent() {
               </ul>
             </div>
           )}
-          {/* TODO: brands */}
-          {/* <div className={styles['grid-brands']}>
-            <Link href="#Бренды" className={styles.headline}>
-              <span className={styles['headline-icon']}>
-                <Image src="/icons/catalog/brands-small.svg" width={55} height={31} alt="" />
-              </span>
-              <span className={styles['headline-title']}>Бренды</span>
-            </Link>
-            <ul className={cn(styles.list, 'max-lg:columns-4 max-xl:columns-6 columns-2 gap-12')}>
-              {brands.map((item, i) => (
-                <li key={i}>
-                  <Link href={item.href}>{item.title}</Link>
-                </li>
-              ))}
-            </ul>
-          </div> */}
+          {queryBrands.data && (
+            <div className={styles['grid-brands']}>
+              <Link href="#Бренды" className={styles.headline}>
+                <span className={styles['headline-icon']}>
+                  <Image src="/icons/catalog/brands-small.svg" width={55} height={31} alt="" />
+                </span>
+                <span className={styles['headline-title']}>Бренды</span>
+              </Link>
+              <ul className={cn(styles.list, 'max-lg:columns-4 max-xl:columns-6 columns-2 gap-12')}>
+                {queryBrands.data?.rows.map((item, i) => (
+                  <li key={i}>
+                    <Link href={`/brand/${item.alias}`}>{item.name}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           {swimming && (
             <div className={styles['grid-swimming']}>
               <Link href={`/category/${swimming.alias}`} className={styles.headline}>

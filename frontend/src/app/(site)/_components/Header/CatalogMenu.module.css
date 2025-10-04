@@ -84,19 +84,27 @@
 
 .second {
   visibility: hidden;
-  transform: translateY(-20px) scale(0.9, 0.9);
   transition: 0.3s ease;
   border-radius: 20px;
   padding: 36px 16px 16px;
   position: absolute;
   left: 16px;
-  width: 640px;
+  width: var(--container-width);
   top: 100%;
   z-index: 1;
   pointer-events: none;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 16px;
+  row-gap: 8px;
 
   @media (--max-2xl) {
     padding-top: 28px;
+  }
+
+  @media (--max-lg) {
+    column-gap: 12px;
+    row-gap: 6px;
   }
 }
 
@@ -140,29 +148,20 @@
   }
 }
 
-.second-brands {
-  left: 50%;
-  margin-left: -320px;
-}
-
-.second-diving {
-  left: -50%;
-
-  @media (--max-lg) {
-    left: -100%;
-  }
-}
-
 .second-link {
   display: block;
   text-decoration: none;
   color: #494949;
-  padding: 8px 12px;
+  padding: 12px 16px;
   border-radius: 8px;
   font-size: 16px;
   line-height: 1;
   display: inline-block;
   align-items: center;
+
+  @media (--max-lg) {
+    padding: 8px 12px;
+  }
 }
 
 .second-link:hover {

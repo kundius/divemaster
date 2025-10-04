@@ -146,6 +146,10 @@ export class ProductsService implements OnModuleInit {
       where.categories = { id: In([dto.category]) }
     }
 
+    if (typeof dto.brand !== 'undefined') {
+      where.brand = { id: In([dto.brand]) }
+    }
+
     if (whereIds !== null) {
       where.id = whereIds.length > 0 ? In(whereIds) : IsNull()
     }

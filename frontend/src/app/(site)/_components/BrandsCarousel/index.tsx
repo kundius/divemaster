@@ -6,10 +6,13 @@ import useEmblaCarousel from 'embla-carousel-react'
 import { useMediaQuery } from 'react-responsive'
 import styles from './index.module.css'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export interface BrandsCarouselProps {
   items: {
     image: string
+    href: string
+    name: string
   }[]
 }
 
@@ -33,7 +36,7 @@ export function BrandsCarousel({ items }: BrandsCarouselProps) {
           <button className={styles.prev} onClick={onPrevButtonClick} disabled={prevBtnDisabled} />
           <button className={styles.next} onClick={onNextButtonClick} disabled={nextBtnDisabled} />
         </div>
-        {/* TODO: brands */}
+        {/* TODO: all brands */}
         {/* <a href="#" className={styles.all}>
           смотреть все
         </a> */}
@@ -43,9 +46,9 @@ export function BrandsCarousel({ items }: BrandsCarouselProps) {
           <div className={styles.container}>
             {items.map((item, i) => (
               <div className={styles.slide} key={i}>
-                <div className={styles.brand}>
-                  <Image width={120} height={40} src={item.image} alt="" />
-                </div>
+                <Link href={item.href} className={styles.brand}>
+                  <Image width={120} height={40} src={item.image} alt={item.name} />
+                </Link>
               </div>
             ))}
           </div>

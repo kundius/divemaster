@@ -59,7 +59,7 @@ export function BrandList({ fallbackData }: BrandListProps) {
       label: 'ID'
     },
     {
-      key: 'title',
+      key: 'name',
       label: 'Название',
       sortable: true,
       headProps: {

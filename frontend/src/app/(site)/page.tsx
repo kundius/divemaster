@@ -5,7 +5,7 @@ import { BrandsCarousel } from '@/app/(site)/_components/BrandsCarousel'
 import { Container } from '@/components/Container'
 import { FooterBenefits } from '@/app/(site)/_components/FooterBenefits'
 import { apiGet } from '@/lib/api'
-import { FindAllResult, ProductEntity } from '@/types'
+import { BrandEntity, FindAllResult, ProductEntity } from '@/types'
 import {
   HeroSlider,
   HeroSliderCarpHunting,
@@ -16,9 +16,10 @@ import {
 } from './_components/HeroSlider'
 import { BenefitsSlider, BenefitsSliderDiscount } from './_components/BenefitsSlider'
 import { HomeAbout } from './_components/HomeAbout'
+import { getApiUrl, getFileUrl } from '@/lib/utils'
 
 export default async function Page() {
-  const [favoriteProducts, recentProducts] = await Promise.all([
+  const [favoriteProducts, recentProducts, brands] = await Promise.all([
     apiGet<FindAllResult<ProductEntity>>(
       `products`,
       {
@@ -52,7 +53,8 @@ export default async function Page() {
           revalidate: 60 * 5
         }
       }
-    )
+    ),
+    apiGet<FindAllResult<BrandEntity>>('brands', { limit: 100 })
   ])
 
   return (
@@ -83,46 +85,14 @@ export default async function Page() {
       />
       <div className="bg-white py-6">
         <Container>
-          {/* TODO: brands */}
           <BrandsCarousel
-            items={[
-              {
-                image: '/brands/1.png'
-              },
-              {
-                image: '/brands/2.png'
-              },
-              {
-                image: '/brands/3.png'
-              },
-              {
-                image: '/brands/4.png'
-              },
-              {
-                image: '/brands/5.png'
-              },
-              {
-                image: '/brands/6.png'
-              },
-              {
-                image: '/brands/1.png'
-              },
-              {
-                image: '/brands/2.png'
-              },
-              {
-                image: '/brands/3.png'
-              },
-              {
-                image: '/brands/4.png'
-              },
-              {
-                image: '/brands/5.png'
-              },
-              {
-                image: '/brands/6.png'
-              }
-            ]}
+            items={brands.rows
+              .filter((n) => !!n.imageId)
+              .map((n) => ({
+                image: getFileUrl(n.imageId as number),
+                href: `/brand/${n.alias}`,
+                name: n.name
+              }))}
           />
         </Container>
       </div>

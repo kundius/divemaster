@@ -204,7 +204,11 @@ export interface UserRoleEntity {
 
 export interface BrandEntity {
   id: number
-  title: string
+  imageId: number | null
+  image?: FileEntity | null
+  name: string
+  alias: string
+  description: string | null
 }
 
 export interface OfferEntity {

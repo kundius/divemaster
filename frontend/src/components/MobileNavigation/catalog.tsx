@@ -7,11 +7,12 @@ import {
   VerticalMenuList
 } from '@/components/ui/vertical-menu'
 import { arrayToTree } from '@/lib/utils'
-import { CategoryEntity, FindAllResult } from '@/types'
+import { BrandEntity, CategoryEntity, FindAllResult } from '@/types'
 import useSWR from 'swr'
 
 export default function MobileNavigationCatalog() {
   const query = useSWR<FindAllResult<CategoryEntity>>([`categories`, { limit: 100 }])
+  const queryBrands = useSWR<FindAllResult<BrandEntity>>([`brands`, { limit: 100 }])
   const categories = arrayToTree<CategoryEntity>(query.data?.rows || [])
 
   return (
@@ -33,16 +34,18 @@ export default function MobileNavigationCatalog() {
             )}
           </VerticalMenuItem>
         ))}
-        {/* <VerticalMenuItem>
-            <VerticalMenuTrigger>Бренды</VerticalMenuTrigger>
+        {queryBrands.data && (
+          <VerticalMenuItem>
+            <VerticalMenuLink>Бренды</VerticalMenuLink>
             <VerticalMenuList>
-              {diving.map((item, i) => (
+              {queryBrands.data.rows.map((n, i) => (
                 <VerticalMenuItem key={i}>
-                  <VerticalMenuLink href={item.href}>{item.title}</VerticalMenuLink>
+                  <VerticalMenuLink href={`/brand/${n.alias}`}>{n.name}</VerticalMenuLink>
                 </VerticalMenuItem>
               ))}
             </VerticalMenuList>
-          </VerticalMenuItem> */}
+          </VerticalMenuItem>
+        )}
         {/* <VerticalMenuItem>
             <Link href={`#sale`} className={styles.sale}>
               <span className="sale" />

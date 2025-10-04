@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  Patch,
+  Post,
+  Query
+} from '@nestjs/common'
 import { BrandsService } from '../services/brands.service'
 import { CreateBrandDto, FindAllBrandQueryDto, UpdateBrandDto } from '../dto/brands.dto'
 
@@ -14,6 +24,15 @@ export class BrandsController {
   @Get()
   findAll(@Query() query: FindAllBrandQueryDto) {
     return this.brandsService.findAll(query)
+  }
+
+  @Get('alias::alias')
+  async findOneByAlias(@Param('alias') alias: string) {
+    const brand = await this.brandsService.findOneByAlias(alias)
+    if (!brand) {
+      throw new NotFoundException()
+    }
+    return brand
   }
 
   @Get(':id')

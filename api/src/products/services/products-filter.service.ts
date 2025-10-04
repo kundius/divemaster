@@ -80,7 +80,7 @@ export class ProductsFilterService {
       }
 
       if (product.brand) {
-        record.brand = [product.brand.title]
+        record.brand = [product.brand.name]
       }
 
       for (const productOption of product.options) {

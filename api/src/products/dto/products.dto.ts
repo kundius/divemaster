@@ -62,6 +62,11 @@ export class FindAllProductDto extends PaginationQueryDto {
   @IsOptional()
   category?: number
 
+  @Type(() => Number)
+  @IsNumber()
+  @IsOptional()
+  brand?: number
+
   @ParseBoolean()
   @IsBoolean()
   allowInactive: boolean = false

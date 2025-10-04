@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { BrandForm, BrandFormFields, BrandFormSchema } from './BrandForm'
+import { slugify } from '@/lib/utils'
 
 export function BrandCreate() {
   const router = useRouter()
@@ -15,11 +16,17 @@ export function BrandCreate() {
   const form = useForm<BrandFormFields>({
     resolver: zodResolver(BrandFormSchema),
     defaultValues: {
-      title: ''
+      name: '',
+      imageId: null,
+      alias: '',
+      description: ''
     }
   })
 
   const onSubmit = async (values: BrandFormFields) => {
+    values.alias = slugify(values.alias || values.name)
+    form.setValue('alias', values.alias)
+
     try {
       const result = await apiPost<BrandEntity>(`brands`, values)
       toast.success('Бренд добавлен')

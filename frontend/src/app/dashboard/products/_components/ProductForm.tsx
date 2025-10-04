@@ -79,7 +79,12 @@ export function ProductForm() {
             <FormItem>
               <FormLabel>Бренд</FormLabel>
               <FormControl>
-                <ApiInputComboBox url="brands" value={field.value} onChange={field.onChange} />
+                <ApiInputComboBox
+                  displayField="name"
+                  url="brands"
+                  value={field.value}
+                  onChange={field.onChange}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

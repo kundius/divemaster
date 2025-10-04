@@ -31,6 +31,7 @@ interface LoadData<TRow> {
 
 interface ApiInputComboBoxProps<TRow> extends LoadParams {
   url: string
+  displayField?: string
   renderText?: (row: TRow) => ReactNode
   getValue?: (row: TRow) => number
   emptyText?: string
@@ -39,7 +40,7 @@ interface ApiInputComboBoxProps<TRow> extends LoadParams {
   onChange?: (value: number | null) => void
 }
 
-export function ApiInputComboBox<TRow extends unknown = unknown>(
+export function ApiInputComboBox<TRow extends Record<any, any> = Record<any, any>>(
   props: ApiInputComboBoxProps<TRow>
 ) {
   const {
@@ -49,6 +50,7 @@ export function ApiInputComboBox<TRow extends unknown = unknown>(
     limit = 8,
     sort,
     dir,
+    displayField = 'title',
     value: controlledValue,
     onChange: controlledOnChange
   } = props
@@ -70,8 +72,8 @@ export function ApiInputComboBox<TRow extends unknown = unknown>(
   const renderText: ApiInputComboBoxProps<TRow>['renderText'] =
     props.renderText ||
     ((row: TRow) => {
-      if (row && typeof row === 'object' && 'title' in row) {
-        return String(row['title'])
+      if (row && typeof row === 'object' && displayField in row) {
+        return String(row[displayField])
       }
       throw new Error('Запись не является подходящим объектом')
     })

@@ -1,4 +1,13 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import { Expose } from 'class-transformer'
+import {
+  AfterInsert,
+  AfterLoad,
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm'
 
 @Entity()
 export class File {
@@ -28,4 +37,12 @@ export class File {
 
   @UpdateDateColumn()
   updatedAt: Date
+
+  url: string
+
+  @AfterInsert()
+  @AfterLoad()
+  setUrl() {
+    this.url = `${process.env.APP_URL_FRONTEND}/storage/${this.id}/read`
+  }
 }

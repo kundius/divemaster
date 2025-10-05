@@ -1,7 +1,10 @@
 export default () => ({
   app: {
-    url: process.env.APP_URL || '',
-    origin: process.env.APP_ORIGIN || 'http://127.0.0.1:8080',
+    url: {
+      api: process.env.APP_URL_API || 'http://127.0.0.1:10002',
+      frontend: process.env.APP_URL_FRONTEND || 'http://127.0.0.1:10001'
+    },
+    origin: process.env.APP_ORIGIN || 'http://127.0.0.1:10001',
     port: process.env.APP_PORT || 4000,
     jwtSecretKey: process.env.JWT_SECRET_KEY || '',
     jwtExpirationTime: process.env.JWT_EXPIRATION_TIME || '30d',

@@ -127,7 +127,7 @@ export class YookassaService implements PaymentService {
       }
     })
 
-    return `${this.configService.get('app.url')}/order/details/${order.hash}`
+    return `${this.configService.get('app.url.frontend')}/order/details/${order.hash}`
   }
 
   async getStatus(payment: Payment): Promise<string | null> {

@@ -17,10 +17,10 @@ import { ProductsList } from '../../_components/ProductsList'
 import { ProductsPagination } from '../../_components/ProductsPagination'
 import { ProductsSorting } from '../../_components/ProductsSorting'
 
-export async function generateStaticParams() {
-  const brands = await apiGet<FindAllResult<BrandEntity>>(`brands`, { limit: 100 })
-  return brands.rows.filter((n) => !!n.alias).map((n) => ({ alias: n.alias }))
-}
+// export async function generateStaticParams() {
+//   const brands = await apiGet<FindAllResult<BrandEntity>>(`brands`, { limit: 100 })
+//   return brands.rows.filter((n) => !!n.alias).map((n) => ({ alias: n.alias }))
+// }
 
 export async function generateMetadata({
   params

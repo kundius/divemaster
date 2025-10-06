@@ -33,9 +33,7 @@ export async function CatalogMenu() {
         </li>
       ))}
       <li className={cn(styles['first-item'], 'max-lg:hidden')}>
-        <Link href="#Бренды" className={styles['first-link']}>
-          Бренды
-        </Link>
+        <span className={styles['first-link']}>Бренды</span>
         <ul className={cn(styles.second, styles['second-brands'])}>
           {brands.rows.map((n, i) => (
             <li key={i} className={styles['second-item']}>

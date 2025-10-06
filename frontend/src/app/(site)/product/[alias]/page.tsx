@@ -15,6 +15,7 @@ import { SpecButton } from './_components/SpecButton'
 import { Title } from './_components/Title'
 import { Warranty } from './_components/Warranty'
 import styles from './_components/page.module.css'
+import Link from 'next/link'
 
 // export async function generateStaticParams() {
 //   const products = await apiGet<ApiTableData<ProductEntity>>(`products`, {
@@ -92,7 +93,9 @@ export default async function Page({ params }: PageProps<{ alias: string }>) {
           <div className={styles.layoutInfo}>
             <div className="flex items-center justify-between mb-2 max-md:mb-1">
               {!!product.brand && typeof product.brand === 'object' && (
-                <div className={styles.brand}>{product.brand.title}</div>
+                <Link href={`/brand/${product.brand.alias}`} className={styles.brand}>
+                  {product.brand.name}
+                </Link>
               )}
               <div />
               <ListActions />

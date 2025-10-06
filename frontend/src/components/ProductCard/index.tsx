@@ -36,7 +36,6 @@ export function ProductCard() {
       .map(({ content }) => content)
   }, [productStore.selectable])
 
-  const brand = productStore.product.brand ? productStore.product.brand.title : undefined
   const price = productStore.displayPrice(productStore.offer)
   const oldPrice = productStore.displayOldPrice(productStore.offer)
 
@@ -103,7 +102,9 @@ export function ProductCard() {
       <Link href={`/product/${productStore.product.alias}`} className={styles.title}>
         {productStore.product.title}
       </Link>
-      {brand && <div className={styles.brand}>{brand}</div>}
+      {productStore.product.brand && (
+        <div className={styles.brand}>{productStore.product.brand.name}</div>
+      )}
       <div className={styles.actions}>
         <button
           type="button"

@@ -93,18 +93,16 @@
   top: 100%;
   z-index: 1;
   pointer-events: none;
-  display: flex;
-  flex-wrap: wrap;
-  column-gap: 16px;
-  row-gap: 8px;
+  display: block;
+  columns: 6;
+  column-gap: 0;
 
   @media (--max-2xl) {
     padding-top: 28px;
   }
 
   @media (--max-lg) {
-    column-gap: 12px;
-    row-gap: 6px;
+    columns: 4;
   }
 }
 
@@ -132,6 +130,8 @@
 .second-item {
   opacity: 0;
   transition: 0.3s ease;
+  display: inline-block;
+  width: 100%;
 }
 
 .first-item:hover {
@@ -156,8 +156,8 @@
   border-radius: 8px;
   font-size: 16px;
   line-height: 1;
-  display: inline-block;
-  align-items: center;
+  display: block;
+  width: 100%;
 
   @media (--max-lg) {
     padding: 8px 12px;

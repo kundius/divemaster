@@ -54,17 +54,23 @@ export class VtbService implements PaymentService {
     params.append('grant_type', 'client_credentials')
     params.append('client_id', String(this.configService.get('vtb.client_id')))
     params.append('client_secret', String(this.configService.get('vtb.client_secret')))
-    const response = await fetch(String(this.configService.get('vtb.token_endpoint')), {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: params.toString()
-    })
-    const data = await response.json()
-    return {
-      'X-IBM-Client-Id': this.configService.get('vtb.client_id'),
-      Authorization: `${data.token_type} ${data.access_token}`
+    console.log('запрашиваем токен',String(this.configService.get('vtb.token_endpoint')),params.toString())
+    try {
+      const response = await fetch(String(this.configService.get('vtb.token_endpoint')), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: params.toString()
+      })
+      const data = await response.json()
+      return {
+        'X-IBM-Client-Id': this.configService.get('vtb.client_id'),
+        Authorization: `${data.token_type} ${data.access_token}`
+      }
+    } catch (e) {
+      console.log('ошибка запроса токена', e)
+      throw e
     }
   }
 

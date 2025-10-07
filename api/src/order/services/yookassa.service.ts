@@ -71,7 +71,7 @@ export class YookassaService implements PaymentService {
       }
     }
 
-    const response = await fetch(`${this.configService.get('yookassa.endpoint')}payments`, {
+    const response = await fetch(`${this.configService.get('yookassa.endpoint')}/payments`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -143,7 +143,7 @@ export class YookassaService implements PaymentService {
 
     try {
       const response = await fetch(
-        `${this.configService.get('yookassa.endpoint')}payments/${payment.remoteId}`,
+        `${this.configService.get('yookassa.endpoint')}/payments/${payment.remoteId}`,
         {
           method: 'GET',
           headers: {

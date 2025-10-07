@@ -86,7 +86,7 @@ export class VtbService implements PaymentService {
       returnUrl: returnUrl
     }
 
-    const response = await fetch(`${this.configService.get('vtb.api_endpoint')}orders`, {
+    const response = await fetch(`${this.configService.get('vtb.api_endpoint')}/orders`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

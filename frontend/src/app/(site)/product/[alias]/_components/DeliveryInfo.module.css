@@ -15,10 +15,7 @@
   align-items: center;
   justify-content: center;
   margin-right: 12px;
-
-  svg {
-    fill: rgb(169, 0, 131);
-  }
+  color: rgb(169, 0, 131);
 
   @media (--max-lg) {
     margin-right: 8px;

@@ -36,7 +36,7 @@ export type ProductsActions = {
   setListElement(listElement: HTMLElement | null): void
   scrollIntoView(): void
   stickyFilterToggle(value?: boolean): void
-  load(scroll?: boolean): Promise<void>
+  load(): Promise<void>
 }
 
 export type ProductsStore = ProductsState & ProductsActions
@@ -75,8 +75,11 @@ export const createProductsStore = ({ initialBaseParams = {} }: CreateProductsSt
 
     async onChangeFilter(filter) {
       set((prev) => ({ searchParams: { ...prev.searchParams, filter, page: 1 } }))
-      const { load, stickyFilter } = get()
-      await load(stickyFilter)
+      const { load, stickyFilter, scrollIntoView } = get()
+      await load()
+      if (stickyFilter) {
+        scrollIntoView()
+      }
     },
 
     async onChangeSort(sort, dir) {

@@ -57,7 +57,8 @@ export const ProductsStoreProvider = ({
     if (!shallowEqual(searchParams, state.searchParams)) {
       searchParamsRef.current = searchParams
       store.setState((prev) => ({ searchParams: { ...prev.searchParams, ...searchParams } }))
-      store.getState().load(true)
+      store.getState().load()
+      store.getState().scrollIntoView()
     }
   }, [searchParams])
 

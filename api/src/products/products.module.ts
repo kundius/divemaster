@@ -22,6 +22,9 @@ import { OfferOption } from './entities/offer-option.entity'
 import { ProductOption } from './entities/product-option.entity'
 import { ProductsSearchService } from './services/products-search.service'
 import { TypesenseModule } from '@/typesense/typesense.module'
+import { ProductReview } from './entities/product-review.entity'
+import { ProductReviewMedia } from './entities/product-review-media.entity'
+import { ProductReviewReply } from './entities/product-review-reply.entity'
 
 @Module({
   imports: [
@@ -34,7 +37,10 @@ import { TypesenseModule } from '@/typesense/typesense.module'
       OptionValue,
       Product,
       ProductOption,
-      ProductImage
+      ProductImage,
+      ProductReview,
+      ProductReviewMedia,
+      ProductReviewReply
     ]),
     NotificationsModule,
     StorageModule,

@@ -17,6 +17,7 @@ import { Brand } from './brand.entity'
 import { Property } from './property.entity'
 import { OfferOption } from './offer-option.entity'
 import { ProductOption } from './product-option.entity'
+import { ProductReview } from './product-review.entity'
 
 @Entity()
 export class Product {
@@ -89,9 +90,12 @@ export class Product {
   @ManyToOne(() => Brand, { nullable: true })
   brand: Brand | null
 
-  // для ручной подготовки свойств товара
-  properties?: Property[]
-
   @OneToMany(() => ProductOption, (option) => option.product)
   options: ProductOption[]
+
+  @OneToMany(() => ProductReview, (review) => review.product)
+  reviews: ProductReview[]
+
+  // для ручной подготовки свойств товара
+  properties?: Property[]
 }

@@ -1,13 +1,11 @@
-.filter {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
+.wrap {
+  position: sticky;
+  top: calc(var(--sticky-header-height) + 16px);
+  z-index: 20;
 
-.filterTitle {
-  text-transform: uppercase;
-  color: var(--color-neutral-400);
-  font-size: 12px;
+  @media (--max-md) {
+    top: calc(var(--sticky-header-height) + 8px);
+  }
 }
 
 .filterCount {
@@ -16,7 +14,7 @@
   background: var(--primary);
   border-radius: 50%;
   color: #fff;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 500;
   display: flex;
   align-items: center;
@@ -25,4 +23,7 @@
 }
 
 .filterIcon {
+  font-size: 20px;
+  display: inline-flex;
+  align-items: center;
 }

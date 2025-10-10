@@ -123,7 +123,11 @@ export function OrderList({ fallbackData }: OrderListProps) {
             </Button>
           </OrderDetailsDialog>
           <ApiRemoveDialog url={`orders/${id}`} onSuccess={refetch}>
-            <Button variant="outline-destructive" size="icon">
+            <Button
+              variant="outline"
+              className="text-destructive hover:text-destructive"
+              size="icon"
+            >
               <Trash2Icon className="w-4 h-4" />
             </Button>
           </ApiRemoveDialog>

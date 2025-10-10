@@ -21,6 +21,7 @@ export type ProductsState = {
   baseParams: ProductsStateBaseParams
   loading: boolean
   listElement: HTMLElement | null
+  stickyFilter: boolean
   data: {
     rows: ProductEntity[]
     filters: ProductsFilter[]
@@ -34,6 +35,7 @@ export type ProductsActions = {
   onChangeSort(sort: string, dir: string): Promise<void>
   setListElement(listElement: HTMLElement | null): void
   scrollIntoView(): void
+  stickyFilterToggle(value?: boolean): void
   load(scroll?: boolean): Promise<void>
 }
 
@@ -43,7 +45,7 @@ export const productsStoreDefaultSearchParams: ProductsStateSearchParams = {
   page: 1,
   limit: 24,
   filter: '{}',
-  sort: 'id',
+  sort: 'rank',
   dir: 'ASC',
   query: ''
 }
@@ -58,6 +60,7 @@ export const createProductsStore = ({ initialBaseParams = {} }: CreateProductsSt
     baseParams: initialBaseParams,
     loading: false,
     listElement: null,
+    stickyFilter: false,
     data: {
       total: 0,
       rows: [],
@@ -72,7 +75,8 @@ export const createProductsStore = ({ initialBaseParams = {} }: CreateProductsSt
 
     async onChangeFilter(filter) {
       set((prev) => ({ searchParams: { ...prev.searchParams, filter, page: 1 } }))
-      await get().load()
+      const { load, stickyFilter } = get()
+      await load(stickyFilter)
     },
 
     async onChangeSort(sort, dir) {
@@ -91,6 +95,10 @@ export const createProductsStore = ({ initialBaseParams = {} }: CreateProductsSt
           behavior: 'smooth'
         })
       }
+    },
+
+    stickyFilterToggle(value) {
+      set((prev) => ({ stickyFilter: value ?? !prev.stickyFilter }))
     },
 
     async load() {

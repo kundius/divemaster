@@ -101,7 +101,11 @@ export function CategoriesList({ fallbackData }: CategoriesListProps) {
             </Button>
           </Link>
           <ApiRemoveDialog url={`categories/${id}`} onSuccess={refetch}>
-            <Button variant="outline-destructive" size="icon">
+            <Button
+              variant="outline"
+              className="text-destructive hover:text-destructive"
+              size="icon"
+            >
               <TrashIcon className="w-4 h-4" />
             </Button>
           </ApiRemoveDialog>

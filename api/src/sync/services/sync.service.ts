@@ -595,6 +595,7 @@ export class SyncService {
           return isDeepEqual(a1, a2)
         })
 
+        // создать новый оффер без опций или удалить опции в существующем для последующего заполнения новыми
         if (!offer) {
           offer = this.offerRepository.create({
             product: product,
@@ -629,6 +630,9 @@ export class SyncService {
         id: Not(In(changedOfferIds)),
         productId: product.id
       })
+
+      // по окончанию работы с офферами обновить минимальную цену товара
+      await this.productsService.updateMinPrice(product.id)
     }
 
     // добавить смещение ограниченное общим количеством

@@ -133,7 +133,11 @@ export function TasksTable() {
       formatter: (id) => (
         <div className="flex gap-2">
           <ApiRemoveDialog url={`sync/task/${id}`} onSuccess={refetch}>
-            <Button variant="outline-destructive" size="icon">
+            <Button
+              variant="outline"
+              className="text-destructive hover:text-destructive"
+              size="icon"
+            >
               <TrashIcon className="w-4 h-4" />
             </Button>
           </ApiRemoveDialog>

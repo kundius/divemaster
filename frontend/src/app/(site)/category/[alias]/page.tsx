@@ -76,7 +76,7 @@ export default async function Page({ params }: PageProps<{ alias: string }>) {
       <SectionPage withBreadcrumbs>
         <Headline breadcrumbs={crumbs} separator title={category.title} />
 
-        {hasChild && (
+        {child.length > 0 ? (
           <div className="grid grid-cols-5 gap-x-5 mt-10 gap-y-16 pb-10 border-b mb-14 border-neutral-100 max-2xl:grid-cols-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-md:gap-x-2">
             {child.map((item) => (
               <CategoryCard
@@ -87,51 +87,44 @@ export default async function Page({ params }: PageProps<{ alias: string }>) {
               />
             ))}
           </div>
-        )}
-
-        <Suspense>
-          <ProductsStoreProvider initialBaseParams={{ category: category.id }}>
-            <div className="flex gap-x-5 mt-14">
-              <div className="w-[320px] max-xl:w-[260px] flex-shrink-0 space-y-5 max-lg:hidden">
-                {!hasChild && (
-                  <div className="mb-80">
+        ) : (
+          <Suspense>
+            <ProductsStoreProvider initialBaseParams={{ category: category.id }}>
+              <div className="flex gap-x-5 mt-14 max-md:mt-6">
+                <div
+                  className="w-[320px] max-xl:w-[260px] flex-shrink-0 space-y-5 max-lg:hidden"
+                  data-products-filter-boundary
+                >
+                  <div className="mb-80 pr-6">
                     <ProductsFilter />
                   </div>
-                )}
-                <ConsultationWidget />
-                <BenefitsSideSlider
-                  items={[
-                    {
-                      content: <BenefitsSideSliderDiscount />,
-                      name: 'BenefitsSideSliderDiscount1'
-                    },
-                    {
-                      content: <BenefitsSideSliderDiscount />,
-                      name: 'BenefitsSideSliderDiscount2'
-                    },
-                    {
-                      content: <BenefitsSideSliderDiscount />,
-                      name: 'BenefitsSideSliderDiscount3'
-                    }
-                  ]}
-                />
-              </div>
-              <div className="w-full">
-                <div className="hidden">
-                  {hasChild ? (
-                    <div className="mb-6 text-xl font-sans-narrow uppercase font-bold">
-                      Популярные товары
-                    </div>
-                  ) : (
-                    <ProductsSorting />
-                  )}
+                  <ConsultationWidget />
+                  <BenefitsSideSlider
+                    items={[
+                      {
+                        content: <BenefitsSideSliderDiscount />,
+                        name: 'BenefitsSideSliderDiscount1'
+                      },
+                      {
+                        content: <BenefitsSideSliderDiscount />,
+                        name: 'BenefitsSideSliderDiscount2'
+                      },
+                      {
+                        content: <BenefitsSideSliderDiscount />,
+                        name: 'BenefitsSideSliderDiscount3'
+                      }
+                    ]}
+                  />
                 </div>
-                <ProductsList />
-                <ProductsPagination />
+                <div className="w-full">
+                  <ProductsSorting />
+                  <ProductsList />
+                  <ProductsPagination />
+                </div>
               </div>
-            </div>
-          </ProductsStoreProvider>
-        </Suspense>
+            </ProductsStoreProvider>
+          </Suspense>
+        )}
       </SectionPage>
       <Container>
         <Content

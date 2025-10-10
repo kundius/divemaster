@@ -21,9 +21,12 @@ export default async function Page() {
         <ProductsStoreProvider>
           <SearchHeadline />
 
-          <div className="flex gap-x-5 mt-14">
-            <div className="w-[320px] max-xl:w-[260px] flex-shrink-0 space-y-5 max-lg:hidden">
-              <div className="mb-80">
+          <div className="flex gap-x-5 mt-14 max-md:mt-6">
+            <div
+              className="w-[320px] max-xl:w-[260px] flex-shrink-0 space-y-5 max-lg:hidden"
+              data-products-filter-boundary
+            >
+              <div className="mb-80 pr-6">
                 <ProductsFilter />
               </div>
               <ConsultationWidget />
@@ -45,9 +48,7 @@ export default async function Page() {
               />
             </div>
             <div className="w-full">
-              <div className="hidden">
-                <ProductsSorting />
-              </div>
+              <ProductsSorting />
               <ProductsList />
               <ProductsPagination />
             </div>

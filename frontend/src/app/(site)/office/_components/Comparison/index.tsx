@@ -41,7 +41,7 @@ export function Comparison() {
               className={cn(
                 'px-2 py-2 rounded bg-neutral-100 text-neutral-600 text-sm font-sans-narrow uppercase hover:bg-neutral-200',
                 {
-                  'text-white bg-priamry-gradient': selectedCat === null
+                  'text-white bg-primary-gradient': selectedCat === null
                 }
               )}
               onClick={() => setSelectedCat(null)}
@@ -53,7 +53,7 @@ export function Comparison() {
                 className={cn(
                   'px-2 py-2 rounded bg-neutral-100 text-neutral-600 text-sm font-sans-narrow hover:bg-neutral-200',
                   {
-                    'text-white bg-priamry-gradient': selectedCat === title
+                    'text-white bg-primary-gradient': selectedCat === title
                   }
                 )}
                 key={title}

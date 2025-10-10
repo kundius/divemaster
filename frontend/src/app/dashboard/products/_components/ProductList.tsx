@@ -10,7 +10,7 @@ import { DataTable, DataTableColumn, DataTableFilterField } from '@/components/D
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ApiRemoveDialog } from '@/lib/ApiRemoveDialog'
-import { clearEmpty, getFileUrl } from '@/lib/utils'
+import { clearEmpty, formatPrice, getFileUrl } from '@/lib/utils'
 import { ProductEntity, FindAllResult } from '@/types'
 
 export interface ProductListProps {
@@ -92,6 +92,12 @@ export function ProductList({ fallbackData }: ProductListProps) {
       }
     },
     {
+      key: 'minPrice',
+      label: 'Цена',
+      sortable: true,
+      formatter: (value) => (value ? formatPrice(value) : 'Нет')
+    },
+    {
       key: 'active',
       label: 'Активен',
       sortable: true,
@@ -114,7 +120,11 @@ export function ProductList({ fallbackData }: ProductListProps) {
             </Button>
           </Link>
           <ApiRemoveDialog url={`products/${id}`} onSuccess={refetch}>
-            <Button variant="outline-destructive" size="icon">
+            <Button
+              variant="outline"
+              className="text-destructive hover:text-destructive"
+              size="icon"
+            >
               <TrashIcon className="w-4 h-4" />
             </Button>
           </ApiRemoveDialog>

@@ -254,6 +254,7 @@ export interface ProductEntity {
   longTitle: string | null
   alias: string
   rank: number
+  minPrice: number | null
   description: string | null
   specifications: string | null
   exploitation: string | null

@@ -84,7 +84,11 @@ export function UsersList({ fallbackData }: UsersListProps) {
             </Button>
           </Link>
           <ApiRemoveDialog url={`users/${id}`} onSuccess={refetch}>
-            <Button variant="outline-destructive" size="icon">
+            <Button
+              variant="outline"
+              className="text-destructive hover:text-destructive"
+              size="icon"
+            >
               <TrashIcon className="w-4 h-4" />
             </Button>
           </ApiRemoveDialog>

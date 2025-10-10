@@ -6,7 +6,15 @@ import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { InjectRepository } from '@nestjs/typeorm'
 import { join } from 'path'
-import { FindOptionsWhere, In, IsNull, Not, Repository } from 'typeorm'
+import {
+  FindOptionsWhere,
+  FindOptionsOrder,
+  In,
+  IsNull,
+  Not,
+  Repository,
+  FindOptionsRelations
+} from 'typeorm'
 import {
   CreateOfferDto,
   CreateProductDto,
@@ -509,6 +517,18 @@ export class ProductsService implements OnModuleInit {
     }
   }
 
+  async updateMinPrice(productId: number) {
+    const minPrice = await this.offerRepository
+      .createQueryBuilder('offer')
+      .select('MIN(offer.price)', 'min')
+      .where('offer.productId = :id', { id: productId })
+      .getRawOne()
+
+    await this.productRepository.update(productId, {
+      minPrice: minPrice?.min || null
+    })
+  }
+
   async findAllOffers(productId: number) {
     return this.offerRepository.find({
       where: { product: { id: productId } },
@@ -542,6 +562,8 @@ export class ProductsService implements OnModuleInit {
 
     await this.offerRepository.save(offer)
 
+    await this.updateMinPrice(productId)
+
     // добваить новые опции оффера
     for (const [name, content] of Object.entries(dto.options)) {
       const offerOption = this.offerOptionRepository.create({
@@ -556,6 +578,10 @@ export class ProductsService implements OnModuleInit {
   }
 
   async removeOffer(id: number) {
+    const offer = await this.offerRepository.findOneOrFail({
+      where: { id }
+    })
+    await this.updateMinPrice(offer.productId)
     await this.offerRepository.delete({ id })
   }
 
@@ -583,6 +609,8 @@ export class ProductsService implements OnModuleInit {
     offer.title = dto.title
 
     await this.offerRepository.save(offer)
+
+    await this.updateMinPrice(offer.productId)
 
     // удалить старые опции оффера
     await this.offerOptionRepository.delete({ offer })

@@ -85,7 +85,11 @@ export function UserRolesList({ fallbackData }: UserRolesListProps) {
             </Button>
           </Link>
           <ApiRemoveDialog url={`roles/${id}`} onSuccess={refetch}>
-            <Button variant="outline-destructive" size="icon">
+            <Button
+              variant="outline"
+              className="text-destructive hover:text-destructive"
+              size="icon"
+            >
               <TrashIcon className="w-4 h-4" />
             </Button>
           </ApiRemoveDialog>

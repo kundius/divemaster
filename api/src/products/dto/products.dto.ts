@@ -87,6 +87,10 @@ export class FindAllProductDto extends PaginationQueryDto {
   @IsString()
   @IsOptional()
   dir: 'ASC' | 'DESC' = 'ASC'
+
+  // @IsOptional()
+  // @IsEnum(SortOrder)
+  // dir: SortOrder = SortOrder.ASC
 }
 
 export class CreateProductDto {

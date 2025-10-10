@@ -1,4 +1,14 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, Relation } from 'typeorm'
+import {
+  Column,
+  Entity,
+  Index,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  Relation
+} from 'typeorm'
 import { Category } from './category.entity'
 import { ProductImage } from './product-image.entity'
 import { OptionValue } from './option-value.entity'
@@ -27,6 +37,10 @@ export class Product {
 
   @Column({ nullable: true, type: 'varchar' })
   sku?: string | null = null
+
+  @Index()
+  @Column({ type: 'int', precision: 11, nullable: true })
+  minPrice: number | null = null
 
   @Column({ default: 0 })
   rank: number = 0
@@ -77,7 +91,7 @@ export class Product {
 
   // для ручной подготовки свойств товара
   properties?: Property[]
-    
+
   @OneToMany(() => ProductOption, (option) => option.product)
   options: ProductOption[]
 }

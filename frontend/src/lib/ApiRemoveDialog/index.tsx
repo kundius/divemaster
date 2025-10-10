@@ -61,7 +61,12 @@ export function ApiRemoveDialog({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isPending}>Отмена</AlertDialogCancel>
-          <Button disabled={isPending} onClick={handleSubmit} variant="outline-destructive">
+          <Button
+            disabled={isPending}
+            onClick={handleSubmit}
+            variant="outline"
+            className="text-destructive hover:text-destructive"
+          >
             {isPending && <ArrowPathIcon className="h-4 w-4 animate-spin" />}
             Удалить
           </Button>

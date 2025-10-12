@@ -53,4 +53,10 @@ export class ProductReview {
 
   @CreateDateColumn()
   createdAt: Date
+
+  @Column()
+  recommend: boolean
+
+  @Column()
+  rating: number
 }

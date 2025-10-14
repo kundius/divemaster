@@ -11,20 +11,20 @@ import {
 } from 'typeorm'
 import { Product } from './product.entity'
 import { File } from '@/storage/entities/file.entity'
-import { ProductReview } from './product-review.entity'
+import { Review } from './review.entity'
 import { User } from '@/users/entities/user.entity'
 
 @Entity()
-export class ProductReviewReply {
+export class ReviewReply {
   @PrimaryGeneratedColumn()
   id: number
 
   @Column()
   reviewId: number
 
-  @OneToOne(() => ProductReview, (review) => review.reply, { onDelete: 'CASCADE' })
+  @OneToOne(() => Review, (review) => review.reply, { onDelete: 'CASCADE' })
   @JoinColumn()
-  review: ProductReview
+  review: Review
 
   @Column()
   comment: string

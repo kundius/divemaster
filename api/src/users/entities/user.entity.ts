@@ -3,7 +3,7 @@ import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn 
 import { Role } from './role.entity'
 import { Cart } from '@/cart/entities/cart.entity'
 import { Wishlist } from '@/wishlist/entities/wishlist.entity'
-import { ProductReview } from '@/products/entities/product-review.entity'
+import { Review } from '@/products/entities/review.entity'
 
 @Entity()
 export class User {

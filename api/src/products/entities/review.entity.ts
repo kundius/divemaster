@@ -14,22 +14,25 @@ import { Property } from './property.entity'
 import { Product } from './product.entity'
 import { Offer } from './offer.entity'
 import { User } from '@/users/entities/user.entity'
-import { ProductReviewMedia } from './product-review-media.entity'
-import { ProductReviewReply } from './product-review-reply.entity'
+import { ReviewMedia } from './review-media.entity'
+import { ReviewReply } from './review-reply.entity'
 
 @Entity()
-export class ProductReview {
+export class Review {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({ nullable: true, type: 'text' })
+  @Column({ type: 'text', nullable: true })
   advantages: string | null
 
-  @Column({ nullable: true, type: 'text' })
+  @Column({ type: 'text', nullable: true })
   flaws: string | null
 
-  @Column({ nullable: true, type: 'text' })
+  @Column({ type: 'text', nullable: true })
   comment: string | null
+
+  @Column({ type: 'text', nullable: true })
+  author: string | null
 
   @Column({ type: 'int', nullable: true })
   userId: number | null
@@ -43,19 +46,25 @@ export class ProductReview {
   @ManyToOne(() => Product, (product) => product.reviews, { onDelete: 'CASCADE' })
   product: Product
 
-  @OneToMany(() => ProductReviewMedia, (media) => media.review, { cascade: true })
-  media: ProductReviewMedia[]
+  @OneToMany(() => ReviewMedia, (media) => media.review, { cascade: true })
+  media: ReviewMedia[]
 
-  @OneToOne(() => ProductReviewReply, (reply) => reply.review, {
+  @OneToOne(() => ReviewReply, (reply) => reply.review, {
     nullable: true
   })
-  reply: ProductReviewReply | null
+  reply: ReviewReply | null
+
+  @Column({ default: false })
+  isPublished: boolean
+
+  @Column({ type: 'timestamp', nullable: true })
+  publishedAt: Date | null
 
   @CreateDateColumn()
   createdAt: Date
 
   @Column()
-  recommend: boolean
+  isRecommended: boolean
 
   @Column()
   rating: number

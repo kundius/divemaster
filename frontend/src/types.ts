@@ -245,6 +245,43 @@ export interface CategoryEntity {
   products?: ProductEntity[]
 }
 
+export interface ReviewMediaEntity {
+  fileId: number
+  file?: FileEntity
+  reviewId: number
+  review?: ReviewEntity
+  rank: number
+}
+
+export interface ReviewReplyEntity {
+  id: number
+  reviewId: number
+  review?: ReviewEntity
+  comment: string
+  userId: number
+  user?: UserEntity
+  createdAt: Date
+}
+
+export interface ReviewEntity {
+  id: number
+  advantages: string | null
+  flaws: string | null
+  comment: string | null
+  author: string | null
+  userId: number | null
+  user?: UserEntity | null
+  productId: number
+  product?: ProductEntity
+  media?: ReviewMediaEntity[]
+  reply?: ReviewReplyEntity | null
+  createdAt: Date
+  publishedAt: Date | null
+  isRecommended: boolean
+  isPublished: boolean
+  rating: number
+}
+
 export interface ProductEntity {
   id: number
   priceDecrease: number | null

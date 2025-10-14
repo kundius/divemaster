@@ -56,6 +56,10 @@ const data = {
         {
           title: 'Синхронизация',
           url: '/dashboard/sync'
+        },
+        {
+          title: 'Отзывы',
+          url: '/dashboard/reviews'
         }
       ]
     },

@@ -22,9 +22,11 @@ import { OfferOption } from './entities/offer-option.entity'
 import { ProductOption } from './entities/product-option.entity'
 import { ProductsSearchService } from './services/products-search.service'
 import { TypesenseModule } from '@/typesense/typesense.module'
-import { ProductReview } from './entities/product-review.entity'
-import { ProductReviewMedia } from './entities/product-review-media.entity'
-import { ProductReviewReply } from './entities/product-review-reply.entity'
+import { Review } from './entities/review.entity'
+import { ReviewMedia } from './entities/review-media.entity'
+import { ReviewReply } from './entities/review-reply.entity'
+import { ReviewService } from './services/review.service'
+import { ReviewsController } from './controllers/reviews.controller'
 
 @Module({
   imports: [
@@ -38,20 +40,27 @@ import { ProductReviewReply } from './entities/product-review-reply.entity'
       Product,
       ProductOption,
       ProductImage,
-      ProductReview,
-      ProductReviewMedia,
-      ProductReviewReply
+      Review,
+      ReviewMedia,
+      ReviewReply
     ]),
     NotificationsModule,
     StorageModule,
     TypesenseModule
   ],
-  controllers: [ProductsController, CategoriesController, BrandsController, PropertiesController],
-  exports: [ProductsService, CategoriesService, BrandsService],
+  controllers: [
+    ProductsController,
+    CategoriesController,
+    BrandsController,
+    ReviewsController,
+    PropertiesController
+  ],
+  exports: [ProductsService, CategoriesService, BrandsService, ReviewService],
   providers: [
     ProductsService,
     CategoriesService,
     BrandsService,
+    ReviewService,
     PropertiesService,
     ProductsFilterService,
     ProductsSearchService

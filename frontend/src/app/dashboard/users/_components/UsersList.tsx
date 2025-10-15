@@ -58,21 +58,21 @@ export function UsersList({ fallbackData }: UsersListProps) {
 
   const columns: DataTableColumn<UserEntity>[] = [
     {
-      key: 'name',
+      dataIndex: 'name',
       label: 'Имя',
       sortable: true
     },
     {
-      key: 'email',
+      dataIndex: 'email',
       label: 'E-mail'
     },
     {
-      key: 'role',
+      dataIndex: 'role',
       label: 'Роль',
       formatter: (role) => <Badge variant="outline">{role?.title}</Badge>
     },
     {
-      key: 'id',
+      dataIndex: 'id',
       headProps: {
         className: 'w-0'
       },

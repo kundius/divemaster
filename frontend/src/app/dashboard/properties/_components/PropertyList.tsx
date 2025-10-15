@@ -61,23 +61,23 @@ export function PropertyList({ fallbackData }: PropertyListProps) {
 
   const columns: DataTableColumn<PropertyEntity>[] = [
     {
-      key: 'id',
+      dataIndex: 'id',
       label: 'ID'
     },
     {
-      key: 'key',
+      dataIndex: 'key',
       label: 'Ключ'
     },
     {
-      key: 'caption',
+      dataIndex: 'caption',
       label: 'Подпись'
     },
     {
-      key: 'type',
+      dataIndex: 'type',
       label: 'Тип'
     },
     {
-      key: 'inFilter',
+      dataIndex: 'inFilter',
       label: 'Фильтр',
       headProps: {},
       formatter: (active) => {
@@ -87,7 +87,7 @@ export function PropertyList({ fallbackData }: PropertyListProps) {
       }
     },
     {
-      key: 'id',
+      dataIndex: 'id',
       headProps: {
         className: 'w-0'
       },

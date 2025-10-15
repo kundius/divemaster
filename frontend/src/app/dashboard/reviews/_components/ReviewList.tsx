@@ -4,6 +4,8 @@ import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryStates } from 'nuqs'
 import useSWR from 'swr'
+import { format } from 'date-fns'
+import { CheckCircleIcon, XCircleIcon } from 'lucide-react'
 
 import { DataTable, DataTableColumn, DataTableFilterField } from '@/components/DataTable'
 import { Button } from '@/components/ui/button'
@@ -55,30 +57,52 @@ export function ReviewList({ fallbackData }: ReviewListProps) {
 
   const columns: DataTableColumn<ReviewEntity>[] = [
     {
-      key: 'id',
-      label: 'ID'
+      key: 'author',
+      label: 'Автор',
+      formatter: (record) => (record.user ? record.user.name : record.author) || '-'
     },
-    // {
-    //   key: 'name',
-    //   label: 'Название',
-    //   sortable: true,
-    //   headProps: {
-    //     className: 'w-5/12'
-    //   }
-    // },
     {
-      key: 'id',
+      dataIndex: 'publishedAt',
+      label: 'Дата публикации',
+      formatter: (value) => (value ? format(value, 'dd MMMM, yyyy') : '-'),
+      sortable: true
+    },
+    {
+      dataIndex: 'isPublished',
+      label: 'Опубликован',
+      formatter: (value) => {
+        const Icon = value ? CheckCircleIcon : XCircleIcon
+        const color = value ? 'text-green-500' : 'text-amber-500'
+        return <Icon className={`w-6 h-6 ${color}`} />
+      }
+    },
+    {
+      dataIndex: 'isRecommended',
+      label: 'Рекомендован',
+      formatter: (value) => {
+        const Icon = value ? CheckCircleIcon : XCircleIcon
+        const color = value ? 'text-green-500' : 'text-amber-500'
+        return <Icon className={`w-6 h-6 ${color}`} />
+      }
+    },
+    {
+      dataIndex: 'rating',
+      label: 'Оценка',
+      sortable: true
+    },
+    {
+      key: 'actions',
       headProps: {
         className: 'w-0'
       },
-      formatter: (id) => (
+      formatter: (record) => (
         <div className="flex gap-2">
-          <Link href={`/dashboard/reviews/${id}`}>
+          <Link href={`/dashboard/reviews/${record.id}`}>
             <Button variant="outline" size="icon">
               <PencilIcon className="w-4 h-4" />
             </Button>
           </Link>
-          <ApiRemoveDialog url={`reviews/${id}`} onSuccess={refetch}>
+          <ApiRemoveDialog url={`reviews/${record.id}`} onSuccess={refetch}>
             <Button
               variant="outline"
               className="text-destructive hover:text-destructive"

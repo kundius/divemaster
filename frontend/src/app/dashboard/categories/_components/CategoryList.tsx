@@ -55,7 +55,7 @@ export function CategoriesList({ fallbackData }: CategoriesListProps) {
 
   const columns: DataTableColumn<CategoryEntity>[] = [
     {
-      key: 'title',
+      dataIndex: 'title',
       label: 'Название',
       sortable: true,
       headProps: {},
@@ -73,13 +73,13 @@ export function CategoriesList({ fallbackData }: CategoriesListProps) {
       }
     },
     {
-      key: 'rank',
+      dataIndex: 'rank',
       label: 'Порядок',
       headProps: {},
       cellProps: {}
     },
     {
-      key: 'active',
+      dataIndex: 'active',
       label: 'Активна',
       headProps: {},
       formatter: (active) => {
@@ -89,7 +89,7 @@ export function CategoriesList({ fallbackData }: CategoriesListProps) {
       }
     },
     {
-      key: 'id',
+      dataIndex: 'id',
       headProps: {
         className: 'w-0'
       },

@@ -78,7 +78,7 @@ export function OrderList({ fallbackData }: OrderListProps) {
 
   const columns: DataTableColumn<OrderEntity>[] = [
     {
-      key: 'number',
+      dataIndex: 'number',
       label: 'Номер',
       headProps: {},
       formatter: (number, row) => {
@@ -86,7 +86,7 @@ export function OrderList({ fallbackData }: OrderListProps) {
       }
     },
     {
-      key: 'createdAt',
+      dataIndex: 'createdAt',
       label: 'Дата',
       sortable: true,
       headProps: {
@@ -95,7 +95,7 @@ export function OrderList({ fallbackData }: OrderListProps) {
       formatter: (createdAt) => format(createdAt, 'dd MMMM, HH:mm')
     },
     {
-      key: 'cost',
+      dataIndex: 'cost',
       label: 'Стоимость',
       headProps: {
         className: 'whitespace-nowrap'
@@ -103,7 +103,7 @@ export function OrderList({ fallbackData }: OrderListProps) {
       formatter: (cost) => formatPrice(cost)
     },
     {
-      key: 'id',
+      dataIndex: 'id',
       label: 'Статус',
       headProps: {
         className: 'whitespace-nowrap'
@@ -111,7 +111,7 @@ export function OrderList({ fallbackData }: OrderListProps) {
       formatter: (_, row) => getStatus(row)
     },
     {
-      key: 'id',
+      dataIndex: 'id',
       headProps: {
         className: 'w-0'
       },

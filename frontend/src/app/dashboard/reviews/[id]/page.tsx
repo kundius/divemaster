@@ -1,6 +1,7 @@
+import type { Metadata } from 'next'
+
 import { apiGet } from '@/lib/api'
 import { PageProps, ReviewEntity } from '@/types'
-import type { Metadata } from 'next'
 import { AppPage, AppPageContent, AppPageHeader, AppPageTitle } from '../../_components/AppPage'
 import { ReviewUpdate } from '../_components/ReviewUpdate'
 

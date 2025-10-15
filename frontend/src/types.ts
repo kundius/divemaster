@@ -275,8 +275,8 @@ export interface ReviewEntity {
   product?: ProductEntity
   media?: ReviewMediaEntity[]
   reply?: ReviewReplyEntity | null
-  createdAt: Date
-  publishedAt: Date | null
+  createdAt: string
+  publishedAt: string | null
   isRecommended: boolean
   isPublished: boolean
   rating: number

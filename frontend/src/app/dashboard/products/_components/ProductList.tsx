@@ -60,7 +60,7 @@ export function ProductList({ fallbackData }: ProductListProps) {
 
   const columns: DataTableColumn<ProductEntity>[] = [
     {
-      key: 'title',
+      dataIndex: 'title',
       label: 'Товар',
       sortable: true,
       formatter: (title, record) => {
@@ -92,13 +92,13 @@ export function ProductList({ fallbackData }: ProductListProps) {
       }
     },
     {
-      key: 'minPrice',
+      dataIndex: 'minPrice',
       label: 'Цена',
       sortable: true,
       formatter: (value) => (value ? formatPrice(value) : 'Нет')
     },
     {
-      key: 'active',
+      dataIndex: 'active',
       label: 'Активен',
       sortable: true,
       formatter: (active) => {
@@ -108,7 +108,7 @@ export function ProductList({ fallbackData }: ProductListProps) {
       }
     },
     {
-      key: 'id',
+      dataIndex: 'id',
       headProps: {
         className: 'w-0'
       },

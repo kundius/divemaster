@@ -1,14 +1,14 @@
 'use client'
 
-import { Form } from '@/components/ui/form'
-import { apiPost } from '@/lib/api'
-import { ReviewEntity } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
+
+import { Form } from '@/components/ui/form'
+import { apiPost } from '@/lib/api'
+import { ReviewEntity } from '@/types'
 import { ReviewForm, ReviewFormFields, ReviewFormSchema } from './ReviewForm'
-import { slugify } from '@/lib/utils'
 
 export function ReviewCreate() {
   const router = useRouter()
@@ -16,15 +16,10 @@ export function ReviewCreate() {
   const form = useForm<ReviewFormFields>({
     resolver: zodResolver(ReviewFormSchema),
     defaultValues: {
-      advantages: '',
-      author: '',
-      comment: '',
-      flaws: '',
       isPublished: true,
-      productId: undefined,
-      publishedAt: undefined,
-      rating: undefined,
-      userId: undefined
+      isRecommended: true,
+      publishedAt: new Date(),
+      rating: 5
     }
   })
 

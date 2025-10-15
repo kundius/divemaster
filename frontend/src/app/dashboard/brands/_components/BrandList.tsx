@@ -55,11 +55,11 @@ export function BrandList({ fallbackData }: BrandListProps) {
 
   const columns: DataTableColumn<BrandEntity>[] = [
     {
-      key: 'id',
+      dataIndex: 'id',
       label: 'ID'
     },
     {
-      key: 'name',
+      dataIndex: 'name',
       label: 'Название',
       sortable: true,
       headProps: {
@@ -67,7 +67,7 @@ export function BrandList({ fallbackData }: BrandListProps) {
       }
     },
     {
-      key: 'id',
+      dataIndex: 'id',
       headProps: {
         className: 'w-0'
       },

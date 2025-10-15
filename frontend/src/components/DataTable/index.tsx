@@ -34,16 +34,48 @@ export interface FacetedFilterField extends Omit<FacetedFilterProps, 'onChange' 
 
 export type DataTableFilterField = SearchFilterField | FacetedFilterField
 
-export type DataTableColumn<T> = {
-  [K in keyof T]: {
-    label?: string
-    headProps?: React.ThHTMLAttributes<HTMLTableCellElement>
-    cellProps?: React.TdHTMLAttributes<HTMLTableCellElement>
-    key: K
-    sortable?: boolean
+type BaseColumnProps = {
+  label?: string
+  headProps?: React.ThHTMLAttributes<HTMLTableCellElement>
+  cellProps?: React.TdHTMLAttributes<HTMLTableCellElement>
+  sortable?: boolean
+}
+
+type FieldColumnForAllKeys<T> = {
+  [K in keyof T]: BaseColumnProps & {
+    dataIndex: K
+    key?: undefined
     formatter?: (value: T[K], row: T) => ReactNode
   }
 }[keyof T]
+
+type CustomColumn<T> = BaseColumnProps & {
+  dataIndex?: undefined
+  key: string
+  formatter?: (row: T) => ReactNode
+}
+
+export type DataTableColumn<T> = FieldColumnForAllKeys<T> | CustomColumn<T>
+
+// export type DataTableColumn<T> = {
+//   [K in keyof T]:
+//     | {
+//         label?: string
+//         headProps?: React.ThHTMLAttributes<HTMLTableCellElement>
+//         cellProps?: React.TdHTMLAttributes<HTMLTableCellElement>
+//         sortable?: boolean
+//         dataIndex: K
+//         formatter?: (value: T[K], row: T) => ReactNode
+//       }
+//     | {
+//         label?: string
+//         headProps?: React.ThHTMLAttributes<HTMLTableCellElement>
+//         cellProps?: React.TdHTMLAttributes<HTMLTableCellElement>
+//         sortable?: boolean
+//         key: string
+//         formatter?: (value: T) => ReactNode
+//       }
+// }[keyof T]
 
 export type DataTableFilter = Record<string, string | string[] | null>
 
@@ -94,7 +126,7 @@ export function DataTable<
   const changeSortHandler = (column: DataTableColumn<TRow>) => {
     if (!onChangeSorting) return
 
-    const field = String(column.key)
+    const field = String(column.dataIndex)
 
     if (sorting?.sort === field && sorting?.dir === 'ASC') {
       onChangeSorting({ sort: field, dir: 'DESC' })
@@ -107,10 +139,19 @@ export function DataTable<
 
   const renderCell = (row: TRow, column: DataTableColumn<TRow>): ReactNode => {
     if (column.formatter) {
-      return column.formatter(row[column.key], row)
+      if (typeof column.key !== 'undefined') {
+        return column.formatter(row)
+      }
+      if (typeof column.dataIndex !== 'undefined') {
+        return column.formatter(row[column.dataIndex], row)
+      }
     }
 
-    return String(row[column.key])
+    if (typeof column.dataIndex !== 'undefined') {
+      return String(row[column.dataIndex])
+    }
+
+    return null
   }
 
   const renderHead = (column: DataTableColumn<TRow>): ReactNode => {
@@ -119,7 +160,7 @@ export function DataTable<
     }
 
     let arrow = <ArrowsUpDownIcon className="ml-2 h-4 w-4" />
-    if (sorting?.sort === column.key) {
+    if (sorting && sorting.sort === column.dataIndex) {
       if (sorting.dir === 'ASC') {
         arrow = <BarsArrowDownIcon className="ml-2 h-4 w-4" />
       }
@@ -202,7 +243,7 @@ export function DataTable<
           <TableHeader>
             <TableRow>
               {columns.map((column, i) => (
-                <TableHead key={`${i}-${String(column.key)}`} {...column.headProps}>
+                <TableHead key={`${i}-${String(column.dataIndex)}`} {...column.headProps}>
                   {renderHead(column)}
                 </TableHead>
               ))}
@@ -212,7 +253,10 @@ export function DataTable<
             {data.map((row, i) => (
               <TableRow key={keyId ? String(row[keyId]) : i}>
                 {columns.map((column, k) => (
-                  <TableCell key={`${k}-${String(column.key)}`} {...column.cellProps}>
+                  <TableCell
+                    key={`${k}:${String(column.key)}:${String(column.dataIndex)}`}
+                    {...column.cellProps}
+                  >
                     {renderCell(row, column)}
                   </TableCell>
                 ))}

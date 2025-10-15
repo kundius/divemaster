@@ -181,7 +181,7 @@ export function ApiInputComboBox<TRow extends Record<any, any> = Record<any, any
           </CommandList>
         </Command>
         {(swrQuery.data?.total || 0) > limit && (
-          <div className="px-1 pb-1">
+          <div className="px-1 pb-1 pt-1 border-t">
             <Pagination
               showLimit={false}
               showTotal={false}

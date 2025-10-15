@@ -22,6 +22,10 @@ export class CreateReviewDto {
   @IsBoolean()
   isPublished: boolean
 
+  @Type(() => Boolean)
+  @IsBoolean()
+  isRecommended: boolean
+
   @IsNumber()
   @Min(1)
   @Max(5)

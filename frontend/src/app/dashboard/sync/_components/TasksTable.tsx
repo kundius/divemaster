@@ -100,7 +100,7 @@ export function TasksTable() {
 
   const columns: DataTableColumn<SyncTaskEntity>[] = [
     {
-      key: 'status',
+      dataIndex: 'status',
       headProps: {
         className: 'w-1/3'
       },
@@ -109,7 +109,7 @@ export function TasksTable() {
       formatter: renderStatus
     },
     {
-      key: 'total',
+      dataIndex: 'total',
       headProps: {
         className: 'w-1/3'
       },
@@ -117,7 +117,7 @@ export function TasksTable() {
       formatter: renderProgress
     },
     {
-      key: 'createdAt',
+      dataIndex: 'createdAt',
       label: 'Дата',
       sortable: true,
       headProps: {
@@ -126,7 +126,7 @@ export function TasksTable() {
       formatter: (createdAt) => format(createdAt, 'dd MMMM, HH:mm')
     },
     {
-      key: 'id',
+      dataIndex: 'id',
       headProps: {
         className: 'w-0'
       },

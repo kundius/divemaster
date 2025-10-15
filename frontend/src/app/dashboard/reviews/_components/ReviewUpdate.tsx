@@ -1,13 +1,14 @@
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
+import { parseISO } from 'date-fns'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+
 import { Form } from '@/components/ui/form'
 import { apiPatch } from '@/lib/api'
 import { ReviewEntity } from '@/types'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 import { ReviewForm, ReviewFormFields, ReviewFormSchema } from './ReviewForm'
-import slugify from 'slugify'
 
 export interface ReviewUpdateProps {
   record: ReviewEntity
@@ -17,20 +18,24 @@ export function ReviewUpdate({ record }: ReviewUpdateProps) {
   const form = useForm<ReviewFormFields>({
     resolver: zodResolver(ReviewFormSchema),
     defaultValues: {
-      // imageId: record.imageId,
-      // description: record.description || '',
-      // name: record.name,
-      // alias: record.alias
+      advantages: record.advantages || undefined,
+      author: record.author || undefined,
+      comment: record.comment || undefined,
+      flaws: record.flaws || undefined,
+      isPublished: record.isPublished,
+      isRecommended: record.isRecommended,
+      productId: record.productId,
+      publishedAt:
+        typeof record.publishedAt === 'string' ? parseISO(record.publishedAt) : record.publishedAt,
+      rating: record.rating,
+      userId: record.userId
     }
   })
 
   const onSubmit = async (values: ReviewFormFields) => {
-    values.alias = slugify(values.alias || values.name)
-    form.setValue('alias', values.alias)
-
     try {
       await apiPatch(`reviews/${record.id}`, values)
-      toast.success('Бренд изменен')
+      toast.success('Отзыв изменен')
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Unknown error')
     }

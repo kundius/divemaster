@@ -59,7 +59,7 @@ export function BlogPostList({ fallbackData }: BlogPostListProps) {
 
   const columns: DataTableColumn<BlogPostEntity>[] = [
     {
-      key: 'title',
+      dataIndex: 'title',
       label: 'Пост',
       sortable: true,
       formatter: (title, record) => {
@@ -92,7 +92,7 @@ export function BlogPostList({ fallbackData }: BlogPostListProps) {
       }
     },
     {
-      key: 'status',
+      dataIndex: 'status',
       label: 'Статус',
       sortable: true,
       headProps: {
@@ -110,7 +110,7 @@ export function BlogPostList({ fallbackData }: BlogPostListProps) {
       }
     },
     {
-      key: 'id',
+      dataIndex: 'id',
       headProps: {
         className: 'w-0'
       },

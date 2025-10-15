@@ -55,12 +55,12 @@ export function UserRolesList({ fallbackData }: UserRolesListProps) {
 
   const columns: DataTableColumn<UserRoleEntity>[] = [
     {
-      key: 'title',
+      dataIndex: 'title',
       label: 'Название',
       sortable: true
     },
     {
-      key: 'scope',
+      dataIndex: 'scope',
       label: 'Разрешения',
       formatter: (scope) => (
         <div className="flex flex-wrap gap-1.5">
@@ -73,7 +73,7 @@ export function UserRolesList({ fallbackData }: UserRolesListProps) {
       )
     },
     {
-      key: 'id',
+      dataIndex: 'id',
       headProps: {
         className: 'w-0'
       },

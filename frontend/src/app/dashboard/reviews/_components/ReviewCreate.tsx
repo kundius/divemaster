@@ -19,7 +19,8 @@ export function ReviewCreate() {
       isPublished: true,
       isRecommended: true,
       publishedAt: new Date(),
-      rating: 5
+      rating: 5,
+      mediaIds: []
     }
   })
 

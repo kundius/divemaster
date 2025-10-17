@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { apiGet } from '@/lib/api'
 import { PageProps, ReviewEntity } from '@/types'
 import { AppPage, AppPageContent, AppPageHeader, AppPageTitle } from '../../_components/AppPage'
+import { ReviewReply } from '../_components/ReviewReply'
 import { ReviewUpdate } from '../_components/ReviewUpdate'
 
 export const metadata: Metadata = {
@@ -18,6 +19,7 @@ export default async function Page({ params }: PageProps<{ id: number }>) {
         <AppPageTitle>Редактировать отзыв</AppPageTitle>
       </AppPageHeader>
       <AppPageContent>
+        <ReviewReply reviewId={record.id} initialData={record.reply} />
         <ReviewUpdate record={record} />
       </AppPageContent>
     </AppPage>

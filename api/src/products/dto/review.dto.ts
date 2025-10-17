@@ -3,11 +3,14 @@ import { SORT_DIRECTIONS, SortDirection } from '@/shared/types/sort.types'
 import { PartialType } from '@nestjs/mapped-types'
 import { Type } from 'class-transformer'
 import {
+  IsArray,
   IsBoolean,
   IsDate,
   IsIn,
+  IsInt,
   IsNumber,
   IsOptional,
+  IsPositive,
   IsString,
   Max,
   Min,
@@ -65,6 +68,14 @@ export class CreateReviewDto {
   @IsDate()
   @IsOptional()
   publishedAt?: Date
+
+  @IsArray()
+  @Type(() => Number)
+  @IsNumber({}, { each: true })
+  @IsInt({ each: true })
+  @IsPositive({ each: true })
+  @IsOptional()
+  mediaIds?: number[]
 }
 
 export class UpdateReviewDto extends PartialType(CreateReviewDto) {}
@@ -93,3 +104,21 @@ export class FindAllReviewQueryDto extends PaginationQueryDto {
   @IsIn(SORT_DIRECTIONS)
   dir: SortDirection = 'DESC'
 }
+
+export class CreateReviewReplyDto {
+  @Type(() => String)
+  @IsString()
+  comment: string
+
+  @Type(() => Number)
+  @IsNumber()
+  @IsOptional()
+  userId?: number
+
+  @Type(() => Date)
+  @IsDate()
+  @IsOptional()
+  publishedAt?: Date
+}
+
+export class UpdateReviewReplyDto extends PartialType(CreateReviewReplyDto) {}

@@ -1,10 +1,18 @@
-import { Injectable } from '@nestjs/common'
+import { User } from '@/users/entities/user.entity'
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Brackets, FindOptionsRelations, FindOptionsWhere, Like, Repository } from 'typeorm'
-import { Review } from '../entities/review.entity'
+import { Brackets, In, Repository } from 'typeorm'
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity'
+import {
+  CreateReviewDto,
+  CreateReviewReplyDto,
+  FindAllReviewQueryDto,
+  UpdateReviewDto,
+  UpdateReviewReplyDto
+} from '../dto/review.dto'
 import { ReviewMedia } from '../entities/review-media.entity'
 import { ReviewReply } from '../entities/review-reply.entity'
-import { CreateReviewDto, FindAllReviewQueryDto, UpdateReviewDto } from '../dto/review.dto'
+import { Review } from '../entities/review.entity'
 
 @Injectable()
 export class ReviewService {
@@ -17,10 +25,26 @@ export class ReviewService {
     private reviewReplyRepository: Repository<ReviewReply>
   ) {}
 
+  mediaFromIds(reviewId: number, fileIds: number[]) {
+    const media: ReviewMedia[] = []
+    let rank = 0
+    for (const fileId of fileIds) {
+      rank++
+      media.push(
+        this.reviewMediaRepository.create({
+          fileId,
+          reviewId,
+          rank
+        })
+      )
+    }
+    return media
+  }
+
   async findOne(id: number) {
     return this.reviewRepository.findOne({
       where: { id },
-      relations: { user: true }
+      relations: { user: true, reply: { user: true }, media: true }
     })
   }
 
@@ -53,10 +77,8 @@ export class ReviewService {
     return { rows, total }
   }
 
-  async create({ productId, userId, ...fillable }: CreateReviewDto) {
-    const record = new Review()
-
-    this.reviewRepository.merge(record, fillable)
+  async create({ productId, userId, mediaIds, ...fillable }: CreateReviewDto) {
+    let record = this.reviewRepository.create(fillable)
 
     if (typeof productId !== 'undefined') {
       record.productId = productId
@@ -66,12 +88,18 @@ export class ReviewService {
       record.userId = userId
     }
 
-    await this.reviewRepository.save(record)
+    record = await this.reviewRepository.save(record)
 
-    return record
+    if (typeof mediaIds !== 'undefined') {
+      record.media = this.mediaFromIds(record.id, mediaIds)
+    }
+
+    record = await this.reviewRepository.save(record)
+
+    return this.findOne(record.id)
   }
 
-  async update(id: number, { productId, userId, ...fillable }: UpdateReviewDto) {
+  async update(id: number, { productId, userId, mediaIds, ...fillable }: UpdateReviewDto) {
     const record = await this.reviewRepository.findOneOrFail({
       where: { id }
     })
@@ -86,12 +114,81 @@ export class ReviewService {
       record.userId = userId
     }
 
+    if (typeof mediaIds !== 'undefined') {
+      // удаляем старые медиа и привязываем новые
+      await this.reviewMediaRepository.delete({ fileId: In(mediaIds), reviewId: record.id })
+      record.media = this.mediaFromIds(record.id, mediaIds)
+    }
+
     await this.reviewRepository.save(record)
 
-    return record
+    return this.findOne(record.id)
   }
 
   async remove(id: number) {
     await this.reviewRepository.delete({ id })
+  }
+
+  async findOneReply(reviewId: number) {
+    return this.reviewReplyRepository.findOneOrFail({
+      where: { review: { id: reviewId } },
+      relations: { user: true }
+    })
+  }
+
+  async createReply(reviewId: number, dto: CreateReviewReplyDto, user: User) {
+    const existing = await this.reviewReplyRepository.exists({
+      where: { review: { id: reviewId } }
+    })
+
+    if (existing) {
+      throw new BadRequestException('Ответ уже существует')
+    }
+
+    const record = this.reviewReplyRepository.create({
+      comment: dto.comment,
+      publishedAt: dto.publishedAt ?? new Date(),
+      userId: dto.userId ?? user.id,
+      reviewId
+    })
+
+    await this.reviewReplyRepository.save(record)
+
+    return this.findOneReply(reviewId)
+  }
+
+  async updateReply(reviewId: number, dto: UpdateReviewReplyDto, user: User) {
+    const partialEntity: QueryDeepPartialEntity<ReviewReply> = {}
+
+    if (typeof dto.comment !== 'undefined') {
+      partialEntity.comment = dto.comment
+    }
+
+    if (typeof dto.publishedAt !== 'undefined') {
+      partialEntity.publishedAt = dto.publishedAt === null ? new Date() : dto.publishedAt
+    }
+
+    if (typeof dto.userId !== 'undefined') {
+      partialEntity.userId = dto.userId === null ? user.id : dto.userId
+    }
+
+    const result = await this.reviewReplyRepository.update(
+      { review: { id: reviewId } },
+      partialEntity
+    )
+
+    if (result.affected === 0) {
+      throw new NotFoundException('Ответ не найден')
+    }
+
+    return this.findOneReply(reviewId)
+  }
+
+  async removeReply(reviewId: number) {
+    const result = await this.reviewReplyRepository.delete({ review: { id: reviewId } })
+
+    if (result.affected === 0) {
+      throw new NotFoundException('Ответ не найден')
+    }
   }
 }

@@ -28,7 +28,8 @@ export function ReviewUpdate({ record }: ReviewUpdateProps) {
       publishedAt:
         typeof record.publishedAt === 'string' ? parseISO(record.publishedAt) : record.publishedAt,
       rating: record.rating,
-      userId: record.userId
+      userId: record.userId,
+      mediaIds: record.media?.map((media) => media.fileId) || []
     }
   })
 

@@ -1,19 +1,14 @@
+import { User } from '@/users/entities/user.entity'
 import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn
+  PrimaryGeneratedColumn
 } from 'typeorm'
-import { Property } from './property.entity'
 import { Product } from './product.entity'
-import { Offer } from './offer.entity'
-import { User } from '@/users/entities/user.entity'
 import { ReviewMedia } from './review-media.entity'
 import { ReviewReply } from './review-reply.entity'
 

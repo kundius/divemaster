@@ -21,6 +21,7 @@ export const ReviewFormSchema = z.object({
   publishedAt: z.date().nullable().optional(),
   userId: z.number().nullable().optional(),
   productId: z.number(),
+  mediaIds: z.array(z.number()).optional(),
   rating: z.number(),
   isPublished: z.boolean(),
   isRecommended: z.boolean()

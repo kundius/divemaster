@@ -260,7 +260,7 @@ export interface ReviewReplyEntity {
   comment: string
   userId: number
   user?: UserEntity
-  createdAt: Date
+  publishedAt: string
 }
 
 export interface ReviewEntity {

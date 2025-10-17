@@ -1,18 +1,6 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToOne,
-  PrimaryColumn,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn
-} from 'typeorm'
-import { Product } from './product.entity'
-import { File } from '@/storage/entities/file.entity'
-import { Review } from './review.entity'
 import { User } from '@/users/entities/user.entity'
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { Review } from './review.entity'
 
 @Entity()
 export class ReviewReply {
@@ -26,7 +14,7 @@ export class ReviewReply {
   @JoinColumn()
   review: Review
 
-  @Column()
+  @Column({ type: 'text' })
   comment: string
 
   @Column()
@@ -35,6 +23,6 @@ export class ReviewReply {
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   user: User
 
-  @CreateDateColumn()
-  createdAt: Date
+  @Column({ type: 'timestamp' })
+  publishedAt: Date
 }

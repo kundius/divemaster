@@ -1,18 +1,24 @@
+import { CurrentUser } from '@/auth/decorators/current-user.decorator'
+import { User } from '@/users/entities/user.entity'
 import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
-  NotFoundException,
   Param,
   Patch,
   Post,
   Query
 } from '@nestjs/common'
-import { BrandsService } from '../services/brands.service'
-import { CreateBrandDto, FindAllBrandQueryDto, UpdateBrandDto } from '../dto/brands.dto'
+import {
+  CreateReviewDto,
+  CreateReviewReplyDto,
+  FindAllReviewQueryDto,
+  UpdateReviewDto,
+  UpdateReviewReplyDto
+} from '../dto/review.dto'
 import { ReviewService } from '../services/review.service'
-import { CreateReviewDto, FindAllReviewQueryDto, UpdateReviewDto } from '../dto/review.dto'
 
 @Controller('reviews')
 export class ReviewsController {
@@ -41,5 +47,42 @@ export class ReviewsController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.reviewsService.remove(+id)
+  }
+
+  @Get(':id/reply')
+  findOneReply(@Param('id') id: string) {
+    return this.reviewsService.findOneReply(+id)
+  }
+
+  @Post(':id/reply')
+  createReply(
+    @Param('id') id: string,
+    @Body() dto: CreateReviewReplyDto,
+    @CurrentUser() user?: User
+  ) {
+    if (!user) {
+      throw new ForbiddenException()
+    }
+    return this.reviewsService.createReply(+id, dto, user)
+  }
+
+  @Patch(':id/reply')
+  updateReply(
+    @Param('id') id: string,
+    @Body() dto: UpdateReviewReplyDto,
+    @CurrentUser() user?: User
+  ) {
+    if (!user) {
+      throw new ForbiddenException()
+    }
+    return this.reviewsService.updateReply(+id, dto, user)
+  }
+
+  @Delete(':id/reply')
+  removeReply(@Param('id') id: string, @CurrentUser() user?: User) {
+    if (!user) {
+      throw new ForbiddenException()
+    }
+    return this.reviewsService.removeReply(+id)
   }
 }

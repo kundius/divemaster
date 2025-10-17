@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { ApiInputComboBox } from '@/lib/ApiInputComboBox'
+import { ApiInputFiles } from '@/lib/ApiInputFiles'
 
 export const ReviewFormSchema = z.object({
   advantages: z.string().trim().optional(),
@@ -182,6 +183,25 @@ export function ReviewForm() {
                 <FormLabel>Комментарий</FormLabel>
                 <FormControl>
                   <Textarea value={value} onChange={onChange} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="col-span-2">
+          <FormField
+            control={control}
+            name="mediaIds"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Файлы</FormLabel>
+                <FormControl>
+                  <ApiInputFiles
+                    value={field.value}
+                    onChange={field.onChange}
+                    allowedTypes={['image/jpeg', 'image/png', 'video/mp4']}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

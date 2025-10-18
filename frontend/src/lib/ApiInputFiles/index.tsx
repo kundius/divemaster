@@ -2,12 +2,12 @@ import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Spinner } from '@/components/ui/spinner'
 import { apiGet } from '@/lib/api'
-import { getApiUrl, uploadFile } from '@/lib/utils'
+import { getApiUrl, getFileUrl, uploadFile } from '@/lib/utils'
 import { FileEntity } from '@/types'
 import { ArrowPathIcon, TrashIcon } from '@heroicons/react/24/outline'
 import { DownloadIcon, ExclamationTriangleIcon, InfoCircledIcon } from '@radix-ui/react-icons'
 import { FileIcon, PlusIcon } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useId, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { toast } from 'sonner'
 import { nanoid } from 'nanoid'
@@ -20,6 +20,23 @@ import {
   ItemTitle
 } from '@/components/ui/item'
 import Image from 'next/image'
+import {
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors
+} from '@dnd-kit/core'
+import {
+  SortableContext,
+  arrayMove,
+  rectSortingStrategy,
+  sortableKeyboardCoordinates,
+  useSortable
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
 export interface ApiInputFilesProps {
   allowedTypes?: string[]
@@ -46,12 +63,90 @@ type LoadItem = {
 
 type Item = BaseItem & (LoadItem | UploadItem)
 
+interface ApiInputFileProps {
+  item: Item
+  onDelete?: (item: Item) => void
+}
+
+function ApiInputFile({ item, onDelete }: ApiInputFileProps) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: item.localId
+  })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 20 : 10
+  }
+
+  const renderItemImage = (i: Item) => {
+    if (i.status === 'loading' || i.status === 'uploading') {
+      return (
+        <div className="w-24 h-24 flex items-center justify-center">
+          <Spinner className="size-8" />
+        </div>
+      )
+    }
+    if (!i.entity || !i.entity.type) {
+      return (
+        <div className="w-24 h-24 flex items-center justify-center">
+          <FileIcon className="size-8" />
+        </div>
+      )
+    }
+    if (i.entity.type.startsWith('image/')) {
+      return (
+        <Image
+          src={getFileUrl(i.entity.id)}
+          alt={i.entity.file}
+          fill
+          className="aspect-square w-full rounded-sm object-cover"
+        />
+      )
+    }
+    return <FileIcon />
+  }
+
+  return (
+    <div
+      className="group w-24 relative border bg-background shadow-xs rounded-md"
+      title={item.entity?.file}
+      ref={setNodeRef}
+      style={style}
+    >
+      {renderItemImage(item)}
+      <button
+        {...listeners}
+        {...attributes}
+        className="block absolute left-0 top-0 w-full h-full z-10"
+      />
+      {onDelete && (
+        <Button
+          size="icon"
+          className="absolute z-20 right-1 top-1 opacity-0 group-hover:opacity-100"
+          variant="outline"
+          onClick={() => onDelete(item)}
+        >
+          <TrashIcon />
+        </Button>
+      )}
+    </div>
+  )
+}
+
 export function ApiInputFiles({
   value: controlledValue,
   onChange: controlledOnChange,
   allowedTypes,
   maxSize
 }: ApiInputFilesProps) {
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates
+    })
+  )
+
   const [uncontrolledValue, setUncontrolledValue] = useState<number[]>([])
 
   const value = controlledValue ?? uncontrolledValue
@@ -126,138 +221,64 @@ export function ApiInputFiles({
     )
   }
 
-  useEffect(() => {
-    for (const item of items) {
-      if (item.status !== 'created') continue
-      if (typeof item.entityId !== 'undefined') {
-        loadItem(item)
-      }
-      if (typeof item.file !== 'undefined') {
-        uploadItem(item)
-      }
-    }
-  }, [items])
-
-  const handleDeleteClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault()
-    e.stopPropagation()
-    // TODO: добавить удаление файла на сервере
-    setValue([])
+  const deleteItem = (item: Item) => {
+    setItems((prev) => prev.filter((v) => v.localId !== item.localId))
   }
 
-  // const handleDownloadClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-  //   e.preventDefault()
-  //   e.stopPropagation()
+  useEffect(() => {
+    const newValue: number[] = []
+    for (const item of items) {
+      if (item.entityId) {
+        newValue.push(item.entityId)
+      } else if (item.entity) {
+        newValue.push(item.entity.id)
+      }
+      if (item.status === 'created') {
+        if (typeof item.entityId !== 'undefined') {
+          loadItem(item)
+        }
+        if (typeof item.file !== 'undefined') {
+          uploadItem(item)
+        }
+      }
+    }
+    console.log(items, newValue)
+    setValue(newValue)
+  }, [items])
 
-  //   if (!fileEntity) return
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event
 
-  //   const url = `${getApiUrl()}storage/${fileEntity.id}/read`
-  //   const open = window.open(url, '_blank')
-  //   if (open === null || typeof open === 'undefined') {
-  //     window.location.replace(url)
-  //   }
-  // }
+    if (active.id !== over?.id) {
+      setItems((prev) => {
+        const oldIndex = prev.findIndex((item) => item.localId === String(active.id))
+        const newIndex = prev.findIndex((item) => item.localId === String(over?.id))
 
-  // const renderActions = () => {
-  //   const actions: React.ReactNode[] = []
-
-  //   if (!!(loadingError || errorMessage || infoMessage)) {
-  //     actions.push(
-  //       <Popover open={showMessage} onOpenChange={setShowMessage}>
-  //         <PopoverTrigger asChild>
-  //           <Button
-  //             key="message"
-  //             type="button"
-  //             size="icon"
-  //             variant="ghost"
-  //             onClick={handleShowMessage}
-  //           >
-  //             {loadingError || errorMessage ? (
-  //               <ExclamationTriangleIcon className="w-4 h-4" />
-  //             ) : (
-  //               <InfoCircledIcon className="w-4 h-4" />
-  //             )}
-  //           </Button>
-  //         </PopoverTrigger>
-  //         <PopoverContent>{loadingError || errorMessage || infoMessage}</PopoverContent>
-  //       </Popover>
-  //     )
-  //   }
-
-  //   if (!!fileEntity) {
-  //     actions.push(
-  //       <Button
-  //         key="download"
-  //         type="button"
-  //         size="icon"
-  //         variant="ghost"
-  //         onClick={handleDownloadClick}
-  //       >
-  //         <DownloadIcon className="w-4 h-4" />
-  //       </Button>
-  //     )
-  //   }
-
-  //   if (!!value && !!fileEntity) {
-  //     actions.push(
-  //       <Button key="delete" type="button" size="icon" variant="ghost" onClick={handleDeleteClick}>
-  //         <TrashIcon className="w-4 h-4" />
-  //       </Button>
-  //     )
-  //   }
-
-  //   if (actions.length > 0) {
-  //     return <div className="flex items-center">{actions}</div>
-  //   }
-
-  //   return null
-  // }
+        return arrayMove(prev, oldIndex, newIndex)
+      })
+    }
+  }
 
   return (
-    <ItemGroup className="flex flex-row flex-wrap gap-2">
-      {items.map((item, i) => (
-        <Item key={item.localId} variant="outline" className="w-24">
-          <ItemHeader>
-            <FileIcon />
-            {/* <Image
-                src={model.image}
-                alt={model.name}
-                width={128}
-                height={128}
-                className="aspect-square w-full rounded-sm object-cover"
-              /> */}
-          </ItemHeader>
-          <ItemContent>
-            <ItemTitle>
-              <div className="line-clamp-1 min-w-0">{item.entity?.file}</div>
-            </ItemTitle>
-          </ItemContent>
-        </Item>
-        // <div
-        //   className="w-16 h-16 rounded border flex items-center justify-center"
-        //   key={item.entityId ?? `${item.file.name}-${i}`}
-        // >
-        //   {item.status}
-        //   {item.status === 'loading' || item.status === 'uploading' ? <Spinner /> : <FileIcon />}
-        // </div>
-      ))}
-      {/* {value.map((fileId) => (
-        <div className="w-16 h-16 rounded border flex items-center justify-center" key={fileId}>
-          <FileIcon />
+    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <SortableContext items={items.map((v) => ({ id: v.localId }))} strategy={rectSortingStrategy}>
+        <div className="flex flex-row flex-wrap gap-2">
+          {items.map((item) => (
+            <ApiInputFile key={item.localId} item={item} onDelete={deleteItem} />
+          ))}
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            {...getRootProps({
+              className: 'size-24'
+            })}
+          >
+            <PlusIcon className="size-8" />
+            <input {...getInputProps()} />
+          </Button>
         </div>
-      ))} */}
-      <Button
-        type="button"
-        variant="outline"
-        size="icon"
-        {...getRootProps({
-          className: 'size-24'
-        })}
-      >
-        <PlusIcon className="size-6" />
-        <input {...getInputProps()} />
-      </Button>
-      {/* {renderActions()} */}
-    </ItemGroup>
+      </SortableContext>
+    </DndContext>
   )
 }

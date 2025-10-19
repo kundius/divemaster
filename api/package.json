@@ -49,7 +49,8 @@
     "rxjs": "^7.8.1",
     "slugify": "^1.6.6",
     "typeorm": "^0.3.22",
-    "typesense": "^2.1.0"
+    "typesense": "^2.1.0",
+    "undici": "^7.16.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.3.1",

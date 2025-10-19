@@ -5,6 +5,23 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { Order } from '../entities/order.entity'
 import { Payment } from '../entities/payment.entity'
+import { request, Agent } from 'undici'
+import { readFileSync } from 'fs'
+import { dirname, join } from 'path'
+
+const certDir = join(__dirname, '..', '..', 'certs')
+
+const ca = [
+  readFileSync(join(certDir, 'rootca_ssl_rsa2022.crt')),
+  readFileSync(join(certDir, 'subca_ssl_rsa2022.crt')),
+  readFileSync(join(certDir, 'subca_ssl_rsa2024.crt'))
+]
+
+const dispatcher = new Agent({
+  connect: {
+    ca
+  }
+})
 
 export interface VtbServiceCheckoutDto {
   type: 'PAYMENT'
@@ -54,16 +71,34 @@ export class VtbService implements PaymentService {
     params.append('grant_type', 'client_credentials')
     params.append('client_id', String(this.configService.get('vtb.client_id')))
     params.append('client_secret', String(this.configService.get('vtb.client_secret')))
-    console.log('запрашиваем токен',String(this.configService.get('vtb.token_endpoint')),params.toString())
+    console.log(
+      'запрашиваем токен',
+      String(this.configService.get('vtb.token_endpoint')),
+      params.toString()
+    )
+    const url = String(this.configService.get('vtb.token_endpoint'))
+    const body = params.toString()
     try {
-      const response = await fetch(String(this.configService.get('vtb.token_endpoint')), {
+      const { statusCode, body: responseBody } = await request(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: params.toString()
+        body,
+        dispatcher
       })
-      const data = await response.json()
+      const data = (await responseBody.json()) as {
+        token_type: string
+        access_token: string
+      }
+      // const response = await fetch(String(this.configService.get('vtb.token_endpoint')), {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/x-www-form-urlencoded'
+      //   },
+      //   body: params.toString()
+      // })
+      // const data = await response.json()
       return {
         'X-IBM-Client-Id': this.configService.get('vtb.client_id'),
         Authorization: `${data.token_type} ${data.access_token}`
@@ -92,26 +127,51 @@ export class VtbService implements PaymentService {
       returnUrl: returnUrl
     }
 
-    const response = await fetch(`${this.configService.get('vtb.api_endpoint')}/orders`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(await this.getAuthorizationHeader())
-      },
-      body: JSON.stringify(params)
-    })
+    const url = `${this.configService.get('vtb.api_endpoint')}/orders`
+    const body = JSON.stringify(params)
+    const authHeader = await this.getAuthorizationHeader()
+    try {
+      // const response = await fetch(`${this.configService.get('vtb.api_endpoint')}/orders`, {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     ...(await this.getAuthorizationHeader())
+      //   },
+      //   body: JSON.stringify(params)
+      // })
 
-    const data = await response.json()
+      // const data = await response.json()
+      const { body: responseBody } = await request(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...authHeader
+          // Content-Length не указываем — undici добавит автоматически
+        },
+        body,
+        dispatcher
+      })
 
-    console.log('[ВТБ] Заказ создан', data)
-
-    await this.paymentRepository.update(
-      { id: payment.id },
-      {
-        link: data.object.payUrl,
-        remoteId: data.object.orderCode
+      const data = (await responseBody.json()) as {
+        object: {
+          payUrl: string
+          orderCode: string
+        }
       }
-    )
+
+      console.log('[ВТБ] Заказ создан', data)
+
+      await this.paymentRepository.update(
+        { id: payment.id },
+        {
+          link: data.object.payUrl,
+          remoteId: data.object.orderCode
+        }
+      )
+    } catch (e) {
+      console.log('ошибка создания заказа', e)
+      throw e
+    }
   }
 
   async checkout(payment: Payment, dto: VtbServiceCheckoutDto) {

@@ -9,7 +9,7 @@ import { request, Agent } from 'undici'
 import { readFileSync } from 'fs'
 import { dirname, join } from 'path'
 
-const certDir = join(__dirname, '..', '..', 'certs')
+const certDir = join(__dirname, '..', '..', '..', 'certs')
 
 const ca = [
   readFileSync(join(certDir, 'rootca_ssl_rsa2022.crt')),

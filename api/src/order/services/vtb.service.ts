@@ -1,13 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { PaymentService } from './payment.service'
 import { InjectRepository } from '@nestjs/typeorm'
+import { readFileSync } from 'fs'
+import { join } from 'path'
 import { Repository } from 'typeorm'
+import { Agent, request } from 'undici'
 import { Order } from '../entities/order.entity'
 import { Payment } from '../entities/payment.entity'
-import { request, Agent } from 'undici'
-import { readFileSync } from 'fs'
-import { dirname, join } from 'path'
+import { PaymentService } from './payment.service'
 
 const certDir = join(__dirname, '..', '..', '..', '..', 'certs')
 
@@ -18,9 +18,7 @@ const ca = [
 ]
 
 const dispatcher = new Agent({
-  connect: {
-    ca
-  }
+  connect: { ca }
 })
 
 export interface VtbServiceCheckoutDto {
@@ -46,15 +44,6 @@ export interface VtbServiceCheckoutDto {
     }
   }
 }
-// PROD_TOKEN=https://open.api.vtb.ru:443/passport/oauth2/token
-// PROD_ORDER=https://gw.api.vtb.ru/openapi/smb/efcp/e-commerce/v1/orders
-// PROD_ORDER_PREAUTH=https://gw.api.vtb.ru/openapi/smb/efcp/e-commerce/v1/orders/preauth
-// PROD_REFUND=https://gw.api.vtb.ru/openapi/smb/efcp/e-commerce/v1/refunds
-
-// TEST_TOKEN=https://auth.bankingapi.ru/auth/realms/kubernetes/protocol/openid-connect/token
-// TEST_ORDER=https://hackaton.bankingapi.ru/api/smb/efcp/e-commerce/api/v1/orders
-// TEST_ORDER_PREAUTH=https://hackaton.bankingapi.ru/api/smb/efcp/e-commerce/api/v1/orders/preauth
-// TEST_REFUND=https://hackaton.bankingapi.ru/api/smb/efcp/e-commerce/api/v1/refunds
 
 @Injectable()
 export class VtbService implements PaymentService {
@@ -67,44 +56,35 @@ export class VtbService implements PaymentService {
   ) {}
 
   async getAuthorizationHeader() {
+    console.log('[ВТБ] Запрашиваем токен')
+
     const params = new URLSearchParams()
     params.append('grant_type', 'client_credentials')
     params.append('client_id', String(this.configService.get('vtb.client_id')))
     params.append('client_secret', String(this.configService.get('vtb.client_secret')))
-    console.log(
-      'запрашиваем токен',
-      String(this.configService.get('vtb.token_endpoint')),
-      params.toString()
-    )
-    const url = String(this.configService.get('vtb.token_endpoint'))
-    const body = params.toString()
+
     try {
-      const { statusCode, body: responseBody } = await request(url, {
+      const { body } = await request(String(this.configService.get('vtb.token_endpoint')), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body,
+        body: params.toString(),
         dispatcher
       })
-      const data = (await responseBody.json()) as {
+
+      // TODO: создать отдельный тип
+      const data = (await body.json()) as {
         token_type: string
         access_token: string
       }
-      // const response = await fetch(String(this.configService.get('vtb.token_endpoint')), {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/x-www-form-urlencoded'
-      //   },
-      //   body: params.toString()
-      // })
-      // const data = await response.json()
+
       return {
         'X-IBM-Client-Id': this.configService.get('vtb.client_id'),
         Authorization: `${data.token_type} ${data.access_token}`
       }
     } catch (e) {
-      console.log('ошибка запроса токена', e)
+      console.log('[ВТБ] Ошибка запроса токена', e)
       throw e
     }
   }
@@ -127,31 +107,22 @@ export class VtbService implements PaymentService {
       returnUrl: returnUrl
     }
 
-    const url = `${this.configService.get('vtb.api_endpoint')}/orders`
-    const body = JSON.stringify(params)
-    const authHeader = await this.getAuthorizationHeader()
     try {
-      // const response = await fetch(`${this.configService.get('vtb.api_endpoint')}/orders`, {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     ...(await this.getAuthorizationHeader())
-      //   },
-      //   body: JSON.stringify(params)
-      // })
+      const authHeader = await this.getAuthorizationHeader()
+      const { body: responseBody } = await request(
+        `${this.configService.get('vtb.api_endpoint')}/orders`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...authHeader
+          },
+          body: JSON.stringify(params),
+          dispatcher
+        }
+      )
 
-      // const data = await response.json()
-      const { body: responseBody } = await request(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...authHeader
-          // Content-Length не указываем — undici добавит автоматически
-        },
-        body,
-        dispatcher
-      })
-
+      // TODO: создать отдельный тип
       const data = (await responseBody.json()) as {
         object: {
           payUrl: string
@@ -175,8 +146,6 @@ export class VtbService implements PaymentService {
   }
 
   async checkout(payment: Payment, dto: VtbServiceCheckoutDto) {
-    // const status = await this.getStatus(payment)
-
     console.log('[ВТБ] Получен колбек', dto.object)
 
     if (dto.object.orderCode !== payment.remoteId) {
@@ -213,36 +182,4 @@ export class VtbService implements PaymentService {
 
     return `${this.configService.get('app.url.frontend')}/order/details/${order.hash}`
   }
-
-  // async getStatus(payment: Payment): Promise<string | null> {
-  //   if (!payment.remoteId) {
-  //     return null
-  //   }
-
-  //   const order = await this.orderRepository.findOneOrFail({
-  //     where: {
-  //       payment: { id: payment.id }
-  //     }
-  //   })
-
-  //   try {
-  //     const response = await fetch(
-  //       `${this.configService.get('vtb.api_endpoint')}v1/orders/${payment.orderId}`,
-  //       {
-  //         method: 'GET',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           'Idempotence-Key': order.hash,
-  //           Authorization: this.getAuthorizationHeader()
-  //         }
-  //       }
-  //     )
-
-  //     const data = await response.json()
-
-  //     return data.object.status.value
-  //   } catch {}
-
-  //   return null
-  // }
 }

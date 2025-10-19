@@ -47,13 +47,13 @@ export function PaymentContainer({ hash }: PaymentContainerProps) {
     if (!data.payment) {
       throw new Error('payment not defined')
     }
-    switch (data.payment.paid) {
-      case null:
-        return <PaidPeending onRefresh={refetch} />
-      case false:
-        return <PaidCanceled paidAt={data.payment.paidAt} />
-      case true:
-        return <PaidSuccess paidAt={data.payment.paidAt} />
+    if (data.payment.paid === null) {
+      return <PaidPeending onRefresh={refetch} />
+    }
+    if (data.payment.paid) {
+      return <PaidSuccess paidAt={data.payment.paidAt} />
+    } else {
+      return <PaidCanceled paidAt={data.payment.paidAt} />
     }
   }
 

@@ -100,7 +100,7 @@ function ApiInputFile({ item, onDelete }: ApiInputFileProps) {
 
   return (
     <div
-      className="group w-24 relative border bg-background shadow-xs rounded-md"
+      className="group w-24 h-24 relative border bg-background shadow-xs rounded-md"
       title={item.entity?.file}
       ref={setNodeRef}
       style={style}

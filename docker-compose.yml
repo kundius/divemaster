@@ -1,66 +1,78 @@
 services:
-  db:
-    image: mariadb:${MARIADB_VERSION:-11.4.3}
-    environment:
-      - MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=yes
-      - MARIADB_DATABASE=${MARIADB_DATABASE:-divemaster}
-      - MARIADB_USER=${MARIADB_USERNAME:-divemaster}
-      - MARIADB_PASSWORD=${MARIADB_PASSWORD:-divemaster}
-      - TZ=${TZ:-Europe/Moscow}
-    volumes:
-      - ./docker/db:/var/lib/mysql
-    restart: unless-stopped
+    db:
+        image: mariadb:${MARIADB_VERSION:-11.4.3}
+        environment:
+            - MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=yes
+            - MARIADB_DATABASE=${MARIADB_DATABASE:-divemaster}
+            - MARIADB_USER=${MARIADB_USERNAME:-divemaster}
+            - MARIADB_PASSWORD=${MARIADB_PASSWORD:-divemaster}
+            - TZ=${TZ:-Europe/Moscow}
+        volumes:
+            - ./docker/db:/var/lib/mysql
+        restart: unless-stopped
 
-  typesense:
-    image: typesense/typesense:29.0
-    restart: unless-stopped
-    volumes:
-      - ./docker/typesense:/data
-    command: "--data-dir /data --api-key=${TYPESENSE_API_KEY:-xyz} --enable-cors"
+    phpmyadmin:
+        image: phpmyadmin
+        restart: unless-stopped
+        ports:
+            - ${PHPMYADMIN_PORT:-10003}:80
+        environment:
+            - PMA_ARBITRARY=1
+            - TZ=${TZ:-Europe/Moscow}
+            - UPLOAD_LIMIT=300M
+        depends_on:
+            - db
 
-  nginx:
-    image: nginx:${NGINX_VERSION:-1.25}
-    environment:
-      - NGINX_FRONTEND_PORT=${NGINX_FRONTEND_PORT:-10001}
-      - NODE_FRONTEND_PORT=${NODE_FRONTEND_PORT:-3000}
-      - NGINX_API_PORT=${NGINX_API_PORT:-10002}
-      - NODE_API_PORT=${NODE_API_PORT:-4000}
-      - TZ=${TZ:-Europe/Moscow}
-    volumes:
-      - ./docker/nginx:/etc/nginx/templates
-      - ./api:/divemaster/api
-      - ./frontend:/divemaster/frontend
-    ports:
-      - ${NGINX_HOST:-127.0.0.1}:${NGINX_FRONTEND_PORT:-10001}:${NGINX_FRONTEND_PORT:-10001}
-      - ${NGINX_HOST:-127.0.0.1}:${NGINX_API_PORT:-10002}:${NGINX_API_PORT:-10002}
-    restart: unless-stopped
+    typesense:
+        image: typesense/typesense:29.0
+        restart: unless-stopped
+        volumes:
+            - ./docker/typesense:/data
+        command: "--data-dir /data --api-key=${TYPESENSE_API_KEY:-xyz} --enable-cors"
 
-  api:
-    image: node:${NODE_VERSION:-22}
-    volumes:
-      - ./frontend:/divemaster/frontend
-      - ./api:/divemaster/api
-    depends_on:
-      - db
-      - typesense
-    environment:
-      - TZ=${TZ:-Europe/Moscow}
-    network_mode: "service:nginx"
-    restart: unless-stopped
-    working_dir: /divemaster/api
-    command: sh -c 'rm -rf dist && npm i && npm run build && npm run start'
-    user: "1000:1000"
+    nginx:
+        image: nginx:${NGINX_VERSION:-1.25}
+        environment:
+            - NGINX_FRONTEND_PORT=${NGINX_FRONTEND_PORT:-10001}
+            - NODE_FRONTEND_PORT=${NODE_FRONTEND_PORT:-3000}
+            - NGINX_API_PORT=${NGINX_API_PORT:-10002}
+            - NODE_API_PORT=${NODE_API_PORT:-4000}
+            - TZ=${TZ:-Europe/Moscow}
+        volumes:
+            - ./docker/nginx:/etc/nginx/templates
+            - ./api:/divemaster/api
+            - ./frontend:/divemaster/frontend
+        ports:
+            - ${NGINX_HOST:-127.0.0.1}:${NGINX_FRONTEND_PORT:-10001}:${NGINX_FRONTEND_PORT:-10001}
+            - ${NGINX_HOST:-127.0.0.1}:${NGINX_API_PORT:-10002}:${NGINX_API_PORT:-10002}
+        restart: unless-stopped
 
-  frontend:
-    image: node:${NODE_VERSION:-22}
-    volumes:
-      - ./frontend:/divemaster/frontend
-    depends_on:
-      - api
-    environment:
-      - TZ=${TZ:-Europe/Moscow}
-    network_mode: "service:nginx"
-    restart: unless-stopped
-    working_dir: /divemaster/frontend
-    command: sh -c 'rm -rf .next && npm i && npm run build && npm run start'
-    user: "1000:1000"
+    api:
+        image: node:${NODE_VERSION:-22}
+        volumes:
+            - ./frontend:/divemaster/frontend
+            - ./api:/divemaster/api
+        depends_on:
+            - db
+            - typesense
+        environment:
+            - TZ=${TZ:-Europe/Moscow}
+        network_mode: "service:nginx"
+        restart: unless-stopped
+        working_dir: /divemaster/api
+        command: sh -c 'rm -rf dist && npm i && npm run build && npm run start'
+        user: "1000:1000"
+
+    frontend:
+        image: node:${NODE_VERSION:-22}
+        volumes:
+            - ./frontend:/divemaster/frontend
+        depends_on:
+            - api
+        environment:
+            - TZ=${TZ:-Europe/Moscow}
+        network_mode: "service:nginx"
+        restart: unless-stopped
+        working_dir: /divemaster/frontend
+        command: sh -c 'rm -rf .next && npm i && npm run build && npm run start'
+        user: "1000:1000"

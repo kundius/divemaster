@@ -140,7 +140,7 @@ export class VtbService implements PaymentService {
         }
       )
     } catch (e) {
-      console.log('ошибка создания заказа', e)
+      console.log('[ВТБ] Ошибка создания заказа', e)
       throw e
     }
   }

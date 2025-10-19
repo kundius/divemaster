@@ -51,7 +51,6 @@ export class OrderController {
 
   @Post('checkout/yookassa')
   async checkoutYookassa(@Body() dto: YookassaServiceCheckoutDto) {
-    console.log('checkout/yookassa', dto)
     const order = await this.orderService.findOneById(+dto.object.metadata.orderId)
     if (!order || !order.payment) {
       throw new NotFoundException()
@@ -61,7 +60,6 @@ export class OrderController {
 
   @Post('checkout/vtb')
   async checkoutVtb(@Body() dto: VtbServiceCheckoutDto) {
-    console.log('checkout/vtb', dto)
     const order = await this.orderService.findOneById(+dto.object.orderId)
     if (!order || !order.payment) {
       throw new NotFoundException()

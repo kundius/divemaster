@@ -9,11 +9,11 @@ export class MinPrice1759919562284 implements MigrationInterface {
       `CREATE INDEX \`IDX_83ba519803e18b965fd80f1b51\` ON \`product\` (\`minPrice\`)`
     )
     await queryRunner.query(`
-      UPDATE "product"
-      SET "minPrice" = (
-        SELECT MIN("price")
-        FROM "offer"
-        WHERE "offer"."productId" = "product"."id"
+      UPDATE \`product\`
+      SET \`minPrice\` = (
+        SELECT MIN(\`price\`)
+        FROM \`offer\`
+        WHERE \`offer\`.\`productId\` = \`product\`.\`id\`
       )
     `)
   }

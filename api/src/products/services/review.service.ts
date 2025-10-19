@@ -42,10 +42,15 @@ export class ReviewService {
   }
 
   async findOne(id: number) {
-    return this.reviewRepository.findOne({
-      where: { id },
-      relations: { user: true, reply: { user: true }, media: true }
-    })
+    return this.reviewRepository
+      .createQueryBuilder('review')
+      .leftJoinAndSelect('review.user', 'user')
+      .leftJoinAndSelect('review.reply', 'reply')
+      .leftJoinAndSelect('reply.user', 'replyUser')
+      .leftJoinAndSelect('review.media', 'media')
+      .where('review.id = :id', { id })
+      .orderBy('media.rank', 'ASC')
+      .getOne()
   }
 
   async findAll(dto: FindAllReviewQueryDto) {
@@ -101,7 +106,8 @@ export class ReviewService {
 
   async update(id: number, { productId, userId, mediaIds, ...fillable }: UpdateReviewDto) {
     const record = await this.reviewRepository.findOneOrFail({
-      where: { id }
+      where: { id },
+      relations: { media: true }
     })
 
     this.reviewRepository.merge(record, fillable)
@@ -116,7 +122,7 @@ export class ReviewService {
 
     if (typeof mediaIds !== 'undefined') {
       // удаляем старые медиа и привязываем новые
-      await this.reviewMediaRepository.delete({ fileId: In(mediaIds), reviewId: record.id })
+      await this.reviewMediaRepository.remove(record.media)
       record.media = this.mediaFromIds(record.id, mediaIds)
     }
 

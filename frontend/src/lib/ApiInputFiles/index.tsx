@@ -1,25 +1,9 @@
 import { Button } from '@/components/ui/button'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Item } from '@/components/ui/item'
 import { Spinner } from '@/components/ui/spinner'
 import { apiGet } from '@/lib/api'
-import { getApiUrl, getFileUrl, uploadFile } from '@/lib/utils'
+import { getFileUrl, uploadFile } from '@/lib/utils'
 import { FileEntity } from '@/types'
-import { ArrowPathIcon, TrashIcon } from '@heroicons/react/24/outline'
-import { DownloadIcon, ExclamationTriangleIcon, InfoCircledIcon } from '@radix-ui/react-icons'
-import { FileIcon, PlusIcon } from 'lucide-react'
-import React, { useEffect, useId, useState } from 'react'
-import { useDropzone } from 'react-dropzone'
-import { toast } from 'sonner'
-import { nanoid } from 'nanoid'
-import {
-  Item,
-  ItemContent,
-  ItemDescription,
-  ItemGroup,
-  ItemHeader,
-  ItemTitle
-} from '@/components/ui/item'
-import Image from 'next/image'
 import {
   DndContext,
   DragEndEvent,
@@ -37,6 +21,13 @@ import {
   useSortable
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { TrashIcon } from '@heroicons/react/24/outline'
+import { FileIcon, PlusIcon } from 'lucide-react'
+import { nanoid } from 'nanoid'
+import Image from 'next/image'
+import { useEffect, useState } from 'react'
+import { useDropzone } from 'react-dropzone'
+import { toast } from 'sonner'
 
 export interface ApiInputFilesProps {
   allowedTypes?: string[]
@@ -118,10 +109,12 @@ function ApiInputFile({ item, onDelete }: ApiInputFileProps) {
       <button
         {...listeners}
         {...attributes}
+        type="button"
         className="block absolute left-0 top-0 w-full h-full z-10"
       />
       {onDelete && (
         <Button
+          type="button"
           size="icon"
           className="absolute z-20 right-1 top-1 opacity-0 group-hover:opacity-100"
           variant="outline"
@@ -242,7 +235,6 @@ export function ApiInputFiles({
         }
       }
     }
-    console.log(items, newValue)
     setValue(newValue)
   }, [items])
 

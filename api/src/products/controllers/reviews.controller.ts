@@ -6,6 +6,7 @@ import {
   Delete,
   ForbiddenException,
   Get,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -35,8 +36,12 @@ export class ReviewsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.reviewsService.findOne(+id)
+  async findOne(@Param('id') id: string) {
+    const record = await this.reviewsService.findOne(+id)
+    if (!record) {
+      throw new NotFoundException()
+    }
+    return record
   }
 
   @Patch(':id')

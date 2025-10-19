@@ -70,8 +70,6 @@ export class StorageService {
     })
     await this.fileRepository.save(file)
 
-    console.log(file)
-
     return file
   }
 

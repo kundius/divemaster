@@ -36,8 +36,8 @@ export function ProductsFilter() {
 
     if (window.matchMedia('(min-width: 1024px)').matches) {
       const scrollHandler = () => {
-        let headlineHeight = 58
-        let contentPadding = 16
+        const headlineHeight = 58
+        const contentPadding = 16
         let top = 0
         let bottom = 0
         let left = 0

@@ -16,6 +16,7 @@ import { Title } from './_components/Title'
 import { Warranty } from './_components/Warranty'
 import styles from './_components/page.module.css'
 import Link from 'next/link'
+import { ProductReviews } from './_components/ProductReviews'
 
 // export async function generateStaticParams() {
 //   const products = await apiGet<ApiTableData<ProductEntity>>(`products`, {
@@ -41,7 +42,9 @@ export default async function Page({ params }: PageProps<{ alias: string }>) {
   const [product] = await Promise.all([
     apiGet<ProductEntity>(
       `products/alias:${alias}`,
-      {},
+      {
+        active: true
+      },
       {
         next: {
           revalidate: 60 * 5
@@ -86,7 +89,7 @@ export default async function Page({ params }: PageProps<{ alias: string }>) {
         <div className="pb-6 max-md:pb-2 max-md:border-b">
           <Breadcrumbs items={crumbs} />
         </div>
-        <div className={cn(styles.layout, 'mb-40')}>
+        <div className={styles.layout}>
           <div className={styles.layoutGallery}>
             <Gallery items={product.images?.map((item) => getFileUrl(item.fileId)) || []} />
           </div>
@@ -126,6 +129,9 @@ export default async function Page({ params }: PageProps<{ alias: string }>) {
             {product.exploitation && (
               <Description title="Правила эксплуатации" content={product.exploitation} />
             )}
+          </div>
+          <div className={styles.layoutReviews}>
+            <ProductReviews productId={product.id} />
           </div>
         </div>
       </SectionPage>

@@ -25,18 +25,20 @@
 .layout {
   display: grid;
   grid-template-columns: 6fr 54px 4fr;
-  grid-template-rows: auto 80px auto 30px auto;
+  grid-template-rows: auto 96px auto 96px auto 96px auto;
   gap: 0px 0px;
   grid-template-areas:
     'gallery . info'
     '. . info'
     'warranty . info'
     '. . info'
-    'content . info';
+    'content . info'
+    '. . .'
+    'reviews reviews reviews';
 
   @media (--max-md) {
     grid-template-columns: 1fr;
-    grid-template-rows: auto 24px auto 36px auto 80px auto;
+    grid-template-rows: auto 24px auto 36px auto 96px auto 96px auto;
     grid-template-areas:
       'gallery'
       '.'
@@ -44,7 +46,9 @@
       '.'
       'warranty'
       '.'
-      'content';
+      'content'
+      '.'
+      'reviews';
   }
 }
 
@@ -62,4 +66,8 @@
 
 .layoutContent {
   grid-area: content;
+}
+
+.layoutReviews {
+  grid-area: reviews;
 }

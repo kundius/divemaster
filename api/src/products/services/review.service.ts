@@ -54,16 +54,16 @@ export class ReviewService {
   }
 
   async findAll(dto: FindAllReviewQueryDto) {
-    const qb = this.reviewRepository
+    const baseQb = this.reviewRepository
       .createQueryBuilder('review')
       .leftJoinAndSelect('review.user', 'user')
 
     if (dto.productId) {
-      qb.andWhere('review.productId = :productId', { productId: dto.productId })
+      baseQb.andWhere('review.productId = :productId', { productId: dto.productId })
     }
 
     if (dto.query) {
-      qb.andWhere(
+      baseQb.andWhere(
         new Brackets((_qb) => {
           _qb.where('review.advantages LIKE :query1', {
             query1: `%${dto.query}%`
@@ -74,12 +74,55 @@ export class ReviewService {
       )
     }
 
-    qb.orderBy(`review.${dto.sort}`, dto.dir)
-    qb.skip(dto.skip).take(dto.take)
+    const mainQb = baseQb
+      .clone()
+      .orderBy(`review.${dto.sort}`, dto.dir)
+      .skip(dto.skip)
+      .take(dto.take)
 
-    const [rows, total] = await qb.getManyAndCount()
+    const [rows, total] = await mainQb.getManyAndCount()
 
-    return { rows, total }
+    // Средний рейтинг
+    const avgRatingQb = baseQb
+      .clone()
+      .select('AVG(review.rating)', 'averageRating')
+      .orderBy()
+      .skip(undefined)
+      .take(undefined)
+    const avgResult = await avgRatingQb.getRawOne()
+    const averageRating =
+      avgResult?.averageRating != null ? parseFloat(avgResult.averageRating) : null
+
+    // Распределение по оценкам (1–5)
+    const distQb = baseQb
+      .clone()
+      .select('review.rating', 'rating')
+      .addSelect('COUNT(review.rating)', 'count')
+      .groupBy('review.rating')
+      .orderBy()
+    const distributionRows = await distQb.getRawMany()
+    const ratingDistribution: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
+    for (const item of distributionRows) {
+      const rating = Number(item.rating)
+      if (rating >= 1 && rating <= 5) {
+        ratingDistribution[rating] = Number(item.count)
+      }
+    }
+
+    // Процент рекомендованных
+    const recQb = baseQb
+      .clone()
+      .select(
+        'COALESCE(AVG(CASE WHEN review.isRecommended = true THEN 1 ELSE 0 END) * 100, 0)',
+        'recommendationPercentage'
+      )
+      .orderBy()
+      .skip(undefined)
+      .take(undefined)
+    const recResult = await recQb.getRawOne()
+    const recommendationPercentage = parseFloat(recResult.recommendationPercentage)
+
+    return { rows, total, averageRating, ratingDistribution, recommendationPercentage }
   }
 
   async create({ productId, userId, mediaIds, ...fillable }: CreateReviewDto) {

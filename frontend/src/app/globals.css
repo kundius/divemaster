@@ -152,6 +152,7 @@
   --icon-search: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='m21 21-4.34-4.34'/%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3C/svg%3E");
   --icon-equalizer: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='currentColor' %3E%3Cpath d='M13.1707057,7 C13.5825421,5.83480763 14.6937812,5 16,5 C17.3062188,5 18.4174579,5.83480763 18.8292943,7 L21,7 C21.5522847,7 22,7.44771525 22,8 C22,8.55228475 21.5522847,9 21,9 L18.8292943,9 C18.4174579,10.1651924 17.3062188,11 16,11 C14.6937812,11 13.5825421,10.1651924 13.1707057,9 L3,9 C2.44771525,9 2,8.55228475 2,8 C2,7.44771525 2.44771525,7 3,7 L13.1707057,7 Z M5.17070571,15 C5.58254212,13.8348076 6.69378117,13 8,13 C9.30621883,13 10.4174579,13.8348076 10.8292943,15 L21,15 C21.5522847,15 22,15.4477153 22,16 C22,16.5522847 21.5522847,17 21,17 L10.8292943,17 C10.4174579,18.1651924 9.30621883,19 8,19 C6.69378117,19 5.58254212,18.1651924 5.17070571,17 L3,17 C2.44771525,17 2,16.5522847 2,16 C2,15.4477153 2.44771525,15 3,15 L5.17070571,15 Z M16,9 C16.5522847,9 17,8.55228475 17,8 C17,7.44771525 16.5522847,7 16,7 C15.4477153,7 15,7.44771525 15,8 C15,8.55228475 15.4477153,9 16,9 Z M8,17 C8.55228475,17 9,16.5522847 9,16 C9,15.4477153 8.55228475,15 8,15 C7.44771525,15 7,15.4477153 7,16 C7,16.5522847 7.44771525,17 8,17 Z'/%3E%3C/svg%3E");
   --icon-loading: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M21 12a9 9 0 1 1-6.219-8.56'/%3E%3C/svg%3E");
+  --icon-comments: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='-0.5 0 0.96 0.96' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M-.236.337a.037.037 0 1 1 0 .074.037.037 0 0 1 0-.074zm.149 0a.037.037 0 1 1 0 .074.037.037 0 0 1 0-.074zm.149 0a.037.037 0 1 1 0 .074.037.037 0 0 1 0-.074zm-.22.315c.02.003.063.007.083.007A.286.286 0 0 0 .223.37c0-.156-.15-.282-.298-.282-.178 0-.322.126-.322.282 0 .09.035.167.1.222v.14zM.271.316l.001.02v.038c0 .197-.156.334-.371.334h-.075A.301.301 0 0 0 .05.801C.07.801.09.8.11.796l.138.086v-.14A.27.27 0 0 0 .371.518a.265.265 0 0 0-.1-.203z' fill='%23000' fill-rule='evenodd'/%3E%3C/svg%3E");
 
   --container-width: 1600px;
   --container-padding: 96px;
@@ -223,63 +224,68 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
-}
 
-.icon {
-  width: 1em;
-  height: 1em;
-  background: currentColor;
-  display: inline-block;
-  mask-repeat: no-repeat;
-  mask-position: center;
-  mask-size: contain;
-}
+  .icon {
+    width: 1em;
+    height: 1em;
+    background: currentColor;
+    display: inline-block;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+  }
 
-.icon-guarantee {
-  mask-image: var(--icon-guarantee);
-}
+  .icon-guarantee {
+    mask-image: var(--icon-guarantee);
+  }
 
-.icon-equalizer {
-  mask-image: var(--icon-equalizer);
-}
+  .icon-comments {
+    mask-image: var(--icon-comments);
+  }
 
-.icon-wallet {
-  mask-image: var(--icon-wallet);
-}
+  .icon-equalizer {
+    mask-image: var(--icon-equalizer);
+  }
 
-.icon-search {
-  mask-image: var(--icon-search);
-}
+  .icon-wallet {
+    mask-image: var(--icon-wallet);
+  }
 
-.icon-loading {
-  mask-image: var(--icon-loading);
-}
+  .icon-search {
+    mask-image: var(--icon-search);
+  }
 
-.icon-delivery {
-  mask-image: var(--icon-delivery);
-}
+  .icon-loading {
+    mask-image: var(--icon-loading);
+  }
 
-.icon-sale {
-  mask-image: var(--icon-sale);
-}
+  .icon-delivery {
+    mask-image: var(--icon-delivery);
+  }
 
-.icon-marker {
-  mask-image: var(--icon-marker);
-}
+  .icon-sale {
+    mask-image: var(--icon-sale);
+  }
 
-.icon-comments {
-  mask-image: var(--icon-comments);
-}
+  .icon-marker {
+    mask-image: var(--icon-marker);
+  }
 
-.icon-gift {
-  mask-image: var(--icon-gift);
-}
+  .icon-comments {
+    mask-image: var(--icon-comments);
+  }
 
-.icon-school {
-  mask-image: var(--icon-school);
+  .icon-gift {
+    mask-image: var(--icon-gift);
+  }
+
+  .icon-school {
+    mask-image: var(--icon-school);
+  }
 }
 
 body {

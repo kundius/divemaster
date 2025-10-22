@@ -54,9 +54,7 @@ export class ReviewService {
   }
 
   async findAll(dto: FindAllReviewQueryDto) {
-    const baseQb = this.reviewRepository
-      .createQueryBuilder('review')
-      .leftJoinAndSelect('review.user', 'user')
+    const baseQb = this.reviewRepository.createQueryBuilder('review')
 
     if (dto.productId) {
       baseQb.andWhere('review.productId = :productId', { productId: dto.productId })
@@ -76,19 +74,23 @@ export class ReviewService {
 
     const mainQb = baseQb
       .clone()
+      .leftJoinAndSelect('review.user', 'user')
+      .leftJoinAndSelect('review.reply', 'reply')
+      .leftJoinAndSelect('reply.user', 'replyUser')
+      .leftJoinAndSelect('review.media', 'media')
+      .leftJoinAndSelect('media.file', 'mediaFile')
       .orderBy(`review.${dto.sort}`, dto.dir)
       .skip(dto.skip)
       .take(dto.take)
 
-    const [rows, total] = await mainQb.getManyAndCount()
+    const [queriedRows, total] = await mainQb.getManyAndCount()
+    const rows = queriedRows.map((row) => ({
+      ...row,
+      media: row.media.sort((a, b) => a.rank - b.rank)
+    }))
 
     // Средний рейтинг
-    const avgRatingQb = baseQb
-      .clone()
-      .select('AVG(review.rating)', 'averageRating')
-      .orderBy()
-      .skip(undefined)
-      .take(undefined)
+    const avgRatingQb = baseQb.clone().select('AVG(review.rating)', 'averageRating')
     const avgResult = await avgRatingQb.getRawOne()
     const averageRating =
       avgResult?.averageRating != null ? parseFloat(avgResult.averageRating) : null
@@ -99,7 +101,6 @@ export class ReviewService {
       .select('review.rating', 'rating')
       .addSelect('COUNT(review.rating)', 'count')
       .groupBy('review.rating')
-      .orderBy()
     const distributionRows = await distQb.getRawMany()
     const ratingDistribution: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
     for (const item of distributionRows) {
@@ -116,9 +117,6 @@ export class ReviewService {
         'COALESCE(AVG(CASE WHEN review.isRecommended = true THEN 1 ELSE 0 END) * 100, 0)',
         'recommendationPercentage'
       )
-      .orderBy()
-      .skip(undefined)
-      .take(undefined)
     const recResult = await recQb.getRawOne()
     const recommendationPercentage = parseFloat(recResult.recommendationPercentage)
 

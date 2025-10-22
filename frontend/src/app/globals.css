@@ -96,7 +96,6 @@
 }
 
 :root {
-  --sweety-gradient: 37deg, #4957fd 0%, #7b41ff 33.33%, #a300a9 66.66%, #9f2df9 100%;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -389,4 +388,13 @@ body {
 
 .bg-sweety-gradient:hover {
   background-position: 100% 0;
+}
+
+.bg-shady-gradient {
+  background: linear-gradient(143deg, #8e97fe 0%, #ad8aff 100%);
+  transition: 0.6s ease;
+}
+
+.bg-shady-gradient:hover {
+  background: linear-gradient(143deg, #8c6ff9 0%, #8f63d9 100%);
 }

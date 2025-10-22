@@ -1,0 +1,43 @@
+.root {
+  border-radius: 12px;
+  background-color: rgb(246, 248, 254);
+  padding: 16px 32px 24px;
+}
+
+.headline {
+  display: grid;
+  grid-template-columns: auto 80px auto 1fr;
+  grid-template-rows: auto;
+  gap: 0;
+  grid-template-areas: 'author . date .';
+  margin-bottom: 16px;
+  align-items: center;
+}
+
+.author {
+  grid-area: author;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.userName {
+  font-size: 16px;
+  font-family: var(--font-sans-narrow);
+  color: rgb(0, 0, 0);
+  font-weight: bold;
+  line-height: 1;
+}
+
+.date {
+  grid-area: date;
+  font-size: 12px;
+  color: rgb(158, 158, 158);
+  line-height: 1;
+}
+
+.content {
+  font-size: 14px;
+  color: rgb(93, 93, 93);
+  line-height: 18px;
+}

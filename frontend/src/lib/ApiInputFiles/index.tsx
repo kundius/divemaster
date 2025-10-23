@@ -22,7 +22,7 @@ import {
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { TrashIcon } from '@heroicons/react/24/outline'
-import { FileIcon, PlusIcon } from 'lucide-react'
+import { FileIcon, PlusIcon, VideoIcon } from 'lucide-react'
 import { nanoid } from 'nanoid'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
@@ -78,6 +78,7 @@ function ApiInputFile({ item, onDelete }: ApiInputFileProps) {
         </div>
       )
     }
+
     if (!i.entity || !i.entity.type) {
       return (
         <div className="w-24 h-24 flex items-center justify-center">
@@ -85,6 +86,7 @@ function ApiInputFile({ item, onDelete }: ApiInputFileProps) {
         </div>
       )
     }
+
     if (i.entity.type.startsWith('image/')) {
       return (
         <Image
@@ -92,31 +94,46 @@ function ApiInputFile({ item, onDelete }: ApiInputFileProps) {
           alt={i.entity.file}
           fill
           className="aspect-square w-full rounded-sm object-cover"
+          title={i.entity.file}
         />
       )
     }
-    return <FileIcon />
+
+    if (i.entity.type.startsWith('video/')) {
+      return (
+        <div className="w-24 h-24 flex items-center justify-center" title={i.entity.file}>
+          <VideoIcon className="size-8" />
+        </div>
+      )
+    }
+
+    return (
+      <div className="w-24 h-24 flex items-center justify-center" title={i.entity.file}>
+        <FileIcon className="size-8" />
+      </div>
+    )
   }
 
   return (
     <div
-      className="group w-24 h-24 relative border bg-background shadow-xs rounded-md"
+      className="group w-24 h-24 relative border shadow-xs rounded-md"
       title={item.entity?.file}
       ref={setNodeRef}
       style={style}
     >
       {renderItemImage(item)}
+      <div className="absolute left-0 top-0 w-full h-full z-10 rounded-md bg-slate-900 opacity-0 group-hover:opacity-50"></div>
       <button
         {...listeners}
         {...attributes}
         type="button"
-        className="block absolute left-0 top-0 w-full h-full z-10"
+        className="block absolute left-0 top-0 w-full h-full z-20"
       />
       {onDelete && (
         <Button
           type="button"
           size="icon"
-          className="absolute z-20 right-1 top-1 opacity-0 group-hover:opacity-100"
+          className="absolute z-30 right-1 top-1 opacity-0 group-hover:opacity-100"
           variant="outline"
           onClick={() => onDelete(item)}
         >

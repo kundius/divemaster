@@ -14,7 +14,7 @@ function displayCount(value: number) {
 
 export function ReviewsShort({ count, rating }: ReviewsShortProps) {
   return (
-    <a href="#" className={styles.wrap}>
+    <a href="#reviews" className={styles.wrap}>
       <span className={styles.rating}>
         <span className={styles.ratingFill} style={{ width: `${(rating / 5) * 100}%` }}></span>
       </span>

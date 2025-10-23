@@ -308,6 +308,9 @@ export interface ProductEntity {
   offers?: OfferEntity[]
   properties?: PropertyEntity[]
   options?: ProductOptionEntity[]
+  reviews?: ReviewEntity[]
+  reviewsCount?: number
+  averageRating?: number
 }
 
 export interface ProductOptionEntity {

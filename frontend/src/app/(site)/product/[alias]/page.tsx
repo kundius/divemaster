@@ -108,7 +108,7 @@ export default async function Page({ params }: PageProps<{ alias: string }>) {
             </div>
             {!!product.sku && <div className={styles.sku}>{product.sku}</div>}
             <div className="flex justify-between items-center gap-8 max-w-96 mt-3">
-              <ReviewsShort count={0} rating={4} />
+              <ReviewsShort count={product.reviewsCount || 0} rating={product.averageRating || 0} />
               {product.specifications && <SpecButton />}
             </div>
             <div className="mt-3 max-md:mt-7">

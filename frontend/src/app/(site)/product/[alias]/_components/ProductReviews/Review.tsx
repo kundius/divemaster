@@ -43,22 +43,25 @@ export function Review({
 }: ReviewProps) {
   const [indexLightbox, setIndexLightbox] = useState<number>(-1)
 
-  const lightboxSlides = useMemo(() => {
-    const slides: Map<number, SlideImage | SlideVideo> = new Map()
+  const [slides, fileIdToIndex] = useMemo<
+    [(SlideImage | SlideVideo)[], Map<number, number>]
+  >(() => {
+    const slides: (SlideImage | SlideVideo)[] = []
+    const fileIdToIndex = new Map<number, number>()
 
-    if (!media) return slides
+    if (!media) return [slides, fileIdToIndex]
 
     for (const item of media) {
       if (!item.type) continue
 
       if (item.type.startsWith('image')) {
-        slides.set(item.fileId, {
-          src: item.url
-        })
+        fileIdToIndex.set(item.fileId, slides.length)
+        slides.push({ src: item.url })
       }
 
       if (item.type.startsWith('video')) {
-        slides.set(item.fileId, {
+        fileIdToIndex.set(item.fileId, slides.length)
+        slides.push({
           type: 'video',
           sources: [
             {
@@ -70,38 +73,40 @@ export function Review({
       }
     }
 
-    return slides
+    return [slides, fileIdToIndex]
   }, [media])
 
-  const mediaThumbs = useMemo(() => {
-    const thumbs: Map<number, ReactNode> = new Map()
+  const thumbs = useMemo(() => {
+    const thumbs: ReactNode[] = []
 
     if (!media) return thumbs
 
-    const arr = Array.from(lightboxSlides.values())
     for (const item of media) {
-      const el = lightboxSlides.get(item.fileId)
-      const index = el ? arr.indexOf(el) : -1
+      const index = fileIdToIndex.get(item.fileId) || -1
 
       if (item.type && item.type.startsWith('image')) {
-        thumbs.set(
-          item.fileId,
+        thumbs.push(
           <div
-            className="border flex items-center justify-center bg-accent w-12 h-12"
+            className="flex items-center justify-center w-12 h-12"
             onClick={() => setIndexLightbox(index)}
             key={item.fileId}
           >
-            <Image src={item.url} alt="" width={48} height={48} />
+            <Image
+              src={item.url}
+              alt=""
+              width={128}
+              height={128}
+              className="w-full h-full object-cover"
+            />
           </div>
         )
         continue
       }
 
       if (item.type && item.type.startsWith('video')) {
-        thumbs.set(
-          item.fileId,
+        thumbs.push(
           <div
-            className="border flex items-center justify-center bg-accent w-12 h-12"
+            className="border flex items-center justify-center bg-accent text-accent-foreground w-12 h-12"
             onClick={() => setIndexLightbox(index)}
             key={item.fileId}
           >
@@ -111,10 +116,9 @@ export function Review({
         continue
       }
 
-      thumbs.set(
-        item.fileId,
+      thumbs.push(
         <a
-          className="border flex items-center justify-center bg-accent w-12 h-12"
+          className="border flex items-center justify-center bg-accent text-accent-foreground w-12 h-12"
           href={item.url}
           target="_blank"
           key={item.fileId}
@@ -182,12 +186,12 @@ export function Review({
       </div>
       {media && media.length > 0 && (
         <>
-          <div className="flex flex-wrap gap-2 mt-8">{Array.from(mediaThumbs.values())}</div>
+          <div className="flex flex-wrap gap-2 mt-8">{thumbs}</div>
           <Lightbox
             index={indexLightbox}
             isOpened={indexLightbox >= 0}
             close={() => setIndexLightbox(-1)}
-            slides={Array.from(lightboxSlides.values())}
+            slides={slides}
           />
         </>
       )}

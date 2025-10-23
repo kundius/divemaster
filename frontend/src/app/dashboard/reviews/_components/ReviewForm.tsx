@@ -150,7 +150,7 @@ export function ReviewForm() {
             name="advantages"
             render={({ field: { value, onChange } }) => (
               <FormItem>
-                <FormLabel>Преимущества</FormLabel>
+                <FormLabel>Достоинства</FormLabel>
                 <FormControl>
                   <Textarea value={value} onChange={onChange} />
                 </FormControl>

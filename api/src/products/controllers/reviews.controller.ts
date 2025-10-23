@@ -1,10 +1,10 @@
 import { CurrentUser } from '@/auth/decorators/current-user.decorator'
+import { HasScope } from '@/auth/decorators/has-scope.decorator'
 import { User } from '@/users/entities/user.entity'
 import {
   Body,
   Controller,
   Delete,
-  ForbiddenException,
   Get,
   NotFoundException,
   Param,
@@ -13,6 +13,7 @@ import {
   Query
 } from '@nestjs/common'
 import {
+  AddReviewDto,
   CreateReviewDto,
   CreateReviewReplyDto,
   FindAllReviewQueryDto,
@@ -25,7 +26,22 @@ import { ReviewService } from '../services/review.service'
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewService) {}
 
+  @Post('add')
+  add(@Body() dto: AddReviewDto, @CurrentUser() user?: User) {
+    const isPublished = !!user
+    const publishedAt = isPublished ? new Date() : undefined
+    const userId = user?.id
+
+    return this.reviewsService.create({
+      ...dto,
+      isPublished,
+      publishedAt,
+      userId
+    })
+  }
+
   @Post()
+  @HasScope('admin')
   create(@Body() dto: CreateReviewDto) {
     return this.reviewsService.create(dto)
   }
@@ -45,11 +61,13 @@ export class ReviewsController {
   }
 
   @Patch(':id')
+  @HasScope('admin')
   update(@Param('id') id: string, @Body() dto: UpdateReviewDto) {
     return this.reviewsService.update(+id, dto)
   }
 
   @Delete(':id')
+  @HasScope('admin')
   remove(@Param('id') id: string) {
     return this.reviewsService.remove(+id)
   }
@@ -60,34 +78,34 @@ export class ReviewsController {
   }
 
   @Post(':id/reply')
+  @HasScope('admin')
   createReply(
     @Param('id') id: string,
     @Body() dto: CreateReviewReplyDto,
-    @CurrentUser() user?: User
+    @CurrentUser() user: User
   ) {
-    if (!user) {
-      throw new ForbiddenException()
-    }
-    return this.reviewsService.createReply(+id, dto, user)
+    return this.reviewsService.createReply(+id, {
+      ...dto,
+      userId: dto.userId ?? user.id
+    })
   }
 
   @Patch(':id/reply')
+  @HasScope('admin')
   updateReply(
     @Param('id') id: string,
     @Body() dto: UpdateReviewReplyDto,
-    @CurrentUser() user?: User
+    @CurrentUser() user: User
   ) {
-    if (!user) {
-      throw new ForbiddenException()
-    }
-    return this.reviewsService.updateReply(+id, dto, user)
+    return this.reviewsService.updateReply(+id, {
+      ...dto,
+      userId: dto.userId ?? user.id
+    })
   }
 
   @Delete(':id/reply')
-  removeReply(@Param('id') id: string, @CurrentUser() user?: User) {
-    if (!user) {
-      throw new ForbiddenException()
-    }
+  @HasScope('admin')
+  removeReply(@Param('id') id: string) {
     return this.reviewsService.removeReply(+id)
   }
 }

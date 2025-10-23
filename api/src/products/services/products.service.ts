@@ -38,6 +38,7 @@ import { Product } from '../entities/product.entity'
 import { Property, PropertyType } from '../entities/property.entity'
 import { ProductsFilterService } from './products-filter.service'
 import { ProductsSearchService } from './products-search.service'
+import { Review } from '../entities/review.entity'
 
 @Injectable()
 export class ProductsService implements OnModuleInit {
@@ -58,6 +59,8 @@ export class ProductsService implements OnModuleInit {
     private offerRepository: Repository<Offer>,
     @InjectRepository(Brand)
     private brandRepository: Repository<Brand>,
+    @InjectRepository(Review)
+    private reviewRepository: Repository<Review>,
     private readonly notificationsService: NotificationsService,
     private readonly storageService: StorageService,
     private readonly productsFilterService: ProductsFilterService,
@@ -219,17 +222,21 @@ export class ProductsService implements OnModuleInit {
     })
 
     if (product) {
-      const [options, images, offers, properties] = await Promise.all([
-        this.findOptionsForProduct(product.id),
-        this.findImagesForProduct(product.id),
-        this.findOffersForProduct(product.id),
-        this.findPropertiesForProduct(product.id)
-      ])
+      const [options, images, offers, properties, { averageRating, reviewsCount }] =
+        await Promise.all([
+          this.findOptionsForProduct(product.id),
+          this.findImagesForProduct(product.id),
+          this.findOffersForProduct(product.id),
+          this.findPropertiesForProduct(product.id),
+          this.findReviewStatsForProduct(product.id)
+        ])
 
       product.options = options
       product.images = images
       product.offers = offers
       product.properties = properties
+      product.averageRating = averageRating
+      product.reviewsCount = reviewsCount
     }
 
     return product
@@ -251,17 +258,21 @@ export class ProductsService implements OnModuleInit {
     })
 
     if (product) {
-      const [options, images, offers, properties] = await Promise.all([
-        this.findOptionsForProduct(product.id),
-        this.findImagesForProduct(product.id),
-        this.findOffersForProduct(product.id),
-        this.findPropertiesForProduct(product.id)
-      ])
+      const [options, images, offers, properties, { averageRating, reviewsCount }] =
+        await Promise.all([
+          this.findOptionsForProduct(product.id),
+          this.findImagesForProduct(product.id),
+          this.findOffersForProduct(product.id),
+          this.findPropertiesForProduct(product.id),
+          this.findReviewStatsForProduct(product.id)
+        ])
 
       product.options = options
       product.images = images
       product.offers = offers
       product.properties = properties
+      product.averageRating = averageRating
+      product.reviewsCount = reviewsCount
     }
 
     return product
@@ -400,6 +411,20 @@ export class ProductsService implements OnModuleInit {
         rank: 'ASC'
       }
     })
+  }
+
+  async findReviewStatsForProduct(productId: number) {
+    const reviewStats = await this.reviewRepository
+      .createQueryBuilder('review')
+      .select('COUNT(review.id)', 'count')
+      .addSelect('COALESCE(AVG(review.rating), 0)', 'average')
+      .where('review.productId = :productId', { productId })
+      .getRawOne()
+
+    const reviewsCount = parseInt(reviewStats?.count, 10) || 0
+    const averageRating = parseFloat(reviewStats?.average) || 0
+
+    return { reviewsCount, averageRating }
   }
 
   async findOptionsForProduct(productId: number) {

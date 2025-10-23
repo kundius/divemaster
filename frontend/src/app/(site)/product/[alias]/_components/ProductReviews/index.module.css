@@ -1,3 +1,7 @@
+.wrap {
+  scroll-margin-top: var(--sticky-header-height);
+}
+
 .headline {
   font-weight: bold;
   font-size: 18px;

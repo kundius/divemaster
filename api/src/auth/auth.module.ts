@@ -9,6 +9,7 @@ import { UsersModule } from '@/users/users.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { User } from '@/users/entities/user.entity'
 import { Role } from '@/users/entities/role.entity'
+import { HasScopeGuard } from './guards/has-scope.guard'
 
 @Module({
   imports: [
@@ -27,6 +28,10 @@ import { Role } from '@/users/entities/role.entity'
     {
       provide: APP_GUARD,
       useClass: AuthGuard
+    },
+    {
+      provide: APP_GUARD,
+      useClass: HasScopeGuard
     },
     AuthService
   ],

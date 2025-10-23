@@ -20,6 +20,49 @@ import {
 export const REVIEW_SORTABLE_FIELDS = ['id', 'createdAt', 'publishedAt', 'rating'] as const
 export type ReviewSortableFields = (typeof REVIEW_SORTABLE_FIELDS)[number]
 
+export class AddReviewDto {
+  @Type(() => Boolean)
+  @IsBoolean()
+  isRecommended: boolean
+
+  @IsNumber()
+  @Min(1)
+  @Max(5)
+  rating: number
+
+  @Type(() => Number)
+  @IsNumber()
+  productId: number
+
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  advantages?: string
+
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  flaws?: string
+
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  comment?: string
+
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  author?: string
+
+  @IsArray()
+  @Type(() => Number)
+  @IsNumber({}, { each: true })
+  @IsInt({ each: true })
+  @IsPositive({ each: true })
+  @IsOptional()
+  mediaIds?: number[]
+}
+
 export class CreateReviewDto {
   @Type(() => Boolean)
   @IsBoolean()

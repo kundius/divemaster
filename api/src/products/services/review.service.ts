@@ -134,6 +134,10 @@ export class ReviewService {
       record.userId = userId
     }
 
+    if (fillable.isPublished && !fillable.publishedAt) {
+      record.publishedAt = new Date()
+    }
+
     record = await this.reviewRepository.save(record)
 
     if (typeof mediaIds !== 'undefined') {
@@ -161,6 +165,10 @@ export class ReviewService {
       record.userId = userId
     }
 
+    if (fillable.isPublished && !fillable.publishedAt) {
+      record.publishedAt = new Date()
+    }
+
     if (typeof mediaIds !== 'undefined') {
       // удаляем старые медиа и привязываем новые
       await this.reviewMediaRepository.remove(record.media)
@@ -183,7 +191,7 @@ export class ReviewService {
     })
   }
 
-  async createReply(reviewId: number, dto: CreateReviewReplyDto, user: User) {
+  async createReply(reviewId: number, dto: CreateReviewReplyDto) {
     const existing = await this.reviewReplyRepository.exists({
       where: { review: { id: reviewId } }
     })
@@ -195,7 +203,7 @@ export class ReviewService {
     const record = this.reviewReplyRepository.create({
       comment: dto.comment,
       publishedAt: dto.publishedAt ?? new Date(),
-      userId: dto.userId ?? user.id,
+      userId: dto.userId,
       reviewId
     })
 
@@ -204,7 +212,7 @@ export class ReviewService {
     return this.findOneReply(reviewId)
   }
 
-  async updateReply(reviewId: number, dto: UpdateReviewReplyDto, user: User) {
+  async updateReply(reviewId: number, dto: UpdateReviewReplyDto) {
     const partialEntity: QueryDeepPartialEntity<ReviewReply> = {}
 
     if (typeof dto.comment !== 'undefined') {
@@ -216,7 +224,7 @@ export class ReviewService {
     }
 
     if (typeof dto.userId !== 'undefined') {
-      partialEntity.userId = dto.userId === null ? user.id : dto.userId
+      partialEntity.userId = dto.userId
     }
 
     const result = await this.reviewReplyRepository.update(

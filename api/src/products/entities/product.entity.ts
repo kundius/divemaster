@@ -96,6 +96,10 @@ export class Product {
   @OneToMany(() => Review, (review) => review.product)
   reviews: Review[]
 
+  averageRating?: number
+
+  reviewsCount?: number
+
   // для ручной подготовки свойств товара
   properties?: Property[]
 }

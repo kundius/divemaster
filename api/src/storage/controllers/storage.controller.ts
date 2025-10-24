@@ -1,9 +1,7 @@
-import { CurrentUser } from '@/auth/decorators/current-user.decorator'
 import { nanoid } from '@/lib/utils'
 import {
   BadRequestException,
   Controller,
-  ForbiddenException,
   Get,
   NotFoundException,
   Param,
@@ -17,7 +15,6 @@ import { Response } from 'express'
 import { diskStorage } from 'multer'
 import { unlink } from 'node:fs/promises'
 import { StorageService } from '../services/storage.service'
-import { User } from '@/users/entities/user.entity'
 
 @Controller('storage')
 export class StorageController {
@@ -29,14 +26,7 @@ export class StorageController {
       storage: diskStorage({})
     })
   )
-  async upload(
-    @UploadedFiles() files: Array<Express.Multer.File>,
-    @CurrentUser() currentUser?: User
-  ) {
-    if (!currentUser) {
-      throw new ForbiddenException()
-    }
-
+  async upload(@UploadedFiles() files: Array<Express.Multer.File>) {
     const file = files[0]
     if (!file) {
       throw new BadRequestException()

@@ -36,16 +36,16 @@ export default async function Layout({
       url: `/dashboard/products/${id}/options`
     },
     // {
-    //   title: 'Отзывы',
-    //   url: `/dashboard/products/${id}/reviews`
-    // },
-    // {
     //   title: 'Связи',
     //   url: `/dashboard/products/${id}/links`
     // },
     {
       title: 'Торговые предложения',
       url: `/dashboard/products/${id}/offers`
+    },
+    {
+      title: 'Отзывы',
+      url: `/dashboard/products/${id}/reviews`
     }
   ]
   return (

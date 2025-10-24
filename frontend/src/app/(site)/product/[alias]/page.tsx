@@ -131,7 +131,7 @@ export default async function Page({ params }: PageProps<{ alias: string }>) {
             )}
           </div>
           <div className={styles.layoutReviews}>
-            <ProductReviews productId={product.id} />
+            <ProductReviews productId={product.id} reviewsCount={product.reviewsCount || 0} />
           </div>
         </div>
       </SectionPage>

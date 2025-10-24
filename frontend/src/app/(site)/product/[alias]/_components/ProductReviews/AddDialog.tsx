@@ -103,7 +103,7 @@ export function AddDialog({ productId, children, onSuccess }: PropsWithChildren<
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={submitHandler}>
-            <div className="flex flex-wrap gap-8">
+            <div className="flex flex-wrap gap-8 items-end">
               {!user && (
                 <div>
                   <FormField
@@ -158,7 +158,6 @@ export function AddDialog({ productId, children, onSuccess }: PropsWithChildren<
                   name="isRecommended"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="min-h-3.5"></FormLabel>
                       <FormControl>
                         <div className="flex items-center gap-3 min-h-9">
                           <Checkbox checked={field.value} onCheckedChange={field.onChange} />

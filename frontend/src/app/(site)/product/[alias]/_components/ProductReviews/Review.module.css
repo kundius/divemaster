@@ -12,6 +12,17 @@
     'rating rating rating rating';
   margin-bottom: 20px;
   align-items: center;
+
+  @media (--max-md) {
+    grid-template-areas:
+      'date'
+      '.'
+      'author'
+      '.'
+      'rating';
+    grid-template-columns: auto;
+    grid-template-rows: auto 12px auto 12px auto;
+  }
 }
 
 .author {

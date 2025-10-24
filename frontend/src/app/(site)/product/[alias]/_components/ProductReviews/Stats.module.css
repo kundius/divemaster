@@ -8,21 +8,19 @@
 
 .layoutTop {
   padding: 16px 16px 8px;
+  gap: 8px;
   width: 100%;
   display: flex;
+  align-items: center;
+  justify-content: space-around;
 }
 
 .layoutLeft {
-  width: 33%;
-  margin-right: 32px;
-  margin-top: 12px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .layoutRight {
-  flex-grow: 1;
+  width: 100%;
+  max-width: 196px;
 }
 
 .layoutBottom {
@@ -39,14 +37,6 @@
   gap: 18px;
   display: flex;
   align-items: center;
-}
-
-.recommend::after {
-  content: '';
-  width: 26px;
-  height: 26px;
-  flex-shrink: 0;
-  display: block;
 }
 
 .recommendIcon {
@@ -106,17 +96,13 @@
 }
 
 .distribution {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.distributionRow {
-  display: flex;
-  width: 100%;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: 20px 20px 20px 20px 20px;
+  column-gap: 10px;
+  row-gap: 5px;
   align-items: center;
-  height: 20px;
+  width: 100%;
 }
 
 .distributionRowNum {
@@ -135,7 +121,7 @@
 
 .distributionRowPartProgress {
   position: absolute;
-  left: 0t;
+  left: 0;
   top: 0;
   height: 100%;
   background: #5054fe;
@@ -147,5 +133,4 @@
   font-size: 12px;
   color: rgb(48, 48, 48);
   line-height: 1;
-  width: 40%;
 }

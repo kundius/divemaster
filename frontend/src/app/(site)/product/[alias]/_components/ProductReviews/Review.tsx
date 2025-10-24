@@ -196,7 +196,7 @@ export function Review({
         </>
       )}
       {reply && (
-        <div className="mt-8 ml-12 mr-32">
+        <div className="ml-8 mt-8 xl:ml-12 xl:mr-32">
           <Reply {...reply} />
         </div>
       )}

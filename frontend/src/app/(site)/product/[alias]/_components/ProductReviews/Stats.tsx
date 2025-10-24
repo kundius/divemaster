@@ -58,20 +58,20 @@ export function Stats({
           <div className={styles.distribution}>
             {Object.entries(ratingDistribution)
               .reverse()
-              .map(([n, v]) => (
-                <div className={styles.distributionRow} key={n}>
-                  <div className={styles.distributionRowNum}>{n}</div>
-                  <div className={styles.distributionRowPart}>
-                    <div
-                      className={styles.distributionRowPartProgress}
-                      style={{ width: `${(v / totalReviews) * 100}%` }}
-                    ></div>
-                  </div>
-                  <div className={styles.distributionRowTotal}>
-                    {new Intl.NumberFormat('ru-RU', { useGrouping: true }).format(v)}
-                  </div>
+              .map(([n, v]) => [
+                <div className={styles.distributionRowNum} key={`num-${n}`}>
+                  {n}
+                </div>,
+                <div className={styles.distributionRowPart} key={`part-${n}`}>
+                  <div
+                    className={styles.distributionRowPartProgress}
+                    style={{ width: `${(v / totalReviews) * 100}%` }}
+                  ></div>
+                </div>,
+                <div className={styles.distributionRowTotal} key={`total-${n}`}>
+                  {new Intl.NumberFormat('ru-RU', { useGrouping: true }).format(v)}
                 </div>
-              ))}
+              ])}
           </div>
         </div>
       </div>
@@ -87,7 +87,8 @@ export function Stats({
             </svg>
           </span>
           <span className={styles.recommendText}>
-            <strong>{recommendationPercentage}%</strong> покупателей рекомендуют этот товар
+            <strong>{recommendationPercentage}%</strong> покупателей{' '}
+            <span className="whitespace-nowrap">рекомендуют этот товар</span>
           </span>
         </div>
       </div>

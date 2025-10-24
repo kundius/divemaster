@@ -33,6 +33,7 @@ import { AddDialog } from './AddDialog'
 
 export interface ProductReviewsProps {
   productId: number
+  reviewsCount: number
 }
 
 type Data = FindAllResult<ReviewEntity> & {
@@ -49,7 +50,7 @@ const defaultData: Data = {
   total: 0
 }
 
-export function ProductReviews({ productId }: ProductReviewsProps) {
+export function ProductReviews({ productId, reviewsCount }: ProductReviewsProps) {
   const [limit, setLimit] = useState(10)
   const [page, setPage] = useState(1)
   const [sort, setSort] = useState('publishedAt')
@@ -118,7 +119,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
 
     // во всех остальных случаях показываем список отзывов
     return (
-      <div className="grid grid-cols-3 gap-16 mt-16">
+      <div className="grid mt-8 gap-8 lg:grid-cols-3 lg:gap-16 lg:mt-16">
         <div>
           <Stats
             totalReviews={summaryData.total}
@@ -127,7 +128,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
             recommendationPercentage={summaryData.recommendationPercentage}
           />
         </div>
-        <div className="col-span-2">
+        <div className="lg:col-span-2">
           <div className="mb-9">{addButton}</div>
           <div className="mb-14">
             <Select defaultValue={`${sort}:${dir}`} onValueChange={onChangeSort}>
@@ -198,7 +199,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
     <div id="reviews" className={styles.wrap}>
       <div className={styles.headline}>
         <span className="icon icon-comments w-6 h-6" />
-        Отзывы {isLoading ? <Spinner className="size-6" /> : `(${summaryData.total})`}
+        Отзывы ({reviewsCount})
       </div>
       {renderContent()}
     </div>

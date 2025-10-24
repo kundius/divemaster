@@ -60,6 +60,10 @@ export class ReviewService {
       baseQb.andWhere('review.productId = :productId', { productId: dto.productId })
     }
 
+    if (dto.isPublished) {
+      baseQb.andWhere('review.isPublished = :isPublished', { isPublished: dto.isPublished })
+    }
+
     if (dto.query) {
       baseQb.andWhere(
         new Brackets((_qb) => {

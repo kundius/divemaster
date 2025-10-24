@@ -1,4 +1,5 @@
 import { PaginationQueryDto } from '@/lib/pagination-query.dto'
+import { ParseBoolean } from '@/lib/parse-boolean'
 import { SORT_DIRECTIONS, SortDirection } from '@/shared/types/sort.types'
 import { PartialType } from '@nestjs/mapped-types'
 import { Type } from 'class-transformer'
@@ -133,6 +134,11 @@ export class FindAllReviewQueryDto extends PaginationQueryDto {
   @IsNumber()
   @IsOptional()
   userId?: number
+
+  @ParseBoolean()
+  @IsBoolean()
+  @IsOptional()
+  isPublished?: boolean
 
   @Type(() => String)
   @IsString()

@@ -56,7 +56,7 @@ export function ProductReviews({ productId, reviewsCount }: ProductReviewsProps)
   const [sort, setSort] = useState('publishedAt')
   const [dir, setDir] = useState('DESC')
   const { data, isLoading, mutate } = useSWR<Data>(
-    [`reviews`, { productId, sort, dir, page, limit }],
+    [`reviews`, { productId, sort, dir, page, limit, isPublished: true }],
     {
       keepPreviousData: true
     }

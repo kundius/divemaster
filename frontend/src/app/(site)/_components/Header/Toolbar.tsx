@@ -77,7 +77,7 @@ export function Toolbar() {
           <span className={styles.title}>Войти</span>
         </button>
       ) : (
-        <Link href="/office" className={cn(styles.button, 'block')} onNavigate={officeClickHandler}>
+        <Link href="/office" className={cn(styles.button, 'block')} onClick={officeClickHandler}>
           <span className={styles.icon}>
             <SpriteIcon name="toolbar-profile" size={24} />
           </span>

@@ -10,7 +10,7 @@ export default function Page() {
       <Headline className="mb-12 max-lg:mb-8 max-md:mb-6" title="Подарочные сертификаты" />
       <div className="flex items-center gap-12 max-w-3xl mx-auto max-md:flex-col">
         <Image
-          src="https://divemaster.pro/templates/atemplate/images/gift_card_image.png"
+          src="/IMG_20260225_162721.png"
           width={407}
           height={271}
           alt=""

@@ -22,7 +22,7 @@ interface TRootContext {
   active: string | null
   setActive: Dispatch<SetStateAction<string | null>>
   scrollIntoView: boolean
-  onNavigate?: LinkProps['onNavigate']
+  onClick?: LinkProps['onClick']
 }
 
 const RootContext = createContext<TRootContext | undefined>(undefined)
@@ -61,18 +61,18 @@ function useItemContext(optional: boolean) {
 interface VerticalMenuProps {
   defaultActive?: string
   scrollIntoView?: boolean
-  onNavigate?: LinkProps['onNavigate']
+  onClick?: LinkProps['onClick']
 }
 
 export function VerticalMenu({
   children,
   defaultActive,
-  onNavigate,
+  onClick,
   scrollIntoView = true
 }: PropsWithChildren<VerticalMenuProps>) {
   const [active, setActive] = useState(defaultActive || null)
   return (
-    <RootContext.Provider value={{ active, setActive, scrollIntoView, onNavigate }}>
+    <RootContext.Provider value={{ active, setActive, scrollIntoView, onClick }}>
       <div className={styles.root}>{children}</div>
     </RootContext.Provider>
   )
@@ -146,6 +146,7 @@ export function VerticalMenuLink({
   const itemContext = useItemContext(false)
 
   const linkHandler: MouseEventHandler = (e) => {
+          // onClick={rootContext.onClick}
     if (!itemContext.isParent) return
 
     if (timerRef.current) {
@@ -199,7 +200,6 @@ export function VerticalMenuLink({
           href={href}
           className={styles.linkButton}
           onClick={onClick ?? linkHandler}
-          onNavigate={rootContext.onNavigate}
         >
           <span className={styles.linkContent}>{children}</span>
         </Link>

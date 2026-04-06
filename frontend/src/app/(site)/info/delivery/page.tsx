@@ -1,5 +1,6 @@
 import { Headline } from '@/components/Headline'
 import { SectionPage } from '@/components/SectionPage'
+import Link from 'next/link'
 import Script from 'next/script'
 
 export default function Page() {
@@ -80,8 +81,11 @@ export default function Page() {
         </p>
         <p>
           Детальнее узнать про способы доставок или задать интересующие вопросы по доставке вы
-          можете по номерам +8 909 215 43 44 - +8 906 586 55 55. Или можете написать нам на
-          электронную почту podvoh36@mail.ru а так же в наш WhatsApp по номеру +7 909 215 43 44.
+          можете по номерам +7 909 215 43 44 или +7 906 586 55 55. Или можете написать нам на
+          электронную почту podvoh36@mail.ru а так же в{' '}
+          <Link href="" target="_blank">
+            MAX
+          </Link>
         </p>
       </div>
     </SectionPage>

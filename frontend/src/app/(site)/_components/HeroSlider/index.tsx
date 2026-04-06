@@ -10,9 +10,11 @@ import useEmblaCarousel from 'embla-carousel-react'
 import { ReactNode, useCallback, useEffect, useRef } from 'react'
 import { CarpHunting } from './CarpHunting'
 import { Discount } from './Discount'
+import { Default } from './Default'
 import { Expert } from './Expert'
 import { NewYear } from './NewYear'
 import { Spearfishing } from './Spearfishing'
+import { Season } from './Season'
 
 const TWEEN_FACTOR_BASE = 0.2
 
@@ -138,7 +140,9 @@ export function HeroSlider({ slides }: HeroSliderProps) {
   )
 }
 
+export const HeroSliderDefault = Default
 export const HeroSliderCarpHunting = CarpHunting
+export const HeroSliderSeason = Season
 export const HeroSliderDiscount = Discount
 export const HeroSliderExpert = Expert
 export const HeroSliderNewYear = NewYear

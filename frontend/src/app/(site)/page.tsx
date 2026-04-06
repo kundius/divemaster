@@ -9,14 +9,20 @@ import { BrandEntity, FindAllResult, ProductEntity } from '@/types'
 import {
   HeroSlider,
   HeroSliderCarpHunting,
+  HeroSliderDefault,
   HeroSliderDiscount,
   HeroSliderExpert,
   HeroSliderNewYear,
+  HeroSliderSeason,
   HeroSliderSpearfishing
 } from './_components/HeroSlider'
 import { BenefitsSlider, BenefitsSliderDiscount } from './_components/BenefitsSlider'
 import { HomeAbout } from './_components/HomeAbout'
 import { getApiUrl, getFileUrl } from '@/lib/utils'
+import Image from 'next/image'
+import { Button } from '@/components/ui/button'
+import { PrimaryButton, PrimaryButtonArrow } from '@/components/PrimaryButton'
+import Link from 'next/link'
 
 export default async function Page() {
   const [favoriteProducts, recentProducts, brands] = await Promise.all([
@@ -61,13 +67,58 @@ export default async function Page() {
     <>
       <HeroSlider
         slides={[
+          // {
+          //   content: <HeroSliderExpert />,
+          //   name: 'HeroSliderExpert'
+          // },
+          // {
+          //   content: <HeroSliderNewYear />,
+          //   name: 'HeroSliderNewYear'
+          // },
+          // {
+          //   content: (
+          //     <HeroSliderDefault
+          //       title="Пример заголовка слайда"
+          //       description="Пример описания слайда"
+          //       background={
+          //         <>
+          //           <Image
+          //             src="/hero/default.jpg"
+          //             width={2000}
+          //             height={850}
+          //             loading="eager"
+          //             alt=""
+          //             sizes="100vw"
+          //             quality={90}
+          //             className="max-sm:hidden"
+          //           />
+          //           <Image
+          //             src="/hero/default.jpg"
+          //             width={2000}
+          //             height={850}
+          //             loading="eager"
+          //             alt=""
+          //             sizes="100vw"
+          //             quality={90}
+          //             className="sm:hidden"
+          //           />
+          //         </>
+          //       }
+          //       action={
+          //         <PrimaryButton asChild variant="outline">
+          //           <Link href="/catalog">
+          //             Перейти к товарам
+          //             <PrimaryButtonArrow />
+          //           </Link>
+          //         </PrimaryButton>
+          //       }
+          //     />
+          //   ),
+          //   name: 'example'
+          // },
           {
-            content: <HeroSliderExpert />,
-            name: 'HeroSliderExpert'
-          },
-          {
-            content: <HeroSliderNewYear />,
-            name: 'HeroSliderNewYear'
+            content: <HeroSliderSeason />,
+            name: 'season'
           },
           {
             content: <HeroSliderDiscount />,

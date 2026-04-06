@@ -67,7 +67,8 @@
     padding: 0;
   }
   @media (--max-md) {
-    justify-content: flex-end;
+    justify-content: center;
+    align-items: center;
   }
 }
 
@@ -86,6 +87,7 @@
     width: calc(340px * 0.8);
     height: calc(65px * 0.8);
     margin-bottom: 100px;
+    margin-left: 0;
   }
 }
 
@@ -106,6 +108,7 @@
     font-size: 24px;
     line-height: 1.25;
     margin-bottom: 12px;
+    text-align: center;
   }
 }
 
@@ -126,6 +129,7 @@
     width: 288px;
     line-height: 1.2;
     margin-bottom: 12px;
+    text-align: center;
   }
 }
 

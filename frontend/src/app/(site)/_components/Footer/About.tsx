@@ -1,23 +1,38 @@
 import Image from 'next/image'
 import styles from './About.module.css'
 import Link from 'next/link'
-import { cn } from '@/lib/utils'
 
 export function About() {
   return (
-    <div className={styles.root}>
+    <div className={styles.root} itemScope itemType="https://schema.org/LocalBusiness">
+      <meta itemProp="name" content="Название компании" />
+      <meta itemProp="logo" content={`${process.env.NEXT_PUBLIC_CLIENT_URL}logo.png`} />
+      <meta itemProp="url" content={process.env.NEXT_PUBLIC_CLIENT_URL} />
+
       <div className="flex items-center justify-between">
         <Link href="/">
           <Image src="/logo.png" alt="" width={148} height={71} className={styles.logo} />
         </Link>
         <div className={styles.phone}>
-          <div className={styles.phoneNumber}>8 800 7000 354</div>
-          <div className={styles.phoneTime}>ежедневно с 10:00 до 18:00</div>
+          <div className={styles.phoneNumber} itemProp="telephone">
+            +78007000354
+          </div>
+          <time className={styles.phoneTime} itemProp="openingHours" dateTime="Mo-Su 10:00-18:00">
+            ежедневно с 10:00 до 18:00
+          </time>
         </div>
       </div>
-      <div className={styles.addresses}>
+      <div
+        className={styles.addresses}
+        itemProp="address"
+        itemScope
+        itemType="https://schema.org/PostalAddress"
+      >
         <div className={styles.address}>
-          г. Воронеж, ул. 20 лет Октября 123, ТЦ &quot;Европа&quot;, 4 этаж
+          <span itemProp="addressLocality">г. Воронеж</span>,{' '}
+          <span itemProp="streetAddress">
+            ул. 20 лет Октября 123, ТЦ &quot;Европа&quot;, 4 этаж
+          </span>
         </div>
       </div>
     </div>

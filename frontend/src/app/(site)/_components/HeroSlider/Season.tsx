@@ -22,9 +22,9 @@ export function Season() {
               className={cn('max-sm:hidden', styles['bg-image'])}
             />
             <Image
-              src="/hero/season2026-1_3.jpg"
-              width={2000}
-              height={850}
+              src="/hero/season2026-1_3-small.jpg"
+              width={640}
+              height={480}
               loading="eager"
               alt=""
               sizes="100vw"
@@ -44,9 +44,9 @@ export function Season() {
               className={cn('max-sm:hidden', styles['bg-image'])}
             />
             <Image
-              src="/hero/season2026-2_2.jpg"
-              width={2000}
-              height={850}
+              src="/hero/season2026-2_2-small.jpg"
+              width={640}
+              height={480}
               loading="eager"
               alt=""
               sizes="100vw"

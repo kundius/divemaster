@@ -18,8 +18,8 @@ export function Discount() {
         />
         <Image
           src="/hero/Discount/bg-sm.jpg"
-          width={2000}
-          height={850}
+          width={640}
+          height={480}
           loading="eager"
           alt=""
           sizes="100vw"

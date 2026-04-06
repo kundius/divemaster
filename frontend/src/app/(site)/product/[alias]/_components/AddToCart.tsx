@@ -39,7 +39,24 @@ export function AddToCart() {
   const oldPrice = productStore.displayOldPrice(productStore.offer)
 
   return (
-    <div ref={wrapperRef}>
+    <div ref={wrapperRef} itemProp="offers" itemScope itemType="https://schema.org/Offer">
+      <meta itemProp="priceCurrency" content="RUB" />
+      {productStore.offer ? (
+        <>
+          <meta itemProp="price" content={productStore.offer.price.toFixed(2)} />
+          <link itemProp="availability" href="https://schema.org/InStock" />
+        </>
+      ) : (
+        <>
+          <meta itemProp="price" content={`0.00`} />
+          <link itemProp="availability" href="https://schema.org/PreOrder" />
+        </>
+      )}
+      <link
+        itemProp="url"
+        href={`${process.env.NEXT_PUBLIC_CLIENT_URL}product/${productStore.product.alias}`}
+      />
+
       <div className={styles.prices}>
         {productStore.product.priceDecrease && (
           <div className={styles.discount}>-{productStore.product.priceDecrease}%</div>

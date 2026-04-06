@@ -7,6 +7,8 @@ import styles from './Title.module.css'
 export function Title() {
   const { product, offer: selectedOffer } = useProductStore((state) => state)
   return (
-    <h1 className={styles.title}>{selectedOffer?.title ? selectedOffer.title : product.title}</h1>
+    <h1 className={styles.title} itemProp="name">
+      {selectedOffer?.title ? selectedOffer.title : product.title}
+    </h1>
   )
 }

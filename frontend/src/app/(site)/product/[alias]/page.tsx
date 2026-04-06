@@ -83,20 +83,42 @@ export default async function Page({ params }: PageProps<{ alias: string }>) {
     addParents(product.categories, null)
   }
 
+  // const images = useMemo(() => {
+  //   if (!productStore.product.images || productStore.product.images.length === 0) {
+  //     return ['/noimage.png']
+  //   }
+  //   return productStore.product.images.map((item) => getFileUrl(item.fileId))
+  // }, [productStore.product])
+
+  let thumb = '/noimage.png'
+  if (product.images && product.images.length > 0) {
+    thumb = getFileUrl(product.images[0].fileId)
+  }
+
   return (
     <ProductStoreProvider product={product}>
       <SectionPage withBreadcrumbs>
         <div className="pb-6 max-md:pb-2 max-md:border-b">
           <Breadcrumbs items={crumbs} />
         </div>
-        <div className={styles.layout}>
+        <div className={styles.layout} itemScope itemType="https://schema.org/Product">
+          <link itemProp="image" href={`${thumb}`} />
+          <link
+            itemProp="url"
+            href={`${process.env.NEXT_PUBLIC_CLIENT_URL}product/${product.alias}`}
+          />
+
           <div className={styles.layoutGallery}>
             <Gallery items={product.images?.map((item) => getFileUrl(item.fileId)) || []} />
           </div>
           <div className={styles.layoutInfo}>
             <div className="flex items-center justify-between mb-2 max-md:mb-1">
               {!!product.brand && typeof product.brand === 'object' && (
-                <Link href={`/brand/${product.brand.alias}`} className={styles.brand}>
+                <Link
+                  href={`/brand/${product.brand.alias}`}
+                  className={styles.brand}
+                  itemProp="brand"
+                >
                   {product.brand.name}
                 </Link>
               )}
@@ -106,7 +128,11 @@ export default async function Page({ params }: PageProps<{ alias: string }>) {
             <div className={styles.title}>
               <Title />
             </div>
-            {!!product.sku && <div className={styles.sku}>{product.sku}</div>}
+            {!!product.sku && (
+              <div className={styles.sku} itemProp="sku">
+                {product.sku}
+              </div>
+            )}
             <div className="flex justify-between items-center gap-8 max-w-96 mt-3">
               <ReviewsShort count={product.reviewsCount || 0} rating={product.averageRating || 0} />
               {product.specifications && <SpecButton />}

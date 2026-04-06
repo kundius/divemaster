@@ -6,8 +6,8 @@ export function About() {
   return (
     <div className={styles.root} itemScope itemType="https://schema.org/LocalBusiness">
       <meta itemProp="name" content="Название компании" />
-      <link itemProp="logo" content={`${process.env.NEXT_PUBLIC_CLIENT_URL}logo.png`} />
-      <link itemProp="url" content={process.env.NEXT_PUBLIC_CLIENT_URL} />
+      <link itemProp="logo" href={`${process.env.NEXT_PUBLIC_CLIENT_URL}logo.png`} />
+      <link itemProp="url" href={process.env.NEXT_PUBLIC_CLIENT_URL} />
 
       <div className="flex items-center justify-between">
         <Link href="/">

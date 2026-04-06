@@ -55,6 +55,7 @@ export function Description({ title, content }: DescriptionProps) {
           className={styles.content}
           dangerouslySetInnerHTML={{ __html: content }}
           ref={contentRef}
+          itemProp="description"
         />
       </div>
       {isNeedCollapse && (

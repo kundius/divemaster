@@ -56,7 +56,6 @@ export function AddToCartDialog({
       id: productStore.product.id,
       options: productStore.selected
     })
-    toast.success('Товар добавлен в корзину')
     toggleShow(false)
   }
 

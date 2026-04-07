@@ -32,7 +32,6 @@ export function AddToCart() {
       id: productStore.product.id,
       options: productStore.selected
     })
-    toast.success('Товар добавлен в корзину')
   }
 
   const price = productStore.displayPrice(productStore.offer)

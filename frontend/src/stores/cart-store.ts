@@ -11,6 +11,8 @@ export type CartState = {
   }
   cartId: string | null
   cartProducts: CartProductEntity[]
+  lastAddedItem: CartProductEntity | null
+  isCartAddedDialogOpen: boolean
 }
 
 export type CartActions = {
@@ -26,6 +28,8 @@ export type CartActions = {
   setCartProducts(cartProducts: CartProductEntity[]): void
   setCartId(cartId: string | null): void
   createCart(): Promise<string | null>
+  showCartAddedDialog(item: CartProductEntity): void
+  hideCartAddedDialog(): void
 }
 
 export const createCartStore = () =>
@@ -38,6 +42,8 @@ export const createCartStore = () =>
       discount: 0,
       oldPrice: 0
     },
+    lastAddedItem: null,
+    isCartAddedDialogOpen: false,
 
     async createCart() {
       let cartId = null
@@ -45,7 +51,9 @@ export const createCartStore = () =>
         const data = await apiPut<CartEntity>('cart')
         cartId = data.id
         get().setCartId(cartId)
-      } catch (e) {}
+      } catch (error) {
+        console.error('[Cart] Error:', error)
+      }
       return cartId
     },
 
@@ -58,7 +66,9 @@ export const createCartStore = () =>
       if (cartId) {
         try {
           cartProducts = await apiGet<CartProductEntity[]>(`cart/${cartId}/products`)
-        } catch (e) {}
+        } catch (error) {
+          console.error('[Cart] Error:', error)
+        }
       }
 
       get().setCartProducts(cartProducts)
@@ -78,7 +88,12 @@ export const createCartStore = () =>
         }
         const cartProducts = await apiPut<CartProductEntity[]>(`cart/${cartId}/products`, params)
         get().setCartProducts(cartProducts)
-      } catch (e) {}
+
+        const addedItem = cartProducts.find((p) => p.productId === item.id)
+        if (addedItem) get().showCartAddedDialog(addedItem)
+      } catch (error) {
+        console.error('[Cart] Error:', error)
+      }
     },
 
     // Удаление товара из корзины
@@ -92,7 +107,9 @@ export const createCartStore = () =>
           `cart/${cartId}/products/${product.id}`
         )
         get().setCartProducts(cartProducts)
-      } catch (e) {}
+      } catch (error) {
+        console.error('[Cart] Error:', error)
+      }
     },
 
     // Изменение количества товара
@@ -113,7 +130,9 @@ export const createCartStore = () =>
           params
         )
         get().setCartProducts(cartProducts)
-      } catch (e) {}
+      } catch (error) {
+        console.error('[Cart] Error:', error)
+      }
     },
 
     // Удаление корзины
@@ -127,7 +146,9 @@ export const createCartStore = () =>
         // Удаление товаров и id корзины
         get().setCartProducts([])
         get().setCartId(null)
-      } catch (e) {}
+      } catch (error) {
+        console.error('[Cart] Error:', error)
+      }
     },
 
     // Обновляем товары корзины и сатистику
@@ -164,5 +185,8 @@ export const createCartStore = () =>
       } else {
         localStorage.removeItem('cartId')
       }
-    }
+    },
+
+    showCartAddedDialog: (item) => set({ lastAddedItem: item, isCartAddedDialogOpen: true }),
+    hideCartAddedDialog: () => set({ isCartAddedDialogOpen: false })
   }))

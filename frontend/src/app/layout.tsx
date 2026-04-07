@@ -16,6 +16,7 @@ import { LoginDialog } from '@/components/LoginDialog'
 import { DateFnsInit } from '@/lib/date-fns-init'
 import { WishlistStoreProvider } from '@/providers/whishlist-store-provider'
 import './globals.css'
+import { CartAddedDialog } from './(site)/_components/CartAddedDialog'
 
 const fontRoboto = Roboto({
   weight: ['400', '500', '700'],
@@ -71,6 +72,7 @@ export default async function RootLayout({
                     <OrderStoreProvider>
                       <MobileNavigation>
                         {children}
+                        <CartAddedDialog />
                         <LoginDialog />
                       </MobileNavigation>
                     </OrderStoreProvider>

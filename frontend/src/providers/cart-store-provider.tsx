@@ -15,7 +15,8 @@ export interface CartStoreProviderProps {
 }
 
 export const CartStoreProvider = ({ children }: CartStoreProviderProps) => {
-  const auth = useAuthStore((state) => state)
+  const userId = useAuthStore((state) => state.user?.id)
+  const userCartId = useAuthStore((state) => state.user?.cart?.id)
 
   const storeRef = useRef<CartStoreApi>(null)
   if (!storeRef.current) {
@@ -30,22 +31,22 @@ export const CartStoreProvider = ({ children }: CartStoreProviderProps) => {
     const currentCartId = store.getState().cartId
     let cartId: string | null = localStorage.getItem('cartId')
 
-    if (auth.user && auth.user.cart) {
-      cartId = auth.user.cart.id
+    if (userId && userCartId) {
+      cartId = userCartId
     }
 
     // если у пользователя корзины нет, но есть гостевая- прикрепить ее к пользователю
-    if (auth.user && !auth.user.cart && cartId) {
+    if (userId && !userCartId && cartId) {
       apiPost(`cart/${cartId}`)
       localStorage.removeItem('cartId')
     }
 
     // если в результате смены пользователя поменялась корзина обновить её в сторе
     if (currentCartId !== cartId) {
-      store.setState({ cartId })
+      store.getState().setCartId(cartId)
       store.getState().loadCart()
     }
-  }, [auth.user])
+  }, [userId, userCartId])
 
   return <CartStoreContext.Provider value={storeRef.current}>{children}</CartStoreContext.Provider>
 }

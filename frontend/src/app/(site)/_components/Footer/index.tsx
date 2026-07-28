@@ -5,6 +5,7 @@ import { Menu } from './Menu'
 import { Payment } from './Payment'
 import { Social } from './Social'
 import { Subscribe } from './Subscribe'
+import { Lenta9May } from './Lenta9May'
 import styles from './index.module.css'
 import { Container } from '@/components/Container'
 
@@ -93,6 +94,7 @@ export function Footer() {
         </Container>
       </div>
       <Bottom />
+      <Lenta9May />
     </>
   )
 }

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "postinstall": "node ./postinstall.mjs",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -36,6 +37,7 @@
     "@radix-ui/react-toggle-group": "^1.1.11",
     "@radix-ui/react-tooltip": "^1.2.8",
     "@reactuses/core": "^6.0.1",
+    "@tinymce/tinymce-react": "^6.3.0",
     "@uidotdev/usehooks": "^2.4.1",
     "ckeditor5": "^47.0.0",
     "class-variance-authority": "^0.7.1",
@@ -64,6 +66,7 @@
     "sonner": "^1.7.2",
     "swr": "^2.3.0",
     "throttle-debounce": "^5.0.2",
+    "tinymce": "^8.8.2",
     "vaul": "^1.1.2",
     "yet-another-react-lightbox": "^3.25.0",
     "zod": "^3.25.76",

@@ -1,326 +1,224 @@
 'use client'
 
-import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react'
-import type { EditorConfig } from 'ckeditor5'
-import { getCookie } from 'cookies-next'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { getApiUrl } from '../utils'
-import styles from './styles.module.css'
-
 export interface EditorInputProps {
   placeholder?: string
   value?: string
   onChange?: (value?: string) => void
 }
 
-export function EditorInput({ placeholder, value, onChange }: EditorInputProps) {
-  const editorContainerRef = useRef(null)
-  const editorRef = useRef(null)
-  const [isLayoutReady, setIsLayoutReady] = useState(false)
-  const cloud = useCKEditorCloud({ version: '47.0.0', translations: ['ru'] })
+import { uploadFile } from '@/lib/utils'
+import { Editor } from '@tinymce/tinymce-react'
+import { useRef } from 'react'
 
-  useEffect(() => {
-    setIsLayoutReady(true)
+interface BlobInfo {
+  id(): string
+  name(): string
+  filename(): string
+  blob(): Blob
+  base64(): string
+  blobUri(): string
+  uri(): string | undefined
+}
 
-    return () => setIsLayoutReady(false)
-  }, [])
-
-  const { ClassicEditor, editorConfig } = useMemo(() => {
-    if (cloud.status !== 'success' || !isLayoutReady) {
-      return {}
+export function EditorInput({
+  placeholder = 'Введите текст...',
+  value,
+  onChange
+}: EditorInputProps) {
+  const editorRef = useRef<Editor>(null)
+  const images_upload_handler = async (blobInfo: BlobInfo) => {
+    try {
+      const file = blobInfo.blob()
+      const response = await uploadFile(file)
+      return response.url
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Ошибка загрузки изображения'
+      return Promise.reject(errorMessage)
     }
-
-    const authToken = getCookie(String(process.env.NEXT_PUBLIC_JWT_TOKEN_NAME))
-
-    const {
-      ClassicEditor,
-      AutoImage,
-      Autosave,
-      BlockQuote,
-      Bold,
-      CloudServices,
-      Code,
-      Essentials,
-      FontBackgroundColor,
-      FontColor,
-      FontFamily,
-      FontSize,
-      FullPage,
-      GeneralHtmlSupport,
-      Heading,
-      Highlight,
-      HtmlComment,
-      HtmlEmbed,
-      ImageBlock,
-      ImageCaption,
-      ImageInline,
-      ImageInsert,
-      ImageInsertViaUrl,
-      ImageResize,
-      ImageStyle,
-      ImageTextAlternative,
-      ImageToolbar,
-      ImageUpload,
-      Indent,
-      IndentBlock,
-      Italic,
-      Link,
-      LinkImage,
-      List,
-      ListProperties,
-      MediaEmbed,
-      PageBreak,
-      Paragraph,
-      PasteFromOffice,
-      RemoveFormat,
-      ShowBlocks,
-      SimpleUploadAdapter,
-      SourceEditing,
-      SpecialCharacters,
-      Strikethrough,
-      Subscript,
-      Superscript,
-      Table,
-      TableCaption,
-      TableCellProperties,
-      TableColumnResize,
-      TableProperties,
-      TableToolbar,
-      Underline
-    } = cloud.CKEditor
-
-    const editorConfig: EditorConfig = {
-      toolbar: {
-        items: [
-          'sourceEditing',
-          'showBlocks',
-          '|',
-          'heading',
-          '|',
-          'fontSize',
-          'fontFamily',
-          'fontColor',
-          'fontBackgroundColor',
-          '|',
-          'bold',
-          'italic',
-          'underline',
-          'strikethrough',
-          'subscript',
-          'superscript',
-          'code',
-          'removeFormat',
-          '|',
-          'specialCharacters',
-          'pageBreak',
-          'link',
-          'insertImage',
-          'mediaEmbed',
-          'insertTable',
-          'highlight',
-          'blockQuote',
-          'htmlEmbed',
-          '|',
-          'bulletedList',
-          'numberedList',
-          'outdent',
-          'indent'
-        ],
-        shouldNotGroupWhenFull: true
-      },
-      plugins: [
-        AutoImage,
-        Autosave,
-        BlockQuote,
-        Bold,
-        CloudServices,
-        Code,
-        Essentials,
-        FontBackgroundColor,
-        FontColor,
-        FontFamily,
-        FontSize,
-        FullPage,
-        GeneralHtmlSupport,
-        Heading,
-        Highlight,
-        HtmlComment,
-        HtmlEmbed,
-        ImageBlock,
-        ImageCaption,
-        ImageInline,
-        ImageInsert,
-        ImageInsertViaUrl,
-        ImageResize,
-        ImageStyle,
-        ImageTextAlternative,
-        ImageToolbar,
-        ImageUpload,
-        Indent,
-        IndentBlock,
-        Italic,
-        Link,
-        LinkImage,
-        List,
-        ListProperties,
-        MediaEmbed,
-        PageBreak,
-        Paragraph,
-        PasteFromOffice,
-        RemoveFormat,
-        ShowBlocks,
-        SimpleUploadAdapter,
-        SourceEditing,
-        SpecialCharacters,
-        Strikethrough,
-        Subscript,
-        Superscript,
-        Table,
-        TableCaption,
-        TableCellProperties,
-        TableColumnResize,
-        TableProperties,
-        TableToolbar,
-        Underline
-      ],
-      fontFamily: {
-        supportAllValues: true
-      },
-      fontSize: {
-        options: [10, 12, 14, 'default', 18, 20, 22],
-        supportAllValues: true
-      },
-      indentBlock: {
-        classes: ['indent-a', 'indent-b', 'indent-c']
-      },
-      heading: {
-        options: [
-          {
-            model: 'paragraph',
-            title: 'Paragraph',
-            class: 'ck-heading_paragraph'
-          },
-          {
-            model: 'heading1',
-            view: 'h1',
-            title: 'Heading 1',
-            class: 'ck-heading_heading1'
-          },
-          {
-            model: 'heading2',
-            view: 'h2',
-            title: 'Heading 2',
-            class: 'ck-heading_heading2'
-          },
-          {
-            model: 'heading3',
-            view: 'h3',
-            title: 'Heading 3',
-            class: 'ck-heading_heading3'
-          },
-          {
-            model: 'heading4',
-            view: 'h4',
-            title: 'Heading 4',
-            class: 'ck-heading_heading4'
-          },
-          {
-            model: 'heading5',
-            view: 'h5',
-            title: 'Heading 5',
-            class: 'ck-heading_heading5'
-          },
-          {
-            model: 'heading6',
-            view: 'h6',
-            title: 'Heading 6',
-            class: 'ck-heading_heading6'
-          }
-        ]
-      },
-      simpleUpload: {
-        uploadUrl: `${getApiUrl()}storage/upload`,
-        withCredentials: false,
-        headers: {
-          Authorization: 'Bearer ' + authToken
-        }
-      },
-      // htmlSupport: {
-      //   allow: [
-      //     {
-      //       name: /^.*$/,
-      //       styles: true,
-      //       attributes: true,
-      //       classes: true
-      //     }
-      //   ]
-      // },
-      image: {
-        toolbar: [
-          'toggleImageCaption',
-          'imageTextAlternative',
-          '|',
-          'imageStyle:inline',
-          'imageStyle:wrapText',
-          'imageStyle:breakText',
-          '|',
-          'resizeImage'
-        ]
-      },
-      initialData: value,
-      placeholder,
-      language: 'ru',
-      licenseKey: String(process.env.NEXT_PUBLIC_CKEDITOR_LICENSE_KEY),
-      link: {
-        addTargetToExternalLinks: true,
-        defaultProtocol: 'https://',
-        decorators: {
-          toggleDownloadable: {
-            mode: 'manual',
-            label: 'Downloadable',
-            attributes: {
-              download: 'file'
-            }
-          }
-        }
-      },
-      list: {
-        properties: {
-          styles: true,
-          startIndex: true,
-          reversed: true
-        }
-      },
-      table: {
-        contentToolbar: [
-          'tableColumn',
-          'tableRow',
-          'mergeTableCells',
-          'tableProperties',
-          'tableCellProperties'
-        ]
-      }
-    }
-
-    return {
-      ClassicEditor,
-      editorConfig
-    }
-  }, [cloud, isLayoutReady])
-
+  }
   return (
-    <div className={styles.wrapper} ref={editorContainerRef}>
-      <div ref={editorRef}>
-        {ClassicEditor && editorConfig && (
-          <CKEditor
-            editor={ClassicEditor}
-            config={editorConfig}
-            onChange={(_, editor) => {
-              onChange?.(editor.getData())
-            }}
-          />
-        )}
-      </div>
-    </div>
+    <Editor
+      tinymceScriptSrc="/tinymce/tinymce.min.js"
+      licenseKey="gpl"
+      value={value}
+      onEditorChange={(content) => onChange?.(content)}
+      onInit={(_evt, editor) => {
+        editorRef.current = editor as unknown as Editor
+        editor.ui.registry.addButton('pagebreak', {
+          icon: 'page-break',
+          onAction: () => {
+            editor.execCommand(
+              'mceInsertContent',
+              false,
+              `
+                <div class="page-break" data-mce-contenteditable="false" style="
+                  display: block;
+                  clear: both;
+                  page-break-before: always;
+                "></div>
+              `
+            )
+          }
+        })
+      }}
+      init={{
+        images_upload_handler,
+
+        paste_preprocess: (plugin, args) => {
+          args.content = args.content
+            .replace(/<br\s*\/?>/gi, ' ') // Заменяем <br> на пробел
+            .replace(/<\/p><p>/g, ' ') // Заменяем разрыв между параграфами на пробел
+            .replace(/<\/?p>/g, '') // Удаляем все теги <p>
+            .replace(/\n/g, ' ') // Удаляем символы новой строки
+            .replace(/\s+/g, ' ') // Заменяем множественные пробелы на один
+            .trim() // Удаляем пробелы по краям
+        },
+
+        placeholder,
+        height: 500,
+        menubar: true,
+        plugins: [
+          'advlist',
+          'autolink',
+          'lists',
+          'link',
+          'image',
+          'charmap',
+          'anchor',
+          'searchreplace',
+          'visualblocks',
+          'code',
+          'fullscreen',
+          'insertdatetime',
+          'media',
+          'table',
+          'preview',
+          'help',
+          'wordcount'
+        ],
+        formats: {
+          paragraphIndentA: [{ selector: 'p,h1,h2,h3,h4,h5,h6', classes: 'indent-a' }],
+          paragraphIndentB: [{ selector: 'p,h1,h2,h3,h4,h5,h6', classes: 'indent-b' }],
+          paragraphIndentC: [{ selector: 'p,h1,h2,h3,h4,h5,h6', classes: 'indent-c' }]
+        },
+        style_formats: [
+          {
+            title: 'Красная строка',
+            items: [
+              { title: 'Маленький отступ', format: 'paragraphIndentA' },
+              { title: 'Средний отступ', format: 'paragraphIndentB' },
+              { title: 'Большой отступ', format: 'paragraphIndentC' }
+            ]
+          }
+        ],
+        toolbar: [
+          'styles blocks | alignleft aligncenter alignright alignjustify | bold italic pagebreak bullist numlist | removeformat'
+        ],
+        content_style: `
+body {
+  font-size: 16px;
+  line-height: 20px;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+h1 {
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 28px;
+}
+
+* + h1 {
+  margin-top: 32px;
+}
+
+h2 {
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 24px;
+}
+
+* + h2 {
+  margin-top: 16px;
+}
+
+p {
+}
+
+* + p {
+  margin-top: 16px;
+}
+
+ol {
+  margin: 0;
+  padding: 0 0 0 24px;
+}
+
+* + ol {
+  margin-top: 16px;
+}
+
+ul {
+  margin: 0;
+  padding: 0 0 0 24px;
+}
+
+* + ul {
+  margin-top: 16px;
+}
+
+.image {
+  margin: 0 auto;
+}
+
+.image {
+  margin-top: 16px;
+}
+
+.indent-a {
+  text-indent: 24px;
+}
+
+.indent-b {
+  text-indent: 48px;
+}
+
+.indent-c {
+  text-indent: 62px;
+}
+
+.page-break {
+  display: block !important;
+  clear: both !important;
+  page-break-before: always !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+@media screen {
+  .page-break {
+    height: 20px !important;
+    margin: 30px 0 !important;
+    border-top: 2px dashed #2196F3 !important;
+    position: relative;
+  }
+  
+  .page-break::after {
+    content: "РАЗРЫВ СТРАНИЦЫ";
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 0 10px;
+    color: #2196F3;
+    font-size: 12px;
+    font-weight: bold;
+  }
+}
+        `
+      }}
+    />
   )
 }

@@ -1,0 +1,75 @@
+.wrapper :global(.ck-editor__editable_inline:not(.ck-comment__input *)) {
+  height: 400px;
+  overflow-y: auto;
+}
+
+.wrapper :global(.ck-content) {
+  font-size: 16px;
+  line-height: 20px;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.wrapper :global(.ck-content h1) {
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.wrapper :global(.ck-content * + h1) {
+  margin-top: 32px;
+}
+
+.wrapper :global(.ck-content h2) {
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 24px;
+}
+
+.wrapper :global(.ck-content * + h2) {
+  margin-top: 16px;
+}
+
+.wrapper :global(.ck-content p) {
+}
+
+.wrapper :global(.ck-content * + p) {
+  margin-top: 16px;
+}
+
+.wrapper :global(.ck-content ol) {
+  margin: 0;
+  padding: 0 0 0 24px;
+}
+
+.wrapper :global(.ck-content * + ol) {
+  margin-top: 16px;
+}
+
+.wrapper :global(.ck-content ul) {
+  margin: 0;
+  padding: 0 0 0 24px;
+}
+
+.wrapper :global(.ck-content * + ul) {
+  margin-top: 16px;
+}
+
+.wrapper :global(.ck-content .image) {
+  margin: 0 auto;
+}
+
+.wrapper :global(.ck-content .image) {
+  margin-top: 16px;
+}
+
+.wrapper :global(.ck-content .indent-a) {
+  text-indent: 24px;
+}
+
+.wrapper :global(.ck-content .indent-b) {
+  text-indent: 48px;
+}
+
+.wrapper :global(.ck-content .indent-c) {
+  text-indent: 62px;
+}

@@ -83,13 +83,7 @@ export default async function RootLayout({
           </SWRGlobalProvider>
         </NuqsAdapter>
         <Toaster richColors position="top-center" />
-        <link rel="stylesheet" href="https://cdn.envybox.io/widget/cbk.css" />
-        <Script
-          id="envybox"
-          strategy="afterInteractive"
-          src="https://cdn.envybox.io/widget/cbk.js?cbk_code=c549f90bcefff12c01d8687328263643"
-          async
-        />
+        <Script src="https://hexline.ru/widget.js" async strategy="afterInteractive" id="hexline-widget" />
         <Script id="metrika-counter" strategy="afterInteractive">
           {`(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
             m[i].l=1*new Date();

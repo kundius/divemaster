@@ -28,7 +28,8 @@ export function EditorInput({
   const editorRef = useRef<Editor>(null)
   const images_upload_handler = async (blobInfo: BlobInfo) => {
     try {
-      const file = blobInfo.blob()
+      const blob = blobInfo.blob()
+      const file = new File([blob], blobInfo.filename(), { type: blob.type })
       const response = await uploadFile(file)
       return response.url
     } catch (error) {

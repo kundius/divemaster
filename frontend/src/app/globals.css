@@ -398,3 +398,16 @@ body {
 .bg-shady-gradient:hover {
   background: linear-gradient(143deg, #8c6ff9 0%, #8f63d9 100%);
 }
+
+chat-widget {
+  --widget-button-bottom: 80px;
+  --widget-button-right: 24px;
+  --widget-button-size: 64px;
+
+@media (--max-md) {
+  --widget-button-bottom: 72px;
+  --widget-button-right: 12px;
+  --widget-button-size: 56px;
+}
+}
+

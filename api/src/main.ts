@@ -7,7 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule)
 
   app.enableCors({
-    origin: process.env['APP_ORIGIN']
+    origin: process.env['APP_ORIGIN']?.split(',')?.map((o) => o.trim()) || [],
   })
 
   app.use(json({ limit: '1024mb' }))
@@ -18,6 +18,9 @@ async function bootstrap() {
 
   app.enableShutdownHooks()
 
-  await app.listen(process.env['APP_PORT'] || 4000)
+  const port = Number(process.env['APP_PORT'] || 4000)
+  const host = process.env['APP_HOST'] || '127.0.0.1'
+
+  await app.listen(port, host)
 }
 bootstrap()
